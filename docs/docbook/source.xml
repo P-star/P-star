@@ -7,11 +7,14 @@
 		<title>Introduction</title>
 		<section>
 			<title>What is P*?</title>
-			<para>P* is a shortname for "Web P* Language". It is unknown what the "P" actually stands for, so a star is used to indicate that any word starting with a "P" may be used. It does not mean that the name can be any number of P's. Oh, by the way, the word has to relate to computers, so the P-word you probably thought about goes out of scope. If you didn't think about any non-computer P-word, you're in the target audience of this article.
+			<para>P* (P-star) is a shortname for "Web P* Language". It is unknown what the "P" actually stands for, so a star is used to indicate that any word starting with a "P" may be used. It does not mean that the name can be any number of P's. Oh, by the way, the word has to relate to computers. If you didn't think about any non-computer P-word, you're in the target audience of this article.
 			</para>
-			<para>P* is a computer programming language specifically designed to make web progamming easy by incorporating frequent operations into the language. P* uses a C-like syntax, so it whould be easy to begin using if you have ever used C, C#, C++, Java, Perl, PHP and many others. P* is also highly inspired from some of these languages, and tries to implement the best of them while also incorporating completely new methods for solving different programming tasks.
+			<para>P* is a computer programming language specifically designed to make web progamming easy by incorporating frequent operations into the language. P* uses a C-like syntax, so it whould be easy to begin using if you have ever used C, C#, C++, Java, Perl, PHP and many others. P* is also highly inspired from some of these languages, and tries to implement the best of them while also using completely new methods for solving different programming tasks.
 			</para>
-			<para>P* is run like a script by it's interpreter which is written in C++.
+			<para>P* is run like a script by it's interpreter which is written in C++. It is currently under development, and if you have any suggestions for new features, shout out now! Also feel free to write new features and send them in.
+			</para>
+			<para>
+			P* free software and is currently licenced with GPLv3 <ulink>http://www.gnu.org/copyleft/gpl.html</ulink>
 			</para>
 		</section>
 		<section>
@@ -24,15 +27,33 @@ SCENE main {
 }
 			</programlisting>
 			</para>
+			<para>
+				This docbook is written by Atle Solbakken <email>atle@goliathdns.no</email>
+			</para>
 		</section>
 		<section>
 			<title>Why Another Language?</title>
-			<para>You might think that if someone decides to begin on the huge task of designing a new programming language, that someone has probably gone crazy. And you're spot on. Years of fierce fighting with different programming languages can drive the most well-composed person mad (this 'someone' we refer to here has never been well-composed, but if he was before he started programming, he would certeinly have lost that property by now).
+			<para>You might think that if someone decides to begin on the huge task of designing a new programming language, that someone has probably gone crazy.
+			And you're spot on. Years of fierce fighting with different programming languages can drive the most well-composed person mad (this 'someone' we refer to here has never been well-composed, but if he was before he started programming, he would certeinly have lost that property by now).
 			</para>
 			<para>P* tries to simplify tasks like HTML templates and database handling, where most languages use procedural and error-prone methods. P* introduces completely new methods of making life easier when dealing with this.
 			</para>
 		</section>
 	</chapter>
+	<chapter>
+		<title>Get P* !</title>
+		<para>
+		The source of P* is currently available from Github:
+		</para>
+		<para>
+		<ulink>https://github.com/atlesn/P-star</ulink>
+		</para>
+		<para>
+		<code>$ git clone https://github.com/atlesn/P-star.git</code>
+		</para>
+		<para>
+		</para>
+	</chapter>		
 	<chapter>
 		<title>The Idea behind P*</title>
 		<para>All programming languages have advantages and disanvantages. These two creatures are happily married, and they can't be separated. If you try to kill a disadvantage, it's beloved advantage will commit suicide, and you're back where you started. If you overlap a disadvantage with another advantage, a new disadvantage comes along with it.
@@ -46,13 +67,6 @@ SCENE main {
 		We compensate for that by making the language simple, which actually has the side effect of making it suitable for web programming.
 		What web programming is about is, yes you guessed correct, "web", and the tools to create the web should be designed with that in mind.
 		</para>
-		<section>
-			<title>Don't You Dare Go Segfaulting Me!</title>
-			<para>When you design for web, your mind should be free to think about user interface and database design.
-			You don't want to debug segmentation faults or uninitialized values.
-			P* is designed in such a way that you don't need to think about memory management.
-			</para>
-		</section>
 		<section>
 			<title>Boilerplate Code</title>
 			<para>Boilerplate code is equal copies of code that you have to repeat many times in a program to make it work.
@@ -125,8 +139,6 @@ stmt->execute();
 			<para>The whole SQL-object is a chain of strings and value pointers, and P* does the dirty work of passing each variable to MySQL with the correct type set.
 			The variables are replaced with question marks before passed to MySQL, making it look like the Java-example.
 			</para>
-<!--				<emphasis>Warning: The following section will to some extent use the author's subjective and non-scientific opinion about problems with other languages to glorify P*. By the end, if you get that far, you will be totally brainwashed and convinced that P* is the best language ever to set it's feet on surface of the earth (or something).
-				</emphasis>-->
 		</section>
 		<section>
 			<title>I Know What Types My Variables are!</title>
@@ -173,15 +185,250 @@ while (exp &lt;= exp_max) {
 			</programlisting>
 			</para>
 		</section>
+		<section>
+			<title>What template engine should I choose?</title>
+			<para>With P*, you don't need any template engine. Templates are in-language!</para>
+			<para>Here is an example of a simple web application constisting of the files <code>test_tmpl.pstar</code> and <code>test.pstar</code>, which you can run with CGI on your favorite web/database-server:</para>
+			<para>
+			P* supports common AJAX-operations like replacing text inside a &lt;div&gt;. If you want to output a variable interpolated into the template, the id-tag of the previous element in you HTML is used as variable name when the JSON is generated. In the example below, a jQuery scripts does this job. 
+			</para>
+			<para>
+			<programlisting language="c">
+/* test_tmpl.pstar */
+HTML_TEMPLATE test_template {
+	&lt;!DOCTYPE html&gt;
+	&lt;html&gt;
+	&lt;head&gt;
+	&lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"&gt;
+	&lt;/script&gt;
+	&lt;script&gt;
+	//  P* also supports application/x-www-form-urlencoded and the GET-method
+	$(document).ready(function() {
+		$("#my_form").on("submit", function(event) {
+			event.preventDefault();
+
+			var form_data = new FormData(this);
+			$.ajax({
+				url:            '?',
+				type:           'POST',
+				data:           form_data,
+				mimeType:       "multipart/form-data",
+				dataType:       'json',
+				contentType:    false,
+				cache:          false,
+				processData:    false,
+				success:        function(data, status, jqXHR) {
+				$.each(data, function(key, val) {
+					if (key!="") {
+					$("#text_div").html(val);
+					}
+					});
+				},
+				error:          function(jqXHR, status, error_thrown) {
+
+				}
+			});
+		});
+	});
+	&lt;/script&gt;
+	&lt;style type="text/css"&gt;
+	body {
+		background-color: #eee;
+	}
+	form * {
+		margin: 5px;
+	}
+	select {
+		width: 100%;
+	}
+	option {
+		overflow: hidden;
+		margin: 0px;
+	}
+	#form_div {
+		padding: 30px;
+		width: 40%;
+		margin: 0 auto;
+		background: #aa0;
+		text-align: center;
+		border-radius: 10px;
+	}
+	#form_div span {
+		font-weight: bold;
+	}
+	#result_parent {
+		padding: 30px;
+		width: 40%;
+		margin: 0 auto;
+		text-align: center;
+		background-color: #fff;
+		border-radius: 10px;
+		margin-top: 10px;
+	}
+	#result_parent span {
+		font-weight: bold;
+	}
+	#result_parent div {
+		background-color: #ddd;
+		border: 1px solid #000;
+		margin-top: 30px;
+		border-radius: 10px;
+	}
+	&lt;/style&gt;
+	&lt;title&gt;My page&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+	&lt;form id="my_form" method="POST" encoding="multipart/form-data"&gt;
+	&lt;div id="form_div"&gt;
+	&lt;span&gt;Please choose a string to retrieve from the database:&lt;/span&gt;
+		&lt;select name="id" id="id_select"&gt;
+
+	&lt;!-- This a P* template while-loop --&gt;
+
+	{@LOOP (row++)
+		&lt;option value="{@row["id"]}"&gt;{@row["text"]}&lt;/option&gt;
+	}
+
+	&lt;/select&gt;
+	&lt;input type="submit"&gt;
+	&lt;/div&gt;
+	&lt;/form&gt;
+	&lt;div id="result_parent"&gt;
+	&lt;span&gt;The string is retrived with AJAX and printed out here:&lt;/span&gt;
+
+	&lt;!-- This is P* variable interpolation --&gt;
+
+	&lt;div id="{@"text_div"}"&gt;-{@text}&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/body&gt;
+	&lt;/html&gt;
+}
+
+/* test.pstar */
+#!/usr/test/bin/wpl -f
+
+#INCLUDE test_tmpl.pstar;
+
+SCENE main {
+	/* POST-data only, not GET */
+	POST post;
+
+	int id;
+	/*
+	   All variables from POST and GET are constructed as arrays,
+	   independent of how many variables with equal names we have.
+	   The star selects the first element.
+	   */
+	if (*post["id"]) {
+		id = *post["id"];
+	}
+
+	MYSQL mysql;
+	mysql->connect("127.0.0.1", "my_user_name", "my_password);
+	mysql->select_db("my_database");
+	MYSQL_STMT stmt = mysql->new_statement();
+
+	/*
+	   We need a table with one numeric id-column and one text-column. Put nice data in it
+	*/
+	SQL sql_all {
+		SELECT * FROM variables GROUP BY(id)
+	}
+	SQL sql_single {
+		SELECT * FROM variables WHERE id={@id}
+	}
+
+	/*
+	   If the POST-variable 'id' is set, we limit the query
+	   */
+	if (id) {
+		if (!stmt->prepare(sql_single)) {
+			errcho "Could prepare query: " . mysql->error() . "\n";
+		}
+	}
+	else {
+		if (!stmt->prepare(sql_all)) {
+			errcho "Could prepare query: " . mysql->error() . "\n";
+		}
+	}
+
+	if (!stmt->execute()) {
+		errcho "Could not execute query: " . mysql->error() . "\n";
+	}
+
+	MYSQL_ROW row = stmt->get_row_iterator();
+
+	/*
+	   If the POST-variable 'id' is set, we output JSON to the client!
+	   */
+	if (id) {
+		string text = "(Not found)";
+		if (row++) {
+			text = row["text"];
+		}
+		#JSON_BEGIN;
+		#HTML_TEMPLATE_VAR test_template text;
+		#JSON_END;
+	}
+	else {
+		#CONTENT_TYPE text/html;
+		#HTML_TEMPLATE test_template;
+	}
+}
+			</programlisting>
+			</para>
+		</section>
+	</chapter>
+	<chapter>
+		<title>P* project</title>
+		<emphasis>Read this if you're into free software development!</emphasis>
+		<section>
+			<title>Project status</title>
+			<para>
+			The P*-project currently constist of only one person. For the language to be taken to the next level, help is needed!
+			</para>
+			<table>
+				<title>List of project tasks</title>
+				<tgroup cols="2">
+				<colspec colname="c1"/>
+				<colspec colname="c2"/>
+				<thead>
+					<row>
+						<entry>Task</entry>
+						<entry>Status</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>Spread the word</entry>
+						<entry>Currently in progress, but help needed.</entry>
+					</row>
+					<row>
+						<entry>Documentation</entry>
+						<entry>This document is the only documentation apart from the source code. Need more!</entry>
+					</row>
+					<row>
+						<entry>Web-page / bug-tracking</entry>
+						<entry>Help needed</entry>
+					</row>
+					<row>
+						<entry>Testing</entry>
+						<entry>Help is needed with writing production web pages in P* to find out what needs to be done</entry>
+					</row>
+				</tbody>
+				</tgroup>
+			</table>
+		</section>
 	</chapter>
 	<chapter>
 		<title>Development</title>
-		<emphasis>Read this if you like to write stuff in C++</emphasis>
+		<emphasis>Read this if you like to write stuff!</emphasis>
 		<section>
 			<title>Status Quo</title>
-			<para>The base of the P* interpreter is written in C++ runs quite well.
+			<para>The base of the P* interpreter is written in C++ and runs quite well.
 			The development is still in an early phase, and there has been many rewrites of particularry the expression handling and value subsystem.
-			A rewrite takes two days of writing and one or to days fixing compiling errors, so it's gives a good feeling that this hasn't been needed for quite a while.
+			A rewrite takes two days of writing and one or to days fixing compiling errors, so it gives a good feeling that this hasn't been needed for quite a while.
 			</para>
 			<para>
 			The implementation of loadable modules, with MySQL as the first one out, can be done without any change to the base.
@@ -189,12 +436,12 @@ while (exp &lt;= exp_max) {
 			</para>
 		</section>
 		<section>
-			<title>How it's done</title>
+			<title>How it's run</title>
 			<para>
-			P* parses the input file and creates a hierarchy of all objects which exis in the code. Variables, functions and types are registered into <code>namespace</code>s of each block.
+			A session is divided into parsing and running. P* parses the input file and creates a hierarchy of all objects which exis in the code. Variables, functions and types are registered into <code>namespace</code>s of each block.
 			</para>
 			<para>
-			Every object holds <code>state</code> objects for their children.
+			At run time, every object holds <code>state</code> objects for their children.
 			These nests, and the first state is held outside the program structure.
 			The states are created on the first run of each element.
 			</para>
@@ -205,18 +452,12 @@ while (exp &lt;= exp_max) {
 			This saves memory allocations.
 			</para>
 			<para>
-			Some objects are also <code>namespace sessions</code>, like blocks. These hold variables.
+			Some objects are also <code>namespace sessions</code>, like blocks. These hold variables during run-time.
 			The variables are copied from the original namespace (created on parse-time) the first time the block is called from a specific location.
-			</para>
-
-			<para>
-			This method allows the same program to run threaded on the same object structure, as no objects created on parsing are in any way changed when the program runs.
+			This method allows the same program to run threaded on the same object structure, as no objects created on parsing are in any way changed when the program runs. When run as a web server module, this methos is ideal as most of the work with initializing a program is only done the first time.
 			</para>
 			<para>
-			This is ideal for a web-server, which may parse a file only once and run many threads on the same program structure.
-			</para>
-			<para>
-			It should also be easy to implement threading.
+			It should also be easy to implement threading in P*.
 			</para>
 		</section>
 		<section>
@@ -226,116 +467,71 @@ while (exp &lt;= exp_max) {
 			It must also be said that the author of P* is extremely lazy, and the codebase is therefore quite small and efficient.
 			</para>
 			<para>
-			And just to say it: A test run of a PHP "Hello World!"-program run 100 times took 1.5 seconds. On the same box, P* did it in 0.4 seconds. This however only tells us that P* parses program faster than PHP, and PHP does other things faster, like running of expressions.
+			A test run of a PHP "Hello World!"-program run 100 times took 1.5 seconds. On the same box, P* did it in 0.4 seconds. This however only tells us that P* parses the source and initializes faster than PHP. PHP does other things faster, like running of expressions.
+			</para>
+			<para>
+			A small program in P* does ~300 memory allocations, while PHP does 18 000.
+			There is no current measurement of performance when P* is run as module in a web serverm, because no such module currently exists (but there will be one soon !).
 			</para>
 			<para>
 			The expression running in P* is not omptimized very much yet, but on my home computer, it can run a short expression in a loop (like <code>i++</code>) 50 million times in about 3 seconds. This should be fast enough for now.
-			</para>
-			<bridgehead>
-			Unfair performance comparison
-			</bridgehead>
-			<para>
-			Here is a comparison of "Hello world!" in different languages. This is of course just a stupid, non-scientific test, but it might make you ask yourself what these languages really do which is not related to what you wrote in your code. Compilation performance was not tested, but it should be said that <code>javac</code> made valgrind crash because id had so many errors.
-			</para>
-			<para>
-			We are also very unfair and mix compiled and non-compiled languages in the same way (Java loses anyway with is Java bytecode compilation).
-			</para>
-			<table>
-				<tgroup cols="9" align="center">
-				<title>Performance comparison of different languages</title>
-				<thead>
-				  <row>
-				    <entry>Language</entry>
-				    <entry>malloc()s</entry>
-				    <entry></entry>
-				    <entry>Not free()d blocks</entry>
-				    <entry></entry>
-				    <entry>Total allocated memory</entry>
-				    <entry></entry>
-				    <entry>100 runs</entry>
-				    <entry></entry>
-				  </row>
-				</thead>
-				<tbody>
-				  <row>
-				    <entry>C++ **</entry>
-				    <entry>0</entry>
-				    <entry>++</entry>
-				    <entry>0</entry>
-				    <entry>++</entry>
-				    <entry>0 bytes</entry>
-				    <entry>++</entry>
-				    <entry>0.2 seconds</entry>
-				    <entry>++</entry>
-				  </row>
-				  <row>
-				    <entry>P*</entry>
-				    <entry>189</entry>
-				    <entry>+</entry>
-				    <entry>10 ***</entry>
-				    <entry>+</entry>
-				    <entry>22 666 bytes</entry>
-				    <entry>+</entry>
-				    <entry>0.4 seconds</entry>
-				    <entry></entry>
-				  </row>
-				  <row>
-				    <entry>Perl</entry>
-				    <entry>803</entry>
-				    <entry></entry>
-				    <entry>627</entry>
-				    <entry></entry>
-				    <entry>182 251 bytes</entry>
-				    <entry></entry>
-				    <entry>0.25 seconds</entry>
-				    <entry>+</entry>
-				  </row>
-				  <row>
-				    <entry>PHP</entry>
-				    <entry>21 806</entry>
-				    <entry>-</entry>
-				    <entry>2 578</entry>
-				    <entry></entry>
-				    <entry>4 105 798 bytes</entry>
-				    <entry></entry>
-				    <entry>1.5 seconds</entry>
-				    <entry></entry>
-				  </row>
-				  <row>
-				    <entry>Java</entry>
-				    <entry>12 076</entry>
-				    <entry></entry>
-				    <entry>9 341</entry>
-				    <entry>-</entry>
-				    <entry>31 381 221 bytes</entry>
-				    <entry>-</entry>
-				    <entry>4.8 seconds</entry>
-				    <entry>-</entry>
-				  </row>
-				</tbody>
-				</tgroup>
-			</table>
-			<itemizedlist spacing="normal" mark="bullet"> 
-  			<listitem>* this is the P* language test</listitem>
-			<listitem>** ++ in the language name means it has won all tests</listitem>
-			<listitem>*** the 10 leaks are from dlopen()</listitem>
-			</itemizedlist>
-			<bridgehead>
-			Fair performance comparison
-			</bridgehead>
-			<para>
-			A better test is to print a string multiple times inside the same program.
 			</para>
 		</section>
 		<section>
 			<title>Database handling</title>
 			<para>
 			The P* interpreter has custom C++ wrapper classes for the official MySQL C client API.
-			The good mix of C and C++ coding techniques makes the code very delicious.
+			The good mix of C and C++ coding techniques makes the code taste very good.
 			</para>
 			<para>
 			P* wraps destructor functions of MySQL, like <code>mysql_stmt_close()</code> into destructors of it's own classes and forgets about them.
-			
+			</para>
+		</section>
+		<section>
+			<title>Important functionality to-be-written</title>
+			<para>
+			Help with development is needed! Please consider joining in or submitting code. <email>atle@goliathdns.no</email>
+			</para>
+			<para>
+			<table>
+				<title>List of future functionality</title>
+				<tgroup cols="2">
+				<colspec colname="c1"/>
+				<colspec colname="c2"/>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Status</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>Perl-like in-language regular expressions</entry>
+						<entry>Not written</entry>
+					</row>
+					<row>
+						<entry>File I/O</entry>
+						<entry>Not written (supports STDIN)</entry>
+					</row>
+					<row>
+						<entry>HTTP Cookies</entry>
+						<entry>Not written</entry>
+					</row>
+					<row>
+						<entry>Character sets</entry>
+						<entry>P* is currently only safe with UTF-8</entry>
+					</row>
+					<row>
+						<entry>Database</entry>
+						<entry>P* currently only supports simple MySQL prepared statements, run unbuffered</entry>
+					</row>
+					<row>
+						<entry>Apache module</entry>
+						<entry>Not written</entry>
+					</row>
+				</tbody>
+				</tgroup>
+			</table>
 			</para>
 		</section>
 	</chapter>

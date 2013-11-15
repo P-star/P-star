@@ -82,7 +82,7 @@ DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in COPYING compile config.guess config.sub \
-	depcomp install-sh missing ltmain.sh
+	install-sh missing ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_cxx_check_lib.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -195,13 +195,13 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/atle/prog/wpl/missing aclocal-1.13
+ACLOCAL = ${SHELL} /home/atle/prog/wpl_github/test/P-star/missing aclocal-1.13
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
 AR = ar
-AUTOCONF = ${SHELL} /home/atle/prog/wpl/missing autoconf
-AUTOHEADER = ${SHELL} /home/atle/prog/wpl/missing autoheader
-AUTOMAKE = ${SHELL} /home/atle/prog/wpl/missing automake-1.13
+AUTOCONF = ${SHELL} /home/atle/prog/wpl_github/test/P-star/missing autoconf
+AUTOHEADER = ${SHELL} /home/atle/prog/wpl_github/test/P-star/missing autoheader
+AUTOMAKE = ${SHELL} /home/atle/prog/wpl_github/test/P-star/missing automake-1.13
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -239,7 +239,7 @@ LIB_DL = -ldl
 LIPO = 
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/atle/prog/wpl/missing makeinfo
+MAKEINFO = ${SHELL} /home/atle/prog/wpl_github/test/P-star/missing makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = /bin/mkdir -p
 MYSQL_CONFIG = mysql_config
@@ -265,10 +265,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = strip
 VERSION = 1.0
-abs_builddir = /home/atle/prog/wpl
-abs_srcdir = /home/atle/prog/wpl
-abs_top_builddir = /home/atle/prog/wpl
-abs_top_srcdir = /home/atle/prog/wpl
+abs_builddir = /home/atle/prog/wpl_github/test/P-star
+abs_srcdir = /home/atle/prog/wpl_github/test/P-star
+abs_top_builddir = /home/atle/prog/wpl_github/test/P-star
+abs_top_srcdir = /home/atle/prog/wpl_github/test/P-star
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_CXX = g++
@@ -298,7 +298,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/atle/prog/wpl/install-sh
+install_sh = ${SHELL} /home/atle/prog/wpl_github/test/P-star/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
