@@ -6,7 +6,7 @@
 	<chapter>
 		<title>Introduction</title>
 		<section>
-			<title>What is P*?</title>
+			<title>Logo</title>
 			<mediaobject>
 			<imageobject>
 			<imagedata fileref="images/logo.png"/>
@@ -16,6 +16,9 @@
 			</phrase>
 			</textobject>
 			</mediaobject>
+		</section>
+		<section>
+			<title>What is P*?</title>
 			<para>P* (P-star) is a shortname for "Web P* Language". It is unknown what the "P" actually stands for, so a star is used to indicate that any word starting with a "P" may be used. It does not mean that the name can be any number of P's. Oh, by the way, the word has to relate to computers. If you didn't think about any non-computer P-word, you're in the target audience of this article.
 			</para>
 			<para>P* is a computer programming language specifically designed to make web progamming easy by incorporating frequent operations into the language. P* uses a C-like syntax, so it whould be easy to begin using if you have ever used C, C#, C++, Java, Perl, PHP and many others. P* is also highly inspired from some of these languages, and tries to implement the best of them while also using completely new methods for solving different programming tasks.
