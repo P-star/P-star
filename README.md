@@ -8,4 +8,6 @@ P* is currently under development, and help is needed!
 Please visit this page for information about P*: 
   http://www.p-star.org/
 
-Contact atle@goliathdns.no to participate.
+Say hello on the mailing list to participate!
+
+p-star-dev@googlegroups.com
