@@ -1,0 +1,89 @@
+/*
+
+-------------------------------------------------------------
+
+Copyright (c) MMIII Atle Solbakken
+atle@goliathdns.no
+
+-------------------------------------------------------------
+
+This file is part of P* (P-star).
+
+P* is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+P* is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with P*.  If not, see <http://www.gnu.org/licenses/>.
+
+-------------------------------------------------------------
+
+*/
+
+#include "expression_state.h"
+#include "function.h"
+
+void wpl_expression_state::optimize() {
+	/*
+	   Merge operator and value carrier for short
+	   expressions, makes i++ etc. faster
+	   */
+	if (run_stack.size() == 2) {
+		shunting_yard_carrier ca(run_stack[1].value, run_stack[0].op);
+		run_stack.clear();
+		run_stack.push(ca);
+		return;
+	}
+}
+
+int wpl_expression_state::run_function (
+		wpl_function *function,
+		int index,
+		wpl_value *final_result,
+		wpl_namespace_session *nss_this,
+		wpl_namespace_session *nss_caller
+		)
+{
+	if (index >= WPL_EXPRESSION_MAX) {
+		throw runtime_error("Index out of range in wpl_expression_state");
+	}
+
+	if (child_states[index].get() == nullptr) {
+		child_states[index].reset(function->new_state(nss_this, nss_caller));
+	}
+
+	wpl_function_state *function_state =
+		(wpl_function_state *) child_states[index].get();
+
+	if (!function_state->set_variables_from_expression(this)) {
+		cerr << "While loading arguments from expression into function with signature ";
+		cerr << "\t'" << function->get_function_name() << "' :\n";
+		throw runtime_error("Function argument mismatch");
+	}
+
+	int ret = function->run(function_state, function_state->get_return_value());
+	if (!(ret & WPL_OP_OK)) {
+		cerr << "While running function with signature ";
+		cerr << "\t'" << function->get_function_name() << "' :\n";
+		throw runtime_error("No return value from function block");
+	}
+
+	return function_state->get_return_value()->do_operator_recursive(this, final_result);
+}
+
+int wpl_expression_state::run_child(wpl_runable *runable, int index, wpl_value *final_result) {
+	if (index >= WPL_EXPRESSION_MAX) {
+		throw runtime_error("Index out of range in wpl_expression_state");
+	}
+	if (child_states[index].get() == nullptr) {
+		child_states[index].reset(runable->new_state(nss));
+	}
+
+	return runable->run(child_states[index].get(), final_result);
+}

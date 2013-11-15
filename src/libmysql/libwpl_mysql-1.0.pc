@@ -1,0 +1,11 @@
+prefix=/usr/test
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: WPL
+Description: WPL MySQL library module
+Requires: 
+Version: 1.0
+Libs: -L${libdir} -llibwpl_mysql-1.0
+Cflags: -I${includedir}/libwpl_mysql-1.0 -I${libdir}/libwpl_mysql-1.0/include

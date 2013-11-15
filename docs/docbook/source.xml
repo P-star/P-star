@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../docbook-xml-4.5/docbookx.dtd">
+
+<book>
+	<title>The P* Language</title>
+	<chapter>
+		<title>Introduction</title>
+		<section>
+			<title>What is P*?</title>
+			<para>P* is a shortname for "Web P* Language". It is unknown what the "P" actually stands for, so a star is used to indicate that any word starting with a "P" may be used. It does not mean that the name can be any number of P's. Oh, by the way, the word has to relate to computers, so the P-word you probably thought about goes out of scope. If you didn't think about any non-computer P-word, you're in the target audience of this article.
+			</para>
+			<para>P* is a computer programming language specifically designed to make web progamming easy by incorporating frequent operations into the language. P* uses a C-like syntax, so it whould be easy to begin using if you have ever used C, C#, C++, Java, Perl, PHP and many others. P* is also highly inspired from some of these languages, and tries to implement the best of them while also incorporating completely new methods for solving different programming tasks.
+			</para>
+			<para>P* is run like a script by it's interpreter which is written in C++.
+			</para>
+		</section>
+		<section>
+			<title>We Want Meat!</title>
+			<para>This is the official "Hello World!"-example of P*
+			<programlisting language="c">
+#!/usr/bin/wpl -f
+SCENE main {
+	echo "Hello World!\n";
+}
+			</programlisting>
+			</para>
+		</section>
+		<section>
+			<title>Why Another Language?</title>
+			<para>You might think that if someone decides to begin on the huge task of designing a new programming language, that someone has probably gone crazy. And you're spot on. Years of fierce fighting with different programming languages can drive the most well-composed person mad (this 'someone' we refer to here has never been well-composed, but if he was before he started programming, he would certeinly have lost that property by now).
+			</para>
+			<para>P* tries to simplify tasks like HTML templates and database handling, where most languages use procedural and error-prone methods. P* introduces completely new methods of making life easier when dealing with this.
+			</para>
+		</section>
+	</chapter>
+	<chapter>
+		<title>The Idea behind P*</title>
+		<para>All programming languages have advantages and disanvantages. These two creatures are happily married, and they can't be separated. If you try to kill a disadvantage, it's beloved advantage will commit suicide, and you're back where you started. If you overlap a disadvantage with another advantage, a new disadvantage comes along with it.
+		</para>
+		<para>
+		Does this means that we will never have a perfect programming lanuage?
+		It probably does.
+		However, P* has made an attempt to get around this by selecting which bad things to have first and seeing what advantages we get with those afterwards.
+		</para>
+		<para>A P* program is run by an interpreter engine, and this is bad for speed.
+		We compensate for that by making the language simple, which actually has the side effect of making it suitable for web programming.
+		What web programming is about is, yes you guessed correct, "web", and the tools to create the web should be designed with that in mind.
+		</para>
+		<section>
+			<title>Don't You Dare Go Segfaulting Me!</title>
+			<para>When you design for web, your mind should be free to think about user interface and database design.
+			You don't want to debug segmentation faults or uninitialized values.
+			P* is designed in such a way that you don't need to think about memory management.
+			</para>
+		</section>
+		<section>
+			<title>Boilerplate Code</title>
+			<para>Boilerplate code is equal copies of code that you have to repeat many times in a program to make it work.
+			This includes stuff like checking return values from library functions and printing error messages, or to including modules and header files at the top of a program.
+			</para>
+			<bridgehead>MySQL prepared statements in Java</bridgehead>
+			<para>One of the worst time-consuming copy-paste-editing you will ever come over is creating a prepared statement.
+			Under follows an example in the Java-language (which is copy-pasted-edited from some page found on Google).
+			Notice that the word <code>PreparedStatement</code> is used seven times, and that you have to deal with the member methods <code>setString</code> and <code>setInt</code> of this object for every single variable.
+			</para>
+			<programlisting language="java">
+Class.forName("com.mysql.jdbc.Driver");
+connect = DriverManager.getConnection("jdbc:mysql://localhost/animal_kingdom?" + "user=dog&amp;password=i_hate_cats");
+
+// It is extremely boring work to set all this fields
+preparedStatement = connect.prepareStatement("INSERT INTO animal_kingdom.persons VALUES (?,?,?,?,?)");
+preparedStatement.setString(1, "Jo");
+preparedStatement.setString(2, "Lene");
+preparedStatement.setString(3, "jolene@hotmail.com");
+
+// Sometimes we need to store strange properties of a person
+preparedStatement.setInt(4, 135);
+preparedStatement.setInt(5, 4);
+preparedStatement.executeUpdate();
+			</programlisting>
+			<para>You begin to wonder why on earth you have to tell Java that "Jo" is a string type.
+			You also have the manual work of counting all the question marks and setting the variables in correct order.
+			This work, of course, becomes really fun when you also have to deal with column names in the query and you have 20 columns of different types to insert.
+			</para>
+			<para>The P* author, also referred to as 'someone' in this article, has once been forced to write a wrapper class just to keep track of column names, values and question marks.
+			We don't want to spend time doing this, we want to create web pages! Let's have some more meat.
+			</para>
+			<bridgehead>MySQL prepared statements in P*</bridgehead>
+			<para>Next comes the same example in P*, lets just specify the variables first instead of inlining, like you would normally do:
+			<programlisting language="c">
+
+string name = "Jo";
+string surename = "Lene";
+string email = "jolene@hotmail.com";
+int weight = 135;   /* In kilograms */
+int width = 4;      /* In feet */
+
+SQL sql {
+	INSERT INTO animal_kingdom.persons VALUES (
+		{@name}, {@surename}, {@email}, {@weight}, {@width}
+	)
+}
+
+MYSQL mysql->connect("localhost", "dog", "i_hate_cats");
+mysql->select_db("animal_kingdom");
+
+MYSQL_STATEMENT stmt = mysql->new_statement();
+stmt->prepare(sql);
+stmt->execute();
+			</programlisting>
+			</para>
+			<bridgehead>Common reactions to this example</bridgehead>
+			<itemizedlist spacing="normal" mark="bullet"> 
+			<listitem>Wait a minute...You said you wouldn't inline the variables, but you did?
+			</listitem>
+			<listitem>You idiot!!! This is SQL -- IN -- JEC -- TION -- !!!!
+			</listitem>
+			</itemizedlist>
+			<bridgehead>Counter-strike</bridgehead>
+			<para>This way of specifying a prepared statement is P* magic.
+			We would not normally, and shouln't either, put variables inside the SQL-string.
+			However, because we are lazy (and to avoid the horrible and error-prone code you see in the first example), we might be tempted to do just that.
+			With P* you can put the variables inside the SQL-string WITHOUT them being concatenated.
+			</para>
+			<para>The whole SQL-object is a chain of strings and value pointers, and P* does the dirty work of passing each variable to MySQL with the correct type set.
+			The variables are replaced with question marks before passed to MySQL, making it look like the Java-example.
+			</para>
+<!--				<emphasis>Warning: The following section will to some extent use the author's subjective and non-scientific opinion about problems with other languages to glorify P*. By the end, if you get that far, you will be totally brainwashed and convinced that P* is the best language ever to set it's feet on surface of the earth (or something).
+				</emphasis>-->
+		</section>
+		<section>
+			<title>I Know What Types My Variables are!</title>
+			<para>One important element of making a program efficient, is to use correct types for your variables.
+			When you've programmed for a while, type selection becomes natural, and you don't think much about it.
+			</para>
+			<para>Some languages try to help the user by using automatic types.
+			This is supposed to make it easier to write.
+			P* does allow implict converting between primitive types, but no variables can be typeless.
+			</para>
+			<para>It is not much work, however, to write <code>int</code> or <code>string</code> in front of a variable.
+			This also helps make programs more readable, and it makes programs faster.
+			</para>
+			<para>Variables in P* are stored in memory as their C/C++ equalient type. Size of the type depend on the platform the interpreter is compiled on.
+			</para>
+			<bridgehead>Types, you say? Let's have 'em!</bridgehead>
+			<para>
+			Example of P* types and their corresponding C-types:
+			<programlisting language="c">
+int a = -10;		/* Integer			long int			*/
+uint b = 2;		/* Unsigned integer		long unsigned int		*/
+
+llint c = -10;		/* Long long integer		long long int			*/
+lluint e = 2;		/* Unsigned long long integer	long long unsigned int		*/
+
+double d = 2.00003;	/* Double precision		double				*/
+float f = 2.00003;	/* Floating point		float				*/
+
+string p = "P*";	/* String			uses &lt;string&gt; from c++	*/
+			</programlisting>
+			</para>
+			<para>And here is a small program just in case you're still hungry:
+			<programlisting language="c">
+int base = 2;
+int exp = 1;
+int exp_max = 40;
+lluint result = 1;
+
+while (exp &lt;= exp_max) {
+	result *= base;
+	echo "$base exp $exp is $result";
+	exp++;
+}
+			</programlisting>
+			</para>
+		</section>
+	</chapter>
+	<chapter>
+		<title>Development</title>
+		<emphasis>Read this if you like to write stuff in C++</emphasis>
+		<section>
+			<title>Status Quo</title>
+			<para>The base of the P* interpreter is written in C++ runs quite well.
+			The development is still in an early phase, and there has been many rewrites of particularry the expression handling and value subsystem.
+			A rewrite takes two days of writing and one or to days fixing compiling errors, so it's gives a good feeling that this hasn't been needed for quite a while.
+			</para>
+			<para>
+			The implementation of loadable modules, with MySQL as the first one out, can be done without any change to the base.
+			This might indicate that things now are implemented in a reasonable way.
+			</para>
+		</section>
+		<section>
+			<title>How it's done</title>
+			<para>
+			P* parses the input file and creates a hierarchy of all objects which exis in the code. Variables, functions and types are registered into <code>namespace</code>s of each block.
+			</para>
+			<para>
+			Every object holds <code>state</code> objects for their children.
+			These nests, and the first state is held outside the program structure.
+			The states are created on the first run of each element.
+			</para>
+			<para>
+			If you call a function from two different locations, the function gets one state for each place it is called from.
+			If you nest function calls, one state is created for each nested call.
+			If you call the nested function again the same way, it re-uses the states from the last call.
+			This saves memory allocations.
+			</para>
+			<para>
+			Some objects are also <code>namespace sessions</code>, like blocks. These hold variables.
+			The variables are copied from the original namespace (created on parse-time) the first time the block is called from a specific location.
+			</para>
+
+			<para>
+			This method allows the same program to run threaded on the same object structure, as no objects created on parsing are in any way changed when the program runs.
+			</para>
+			<para>
+			This is ideal for a web-server, which may parse a file only once and run many threads on the same program structure.
+			</para>
+			<para>
+			It should also be easy to implement threading.
+			</para>
+		</section>
+		<section>
+			<title>Speed</title>
+			<para>Of course, since many things in P* happen behind the scenes, it runs slower than if you had written the same program in C and compiled it.
+			P*, however, strives to keep this overhead to a minimum.
+			It must also be said that the author of P* is extremely lazy, and the codebase is therefore quite small and efficient.
+			</para>
+			<para>
+			And just to say it: A test run of a PHP "Hello World!"-program run 100 times took 1.5 seconds. On the same box, P* did it in 0.4 seconds. This however only tells us that P* parses program faster than PHP, and PHP does other things faster, like running of expressions.
+			</para>
+			<para>
+			The expression running in P* is not omptimized very much yet, but on my home computer, it can run a short expression in a loop (like <code>i++</code>) 50 million times in about 3 seconds. This should be fast enough for now.
+			</para>
+			<bridgehead>
+			Unfair performance comparison
+			</bridgehead>
+			<para>
+			Here is a comparison of "Hello world!" in different languages. This is of course just a stupid, non-scientific test, but it might make you ask yourself what these languages really do which is not related to what you wrote in your code. Compilation performance was not tested, but it should be said that <code>javac</code> made valgrind crash because id had so many errors.
+			</para>
+			<para>
+			We are also very unfair and mix compiled and non-compiled languages in the same way (Java loses anyway with is Java bytecode compilation).
+			</para>
+			<table>
+				<tgroup cols="9" align="center">
+				<title>Performance comparison of different languages</title>
+				<thead>
+				  <row>
+				    <entry>Language</entry>
+				    <entry>malloc()s</entry>
+				    <entry></entry>
+				    <entry>Not free()d blocks</entry>
+				    <entry></entry>
+				    <entry>Total allocated memory</entry>
+				    <entry></entry>
+				    <entry>100 runs</entry>
+				    <entry></entry>
+				  </row>
+				</thead>
+				<tbody>
+				  <row>
+				    <entry>C++ **</entry>
+				    <entry>0</entry>
+				    <entry>++</entry>
+				    <entry>0</entry>
+				    <entry>++</entry>
+				    <entry>0 bytes</entry>
+				    <entry>++</entry>
+				    <entry>0.2 seconds</entry>
+				    <entry>++</entry>
+				  </row>
+				  <row>
+				    <entry>P*</entry>
+				    <entry>189</entry>
+				    <entry>+</entry>
+				    <entry>10 ***</entry>
+				    <entry>+</entry>
+				    <entry>22 666 bytes</entry>
+				    <entry>+</entry>
+				    <entry>0.4 seconds</entry>
+				    <entry></entry>
+				  </row>
+				  <row>
+				    <entry>Perl</entry>
+				    <entry>803</entry>
+				    <entry></entry>
+				    <entry>627</entry>
+				    <entry></entry>
+				    <entry>182 251 bytes</entry>
+				    <entry></entry>
+				    <entry>0.25 seconds</entry>
+				    <entry>+</entry>
+				  </row>
+				  <row>
+				    <entry>PHP</entry>
+				    <entry>21 806</entry>
+				    <entry>-</entry>
+				    <entry>2 578</entry>
+				    <entry></entry>
+				    <entry>4 105 798 bytes</entry>
+				    <entry></entry>
+				    <entry>1.5 seconds</entry>
+				    <entry></entry>
+				  </row>
+				  <row>
+				    <entry>Java</entry>
+				    <entry>12 076</entry>
+				    <entry></entry>
+				    <entry>9 341</entry>
+				    <entry>-</entry>
+				    <entry>31 381 221 bytes</entry>
+				    <entry>-</entry>
+				    <entry>4.8 seconds</entry>
+				    <entry>-</entry>
+				  </row>
+				</tbody>
+				</tgroup>
+			</table>
+			<itemizedlist spacing="normal" mark="bullet"> 
+  			<listitem>* this is the P* language test</listitem>
+			<listitem>** ++ in the language name means it has won all tests</listitem>
+			<listitem>*** the 10 leaks are from dlopen()</listitem>
+			</itemizedlist>
+			<bridgehead>
+			Fair performance comparison
+			</bridgehead>
+			<para>
+			A better test is to print a string multiple times inside the same program.
+			</para>
+		</section>
+		<section>
+			<title>Database handling</title>
+			<para>
+			The P* interpreter has custom C++ wrapper classes for the official MySQL C client API.
+			The good mix of C and C++ coding techniques makes the code very delicious.
+			</para>
+			<para>
+			P* wraps destructor functions of MySQL, like <code>mysql_stmt_close()</code> into destructors of it's own classes and forgets about them.
+			
+			</para>
+		</section>
+	</chapter>
+</book>

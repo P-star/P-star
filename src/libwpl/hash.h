@@ -1,0 +1,107 @@
+/*
+
+-------------------------------------------------------------
+
+Copyright (c) MMIII Atle Solbakken
+atle@goliathdns.no
+
+-------------------------------------------------------------
+
+This file is part of P* (P-star).
+
+P* is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+P* is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with P*.  If not, see <http://www.gnu.org/licenses/>.
+
+-------------------------------------------------------------
+
+*/
+
+#pragma once
+
+#include "types.h"
+#include "exception.h"
+#include "value.h"
+
+#include <memory>
+#include <map>
+
+class wpl_value;
+
+/**
+ * @brief Hash implementation
+ */
+class wpl_hash {
+	map<string,unique_ptr<wpl_value>> hash;
+
+	public:
+	void set(string &key, wpl_value *value);
+	wpl_value *get(string &key);
+
+	protected:
+	wpl_hash () {};
+	wpl_hash (const wpl_hash &copy);
+	~wpl_hash();
+	void replace (wpl_hash &new_hash);
+	void output_json();
+	int size() {
+		return hash.size();
+	}
+};
+
+/**
+ * @brief Class for a complete hash type, with template type specified
+ */
+class wpl_type_hash_instance : public wpl_type_complete_template {
+	public:
+	wpl_type_hash_instance(
+			const wpl_type_template *mother_type,
+			const wpl_type_complete *template_type
+			) :
+		wpl_type_complete_template (mother_type, template_type)
+	{}
+
+	void suicide() {
+		delete this;
+	}
+
+	wpl_identifier *clone() const {
+		return new wpl_type_hash_instance(*this);
+	}
+
+	wpl_value *new_instance() const;
+};
+
+/**
+ * @brief Class for the hash template type
+ */
+class wpl_type_hash : public wpl_type_template {
+	public:
+	wpl_type_hash (const char *type) : wpl_type_template(type) {}
+
+	void suicide() {
+		delete this;
+	}
+
+	int get_precedence() const {
+		return wpl_type_precedence_hash;
+	}
+
+	wpl_identifier *clone() const {
+		return new wpl_type_hash(*this);
+	}
+
+	wpl_type_complete_template *new_instance (const wpl_type_complete *template_type) const {
+		return new wpl_type_hash_instance(this, template_type);
+	}
+};
+
