@@ -28,6 +28,9 @@
 			<para>
 			P* free software and is currently licenced with GPLv3 <ulink>http://www.gnu.org/copyleft/gpl.html</ulink>
 			</para>
+			<para>
+				This docbook is written by Atle Solbakken <email>atle@goliathdns.no</email>
+			</para>
 		</section>
 		<section>
 			<title>Mailing lists</title>
@@ -47,9 +50,6 @@ SCENE main {
 	echo "Hello World!\n";
 }
 			</programlisting>
-			</para>
-			<para>
-				This docbook is written by Atle Solbakken <email>atle@goliathdns.no</email>
 			</para>
 		</section>
 		<section>
