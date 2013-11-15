@@ -43,15 +43,14 @@ SCENE main {
 	<chapter>
 		<title>Get P* !</title>
 		<para>
-		The source of P* is currently available from Github:
-		</para>
-		<para>
-		<ulink>https://github.com/atlesn/P-star</ulink>
+		The source of P* is currently available
+<ulink url="https://github.com/atlesn/P-star">from Github</ulink>.
 		</para>
 		<para>
 		<code>$ git clone https://github.com/atlesn/P-star.git</code>
 		</para>
 		<para>
+		You can also <ulink url="https://november.systems.goliathdns.no/pstar/dox/html/">browse the source code</ulink>
 		</para>
 	</chapter>		
 	<chapter>
