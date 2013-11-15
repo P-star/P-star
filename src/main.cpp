@@ -21,14 +21,14 @@ bool cmdOptionExists(char **begin, char **end, const std::string &option) {
 }
 
 void version() {
-	cout << "P* web programming language interpreter version " PACKAGE_VERSION << "\n";
-	cout << "Visit http://november.systems.goliathdns.no/pstar/ for documentation\n";
+	cout << "The P* Web Programming Language interpreter version " PACKAGE_VERSION << "\n";
+	cout << "Visit http://www.p-star.org/ for documentation\n\n";
 }
 
 void usage (char *argv0) {
 	cout << argv0 << " [-h] -f filename\n";
 	cout << "Licenced under GPLv3, Copyright MMXIII Atle Solbakken\n";
-	cout << "Visit http://november.systems.goliathdns.no/pstar/ for documentation\n";
+	cout << "Visit http://www.p-star.org/ for documentation\n\n";
 }
 
 int main (int argc, char *argv[]) {
