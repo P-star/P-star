@@ -71,11 +71,11 @@ SCENE main {
 		<code>$ git clone https://github.com/atlesn/P-star.git</code>
 		</para>
 		<para>
-		You can also <ulink url="https://november.systems.goliathdns.no/pstar/dox/html/">browse the source code</ulink>
+		You can also <ulink url="http://www.p-star.org/dox/html/">browse the source code</ulink>
 		</para>
 	</chapter>		
 	<chapter>
-		<title>The Idea behind P*</title>
+		<title>The P* language</title>
 		<para>All programming languages have advantages and disanvantages. These two creatures are happily married, and they can't be separated. If you try to kill a disadvantage, it's beloved advantage will commit suicide, and you're back where you started. If you overlap a disadvantage with another advantage, a new disadvantage comes along with it.
 		</para>
 		<para>
@@ -88,77 +88,298 @@ SCENE main {
 		What web programming is about is, yes you guessed correct, "web", and the tools to create the web should be designed with that in mind.
 		</para>
 		<section>
-			<title>Boilerplate Code</title>
-			<para>Boilerplate code is equal copies of code that you have to repeat many times in a program to make it work.
-			This includes stuff like checking return values from library functions and printing error messages, or to including modules and header files at the top of a program.
-			</para>
-			<bridgehead>MySQL prepared statements in Java</bridgehead>
-			<para>One of the worst time-consuming copy-paste-editing you will ever come over is creating a prepared statement.
-			Under follows an example in the Java-language (which is copy-pasted-edited from some page found on Google).
-			Notice that the word <code>PreparedStatement</code> is used seven times, and that you have to deal with the member methods <code>setString</code> and <code>setInt</code> of this object for every single variable.
-			</para>
-			<programlisting language="java">
-Class.forName("com.mysql.jdbc.Driver");
-connect = DriverManager.getConnection("jdbc:mysql://localhost/animal_kingdom?" + "user=dog&amp;password=i_hate_cats");
-
-// It is extremely boring work to set all this fields
-preparedStatement = connect.prepareStatement("INSERT INTO animal_kingdom.persons VALUES (?,?,?,?,?)");
-preparedStatement.setString(1, "Jo");
-preparedStatement.setString(2, "Lene");
-preparedStatement.setString(3, "jolene@hotmail.com");
-
-// Sometimes we need to store strange properties of a person
-preparedStatement.setInt(4, 135);
-preparedStatement.setInt(5, 4);
-preparedStatement.executeUpdate();
-			</programlisting>
-			<para>You begin to wonder why on earth you have to tell Java that "Jo" is a string type.
-			You also have the manual work of counting all the question marks and setting the variables in correct order.
-			This work, of course, becomes really fun when you also have to deal with column names in the query and you have 20 columns of different types to insert.
-			</para>
-			<para>The P* author, also referred to as 'someone' in this article, has once been forced to write a wrapper class just to keep track of column names, values and question marks.
-			We don't want to spend time doing this, we want to create web pages! Let's have some more meat.
-			</para>
-			<bridgehead>MySQL prepared statements in P*</bridgehead>
-			<para>Next comes the same example in P*, lets just specify the variables first instead of inlining, like you would normally do:
-			<programlisting language="c">
-
-string name = "Jo";
-string surename = "Lene";
-string email = "jolene@hotmail.com";
-int weight = 135;   /* In kilograms */
-int width = 4;      /* In feet */
-
-SQL sql {
-	INSERT INTO animal_kingdom.persons VALUES (
-		{@name}, {@surename}, {@email}, {@weight}, {@width}
-	)
-}
-
-MYSQL mysql->connect("localhost", "dog", "i_hate_cats");
-mysql->select_db("animal_kingdom");
-
-MYSQL_STATEMENT stmt = mysql->new_statement();
-stmt->prepare(sql);
-stmt->execute();
-			</programlisting>
-			</para>
-			<bridgehead>Common reactions to this example</bridgehead>
-			<itemizedlist spacing="normal" mark="bullet"> 
-			<listitem>Wait a minute...You said you wouldn't inline the variables, but you did?
-			</listitem>
-			<listitem>You idiot!!! This is SQL -- IN -- JEC -- TION -- !!!!
-			</listitem>
-			</itemizedlist>
-			<bridgehead>Counter-strike</bridgehead>
-			<para>This way of specifying a prepared statement is P* magic.
-			We would not normally, and shouln't either, put variables inside the SQL-string.
-			However, because we are lazy (and to avoid the horrible and error-prone code you see in the first example), we might be tempted to do just that.
-			With P* you can put the variables inside the SQL-string WITHOUT them being concatenated.
-			</para>
-			<para>The whole SQL-object is a chain of strings and value pointers, and P* does the dirty work of passing each variable to MySQL with the correct type set.
-			The variables are replaced with question marks before passed to MySQL, making it look like the Java-example.
-			</para>
+			<title>Expressions and operators</title>
+			<para>P* have mostly adapted operators and their precedence from the C-language.
+			The basics of the expression syntax is also the same as in C.
+			Expressions are parsed right to left.</para>
+			<para>Here is an overview of all currenty supported operators</para>
+			<table>
+				<title>Operators in P*</title>
+				<tgroup cols="2">
+				<colspec colname="c1" align="center" />
+				<colspec colname="c2" align="center" />
+				<colspec colname="c3"/>
+				<colspec colname="c4" align="center" />
+				<colspec colname="c5"/>
+				<thead>
+					<row>
+						<entry>Precedence</entry>
+						<entry>Operator</entry>
+						<entry>Description</entry>
+						<entry>Associativity</entry>
+						<entry>Example</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry morerows="6">2</entry>
+						<entry>()</entry>
+						<entry>Function call</entry>
+						<entry>Left or none</entry>
+						<entry>call(2,3) (expands to call 2, 3 ())</entry>
+					</row>
+					<row>
+						<entry>[]</entry>
+						<entry>Array subscription (hashes and arrays)</entry>
+						<entry morerows="3">Left</entry>
+						<entry>my_array[2] (expands to my_array 2 [])</entry>
+					</row>
+					<row>
+						<entry>-&gt;</entry>
+						<entry>Element selection (structs and classes)</entry>
+						<entry>my_struct-&gt;variable (expands to my_struct variable -&gt;)</entry>
+					</row>
+					<row>
+						<entry>++</entry>
+						<entry>Postfix increment</entry>
+						<entry>i++</entry>
+					</row>
+					<row>
+						<entry>--</entry>
+						<entry>Postfix decrement</entry>
+						<entry>i--</entry>
+					</row>
+					<row>
+						<entry>*</entry>
+						<entry>First element selector (arrays)</entry>
+						<entry morerows="1">Right</entry>
+						<entry>*my_array</entry>
+					</row>
+					<row>
+						<entry>isempty</entry>
+						<entry>Empty check logic (strings)</entry>
+						<entry>isempty my_string</entry>
+					</row>
+					<row>
+						<entry morerows="3">3</entry>
+						<entry>++</entry>
+						<entry>Prefix increment</entry>
+						<entry morerows="3">Right</entry>
+						<entry>++i</entry>
+					</row>
+					<row>
+						<entry>--</entry>
+						<entry>Prefix decrement</entry>
+						<entry>--i</entry>
+					</row>
+					<row>
+						<entry>~</entry>
+						<entry>Biwise not</entry>
+						<entry>~invert_this</entry>
+					</row>
+					<row>
+						<entry>!</entry>
+						<entry>Logic not</entry>
+						<entry>!var</entry>
+					</row>
+					<row>
+						<entry morerows="4">6</entry>
+						<entry>+</entry>
+						<entry>Sum</entry>
+						<entry morerows="4">Left</entry>
+						<entry>a+b</entry>
+					</row>
+					<row>
+						<entry>-</entry>
+						<entry>Subtraction</entry>
+						<entry>a-b</entry>
+					</row>
+					<row>
+						<entry>*</entry>
+						<entry>Multiplication</entry>
+						<entry>a*b</entry>
+					</row>
+					<row>
+						<entry>/</entry>
+						<entry>Division</entry>
+						<entry>a/b</entry>
+					</row>
+					<row>
+						<entry>%</entry>
+						<entry>Modulus</entry>
+						<entry>a%b</entry>
+					</row>
+					<row>
+						<entry morerows="1">7</entry>
+						<entry>&lt;&lt;</entry>
+						<entry>Left bitshift</entry>
+						<entry morerows="1">Left</entry>
+						<entry>a &lt;&lt; 1</entry>
+					</row>
+					<row>
+						<entry>&gt;&gt;</entry>
+						<entry>Right bitshift</entry>
+						<entry>a &gt;&gt; 1</entry>
+					</row>
+					<row>
+						<entry morerows="3">8</entry>
+						<entry>&lt;=</entry>
+						<entry>Logic less than or equal</entry>
+						<entry morerows="5">Left</entry>
+						<entry>a &lt;= b</entry>
+					</row>
+					<row>
+						<entry>&gt;=</entry>
+						<entry>Logic more than or equal</entry>
+						<entry>a &gt;= b</entry>
+					</row>
+					<row>
+						<entry>&lt;</entry>
+						<entry>Logic less than</entry>
+						<entry>a &lt; b</entry>
+					</row>
+					<row>
+						<entry>&gt;</entry>
+						<entry>Logic more than</entry>
+						<entry>a &gt; b</entry>
+					</row>
+					<row>
+						<entry morerows="1">9</entry>
+						<entry>==</entry>
+						<entry>Logic equal</entry>
+						<entry>a == b</entry>
+					</row>
+					<row>
+						<entry>!=</entry>
+						<entry>Logic not equal</entry>
+						<entry>a != b</entry>
+					</row>
+					<row>
+						<entry>10</entry>
+						<entry>&amp;</entry>
+						<entry>Bitwise AND</entry>
+						<entry morerows="2">Left</entry>
+						<entry>a &amp; b</entry>
+					</row>
+					<row>
+						<entry>11</entry>
+						<entry>^</entry>
+						<entry>Bitwise XOR</entry>
+						<entry>a ^ b</entry>
+					</row>
+					<row>
+						<entry>12</entry>
+						<entry>|</entry>
+						<entry>Bitwise OR</entry>
+						<entry>a | b</entry>
+					</row>
+					<row>
+						<entry>13</entry>
+						<entry>&amp;</entry>
+						<entry>Logic AND</entry>
+						<entry morerows="1">Left</entry>
+						<entry>a &amp;&amp; b</entry>
+					</row>
+					<row>
+						<entry>14</entry>
+						<entry>||</entry>
+						<entry>Logic OR</entry>
+						<entry>a || b</entry>
+					</row>
+					<row>
+						<entry>15</entry>
+						<entry>.</entry>
+						<entry>String contatenation</entry>
+						<entry>Left</entry>
+						<entry>a . b</entry>
+					</row>
+					<row>
+						<entry morerows="11">16</entry>
+						<entry>=</entry>
+						<entry>Assign</entry>
+						<entry morerows="11">Left</entry>
+						<entry>a = b</entry>
+					</row>
+					<row>
+						<entry>+=</entry>
+						<entry>Assign by sum</entry>
+						<entry>a += b</entry>
+					</row>
+					<row>
+						<entry>-=</entry>
+						<entry>Assign by difference</entry>
+						<entry>a -= b</entry>
+					</row>
+					<row>
+						<entry>*=</entry>
+						<entry>Assign by product</entry>
+						<entry>a *= b</entry>
+					</row>
+					<row>
+						<entry>/=</entry>
+						<entry>Assign by quotient</entry>
+						<entry>a /= b</entry>
+					</row>
+					<row>
+						<entry>%=</entry>
+						<entry>Assign by remainder</entry>
+						<entry>a %= b</entry>
+					</row>
+					<row>
+						<entry>&amp;=</entry>
+						<entry>Assign by bitwise AND</entry>
+						<entry>a &amp;= b</entry>
+					</row>
+					<row>
+						<entry>^=</entry>
+						<entry>Assign by bitwise XOR</entry>
+						<entry>a ^= b</entry>
+					</row>
+					<row>
+						<entry>|=</entry>
+						<entry>Assign by bitwise OR</entry>
+						<entry>a |= b</entry>
+					</row>
+					<row>
+						<entry>&lt;&lt;=</entry>
+						<entry>Assign by bitwise left shift</entry>
+						<entry>a &lt;&lt;= b</entry>
+					</row>
+					<row>
+						<entry>&gt;&gt;=</entry>
+						<entry>Assign by bitwise right shift</entry>
+						<entry>a &gt;&gt;= b</entry>
+					</row>
+					<row>
+						<entry>.=</entry>
+						<entry>Append to string</entry>
+						<entry>a .= b</entry>
+					</row>
+					<row>
+						<entry>18</entry>
+						<entry>,</entry>
+						<entry>Discard operator (comma)</entry>
+						<entry>Left</entry>
+						<entry>a, b</entry>
+					</row>
+					<row>
+						<entry morerows="1">19</entry>
+						<entry>echo</entry>
+						<entry>Write expression to standard output</entry>
+						<entry morerows="1">Right</entry>
+						<entry>echo "Hello world!"</entry>
+					</row>
+					<row>
+						<entry>errcho</entry>
+						<entry>Write expression to standard error</entry>
+						<entry>errcho "This is an error message"</entry>
+					</row>
+					<row>
+						<entry morerows="1">20</entry>
+						<entry>break</entry>
+						<entry>Break out from nearest loop</entry>
+						<entry>None</entry>
+						<entry>break</entry>
+					</row>
+					<row>
+						<entry>return</entry>
+						<entry>Return from nearest function</entry>
+						<entry>Right</entry>
+						<entry>return 1</entry>
+					</row>
+				</tbody>
+				</tgroup>
+			</table>
 		</section>
 		<section>
 			<title>I Know What Types My Variables are!</title>
@@ -397,6 +618,79 @@ SCENE main {
 	}
 }
 			</programlisting>
+			</para>
+		</section>
+		<section>
+			<title>Boilerplate Code</title>
+			<para>Boilerplate code is equal copies of code that you have to repeat many times in a program to make it work.
+			This includes stuff like checking return values from library functions and printing error messages, or to including modules and header files at the top of a program.
+			</para>
+			<bridgehead>MySQL prepared statements in Java</bridgehead>
+			<para>One of the worst time-consuming copy-paste-editing you will ever come over is creating a prepared statement.
+			Under follows an example in the Java-language (which is copy-pasted-edited from some page found on Google).
+			Notice that the word <code>PreparedStatement</code> is used seven times, and that you have to deal with the member methods <code>setString</code> and <code>setInt</code> of this object for every single variable.
+			</para>
+			<programlisting language="java">
+Class.forName("com.mysql.jdbc.Driver");
+connect = DriverManager.getConnection("jdbc:mysql://localhost/animal_kingdom?" + "user=dog&amp;password=i_hate_cats");
+
+// It is extremely boring work to set all this fields
+preparedStatement = connect.prepareStatement("INSERT INTO animal_kingdom.persons VALUES (?,?,?,?,?)");
+preparedStatement.setString(1, "Jo");
+preparedStatement.setString(2, "Lene");
+preparedStatement.setString(3, "jolene@hotmail.com");
+
+// Sometimes we need to store strange properties of a person
+preparedStatement.setInt(4, 135);
+preparedStatement.setInt(5, 4);
+preparedStatement.executeUpdate();
+			</programlisting>
+			<para>You begin to wonder why on earth you have to tell Java that "Jo" is a string type.
+			You also have the manual work of counting all the question marks and setting the variables in correct order.
+			This work, of course, becomes really fun when you also have to deal with column names in the query and you have 20 columns of different types to insert.
+			</para>
+			<para>The P* author, also referred to as 'someone' in this article, has once been forced to write a wrapper class just to keep track of column names, values and question marks.
+			We don't want to spend time doing this, we want to create web pages! Let's have some more meat.
+			</para>
+			<bridgehead>MySQL prepared statements in P*</bridgehead>
+			<para>Next comes the same example in P*, lets just specify the variables first instead of inlining, like you would normally do:
+			<programlisting language="c">
+
+string name = "Jo";
+string surename = "Lene";
+string email = "jolene@hotmail.com";
+int weight = 135;   /* In kilograms */
+int width = 4;      /* In feet */
+
+SQL sql {
+	INSERT INTO animal_kingdom.persons VALUES (
+		{@name}, {@surename}, {@email}, {@weight}, {@width}
+	)
+}
+
+MYSQL mysql->connect("localhost", "dog", "i_hate_cats");
+mysql->select_db("animal_kingdom");
+
+MYSQL_STATEMENT stmt = mysql->new_statement();
+stmt->prepare(sql);
+stmt->execute();
+			</programlisting>
+			</para>
+			<bridgehead>Common reactions to this example</bridgehead>
+			<itemizedlist spacing="normal" mark="bullet"> 
+			<listitem>Wait a minute...You said you wouldn't inline the variables, but you did?
+			</listitem>
+			<listitem>You idiot!!! This is SQL -- IN -- JEC -- TION -- !!!!
+			</listitem>
+			</itemizedlist>
+			<bridgehead>Counter-strike</bridgehead>
+			<para>This way of specifying a prepared statement is P* magic.
+			We would not normally, and shouln't either, put variables inside the SQL-string.
+			However, because we are lazy (and to avoid the horrible and error-prone code you see in the first example), we might be tempted to do just that.
+			With P* you can put the variables inside the SQL-string WITHOUT them being concatenated.
+			</para>
+			<para>The whole SQL-object is a chain of strings and value pointers, and P* does the dirty work of passing each variable to MySQL with the correct type set.
+			The variables are replaced with question marks before passed to MySQL, making it look like the Java-example.
 			</para>
 		</section>
 	</chapter>
