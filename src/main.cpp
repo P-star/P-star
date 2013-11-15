@@ -20,13 +20,23 @@ bool cmdOptionExists(char **begin, char **end, const std::string &option) {
 	return find(begin, end, option) != end;
 }
 
+void version() {
+	cout << "P* web programming language interpreter version " PACKAGE_VERSION << "\n";
+	cout << "Visit http://
+}
+
 void usage (char *argv0) {
 	cout << argv0 << " [-h] -f filename\n";
+	cout << "Visit https://november.systems.goliathdns.no/pstar/
 }
 
 int main (int argc, char *argv[]) {
 	if (cmdOptionExists(argv, argv+argc, "-h")) {
 		usage (argv[0]);
+		return 0;
+	}
+	if (cmdOptionExists(argv, argv+argc, "-v") || cmdOptionExists(argv, argv+argc, "--version")) {
+		version ();
 		return 0;
 	}
 
