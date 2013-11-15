@@ -18,6 +18,15 @@
 			</para>
 		</section>
 		<section>
+			<title>Mailing lists</title>
+			<para>
+			<email>p-star-users@googlegroups.com</email> - Mailing list for help and general discussion
+			</para>
+			<para>
+			<email>p-star-dev@googlegroups.com</email> - Mailing list for development
+			</para>
+		</section>
+		<section>
 			<title>We Want Meat!</title>
 			<para>This is the official "Hello World!"-example of P*
 			<programlisting language="c">
