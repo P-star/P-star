@@ -42,7 +42,7 @@
 			</para>
 		</section>
 		<section>
-			<title>We Want Meat!</title>
+			<title>We want meat!</title>
 			<para>This is the official "Hello World!"-example of P*
 			<programlisting language="c">
 #!/usr/bin/wpl -f
@@ -51,6 +51,34 @@ SCENE main {
 }
 			</programlisting>
 			</para>
+			<para>
+			To build and run P*, you need to have the libraries and development packages of mysql-client and mimetic. You also need autotools installed. This is how you download and build P* using your favourite shell:
+			</para>
+			<programlisting language="shell">
+git clone https://github.com/atlesn/P-star.git
+cd P-star
+autoreconf -i
+./configure
+make install
+			</programlisting>
+			<para>
+			You should specify an alternative directory to install P* in so that you easilly can remove it later.
+			This is done by adding <code>prefix=my_directory</code> when running configure, like <code>./configure --prefix=/usr/test</code>. The files will then be placed in /usr/test/bin and /usr/test/lib.
+			</para>
+			<para>
+			To run P* when you have specified an alternative install path, you should run this first:
+			</para>
+			<programlisting language="shell">
+export LD_LIBRARY_PATH=/usr/test/lib
+export PATH=$PATH:/usr/test/bin
+			</programlisting>
+			<para>
+			Then the fun part: Create a file named <code>my_program.pstar</code> and paste in the text from the Hello World-example above.
+			Then do this to run the program:
+			</para>
+			<programlisting language="shell">
+wpl -f my_program.pstar
+			</programlisting>
 		</section>
 		<section>
 			<title>Why Another Language?</title>
