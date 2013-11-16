@@ -68,7 +68,7 @@ SCENE main {
 <ulink url="https://github.com/atlesn/P-star">from Github</ulink>.
 		</para>
 		<para>
-		<code>$ git clone https://github.com/atlesn/P-star.git</code>
+		<code>$ git clone https://github.com/atlesn/P-star.git</code>
 		</para>
 		<para>
 		You can also <ulink url="http://www.p-star.org/dox/html/">browse the source code</ulink>
@@ -447,9 +447,9 @@ while (exp &lt;= exp_max) {
 array&lt;int&gt; my_first_array;
 
 /* Set the first three elements of the array to 10, 20 and 30 */
-my_first_array[0] = 10;
-my_first_array[1] = 20;
-my_first_array[2] = 30;
+my_first_array[0] = 10;
+my_first_array[1] = 20;
+my_first_array[2] = 30;
 
 /* Iterate the array and print its values */
 int i = 0;
@@ -457,14 +457,39 @@ while (i++, i&lt;@my_first_array) {
 	echo "The value of element $i is " . my_first_array[i] . "\n";
 }
 
-/* Output of program:
+/* Output of this program:
 The value of element 0 is 10
 The value of element 1 is 20
 The value of element 2 is 30
 */
 			</programlisting>
+			<para>
+			Arrays support the special operators "first element selection" <code>*</code> and "element counter" <code>@</code>. These are use like this:
+			<programlisting language="c">
+/* Instantiate an array of type string, no elements are created */
+array&lt;string&gt; my_first_array;
+
+/* Set the value of two elements */
+my_first_array[0] = "First element";
+my_first_array[1] = "Second element";
+
+/* Count the number of values and print to standard output */
+echo "The array has " . @my_first_array . " elements\n";
+
+/* Get the first element and print to standard output */
+echo "The value of the first array element is '" . *my_first_array . "'\n";
+
+/* Output of this program:
+The array has 2 elements
+The value of the first array element is 'First element'
+ */
+			</programlisting>
+			<para>
+			The array only creates elements you access. If you skip indexes, like if you only use element 0 and 5, the size of the array will be 6, but memory is not allocated for elements 1-4.
+			</para>
 			<bridgehead>hash&lt;default type&gt;</bridgehead>
 			<para>
+			A hash is an array with string identifiers instead of indexes. Elements of a hash is unordered.
 			</para>
 		</section>
 		<section>
