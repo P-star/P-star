@@ -560,9 +560,29 @@ The name of my cat is 'Tiger'.
 			The data is parsed and stored the first time you use one of them.</para>
 			<bridgehead>GET</bridgehead>
 			<para>
-			The GET-type reads the environment variables <code>QUERY_STRING</code>, which contains the query string from the user like <code>?id=45</code>.
-
+			The GET-type reads the environment variables <code>QUERY_STRING</code>, which contains the query string from the user like <code>?id=45</code>. The GET-type is accessed just like a hash, but if you access an element which was not defined in the query string, the value will be boolean false.
 			</para>
+			<para>
+			If a key is set in the query string but without a value, it will be set as boolean true. All other values are set to be strings.
+			</para>
+			<para>
+			If P* doesn't find the <code>QUERY_STRING</code> environment variable, it will crash your program, but an empty query string is OK. You may have multiple GET-variables in your program, but P* will parse the query string once for every instance.
+			</para>
+			<para>
+			Here is an example of usage of the <code>GET</code>-type.
+			</para>
+			<programlisting language="c">
+/* Instantiate a GET-object */
+GET get;
+
+if (!get["id"]) {
+	echo "The key 'id' from the query string is not set\n";
+}
+else {
+	echo "The key 'id' from the query string is either empty or 0\n";
+}
+
+			</programlisting>
 		</section>
 		<section>
 			<title>What template engine should I choose?</title>

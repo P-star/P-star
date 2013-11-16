@@ -41,6 +41,7 @@ class wpl_block_state : public wpl_namespace_session, public wpl_state {
 	private:
 	unique_ptr<wpl_state> child_states[WPL_BLOCK_MAX_CHILDREN];
 	unique_ptr<wpl_state> run_condition_state;
+	unique_ptr<wpl_state> next_else_if_state;
 //	void register_child (wpl_runable *runable, int index);
 
 	public:
@@ -61,4 +62,5 @@ class wpl_block_state : public wpl_namespace_session, public wpl_state {
 	{}
 	int run_child (wpl_runable *child, int index, wpl_value *final_result);
 	int run_run_condition (wpl_runable *runable, wpl_value *final_result);
+	int run_next_else_if (wpl_runable *runable, wpl_value *final_result);
 };

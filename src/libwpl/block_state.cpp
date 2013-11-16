@@ -54,3 +54,10 @@ int wpl_block_state::run_run_condition (wpl_runable *runable, wpl_value *final_r
 	}
 	return runable->run(run_condition_state.get(), final_result);
 }
+
+int wpl_block_state::run_next_else_if (wpl_runable *runable, wpl_value *final_result) {
+	if (next_else_if_state.get() == nullptr) {
+		next_else_if_state.reset(runable->new_state(this));
+	}
+	return runable->run(next_else_if_state.get(), final_result);
+}
