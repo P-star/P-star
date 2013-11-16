@@ -142,8 +142,13 @@ SCENE main {
 					<row>
 						<entry>*</entry>
 						<entry>First element selector (arrays)</entry>
-						<entry morerows="1">Right</entry>
+						<entry morerows="2">Right</entry>
 						<entry>*my_array</entry>
+					</row>
+					<row>
+						<entry>@</entry>
+						<entry>Element counter (arrays)</entry>
+						<entry>@my_array</entry>
 					</row>
 					<row>
 						<entry>isempty</entry>
@@ -382,7 +387,7 @@ SCENE main {
 			</table>
 		</section>
 		<section>
-			<title>I Know What Types My Variables are!</title>
+			<title>Basic types</title>
 			<para>One important element of making a program efficient, is to use correct types for your variables.
 			When you've programmed for a while, type selection becomes natural, and you don't think much about it.
 			</para>
@@ -390,8 +395,8 @@ SCENE main {
 			This is supposed to make it easier to write.
 			P* does allow implict converting between primitive types, but no variables can be typeless.
 			</para>
-			<para>It is not much work, however, to write <code>int</code> or <code>string</code> in front of a variable.
-			This also helps make programs more readable, and it makes programs faster.
+			<para>It is not much work to write <code>int</code> or <code>string</code> in front of a variable.
+			A good thing about this is that it helps make programs more readable, and it's an easy way for developers to make programs efficient.
 			</para>
 			<para>Variables in P* are stored in memory as their C/C++ equalient type. Size of the type depend on the platform the interpreter is compiled on.
 			</para>
@@ -407,6 +412,8 @@ lluint e = 2;		/* Unsigned long long integer	long long unsigned int		*/
 
 double d = 2.00003;	/* Double precision		double				*/
 float f = 2.00003;	/* Floating point		float				*/
+
+bool b = 1;		/* Boolean true/false (1 or 0)	bool				*/
 
 string p = "P*";	/* String			uses &lt;string&gt; from c++	*/
 			</programlisting>
@@ -424,6 +431,50 @@ while (exp &lt;= exp_max) {
 	exp++;
 }
 			</programlisting>
+			</para>
+		</section>
+		<section>
+			<title>Hashes and arrays</title>
+			<para>P* supports dynamic sized hashes and arrays. These are template types and can only hold values of the type you specify.
+			They can hold any type, including arrays and hashes. This is usefull for creating more dimensions.
+			An element is created the first time you access it, and the value will be initialized to the types default value (numbers are 0, strings are empty etc.).</para>
+			<bridgehead>array&lt;default type&gt;</bridgehead>
+			<para>The array is a list of elements stored in sequential order and access by an index number. 
+			Here is an example of an array:
+			</para>
+			<programlisting language="c">
+/* Instantiate an array of type int, no elements are created */
+array&lt;int&gt; my_first_array;
+
+/* Set the first three elements of the array to 10, 20 and 30 */
+my_first_array[0] = 10;
+my_first_array[1] = 20;
+my_first_array[2] = 30;
+
+/* Iterate the array and print its values */
+int i = 0;
+while (i++, i&lt;@my_first_array) {
+	echo "The value of element $i is " . my_first_array[i] . "\n";
+}
+
+/* Output of program:
+The value of element 0 is 10
+The value of element 1 is 20
+The value of element 2 is 30
+*/
+			</programlisting>
+			<bridgehead>hash&lt;default type&gt;</bridgehead>
+			<para>
+			</para>
+		</section>
+		<section>
+			<title>Data types GET, POST and ENV</title>
+			<para>P* provides three data types which implicitly retrieves data from the environment it runs in, usually the web server.
+			The data is parsed and stored the first time you use one of them.</para>
+			<bridgehead>GET</bridgehead>
+			<para>
+			The GET-type reads the environment variables <code>QUERY_STRING</code>, which contains the query string from the user like <code>?id=45</code>.
+
 			</para>
 		</section>
 		<section>
