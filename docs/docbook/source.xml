@@ -572,15 +572,14 @@ The name of my cat is 'Tiger'.
 			Here is an example of usage of the <code>GET</code>-type.
 			</para>
 			<programlisting language="c">
-/* Instantiate a GET-object */
-GET get;
+/*
 
-if (!get["id"]) {
-	echo "The key 'id' from the query string is not set\n";
-}
-else {
-	echo "The key 'id' from the query string is either empty or 0\n";
-}
+Before running this test, you need to set a query string in the terminal manually like this:
+
+  export QUERY_STRING="a&amp;b=B+is+a+string+value"
+
+*/
+/* Instantiate a GET-object */
 
 			</programlisting>
 		</section>
