@@ -63,7 +63,7 @@ int wpl_value_unresolved_identifier::do_fastop (
 		shunting_yard_carrier ca(value, op);
 		exp_state->replace(my_pos, ca);
 
-		return value->do_operator(exp_state, final_result, op, this, this);
+		return value->do_fastop(exp_state, final_result, op);
 	}
 
 	return wpl_value::do_fastop(exp_state, final_result, op);
