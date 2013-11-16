@@ -428,8 +428,8 @@ void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 			parse_par_open();
 		}
 		else if (ignore_letter (']')) {
-			parse_par_close();
 			shunt_operator(&OP_ARRAY_SUBSCRIPTING);
+			parse_par_close();
 		}
 		else if (expect & EXPECT_LOOSE_END) {
 			revert_string(whitespace_length);
