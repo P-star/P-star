@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "value_array.h"
+#include "value_int.h"
 #include "operator_types.h"
 
 wpl_value *wpl_value_array::define_if_needed(int index) {
@@ -83,7 +84,7 @@ int wpl_value_array::do_operator (
 	}
 	else if (op == &OP_COUNT) {
 		wpl_value_int count(size());
-		count.do_operator_recursive(exp_state, final_result);
+		return count.do_operator_recursive(exp_state, final_result);
 	}
 
 	if (ret & WPL_OP_OK) {
