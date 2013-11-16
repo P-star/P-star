@@ -140,7 +140,7 @@ wpl -f my_program.pstar
 				</thead>
 				<tbody>
 					<row>
-						<entry morerows="6">2</entry>
+						<entry morerows="7">2</entry>
 						<entry>()</entry>
 						<entry>Function call</entry>
 						<entry>Left or none</entry>
@@ -175,7 +175,7 @@ wpl -f my_program.pstar
 					</row>
 					<row>
 						<entry>@</entry>
-						<entry>Element counter (arrays)</entry>
+						<entry>Element counter (arrays and hashes)</entry>
 						<entry>@my_array</entry>
 					</row>
 					<row>
