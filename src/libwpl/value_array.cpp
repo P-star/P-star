@@ -81,6 +81,10 @@ int wpl_value_array::do_operator (
 	else if (op == &OP_DISCARD) {
 		ret = discard();
 	}
+	else if (op == &OP_COUNT) {
+		wpl_value_int count(size());
+		count.do_operator_recursive(exp_state, final_result);
+	}
 
 	if (ret & WPL_OP_OK) {
 		if (ret & WPL_OP_DISCARD) {
