@@ -465,6 +465,7 @@ The value of element 2 is 30
 			</programlisting>
 			<para>
 			Arrays support the special operators "first element selection" <code>*</code> and "element counter" <code>@</code>. These are use like this:
+			</para>
 			<programlisting language="c">
 /* Instantiate an array of type string, no elements are created */
 array&lt;string&gt; my_first_array;
@@ -489,8 +490,41 @@ The value of the first array element is 'First element'
 			</para>
 			<bridgehead>hash&lt;default type&gt;</bridgehead>
 			<para>
-			A hash is an array with string identifiers instead of indexes. Elements of a hash is unordered.
+			A hash is an array except that the values are accessed using string identifiers instead of indexes and that elements are unordered.
+			You can use the counter operator <code>@</code> for hashes the same way as for arrays.
+			An elements of a hash is created the first time you access it.
 			</para>
+			<para>
+			Here is an example program using hashes:
+			</para>
+			<programlisting language="c">
+hash&lt;string&gt; my_pets;
+
+/* Set the two values of the hash */
+my_pets["dog"] = "Max";
+my_pets["cat"] = "Tiger";
+
+/* Create an array of the keys */
+array&lt;string&gt; pet_keys;
+pet_keys[0] = "dog";
+pet_keys[1] = "cat";
+
+/* Count the elements of the hash and print to standard output */
+echo "I have " . @my_pets . " pets.\n";
+
+/* Iterate the array of the keys and print the values of the hash */
+int i = 0;
+while (i &gt; @pet_keys) {
+	echo "The name of my " . pet_keys[i] . " is '" . my_pets[pet_keys[i]] . "'.\n";
+	i++;
+}
+
+/* This program will output:
+I have 2 pets.
+The name of my dog is 'Max'.
+The name of my cat is 'Tiger'.
+*/
+			</programlisting>
 		</section>
 		<section>
 			<title>Data types GET, POST and ENV</title>
