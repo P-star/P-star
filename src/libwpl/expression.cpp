@@ -259,14 +259,17 @@ void wpl_expression::parse_string(wpl_namespace *parent_namespace) {
 					if (!wpl_string_parse_double_escape (&tmp, letter)) {
 						THROW_ELEMENT_EXCEPTION("Unknown double escape sequence");
 					}
+					original_string += tmp;
 				}
 				else {
-					if (!wpl_string_parse_single_escape (&tmp, letter)) {
-						THROW_ELEMENT_EXCEPTION("Unknown double escape sequence");
+					if (wpl_string_parse_single_escape (&tmp, letter)) {
+						original_string += tmp;
+					}
+					else {
+						original_string += '\\';
+						original_string += letter;
 					}
 				}
-
-				original_string += tmp;
 			}
 			else if (double_escape && (letter == '$')) {
 				char name[WPL_VARNAME_SIZE];
