@@ -148,6 +148,211 @@ This is my_scene: 'Hello world!'
 			</programlisting>
 		</section>
 		<section>
+			<title>Basic types</title>
+			<para>One important element of making a program efficient, is to use correct types for your variables.
+			When you've programmed for a while, type selection becomes natural, and you don't think much about it.
+			</para>
+			<para>Some languages try to help the user by using automatic types.
+			This is supposed to make it easier to write.
+			P* does allow implict converting between primitive types, but no variables can be typeless.
+			</para>
+			<para>It is not much work to write <code>int</code> or <code>string</code> in front of a variable.
+			A good thing about this is that it helps make programs more readable, and it's an easy way for developers to make programs efficient.
+			</para>
+			<para>Variables in P* are stored in memory as their C/C++ equalient type. Size of the type depend on the platform the interpreter is compiled on.
+			</para>
+			<table>
+				<title>List of P* primitive types</title>
+				<tgroup cols="3">
+				<colspec colname="c1"/>
+				<colspec colname="c2"/>
+				<colspec colname="c3"/>
+				<thead>
+					<row>
+						<entry>Name</entry>
+						<entry>Description</entry>
+						<entry>Example</entry>
+						<entry>C-equalient</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>int</entry>
+						<entry>Signed integer</entry>
+						<entry>int a = "-10";</entry>
+						<entry>long int</entry>
+					</row>
+					<row>
+						<entry>uint</entry>
+						<entry>Unsigned integer</entry>
+						<entry>uint a = 10;</entry>
+						<entry>long unsigned int</entry>
+					</row>
+					<row>
+						<entry>llint</entry>
+						<entry>Long long signed integer</entry>
+						<entry>llint a = "-10";</entry>
+						<entry>long long int</entry>
+					</row>
+					<row>
+						<entry>lluint</entry>
+						<entry>Long long unsigned integer</entry>
+						<entry>lluint a = 10;</entry>
+						<entry>long long unsigned int</entry>
+					</row>
+					<row>
+						<entry>float</entry>
+						<entry>Single precision floating point</entry>
+						<entry>float a = "2.00003";</entry>
+						<entry>float</entry>
+					</row>
+					<row>
+						<entry>double</entry>
+						<entry>Double precision floating point</entry>
+						<entry>double a = "2.00003";</entry>
+						<entry>double</entry>
+					</row>
+					<row>
+						<entry>bool</entry>
+						<entry>Boolean true or false (1 or 0)</entry>
+						<entry>bool a = 1;</entry>
+						<entry>bool</entry>
+					</row>
+					<row>
+						<entry>string</entry>
+						<entry>String value</entry>
+						<entry>string text = "P* Web Programming Language";</entry>
+						<entry>Uses <code>&lt;string&gt;</code> from C++</entry>
+					</row>
+				</tbody>
+				</tgroup>
+			</table>
+			<bridgehead>Example of usage of different data types</bridgehead>
+			<programlisting language="c">
+SCENE main {
+	int base = 2;
+	int exp = 1;
+	int exp_max = 20;
+	lluint result = 1;
+
+	while (exp &lt;= exp_max) {
+		result *= base;
+		echo "$base exp $exp is $result\n";
+		exp++;
+	}
+
+}
+
+/* This program will output: 
+2 exp 1 is 2
+2 exp 2 is 4
+2 exp 3 is 8
+2 exp 4 is 16
+2 exp 5 is 32
+2 exp 6 is 64
+2 exp 7 is 128
+2 exp 8 is 256
+2 exp 9 is 512
+2 exp 10 is 1024
+2 exp 11 is 2048
+2 exp 12 is 4096
+2 exp 13 is 8192
+2 exp 14 is 16384
+2 exp 15 is 32768
+2 exp 16 is 65536
+2 exp 17 is 131072
+2 exp 18 is 262144
+2 exp 19 is 524288
+2 exp 20 is 1048576
+*/
+			</programlisting>
+			</section>
+			<section>
+			<title>Strings</title>
+			<para>P* supports defining strings inside the double quote <code>"</code> or single quote <code>'</code>.
+			</para>
+			<para>P* allows you to interpolate variables inside a text string delimeted by double quotes. A variable to be interpolated is prefixed with the dollar sign, <code>$</code>.
+			The string output operators <code>echo</code> and <code>errcho</code> internally uses the C++ <code>iostream</code> output methods <code>cout</code> and <code>cerr</code>.
+			</para>
+			<para>In P*, you can concatenate string using the dot operator, <code>.</code>.
+			Note that the concatenation operator has lower precedence than the equalient in PHP and Perl.
+			</para>
+			<para>
+			A double quote delimeted string supports the following replacement escape sequences:
+			</para>
+			<table>
+				<title>List of double quote escape sequences</title>
+				<tgroup cols="2">
+				<colspec colname="c1"/>
+				<colspec colname="c2"/>
+				<thead>
+					<row>
+						<entry>Sequence</entry>
+						<entry>Is replaced with</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>\0</entry>
+						<entry>A NULL character</entry>
+					</row>
+					<row>
+						<entry>\a</entry>
+						<entry>ASCII code 7, BEL (bell)</entry>
+					</row>
+					<row>
+						<entry>\b</entry>
+						<entry>ASCII code 8, BS (backspace)</entry>
+					</row>
+					<row>
+						<entry>\t</entry>
+						<entry>ASCII code 9, TAB (horizontal tab)</entry>
+					</row>
+					<row>
+						<entry>\n</entry>
+						<entry>ASCII code 10, LF (newline)</entry>
+					</row>
+					<row>
+						<entry>\v</entry>
+						<entry>ASCII code 11, VT (vertical tab)</entry>
+					</row>
+					<row>
+						<entry>\r</entry>
+						<entry>ASCII code 13, CR (carriage return)</entry>
+					</row>
+					<row>
+						<entry>\"</entry>
+						<entry>ASCII code 34, " (double quotes)</entry>
+					</row>
+					<row>
+						<entry>\\</entry>
+						<entry>ASCII code 92, \ (backslash)</entry>
+					</row>
+					<row>
+						<entry>\$</entry>
+						<entry>ASCII code 36, $ (dollar sign)</entry>
+					</row>
+				</tbody>
+				</tgroup>
+			</table>
+			<para>
+			P* will issue an error if you use a double quote escape sequence which is not defined. Single quotes only support the escape sequence <code>\'</code>, and all other sequences with backslash is interpreted literally without any errors.
+			</para>
+			<bridgehead>Example of string usage</bridgehead>
+			<programlisting language="c">
+SCENE main {
+	int num = 2;
+
+	echo "The number is $num\n";
+	echo 'The number is $num\n';
+}
+/* This program will output:
+The number is 2
+The number is $num\n
+*/
+			</programlisting>
+		</section>
+		<section>
 			<title>Functions</title>
 			<para>The P* function syntax is equal to that of the C-language. A function needs to have a return value of a specific type.
 			A function may have zero or more arguments. Functions do not inherit variables from the caller. Functions need to have unique names, function overloading is currently not supported. Functions need to be defined inside scenes.
@@ -194,10 +399,6 @@ The result is 4
 			Expressions are run right to left.
 			Most operators are mapped directly to their C-equalient, and behave the same way.
 			</para>
-			<para>P* allows you to interpolate variables inside a text string delimeted by double quotes. A variable to be interpolated is prefixed with the dollar sign, <code>$</code>.
-			The string output operators <code>echo</code> and <code>errcho</code> internally uses the C++ <code>iostream</code> output methods <code>cout</code> and <code>cerr</code>.
-			</para>
-			<para>In P*, you can concatenate string using the dot operator, <code>.</code>. Note that the concatenation operator has lower precedence than the equalient in PHP and Perl.</para>
 			<para>The associativity for an operator decides the return value of the expression.
 			In the example below, we see that the return value of the expression is different depending on which variable we have on the left side of the <code>+</code> operator.</para>
 			<programlisting language="c">
@@ -510,84 +711,6 @@ Float result: 11.500000
 				</tbody>
 				</tgroup>
 			</table>
-		</section>
-		<section>
-			<title>Basic types</title>
-			<para>One important element of making a program efficient, is to use correct types for your variables.
-			When you've programmed for a while, type selection becomes natural, and you don't think much about it.
-			</para>
-			<para>Some languages try to help the user by using automatic types.
-			This is supposed to make it easier to write.
-			P* does allow implict converting between primitive types, but no variables can be typeless.
-			</para>
-			<para>It is not much work to write <code>int</code> or <code>string</code> in front of a variable.
-			A good thing about this is that it helps make programs more readable, and it's an easy way for developers to make programs efficient.
-			</para>
-			<para>Variables in P* are stored in memory as their C/C++ equalient type. Size of the type depend on the platform the interpreter is compiled on.
-			</para>
-			<bridgehead>Types, you say? Let's have 'em!</bridgehead>
-			<para>
-			Example of P* types and their corresponding C-types:
-			<programlisting language="c">
-int a = "-10";		/* Integer			long int			*/
-uint b = 2;		/* Unsigned integer		long unsigned int		*/
-
-llint c = "-10";	/* Long long integer		long long int			*/
-lluint e = 2;		/* Unsigned long long integer	long long unsigned int		*/
-
-double d = "2.00003";	/* Double precision		double				*/
-float f = "2.00003";	/* Floating point		float				*/
-
-bool b = 1;		/* Boolean true/false (1 or 0)	bool				*/
-
-string p = "P*";	/* String			uses &lt;string&gt; from c++	*/
-			</programlisting>
-			</para>
-			<bridgehead>Strings</bridgehead>
-			<para>P* supports defining strings inside the double quote <code>"</code> or single quote <code>'</code>.
-
-			</para>
-			<bridgehead>Example</bridgehead>
-			<para>Here's a small program just in case you're still hungry:
-			<programlisting language="c">
-SCENE main {
-	int base = 2;
-	int exp = 1;
-	int exp_max = 20;
-	lluint result = 1;
-
-	while (exp &lt;= exp_max) {
-		result *= base;
-		echo "$base exp $exp is $result\n";
-		exp++;
-	}
-
-}
-
-/* This program will output: 
-2 exp 1 is 2
-2 exp 2 is 4
-2 exp 3 is 8
-2 exp 4 is 16
-2 exp 5 is 32
-2 exp 6 is 64
-2 exp 7 is 128
-2 exp 8 is 256
-2 exp 9 is 512
-2 exp 10 is 1024
-2 exp 11 is 2048
-2 exp 12 is 4096
-2 exp 13 is 8192
-2 exp 14 is 16384
-2 exp 15 is 32768
-2 exp 16 is 65536
-2 exp 17 is 131072
-2 exp 18 is 262144
-2 exp 19 is 524288
-2 exp 20 is 1048576
-*/
-			</programlisting>
-			</para>
 		</section>
 		<section>
 			<title>Hashes and arrays</title>
