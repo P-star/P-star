@@ -116,6 +116,15 @@ wpl -f my_program.pstar
 		What web programming is about is, yes you guessed correct, "web", and the tools to create the web should be designed with that in mind.
 		</para>
 		<section>
+			<title>Basic program layout and scenes</title>
+			<para>A simple P* program looks like this:
+#!/usr/bin/wpl -f
+SCENE main {
+	echo "Hello World!\n";
+}
+			</para>
+		</section>
+		<section>
 			<title>Expressions and operators</title>
 			<para>P* have mostly adapted operators and their precedence from the C-language.
 			The basics of the expression syntax is also the same as in C.
@@ -573,14 +582,97 @@ The name of my cat is 'Tiger'.
 			</para>
 			<programlisting language="c">
 /*
-
 Before running this test, you need to set a query string in the terminal manually like this:
-
   export QUERY_STRING="a&amp;b=B+is+a+string+value"
+ */
+
+SCENE main {
+	/*
+	   Before running this test, you need to set a query string in the terminal manually like this:
+	   export QUERY_STRING="a&amp;b=B+is+a+string+value&amp;d=First+D&amp;d=Second+D"
+	 */
+
+	/* Instantiate the get object */
+	GET get;
+
+	/* Create an array of keys to look for */
+	array&lt;string&gt; keys_to_check;
+	keys_to_check[0] = "a";
+	keys_to_check[1] = "b";
+	keys_to_check[2] = "c";
+	keys_to_check[3] = "d";
+
+	/* Iterate the array of keys and check the keys in the GET object */
+	int i = 0;
+	while (i &lt; @keys_to_check) {
+		string key = keys_to_check[i];
+
+		/* Check if the key is defined */
+		if (*get[key]) {
+			echo "The key '$key' is set in the query string\n";
+			echo "\tThere are " . @get[key] . " instances of this key\n";
+			if (@get[key] &gt; 1) {
+				int j = 0;
+				while (j &lt; @get[key]) {
+					get[key][j];
+					echo "\tThe value of '$key' instance number $j is '" . get[key][j] . "'\n";
+					j++;
+				}
+			}
+			else {
+				echo "\tThe only value of '$key' is '" . *get[key] . "'\n";
+			}
+		}
+		else {
+			echo "Could not find key '$key' in the query string\n";
+		}
+		echo "\n";
+		i++;
+	}
+}
+
+/* This program will output:
+
+The key 'a' is set in the query string
+There are 1 instances of this key
+The only value of 'a' is 'true'
+
+The key 'b' is set in the query string
+There are 1 instances of this key
+The only value of 'b' is 'B is a string value'
+
+Could not find key 'c' in the query string
+
+The key 'd' is set in the query string
+There are 2 instances of this key
+The value of 'd' instance number 0 is 'First D'
+The value of 'd' instance number 1 is 'Second D'
 
 */
-/* Instantiate a GET-object */
+			</programlisting>
+			<bridgehead>POST</bridgehead>
+			<para>
+			The <code>POST</code>-type is used exactly the same way as <code>GET</code>, but since it reads from standard intput, you can only have one instance.
+			You can use both <code>POST</code> and <code>GET</code> at the same time.
+			<bridgehead>ENV</bridgehead>
+			</para>
+			<para>
+			The <code>ENV</code>-type provides the element selection operator <code>-&gt;</code> to access different environment variables.
+			Variables are not cached, and <code>getenv(3)</code> is used to read environment variables every time you access them.
+			P* will crash your program if you access a variable which is not defined.
+			</para>
+			<para>
+			Example with the <code>ENV</code>-type:
+			</para>
+			<programlisting language="c">
+SCENE main {
+	ENV env;
+	echo "The current path is '" . env->PATH . "'\n";
+}
 
+/* This program will output something similar to:
+The current path is '/usr/local/bin:/usr/bin:/bin:/usr/test/bin/'
+*/
 			</programlisting>
 		</section>
 		<section>
