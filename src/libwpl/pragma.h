@@ -146,7 +146,8 @@ class wpl_pragma_scene : public wpl_pragma {
 		return new wpl_pragma_scene(*this);
 	}
 	int run(wpl_state *state, wpl_value *final_result) override {
-		return my_scene->run(state, final_result);
+		wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
+		return pragma_state->run_child(my_scene, 0, final_result);
 	}
 	void parse_value(wpl_namespace *parent_namespace) {
 		char value[WPL_VARNAME_SIZE];
@@ -154,6 +155,10 @@ class wpl_pragma_scene : public wpl_pragma {
 		if (!(my_scene = parent_namespace->find_scene(value))) {
 			revert_string(strlen(value));
 			THROW_ELEMENT_EXCEPTION("Could not find scene");
+		}
+		ignore_string_match(WHITESPACE, 0);
+		if (!ignore_letter(';')) {
+			THROW_ELEMENT_EXCEPTION("Expected ';' after #SCENE-pragma");
 		}
 	}
 };

@@ -92,6 +92,9 @@ wpl_scene *wpl_namespace::find_scene (const char *name) {
 			return scene;
 		}
 	}
+	if (parent_namespace != NULL) {
+		return parent_namespace->find_scene(name);
+	}
 	return NULL;
 }
 
