@@ -191,8 +191,33 @@ The result is 4
 			<title>Expressions and operators</title>
 			<para>P* have mostly adapted operators and their precedence from the C-language.
 			The basics of the expression syntax is also the same as in C.
-			Expressions are parsed right to left.</para>
-			<para>Here is an overview of all currenty supported operators</para>
+			Expressions are run right to left.
+			Most operators are mapped directly to their C-equalient, and behave the same way.
+			</para>
+			<para>P* allows you to interpolate variables inside a text string delimeted by double quotes. A variable to be interpolated is prefixed with the dollar sign, <code>$</code>.
+			The string output operators <code>echo</code> and <code>errcho</code> internally uses the C++ <code>iostream</code> output methods <code>cout</code> and <code>cerr</code>.
+			</para>
+			<para>In P*, you can concatenate string using the dot operator, <code>.</code>. Note that the concatenation operator has lower precedence than the equalient in PHP and Perl.</para>
+			<para>The associativity for an operator decides the return value of the expression.
+			In the example below, we see that the return value of the expression is different depending on which variable we have on the left side of the <code>+</code> operator.</para>
+			<programlisting language="c">
+SCENE main {
+	int a = 10;
+	float b = "1.5";
+
+	/* The expression a + b will return an integer */
+	echo "Integer result: " . a + b . "\n";
+
+	/* The expression b + a will return a float */
+	echo "Float result: " . b + a . "\n";
+}
+/* This program will output:
+Integer result: 11
+Float result: 11.500000
+*/
+
+			</programlisting>
+			<para>Here is an overview of all supported operators</para>
 			<table>
 				<title>Operators in P*</title>
 				<tgroup cols="2">
@@ -504,32 +529,63 @@ The result is 4
 			<para>
 			Example of P* types and their corresponding C-types:
 			<programlisting language="c">
-int a = -10;		/* Integer			long int			*/
+int a = "-10";		/* Integer			long int			*/
 uint b = 2;		/* Unsigned integer		long unsigned int		*/
 
-llint c = -10;		/* Long long integer		long long int			*/
+llint c = "-10";	/* Long long integer		long long int			*/
 lluint e = 2;		/* Unsigned long long integer	long long unsigned int		*/
 
-double d = 2.00003;	/* Double precision		double				*/
-float f = 2.00003;	/* Floating point		float				*/
+double d = "2.00003";	/* Double precision		double				*/
+float f = "2.00003";	/* Floating point		float				*/
 
 bool b = 1;		/* Boolean true/false (1 or 0)	bool				*/
 
 string p = "P*";	/* String			uses &lt;string&gt; from c++	*/
 			</programlisting>
 			</para>
-			<para>And here is a small program just in case you're still hungry:
-			<programlisting language="c">
-int base = 2;
-int exp = 1;
-int exp_max = 40;
-lluint result = 1;
+			<bridgehead>Strings</bridgehead>
+			<para>P* supports defining strings inside the double quote <code>"</code> or single quote <code>'</code>.
 
-while (exp &lt;= exp_max) {
-	result *= base;
-	echo "$base exp $exp is $result";
-	exp++;
+			</para>
+			<bridgehead>Example</bridgehead>
+			<para>Here's a small program just in case you're still hungry:
+			<programlisting language="c">
+SCENE main {
+	int base = 2;
+	int exp = 1;
+	int exp_max = 20;
+	lluint result = 1;
+
+	while (exp &lt;= exp_max) {
+		result *= base;
+		echo "$base exp $exp is $result\n";
+		exp++;
+	}
+
 }
+
+/* This program will output: 
+2 exp 1 is 2
+2 exp 2 is 4
+2 exp 3 is 8
+2 exp 4 is 16
+2 exp 5 is 32
+2 exp 6 is 64
+2 exp 7 is 128
+2 exp 8 is 256
+2 exp 9 is 512
+2 exp 10 is 1024
+2 exp 11 is 2048
+2 exp 12 is 4096
+2 exp 13 is 8192
+2 exp 14 is 16384
+2 exp 15 is 32768
+2 exp 16 is 65536
+2 exp 17 is 131072
+2 exp 18 is 262144
+2 exp 19 is 524288
+2 exp 20 is 1048576
+*/
 			</programlisting>
 			</para>
 		</section>
