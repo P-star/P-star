@@ -1,0 +1,13 @@
+SCENE main {
+	int base = 2;
+	int exp = 1;
+	int exp_max = 20;
+	lluint result = 1;
+
+	while (exp <= exp_max) {
+		result *= base;
+		echo "$base exp $exp is $result\n";
+		exp++;
+	}
+
+}

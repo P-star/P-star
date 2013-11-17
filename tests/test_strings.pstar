@@ -1,0 +1,6 @@
+SCENE main {
+	int num = 2;
+
+	echo "The number is $num\n";
+	echo 'The number is $num\n';
+}

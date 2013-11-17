@@ -1,0 +1,4 @@
+SCENE main {
+	ENV env;
+	echo "The current path is '" . env->PATH . "'\n";
+}

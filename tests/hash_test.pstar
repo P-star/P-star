@@ -1,0 +1,22 @@
+SCENE main {
+	hash<string> my_pets;
+
+	/* Set the two values of the hash */
+	my_pets["dog"] = "Max";
+	my_pets["cat"] = "Tiger";
+
+	/* Create an array of the keys */
+	array<string> pet_keys;
+	pet_keys[0] = "dog";
+	pet_keys[1] = "cat";
+
+	/* Count the elements of the hash and print to standard output */
+	echo "I have " . @my_pets . " pets.\n";
+
+	/* Iterate the array of the keys and print the values of the hash */
+	int i = 0;
+	while (i < @pet_keys) {
+		echo "The name of my " . pet_keys[i] . " is '" . my_pets[pet_keys[i]] . "'.\n";
+		i++;
+	}
+}

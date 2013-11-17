@@ -1,0 +1,9 @@
+SCENE my_scene {
+	echo "This is my_scene: '$text'\n";
+}
+
+SCENE main {
+	string text = "Hello world!";
+
+	#SCENE my_scene;
+}

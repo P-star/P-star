@@ -1,0 +1,14 @@
+SCENE main {
+	/* Instantiate an array of type int, no elements are created */
+	array<string> my_first_array;
+				
+	/* Set the first three elements of the array to 10, 20 and 30 */
+	my_first_array[0] = "First element"; 
+	my_first_array[1] = "Second element";
+
+	/* Count the number of values and print to standard output */
+	echo "The array has " . @my_first_array . " elements\n";
+
+	/* Get the first element and print to standard output */
+	echo "The value of the first array element is '" . *my_first_array . "'\n";
+}

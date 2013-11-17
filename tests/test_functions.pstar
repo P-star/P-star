@@ -1,0 +1,15 @@
+SCENE main {
+	/* Define a function which takes two integer arguments */
+	int sum(int a, int b) {
+		echo "Adding number $a and $b\n";
+		return a + b;
+	}
+
+	/* Declare an integer variable 'result' */
+	int result;
+ 
+	/* Call the sum-function and put the result into the 'result'-variable */
+	result = sum(1, "3");
+
+	echo "The result is $result\n";
+}

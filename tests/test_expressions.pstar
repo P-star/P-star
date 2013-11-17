@@ -1,0 +1,10 @@
+SCENE main {
+	int a = 10;
+	float b = "1.5";
+
+	/* The expression a + b will return an integer */
+	echo "Integer result: " . a + b . "\n";
+
+	/* The expression b + a will return a float */
+	echo "Float result: " . b + a . "\n";
+}
