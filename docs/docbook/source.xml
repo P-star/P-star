@@ -117,12 +117,75 @@ wpl -f my_program.pstar
 		</para>
 		<section>
 			<title>Basic program layout and scenes</title>
-			<para>A simple P* program looks like this:
-#!/usr/bin/wpl -f
-SCENE main {
-	echo "Hello World!\n";
-}
+			<para>All code in P* programs sits inside <code>SCENE</code> blocks.
+			A program is required to provide a <code>SCENE</code> called <code>main</code>, which is the first one to be run by the interpreter.
+			P* will crash with an error message if the <code>SCENE main</code> is missing.
+			There may be no duplicate scene names, and they cannot nest.
 			</para>
+			<para>
+			Scenes, apart from the <code>main</code> scene are called using the <code>#SCENE</code>-pragma.
+			A scene inherits all variables from it's caller.
+			</para>
+			<para>A simple P* program with two scenes may look like this:
+			</para>
+			<programlisting language="c">
+#!/usr/bin/wpl -f
+SCENE my_scene {
+	/* Print out the value of the 'text'-variable */
+	echo "This is my_scene: '$text'\n";
+}
+
+SCENE main {
+	/* Create a string variable */
+	string text = "Hello world!";
+
+	/* Call the other scene */
+	#SCENE my_scene;
+}
+/* This program will output
+This is my_scene: 'Hello world!'
+*/
+			</programlisting>
+		</section>
+		<section>
+			<title>Functions</title>
+			<para>The P* function syntax is equal to that of the C-language. A function needs to have a return value of a specific type.
+			A function may have zero or more arguments. Functions do not inherit variables from the caller. Functions need to have unique names, function overloading is currently not supported. Functions need to be defined inside scenes.
+			</para>
+			<para>
+			Variables passed into a function are usually copied (pass-by-value). Some objects however, like MySQL-objects, are implicitly passed as reference instead (pass-by-reference). The documentation of these special types tells you which are passed by reference.
+			</para>
+			<para>
+			Primitive data types like <code>int</code> and <code>string</code> are implicity converted between eachother to mach the function arguments (weak type checking).
+			</para>
+			<para>
+			In the example below, we have a function with return type of <code>int</code> called <code>sum</code>.
+			This function takes two integer arguments and returns their sum.
+			We pass in a string as the second argument to show that it implicitly is converted into an integer when passed into the function.
+			</para>
+			<programlisting language="c">
+SCENE main {
+	/* Define a function which takes two integer arguments */
+	int sum(int a, int b) {
+		echo "Adding number $a and $b\n";
+		return a + b;
+	}
+
+	/* Declare an integer variable 'result' */
+	int result;
+
+	/* Call the sum-function and put the result into the 'result'-variable */
+	/* The string "3" is implicitly converted into an integer */
+	result = sum(1, "3");
+
+	echo "The result is $result\n";
+}
+/* This program will output
+Adding number 1 and 3
+The result is 4
+*/
+
+			</programlisting>
 		</section>
 		<section>
 			<title>Expressions and operators</title>
