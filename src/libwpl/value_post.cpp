@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -42,23 +42,7 @@ using namespace mimetic;
 const wpl_type_array wpl_value_post::type_array("GET array");
 const wpl_type_bool wpl_value_post::type_bool("GET bool");
 const wpl_type_array_instance wpl_value_post::type_complete_array(&type_array, &type_bool);
-/*
-void printMimeStructure(MimeEntity* pMe, int tabcount = 0)
-{
-	Header& h = pMe->header();                   // get header object
-	for(int c = tabcount; c > 0; --c)            // indent nested entities
-		cerr << "    ";                      //
-	cerr << h.contentType() << endl;             // prints Content-Type
-	cerr << pMe->body().preamble() << endl;
-	cerr << pMe->body().epilogue() << endl;
-	cerr << h.contentDisposition().param(string("name")) << endl;             // prints Content-Type
-	MimeEntityList& parts = pMe->body().parts(); // list of sub entities obj
-	// cycle on sub entities list and print info of every item
-	MimeEntityList::iterator mbit = parts.begin(), meit = parts.end();
-	for(; mbit != meit; ++mbit)
-		printMimeStructure(*mbit, 1 + tabcount);
-}
-*/
+
 void wpl_value_post::parse_entity (MimeEntity *me) {
 	Header &header = me->header();
 
