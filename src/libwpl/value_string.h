@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -38,6 +38,8 @@ using namespace std;
 template<typename A> class wpl_value_strings : public wpl_value_holder<A> {
 	protected:
 
+	int neq() {RESULT_LOGIC = (LHS != RHS); return WPL_OP_LOGIC_OK; };
+	int eq() {RESULT_LOGIC = (LHS == RHS); return WPL_OP_LOGIC_OK; };
 	int concat() {RESULT = LHS + RHS; return WPL_OP_OK; }
 	int assign_concat() {RESULT = LHS + RHS; LHS = RESULT; return WPL_OP_OK; }
 	int assign() {LHS = RHS; RESULT = RHS; return WPL_OP_OK; }
@@ -47,6 +49,8 @@ template<typename A> class wpl_value_strings : public wpl_value_holder<A> {
 
 	virtual int __do_operator (const struct wpl_operator_struct *op) {
 		CALL_OP(OP_CONCAT, concat)
+		CALL_OP(OP_EQ, eq)
+		CALL_OP(OP_NOT_EQ, neq)
 		CALL_OP(OP_ASSIGN_CONCAT, assign_concat)
 		CALL_OP(OP_ASSIGN, assign)
 		CALL_OP(OP_ECHO, echo)

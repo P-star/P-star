@@ -10,6 +10,6 @@ Homepage: http://www.p-star.org
 
 Package: p-star
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libmysqlclient16, libmimetic0
+Depends: ${shlibs:Depends}, ${misc:Depends}, mysql-client-5.5, libmimetic0
 Description: P* Web Programming Language Interpreter
  P* is a progamming language which targets to incorporate common tasks like HTML templates, SQL prepared statements and JSON output into the language.
