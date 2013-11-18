@@ -14,13 +14,7 @@ p-star-users@googlegroups.com
 Say hello on the mailing list to participate!
 p-star-dev@googlegroups.com
 
-This is the official "Hello World!"-example of P*
-
- #!/usr/bin/wpl -f
-SCENE main {
-	echo "Hello World!\n";
-}
-			
+Take a look in the tests/-directory for some examples.
 
 To build and run P*, you need to have the libraries and development packages of mysql-client and mimetic. You also need autotools installed. This is how you download and build P* using your favourite shell:
 
