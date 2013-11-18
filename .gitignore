@@ -10,10 +10,7 @@ Makefile.in
 
 # http://www.gnu.org/software/autoconf
 
-/config.h.in
-/config.h
-/config.log
-/config.status
+/config.*
 /libtool
 /ltmain.sh
 /autom4te.cache
