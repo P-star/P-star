@@ -11,6 +11,9 @@ Makefile.in
 
 # http://www.gnu.org/software/autoconf
 
+/config.log
+/config.status
+/libtool
 /ltmain.sh
 /autom4te.cache
 /aclocal.m4
