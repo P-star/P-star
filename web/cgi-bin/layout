@@ -26,7 +26,7 @@ HTML_TEMPLATE layout_head {
 }
 
 SCENE layout_head_scene {
-	string url_prefix = "/cgi-bin/pstar/";
+	string url_prefix = "/cgi-bin/";
 
 	string title = "-";
 	struct button {
