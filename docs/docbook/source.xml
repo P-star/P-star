@@ -418,7 +418,6 @@ Float result: 11.500000
 */
 
 			</programlisting>
-			<para>Here is an overview of all supported operators</para>
 			<table>
 				<title>Operators in P*</title>
 				<tgroup cols="2">
@@ -732,8 +731,9 @@ my_first_array[2] = 30;
 
 /* Iterate the array and print its values */
 int i = 0;
-while (i++, i&lt;@my_first_array) {
+while (i &lt; @my_first_array) {
 	echo "The value of element $i is " . my_first_array[i] . "\n";
+	i++;
 }
 
 /* Output of this program:
@@ -806,6 +806,41 @@ The name of my cat is 'Tiger'.
 			</programlisting>
 		</section>
 		<section>
+			<title>Structs</title>
+			<para>A struct is an object which can hold a collection of variables and functions. A function inside a struct can access the other members of the same struct.
+			</para>
+			<para>
+			A definition of a struct can look like this.
+			</para>
+			<programlisting language="c">
+SCENE main {
+	/* Define a new struct type with two variables and one function */
+	struct person {
+		string name;
+		int age;
+
+		int print() {
+			echo "$name is $age years old\n";
+		}
+	};
+
+	/* Create an instance of the struct */
+	person author;
+
+	/* Set the variables in the struct */
+	author->age = 25;
+	author->name = "Atle";
+	author->print();
+}
+/* Output of this program:
+Atle is 25 years old
+*/
+			</programlisting>
+			<emphasis>
+			Structs in P* will later be extended with class-functionality to allow object oriented programming. The struct type will continue having all types public by default.
+			</emphasis>
+		</section>
+		<section>
 			<title>Data types GET, POST and ENV</title>
 			<para>P* provides three data types which implicitly retrieves data from the environment it runs in, usually the web server.
 			The data is parsed and stored the first time you use one of them.</para>
@@ -823,11 +858,6 @@ The name of my cat is 'Tiger'.
 			Here is an example of usage of the <code>GET</code>-type.
 			</para>
 			<programlisting language="c">
-/*
-Before running this test, you need to set a query string in the terminal manually like this:
-  export QUERY_STRING="a&amp;b=B+is+a+string+value"
- */
-
 SCENE main {
 	/*
 	   Before running this test, you need to set a query string in the terminal manually like this:
@@ -918,15 +948,175 @@ The current path is '/usr/local/bin:/usr/bin:/bin:/usr/test/bin/'
 			</programlisting>
 		</section>
 		<section>
-			<title>What template engine should I choose?</title>
-			<para>With P*, you don't need any template engine. Templates are in-language!</para>
+			<title>HTML templates in P*</title>
+			<para>With P*, you don't need any external template engine. Templates are in-language!</para>
+			<para>Templates look like blocks and are defined in the main scope of the program. When a template is called, it inherits all variables available from the location of the call.</para>
+			<para>Inside templates, you can use the special syntax <code>{@variable}</code> to interpolate variables.
+			You can also use while loops with the syntax <code>{@LOOP (expression) text}</code>
+			</para>
+			<bridgehead>Example of a program using a HTML template</bridgehead>
+			<programlisting language="c">
+HTML_TEMPLATE document {
+	&lt;!DOCTYPE HTML&gt;
+	&lt;html&gt;
+	&lt;head&gt;
+	&lt;title&gt;{@title}&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+	&lt;/body&gt;
+	&lt;/html&gt;
+}
+
+SCENE main {
+	string title = "P* Web Programmin Language test page";
+
+	#CONTENT_TYPE text/html;
+	#HTML_TEMPLATE document;
+}
+			</programlisting>
 			<para>Here is an example of a simple web application constisting of the files <code>test_tmpl.pstar</code> and <code>test.pstar</code>, which you can run with CGI on your favorite web/database-server:</para>
 			<para>
 			P* supports common AJAX-operations like replacing text inside a &lt;div&gt;. If you want to output a variable interpolated into the template, the id-tag of the previous element in you HTML is used as variable name when the JSON is generated. In the example below, a jQuery scripts does this job. 
 			</para>
 			<para>
+			You can also have P* generate JSON output for you.
+			You can choose variables to output from a template, and P* will create a key/value pair to output to the browser.
+			The key is taken from the previous expression preceeded by the text "id=" from where in the template the variable was.
+			Under follows an example which outputs a variable using JSON if the GET-variable <code>do_ajax</code> is set.
+			</para>
+			<bridgehead>Example program using templates and JSON output</bridgehead>
 			<programlisting language="c">
-/* test_tmpl.pstar */
+HTML_TEMPLATE document {
+	&lt;!DOCTYPE HTML&gt;
+	&lt;html&gt;
+	&lt;head&gt;
+	&lt;title&gt;P* Web Programming Language&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+	&lt;h1 id="{@"header"}"&gt;{@header}&lt;/h1&gt;
+	&lt;/body&gt;
+	&lt;/html&gt;
+}
+
+SCENE main {
+	GET get;
+	string header = "This is the header";
+	if (*get["do_ajax"]) {
+		#JSON_BEGIN;
+		#HTML_TEMPLATE_VAR document header;
+		#JSON_END;
+	}
+	else {
+		#CONTENT_TYPE text/html;
+		#HTML_TEMPLATE document;
+	}
+}
+			</programlisting> 
+			<bridgehead>Output of program when "do_ajax" is not set</bridgehead>
+			<programlisting language="c">
+Content-type: text/html;
+
+&lt;!DOCTYPE HTML&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;P* Web Programming Language&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1 id="header"&gt;This is the header&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+			</programlisting>
+			<bridgehead>Output of program when "do_ajax" is set</bridgehead>
+			<programlisting language="c">
+Content-type: application/json
+
+{
+	"header": "This is the header",
+	"": ""
+}
+			</programlisting>
+		</section>
+		<section>
+			<title>MySQL</title>
+			<para>Boilerplate code is equal copies of code that you have to repeat many times in a program to make it work.
+			This includes stuff like checking return values from library functions and printing error messages, or to including modules and header files at the top of a program.
+			</para>
+			<bridgehead>MySQL prepared statements in Java</bridgehead>
+			<para>One of the worst time-consuming copy-paste-editing you will ever come over is creating a prepared statement.
+			Under follows an example in the Java-language (which is copy-pasted-edited from some page found on Google).
+			Notice that the word <code>PreparedStatement</code> is used seven times, and that you have to deal with the member methods <code>setString</code> and <code>setInt</code> of this object for every single variable.
+			</para>
+			<programlisting language="java">
+Class.forName("com.mysql.jdbc.Driver");
+connect = DriverManager.getConnection("jdbc:mysql://localhost/animal_kingdom?" + "user=dog&amp;password=i_hate_cats");
+
+// It is extremely boring work to set all this fields
+preparedStatement = connect.prepareStatement("INSERT INTO animal_kingdom.persons VALUES (?,?,?,?,?)");
+preparedStatement.setString(1, "Jo");
+preparedStatement.setString(2, "Lene");
+preparedStatement.setString(3, "jolene@hotmail.com");
+
+// Sometimes we need to store strange properties of a person
+preparedStatement.setInt(4, 135);
+preparedStatement.setInt(5, 4);
+preparedStatement.executeUpdate();
+			</programlisting>
+			<para>You begin to wonder why on earth you have to tell Java that "Jo" is a string type.
+			You also have the manual work of counting all the question marks and setting the variables in correct order.
+			This work, of course, becomes really fun when you also have to deal with column names in the query and you have 20 columns of different types to insert.
+			</para>
+			<para>The P* author, also referred to as 'someone' in this article, has once been forced to write a wrapper class just to keep track of column names, values and question marks.
+			We don't want to spend time doing this, we want to create web pages! Let's have some more meat.
+			</para>
+			<bridgehead>MySQL prepared statements in P*</bridgehead>
+			<para>Next comes the same example in P*, lets just specify the variables first instead of inlining, like you would normally do:
+			<programlisting language="c">
+
+string name = "Jo";
+string surename = "Lene";
+string email = "jolene@hotmail.com";
+int weight = 135;   /* In kilograms */
+int width = 4;      /* In feet */
+
+SQL sql {
+	INSERT INTO animal_kingdom.persons VALUES (
+		{@name}, {@surename}, {@email}, {@weight}, {@width}
+	)
+}
+
+MYSQL mysql->connect("localhost", "dog", "i_hate_cats");
+mysql->select_db("animal_kingdom");
+
+MYSQL_STATEMENT stmt = mysql->new_statement();
+stmt->prepare(sql);
+stmt->execute();
+			</programlisting>
+			</para>
+			<bridgehead>Common reactions to this example</bridgehead>
+			<itemizedlist spacing="normal" mark="bullet"> 
+			<listitem>Wait a minute...You said you wouldn't inline the variables, but you did?
+			</listitem>
+			<listitem>You idiot!!! This is SQL -- IN -- JEC -- TION -- !!!!
+			</listitem>
+			</itemizedlist>
+			<bridgehead>Counter-strike</bridgehead>
+			<para>This way of specifying a prepared statement is P* magic.
+			We would not normally, and shouln't either, put variables inside the SQL-string.
+			However, because we are lazy (and to avoid the horrible and error-prone code you see in the first example), we might be tempted to do just that.
+			With P* you can put the variables inside the SQL-string WITHOUT them being concatenated.
+			</para>
+			<para>The whole SQL-object is a chain of strings and value pointers, and P* does the dirty work of passing each variable to MySQL with the correct type set.
+			The variables are replaced with question marks before passed to MySQL, making it look like the Java-example.
+			</para>
+		</section>
+		<section>
+			<title>Example of web-application</title>
+			<para>Under follows an example of a full web applications which uses MySQL-databases, POST-variables and HTML templates. The example uses a JavaScript to submit a form to the web server.
+			The web server replies with JSON, and the JavaScript replaces the inner HTML of a DIV with the results.
+			</para>
+			<emphasis>This example has to be run on a web server as a CGI-script. You also need a MySQL database with a table with an 'id' column with unique ID-numbers and a 'text' column.</emphasis>
+			<bridgehead>Content of file 'test_tmpl.pstar'</bridgehead>
+			<programlisting language="c">
 HTML_TEMPLATE test_template {
 	&lt;!DOCTYPE html&gt;
 	&lt;html&gt;
@@ -1007,7 +1197,7 @@ HTML_TEMPLATE test_template {
 		border-radius: 10px;
 	}
 	&lt;/style&gt;
-	&lt;title&gt;My page&lt;/title&gt;
+	&lt;title&gt;My first P* web application&lt;/title&gt;
 	&lt;/head&gt;
 	&lt;body&gt;
 	&lt;form id="my_form" method="POST" encoding="multipart/form-data"&gt;
@@ -1037,7 +1227,9 @@ HTML_TEMPLATE test_template {
 	&lt;/html&gt;
 }
 
-/* test.pstar */
+			</programlisting>
+			<bridgehead>Content of the file 'test.pstar'</bridgehead>
+			<programlisting language="c">
 #!/usr/test/bin/wpl -f
 
 #INCLUDE test_tmpl.pstar;
@@ -1109,80 +1301,6 @@ SCENE main {
 	}
 }
 			</programlisting>
-			</para>
-		</section>
-		<section>
-			<title>Boilerplate Code</title>
-			<para>Boilerplate code is equal copies of code that you have to repeat many times in a program to make it work.
-			This includes stuff like checking return values from library functions and printing error messages, or to including modules and header files at the top of a program.
-			</para>
-			<bridgehead>MySQL prepared statements in Java</bridgehead>
-			<para>One of the worst time-consuming copy-paste-editing you will ever come over is creating a prepared statement.
-			Under follows an example in the Java-language (which is copy-pasted-edited from some page found on Google).
-			Notice that the word <code>PreparedStatement</code> is used seven times, and that you have to deal with the member methods <code>setString</code> and <code>setInt</code> of this object for every single variable.
-			</para>
-			<programlisting language="java">
-Class.forName("com.mysql.jdbc.Driver");
-connect = DriverManager.getConnection("jdbc:mysql://localhost/animal_kingdom?" + "user=dog&amp;password=i_hate_cats");
-
-// It is extremely boring work to set all this fields
-preparedStatement = connect.prepareStatement("INSERT INTO animal_kingdom.persons VALUES (?,?,?,?,?)");
-preparedStatement.setString(1, "Jo");
-preparedStatement.setString(2, "Lene");
-preparedStatement.setString(3, "jolene@hotmail.com");
-
-// Sometimes we need to store strange properties of a person
-preparedStatement.setInt(4, 135);
-preparedStatement.setInt(5, 4);
-preparedStatement.executeUpdate();
-			</programlisting>
-			<para>You begin to wonder why on earth you have to tell Java that "Jo" is a string type.
-			You also have the manual work of counting all the question marks and setting the variables in correct order.
-			This work, of course, becomes really fun when you also have to deal with column names in the query and you have 20 columns of different types to insert.
-			</para>
-			<para>The P* author, also referred to as 'someone' in this article, has once been forced to write a wrapper class just to keep track of column names, values and question marks.
-			We don't want to spend time doing this, we want to create web pages! Let's have some more meat.
-			</para>
-			<bridgehead>MySQL prepared statements in P*</bridgehead>
-			<para>Next comes the same example in P*, lets just specify the variables first instead of inlining, like you would normally do:
-			<programlisting language="c">
-
-string name = "Jo";
-string surename = "Lene";
-string email = "jolene@hotmail.com";
-int weight = 135;   /* In kilograms */
-int width = 4;      /* In feet */
-
-SQL sql {
-	INSERT INTO animal_kingdom.persons VALUES (
-		{@name}, {@surename}, {@email}, {@weight}, {@width}
-	)
-}
-
-MYSQL mysql->connect("localhost", "dog", "i_hate_cats");
-mysql->select_db("animal_kingdom");
-
-MYSQL_STATEMENT stmt = mysql->new_statement();
-stmt->prepare(sql);
-stmt->execute();
-			</programlisting>
-			</para>
-			<bridgehead>Common reactions to this example</bridgehead>
-			<itemizedlist spacing="normal" mark="bullet"> 
-			<listitem>Wait a minute...You said you wouldn't inline the variables, but you did?
-			</listitem>
-			<listitem>You idiot!!! This is SQL -- IN -- JEC -- TION -- !!!!
-			</listitem>
-			</itemizedlist>
-			<bridgehead>Counter-strike</bridgehead>
-			<para>This way of specifying a prepared statement is P* magic.
-			We would not normally, and shouln't either, put variables inside the SQL-string.
-			However, because we are lazy (and to avoid the horrible and error-prone code you see in the first example), we might be tempted to do just that.
-			With P* you can put the variables inside the SQL-string WITHOUT them being concatenated.
-			</para>
-			<para>The whole SQL-object is a chain of strings and value pointers, and P* does the dirty work of passing each variable to MySQL with the correct type set.
-			The variables are replaced with question marks before passed to MySQL, making it look like the Java-example.
-			</para>
 		</section>
 	</chapter>
 	<chapter>
