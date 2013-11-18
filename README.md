@@ -16,7 +16,7 @@ p-star-dev@googlegroups.com
 
 This is the official "Hello World!"-example of P*
 
-#!/usr/bin/wpl -f
+ #!/usr/bin/wpl -f
 SCENE main {
 	echo "Hello World!\n";
 }
