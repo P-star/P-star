@@ -1,0 +1,17 @@
+HTML_TEMPLATE document {
+	<!DOCTYPE HTML>
+	<html>
+	<head>
+	<title>{@title}</title>
+	</head>
+	<body>
+	</body>
+	</html>
+}
+
+SCENE main {
+	string title = "P* Web Programmin Language test page";
+
+	#CONTENT_TYPE text/html;
+	#HTML_TEMPLATE document;
+}

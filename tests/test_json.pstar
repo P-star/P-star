@@ -1,0 +1,26 @@
+HTML_TEMPLATE document {
+	<!DOCTYPE HTML>
+	<html>
+	<head>
+	<title>P* Web Programming Language</title>
+	</head>
+	<body>
+	<h1 id="{@"header"}">{@header}</h1>
+	</body>
+	</html>
+}
+
+SCENE main {
+	GET get;
+	string header = "This is the header";
+
+	if (*get["do_ajax"]) {
+		#JSON_BEGIN;
+		#HTML_TEMPLATE_VAR document header;
+		#JSON_END;
+	}
+	else {
+		#CONTENT_TYPE text/html;
+		#HTML_TEMPLATE document;
+	}
+}

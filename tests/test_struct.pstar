@@ -1,0 +1,19 @@
+SCENE main {
+	/* Define a new struct type with two variables and one function */
+	struct person {
+		string name;
+		int age;
+
+		int print() {
+			echo "$name is $age years old\n";
+		}
+	};
+
+	/* Create an instance of the struct */
+	person author;
+
+	/* Set the variables in the struct */
+	author->age = 25;
+	author->name = "Atle";
+	author->print();
+}

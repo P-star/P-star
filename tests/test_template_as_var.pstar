@@ -1,0 +1,34 @@
+HTML_TEMPLATE head {
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<title>P* template as var output test</title>
+	</head>
+	<body>
+	<div id="body">
+}
+
+HTML_TEMPLATE body {
+	This is the body
+}
+
+HTML_TEMPLATE foot {
+	</div>
+	</body>
+	</html>
+}
+
+SCENE main {
+	GET get;
+	if (*get["do_ajax"]) {
+		#JSON_BEGIN;
+		#HTML_TEMPLATE_AS_VAR body;
+		#JSON_END;
+	}
+	else {
+		#CONTENT_TYPE text/html;
+		#HTML_TEMPLATE head;
+		#HTML_TEMPLATE body;
+		#HTML_TEMPLATE foot;
+	}
+}
