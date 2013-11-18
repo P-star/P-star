@@ -32,8 +32,7 @@ To run P* when you have specified an alternative install path, you should run th
 export LD_LIBRARY_PATH=/usr/test/lib
 export PATH=$PATH:/usr/test/bin
 			
-
-Then the fun part: Create a file named my_program.pstar and paste in the text from the Hello World-example above. Then do this to run the program:
+A P*-program is run like this:
 
 wpl -f my_program.pstar
 
