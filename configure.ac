@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.67])
-AC_INIT([WPL compiler], [1.0], [atle@goliathdns.no])
+AC_INIT([P* Web Programming Language Interpreter], [1.0], [atle@goliathdns.no])
 AC_CONFIG_SRCDIR([src/])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile bin/Makefile src/libwpl/Makefile src/libwpl/libwpl-1.0.pc src/libmysql/Makefile src/libmysql/libwpl_mysql-1.0.pc])

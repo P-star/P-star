@@ -1,0 +1,5 @@
+p-star (1.0-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Atle Solbakken <atle@goliathdns.no>  Mon, 18 Nov 2013 18:09:44 +0100
