@@ -18,11 +18,11 @@ Take a look in the tests/-directory for some examples.
 
 To build and run P*, you need to have the libraries and development packages of mysql-client and mimetic. You also need autotools installed. This is how you download and build P* using your favourite shell:
 
-$ git clone https://github.com/atlesn/P-star.git
-$ cd P-star
-$ autoreconf -i
-$ ./configure
-$ make install
+git clone https://github.com/atlesn/P-star.git
+cd P-star
+autoreconf -i
+./configure
+make install
 			
 
 You should specify an alternative directory to install P* in so that you easilly can remove it later. This is done by adding prefix=my_directory when running configure, like ./configure --prefix=/usr/test. The files will then be placed in /usr/test/bin and /usr/test/lib.
