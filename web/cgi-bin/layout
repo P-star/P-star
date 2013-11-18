@@ -6,7 +6,8 @@ HTML_TEMPLATE layout_head {
 	<title>P* Web Programming Language - {@title}</title>
 	</head>
 	<body>
-	<div id="logo"></div>
+	<div id="parent">
+	<div id="logo"><span>Web Programming Language</span></div>
 	<div id="menu">
 		<ul class="menu_buttons">
 			{@LOOP (++i < @buttons)
@@ -62,6 +63,7 @@ SCENE layout_head_scene {
 HTML_TEMPLATE layout_foot {
 	</div>
 	<div id="foot">Copyright &copy; 2013 <a href="mailto:atle@goliathdns.no">Atle Solbakken</a>.</div>
+	</div>
 	</body>
 	</html>
 }
