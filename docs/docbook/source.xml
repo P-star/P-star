@@ -1035,6 +1035,73 @@ Content-type: application/json
 	"": ""
 }
 			</programlisting>
+			<bridgehead>Output templates as JSON variables</bridgehead>
+			<para>To output a whole template as a JSON variable, you can use the <code>#HTML_TEMPLATE_AS_VAR template_name</code>-pragma.
+			The JSON variable name is set to be the same as the name of the template.
+			This output method is useful if you want to output larger parts of a page.
+			</para>
+			<bridgehead>HTML_TEMPLATE_AS_VAR-Example</bridgehead>
+			<programlisting language="c">
+HTML_TEMPLATE head {
+	&lt;!DOCTYPE html&gt;
+	&lt;html&gt;
+	&lt;head&gt;
+	&lt;title&gt;P* template as var output test&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+	&lt;div id="body"&gt;
+}
+
+HTML_TEMPLATE body {
+	This is the body
+}
+
+HTML_TEMPLATE foot {
+	&lt;/div&gt;
+	&lt;/body&gt;
+	&lt;/html&gt;
+}
+
+SCENE main {
+	GET get;
+	if (*get["do_ajax"]) {
+		#JSON_BEGIN;
+		#HTML_TEMPLATE_AS_VAR body;
+		#JSON_END;
+	}
+	else {
+		#CONTENT_TYPE text/html;
+		#HTML_TEMPLATE head;
+		#HTML_TEMPLATE body;
+		#HTML_TEMPLATE foot;
+	}
+}
+			</programlisting>
+			<bridgehead>Output of program when "do_ajax" GET variable is not set</bridgehead>
+			<programlisting language="c">
+Content-type: text/html;
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;P* template as var output test&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id="body"&gt;
+This is the body
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+			</programlisting>
+			<bridgehead>Output with the "do_ajax" GET variable set</bridgehead>
+			<programlisting language="c">
+Content-type: application/json
+
+{
+	"body": "\tThis is the body\n",
+			"": ""
+}
+			</programlisting>
 		</section>
 		<section>
 			<title>MySQL</title>
