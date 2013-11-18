@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -95,5 +95,21 @@ class wpl_text : public wpl_runable, public wpl_parseable {
 	int run(wpl_state *state, wpl_value *final_result, ostream &output);
 	virtual int run(wpl_state *state, wpl_value *final_result);
 	int output_json(wpl_state *state, const set<wpl_value*> &vars, wpl_value *final_result);
+	int output_as_json_var(wpl_state *state, wpl_value *final_result);
 };
 
+class wpl_text_var_output_method : public wpl_runable {
+	private:
+	wpl_text *my_text;
+
+	public:
+	wpl_text_var_output_method(wpl_text *my_text) {
+		this->my_text = my_text;
+	}
+	wpl_state *new_state(wpl_namespace_session *nss) {
+		return my_text->new_state(nss);
+	}
+	int run (wpl_state *state, wpl_value *final_result) {
+		return my_text->output_as_json_var(state, final_result);
+	}
+};

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -220,6 +220,22 @@ int wpl_text::output_json (
 	}
 
 	return WPL_OP_OK;
+}
+
+int wpl_text::output_as_json_var(wpl_state *state, wpl_value *final_result) {
+	wpl_value_string name_string(get_name());
+	cout << "\"";
+	name_string.output_json();
+	cout << "\": \"";
+
+	ostringstream buf;
+	int ret = run(state, final_result, buf);
+
+	wpl_output_json json_output;
+	string text = buf.str();	
+	json_output.output_json(text.c_str(), text.size());
+
+	cout << "\",\n";
 }
 
 void wpl_text::parse_value(wpl_namespace *parent_namespace) {

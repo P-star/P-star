@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -111,16 +111,18 @@ public:
 };
 
 class wpl_pragma_template : public wpl_pragma {
-	private:
+	protected:
 	wpl_template *my_template;
 
 	public:
 	wpl_pragma_template() : wpl_pragma (wpl_pragma_name_template) {
 	}
+	wpl_pragma_template(const char *name) : wpl_pragma (name) {
+	}
 	virtual wpl_pragma_template *clone() const {
 		return new wpl_pragma_template(*this);
 	}
-	int run(wpl_state *state, wpl_value *final_result) override {
+	virtual int run(wpl_state *state, wpl_value *final_result) override {
 		wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
 		return pragma_state->run_child(my_template, 0, final_result);
 	}
@@ -132,6 +134,21 @@ class wpl_pragma_template : public wpl_pragma {
 			THROW_ELEMENT_EXCEPTION("Could not find template");
 		}
 		parse_default_end();
+	}
+};
+
+class wpl_pragma_template_as_var : public wpl_pragma_template {
+	public:
+	wpl_pragma_template_as_var() : wpl_pragma_template (wpl_pragma_name_template_as_var) {
+	}
+	wpl_pragma_template_as_var *clone() const {
+		return new wpl_pragma_template_as_var(*this);
+	}
+	int run(wpl_state *state, wpl_value *final_result) override {
+		wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
+
+		wpl_text_var_output_method run_wrapper(my_template);
+		return pragma_state->run_child(&run_wrapper, 0, final_result);
 	}
 };
 

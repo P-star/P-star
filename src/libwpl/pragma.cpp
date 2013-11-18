@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -138,6 +138,7 @@ void wpl_pragma_text::parse_value (wpl_namespace *parent_namespace) {
 void wpl_pragma_add_all_to_namespace (wpl_namespace *my_namespace) {
 	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_text_content_type());
 	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_template());
+	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_template_as_var());
 	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_template_var());
 	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_scene());
 	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_json_begin());
