@@ -1115,6 +1115,8 @@ stmt->execute();
 			The web server replies with JSON, and the JavaScript replaces the inner HTML of a DIV with the results.
 			</para>
 			<emphasis>This example has to be run on a web server as a CGI-script. You also need a MySQL database with a table with an 'id' column with unique ID-numbers and a 'text' column.</emphasis>
+			<para><ulink url="http://www.p-star.org/cgi-bin/test">Here is a running version of the example program below</ulink>
+			</para>
 			<bridgehead>Content of file 'test_tmpl.pstar'</bridgehead>
 			<programlisting language="c">
 HTML_TEMPLATE test_template {
