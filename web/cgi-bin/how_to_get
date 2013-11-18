@@ -12,7 +12,8 @@ HTML_TEMPLATE body {
 	<p>If you use the APT-mirror, your version of P* will always have easy access to the newest version of P*</p>
 	<p>Run the following commands as root to install P* using APT</p>
 	<pre># wget -q -O - apt.p-star.org/pub.key | apt-key add -
-# echo -e "\n\ndeb [ arch=amd64 ] http://apt.p-star.org/ unstable main\n\n" >> /etc/apt/sources.list
+# echo -e "\n\ndeb [ arch=amd64 ] http://apt.p-star.org/ unstable main\n\n" \
+  &gt;&gt /etc/apt/sources.list
 # apt-get update
 # apt-get install pstar</pre>
 
