@@ -1,0 +1,18 @@
+#!/usr/bin/wpl -f
+
+#INCLUDE layout;
+
+HTML_TEMPLATE body {
+	<h1>Documentation</h1>
+	<p>Documentation for P* is available in <a href="/manual/">the online manual</a>. The manual covers most of the language</p>
+	<p>You can also find example programs in the source directory under <i>/tests/</i></p>
+	<p>The source code of this web page is available in the source directory under <i>/web/</i></p>
+}
+
+SCENE main {
+	#CONTENT_TYPE text/html;
+	#SCENE layout_head_scene;
+	#HTML_TEMPLATE body;
+	#HTML_TEMPLATE layout_foot;
+}
+

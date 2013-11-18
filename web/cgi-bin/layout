@@ -1,0 +1,67 @@
+HTML_TEMPLATE layout_head {
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<link type="text/css" rel="stylesheet" href="/pstar.css" />
+	<title>P* Web Programming Language - {@title}</title>
+	</head>
+	<body>
+	<div id="logo"></div>
+	<div id="menu">
+		<ul class="menu_buttons">
+			{@LOOP (++i < @buttons)
+				<li class ="{@
+					buttons[i]->classname
+				}"><div><a href="{@
+					url_prefix . buttons[i]->name
+				}"><span>{@
+					buttons[i]->text
+				}</span></a></div></li>
+			}
+			<li style="clear:left"></li>
+		</ul>
+	</div>
+	<div id="body">
+}
+
+SCENE layout_head_scene {
+	string url_prefix = "/cgi-bin/pstar/";
+
+	string title = "-";
+	struct button {
+		string name;
+		string text;
+		string classname;
+	};
+
+	array<button> buttons;
+	buttons[0]->name = "what_is";
+	buttons[0]->text = "What is P*?";
+	buttons[1]->name = "how_to_get";
+	buttons[1]->text = "How to get P*?";
+	buttons[2]->name = "how_to_run";
+	buttons[2]->text = "How to run P*?";
+	buttons[3]->name = "documentation";
+	buttons[3]->text = "Documentation";
+
+	ENV env;
+	int i = "-1";
+
+	while (++i < @buttons) {
+		if ((url_prefix . buttons[i]->name) == env->SCRIPT_NAME) {
+			buttons[i]->classname = "checked";
+			title = buttons[i]->text;
+		}
+	}
+
+	i = "-1";
+
+	#HTML_TEMPLATE layout_head;
+}
+
+HTML_TEMPLATE layout_foot {
+	</div>
+	<div id="foot">Copyright &copy; 2013 <a href="mailto:atle@goliathdns.no">Atle Solbakken</a>.</div>
+	</body>
+	</html>
+}

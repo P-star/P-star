@@ -1,0 +1,38 @@
+#!/usr/bin/wpl -f
+
+#INCLUDE layout;
+
+HTML_TEMPLATE body {
+	<h1>How to get P*?</h1>
+	<p>P* is currently available for Linux-based operating systems, but it might also work on similar platforms.</p>
+
+
+	<h2>Use precompiled Debian package</h2>
+	<p>P* provides an APT-mirror which contains a package for Debian Wheezy on the amd64 architecture</p>
+	<p>If you use the APT-mirror, your version of P* will always have easy access to the newest version of P*</p>
+	<p>Run the following commands as root to install P* using APT</p>
+	<pre># wget -q -O - apt.p-star.org/pub.key | apt-key add -
+# echo -e "\n\ndeb [ arch=amd64 ] http://apt.p-star.org/ unstable main\n\n" >> /etc/apt/sources.list
+# apt-get update
+# apt-get install pstar</pre>
+
+	<h2>Download the source from Github</h2>
+	<p>The full source of P* is available on Github and can be obtained using <i>git</i> like this:</p>
+	<pre>
+$ git clone https://github.com/atlesn/P-star.git</pre>
+	<p>The source of P* will be put into a directory called "P-star". To complile the program, you will need to have <i>autotools</i> and a C++11 compliant compiler installed. You also need the development packages for <i>MySQL client</i> and <i>Mimetic</i>.</p>
+	<pre>$ cd P-star 
+$ autoreconf -i 
+$ ./configure
+$ make</pre>
+	<p>To install P* after compiling, you must run this as the root user:</p>
+	<pre># make install</pre>
+}
+
+SCENE main {
+	#CONTENT_TYPE text/html;
+	#SCENE layout_head_scene;
+	#HTML_TEMPLATE body;
+	#HTML_TEMPLATE layout_foot;
+}
+

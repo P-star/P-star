@@ -1,0 +1,28 @@
+#!/usr/bin/wpl -f
+
+#INCLUDE layout;
+
+HTML_TEMPLATE body {
+	<h1>How to run a P* program</h1>
+	<p>A P* program is a text file containing the program code. You can use any text editor to write P* programs, but when we run it, we have to use our beloved terminal.</p>
+	<p>Put this into a file named <b><i>hello_world.pstar</i></b> using your favorute text editor:</p>
+	<pre>#!/usr/bin/wpl -f
+SCENE main {
+	echo "Hello World!\n";
+}</pre>
+	<p>To run this file, you first have to set the executable flag to allow you to run it as a program:</p>
+	<pre>$ chmod +x hello_world.pstar</pre>
+	<p>Then we can execute it!</p>
+	<pre>$ ./hello_world.pstar</pre>
+	<p>Please refer to <a href="/cgi-bin/documentation">the documentation</a> for more examples.</p>
+	<p>To benefit from all the features of P*, you have to run the scripts in a CGI-environment by a web server. On Linux, you can use the <a href="http://httpd.apache.org/docs/2.2/howto/cgi.html">Apache web server</a> for this.</p>
+
+}
+
+SCENE main {
+	#CONTENT_TYPE text/html;
+	#SCENE layout_head_scene;
+	#HTML_TEMPLATE body;
+	#HTML_TEMPLATE layout_foot;
+}
+

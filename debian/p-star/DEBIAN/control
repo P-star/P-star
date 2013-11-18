@@ -1,0 +1,11 @@
+Package: p-star
+Version: 1.0
+Architecture: amd64
+Maintainer: Atle Solbakken <atle@goliathdns.no>
+Installed-Size: 3768
+Depends: libc6 (>= 2.14), libgcc1 (>= 1:4.1.1), libmimetic0, libmysqlclient18 (>= 5.5.24+dfsg-1), libstdc++6 (>= 4.6), zlib1g (>= 1:1.1.4), mysql-client-5.5
+Section: misc
+Priority: extra
+Homepage: http://www.p-star.org
+Description: P* Web Programming Language Interpreter
+ P* is a progamming language which targets to incorporate common tasks like HTML templates, SQL prepared statements and JSON output into the language.
