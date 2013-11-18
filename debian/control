@@ -1,13 +1,15 @@
 Source: p-star
-Maintainer: Atle Solbakken
 Section: misc
 Priority: extra
-Homepage: http://www.p-star.org
-Standards-Version: 3.9.2
+Maintainer: Atle Solbakken <atle@goliathdns.no>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, libmysqlclient-dev, libmimetic-dev
+Standards-Version: 3.9.3
+Homepage: http://www.p-star.org
+#Vcs-Git: git://git.debian.org/collab-maint/p-star.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/p-star.git;a=summary
 
 Package: p-star
-Depends: libmysqlclient16, mimetic
 Architecture: any
-Description: P* web programming language
- The P* web programming language targets to implement common tasks like SQL prepared statements, HTML templates and JSON output into the language.
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmysqlclient16, libmimetic0
+Description: P* Web Programming Language Interpreter
+ P* is a progamming language which targets to incorporate common tasks like HTML templates, SQL prepared statements and JSON output into the language.
