@@ -1,0 +1,10 @@
+erefxe=@exec_prefx
+libdir=@libdir@
+includedir=@includedir@
+
+Name: WPL
+Description: WPL parser and compiler library
+Requires:
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -llibwpl-1.0
+Cflags: -I${includedir}/libwpl-1.0 -I${libdir}/libwpl-1.0/include
