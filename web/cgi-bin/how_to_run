@@ -5,7 +5,7 @@
 HTML_TEMPLATE body {
 	<h1>How to run a P* program</h1>
 	<p>A P* program is a text file containing the program code. You can use any text editor to write P* programs, but when we run it, we have to use our beloved terminal.</p>
-	<p>Put this into a file named <b><i>hello_world.pstar</i></b> using your favorute text editor:</p>
+	<p>Put this into a file named <b><i>hello_world.pstar</i></b> using your favorite text editor:</p>
 	<pre>#!/usr/bin/wpl -f
 SCENE main {
 	echo "Hello World!\n";
