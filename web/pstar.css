@@ -29,7 +29,7 @@ div#parent {
 
 div#logo {
 	position: relative;
-	height: 130px;
+	height: 135px;
 	background-image: url("/logo_web.png");
 	background-position: left center;
 	background-repeat: no-repeat;

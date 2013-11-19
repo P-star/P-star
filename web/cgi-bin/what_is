@@ -15,8 +15,8 @@ HTML_TEMPLATE body {
 	<h2>Support and discussion</h2>
 	<p>There are two public maling lists available. One is for user questions and opinions, and the other is for more technical discussion about development.</p>
 	<ul>
-		<li>p-star-users@googlegroups.com</li>
-		<li>p-star-dev@googlegroups.com</li>
+		<li><a href="https://groups.google.com/forum/#!forum/p-star-users">Signup for the user list</a></li>
+		<li><a href="https://groups.google.com/forum/#!forum/p-star-dev">Signup for the development list</a></li>
 	</ul>
 	<h2>Bugs &amp; issues</h2>
 	<p>Please report bugs and missing features on <a href="https://github.com/atlesn/P-star/issues">the Github page</a> or by writing to the <a href="mailto:p-star-dev@googlegroups.com">development mailing list</a>.</p>
