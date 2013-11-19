@@ -18,7 +18,8 @@ HTML_TEMPLATE body {
 		<li>p-star-users@googlegroups.com</li>
 		<li>p-star-dev@googlegroups.com</li>
 	</ul>
-
+	<h2>Bugs &amp; issues</h2>
+	<p>Please report bugs and missing features on <a href="https://github.com/atlesn/P-star/issues">the Github page</a> or by writing to the <a href="mailto:p-star-dev@googlegroups.com">development mailing list</a>.</p>
 	<h2>Development</h2>
 	<p>The P* language is still under development, but it already supports many features. <b>Help is needed to develop P* further.</b> If you have experience with C++ and/or web design, don't hesitate to say hello on one of the mailing lists.</p>
 }
