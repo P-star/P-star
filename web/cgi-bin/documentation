@@ -3,16 +3,178 @@
 #INCLUDE layout;
 
 HTML_TEMPLATE body {
-	<h1>Documentation</h1>
-	<p>Documentation for P* is available in <a href="/manual/">the online manual</a>. The manual covers most of the language</p>
-	<p>You can also find example programs in the source directory under <i>/tests/</i></p>
-	<p>The source code of this web page is available in the source directory under <i>/web/</i></p>
+<h1>Documentation</h1>
+<h2>Quick start guide</h2>
+
+<p><i>This guide uses simple HTML code in the examples, and requires some basic knowledge of it.</i></p>
+
+<p><i>Before you read any further, you should obtain and install a copy of the P* interpreter <a href="/cgi-bin/how_to_get">from the download page</a></i>.</p>
+<p><i>More documentation is available in <a href="/manual">the reference manual</a></i></p>
+
+<p>P* programs are run as scripts. That means that you can simply write a program into a text file, and tell the P* interpreter to run it. </p>
+
+<h3>Your first program!</h3>
+<p>To create your first program, paste this into a text file called <i><b>hello_world.pstar</b></i>:</p>
+
+<pre>#!/usr/bin/wpl -f
+SCENE main {
+	echo "Hello World!\n";
+}</pre>
+
+<p>Running the program will look something like this:</p>
+
+<pre>$ chmod +x hello_world.pstar
+$ ./hello_world.pstar
+Hello World!
+$ </pre>
+
+<p>P*, like many other languages, supports values and expressions. Expressions are an important part of P*. The program above contains an expression with one operator, <i>echo</i>, and one operan, a string with the contents <i>Hello world!</i>.</p>
+
+<p>In P*, we say that values, like a strings and integer, are alive. In an expression, you tell values to do stuff. In the example above, we tell the string to echo it's value to standard output.</p>
+
+<h3>Variables</h3>
+<p>P* can store values in named variables. A variable can hold a value of a specific type, for instance an <i>int</i> or a <i>string</i>. Take a look in the <a href="/manual/ch03s02.html">reference manual</a> for a complete list of all types.</p>
+
+<p>Some types are special and do stuff under the hood. One example is the <i>ENV</i> type, which reads evironment variables.</p>
+<p>Let's make P* retrieve an environment variable from your shell, store it in a variable and print it out. Try to run this program:</p>
+
+<pre>#!/usr/bin/wpl -f
+SCENE main {
+	/* Create a variable named 'env' of special type 'ENV' */
+	ENV env;
+
+	/* Create a variable named 'path' of type 'string' */
+	string path;
+
+	/* Tell the env variable to retrieve the environment
+	   variable PATH and put the result into our 'path' variable */
+	path = env-&gt;PATH;
+
+	/* Put the variable 'path' into a text string and then print it out */
+	echo "My shell looks for programs in these directories: $path\n";
+}</pre>
+
+<h3>What is a SCENE?</h3>
+<p>A <i>SCENE</i> in P* is like a function which does not take arguments. Programs may have multiple scenes, but they have to define exactly one scene named <i>main</i>. This scene is always the first one to run. All code must be inside scenes.</p>
+<p>Here is a program with two scenes where the <i>main</i> scene calls the other scene named <i>number_printer</i>:</p>
+<pre>#!/usr/bin/wpl -f
+SCENE number_printer {
+	echo "My number is: $my_number\n";
 }
 
 SCENE main {
-	#CONTENT_TYPE text/html;
-	#SCENE layout_head_scene;
+	int number_printer = 55;
+	#SCENE my_first_scene;
+}</pre>
+<p>You can call a scene using the <i>#SCENE</i>-pragma. When you do, all available variables from the location of the call is made available in the other scene. You can see if you run the example that the variable <i>my_number</i> is made available in the scene <i>my_first_scene</i>.</p>
+
+<h3>TEXT blocks</h3>
+<p>P* has a special syntax for text blocks with variables and values interpolated into them. The reason for thisis that P* focuses on web development, which is much about generating dynamic HTML code.</p>
+<p>A plain text box joins strings together and prints them out. Other types of text boxes have the same syntax, but they might do other stuff than just printing (see the next section).</p>
+<p>A P* Hello World program using a text block looks like this:</p>
+<pre>#!/usr/bin/wpl -f
+SCENE main {
+	TEXT {
+Hello World!
+	}
+}</pre>
+<p>Note that you don't have to use \n to get a newline, everything you put in between the two curly brackets are printed out literally.</p>
+
+<h3>HTML_TEMPLATE</h3>
+<p>The text blocks are not very useful on their own, but when we use them in templates, we can see why they are benefitial. A <b>template</b> is used to seperate program code and HTML markup to make your programs tidy. To do this, we need to have an efficient method to move variables from the code section of our program to the template section.</p>
+<p>Let's do the example with the environment variable again, but now we use a HTML template:</p>
+
+<pre>#!/usr/bin/wpl -f
+HTML_TEMPLATE my_first_template {
+	&lt;p&gt;
+		My shell looks for programs in the following directories:
+		&lt;b&gt;&#123;@path&#125;&lt;/b&gt;
+	&lt;/p&gt;
+}
+
+SCENE main {
+	ENV env;
+	string path = env-&gt;PATH;
+
+	/* Call the template */
+	#HTML_TEMPLATE my_first_template;
+}</pre>
+
+<p>In text blocks and templates, as you might have noticed, you can join in an expression with the syntax <i>&#123;@EXP&#125;</i>. All sequences starting with the open curly bracket directly followed by the at sign will make P* parse the enclosed text as an expression. A joined-in expression ends with a close curly bracket.</p>
+<p>When you tell the template to print itself using the <i>#HTML_TEMPLATE</i>-pragma, the template inherits all variables from where you call it. The two variables we have defined, <i>env</i> and <i>path</i>, can therefore be used in the template.</p>
+<p>If you have JavaScript code inside text blocks, you need to have equal amounts of open brackets and close brackets. This is to make P* able to figure out which end bracket is the one ending the text block.</p>
+<p>If you need to use curly brackets which are not matching pairs of open brackets and close brackets, you have to use HTML etity code. &amp;#123; is for the open bracket and &amp;#125; is for the close bracket.</p> 
+
+<h3>Programs with multiple files</h3>
+<p>A web page doesn't have to be very large before the source file gets difficult to navigate through. You can split your program into multiple files and use the <i>#INCLUDE</i>-pragma to join them. A common thing to do is to at least have templates in separate files.</p>
+<p>Here is an example of a small web site consisting of multiple files and pages:</p>
+<p>The file <b>layout</b></p>
+<pre>HTML_TEMPLATE head {
+	&lt;!DOCTYPE html&gt;
+	&lt;head&gt;
+	&lt;title&gt;My P* site&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+}
+HTML_TEMPLATE foot {
+	&lt;/body&gt;
+	&lt;/html&gt;
+}
+</pre>
+<p>The file <b>first_page</b></p>
+<pre>#!/usr/bin/wpl -f
+#INCLUDE layout;
+
+HTML_TEMPLATE body {
+	&lt;p&gt;
+		This is the first page. You can also take
+		a look at &lt;a href="second_page"&gt;the second page&lt;/a&gt;.
+	&lt;/p&gt;
+}
+
+SCENE main {
+	#HTML_TEMPLATE head;
 	#HTML_TEMPLATE body;
-	#HTML_TEMPLATE layout_foot;
+	#HTML_TEMPLATE foot;
+}
+</pre>
+<p>The file <b>second_page</b></p>
+<pre>#!/usr/bin/wpl -f
+#INCLUDE layout;
+
+HTML_TEMPLATE body {
+	&lt;p&gt;
+		This is the first page. If you want to, you can go
+		back to &lt;a href="first_page"&gt;the first page&lt;/a&gt;.
+	&lt;/p&gt;
+}
+
+SCENE main {
+	#HTML_TEMPLATE head;
+	#HTML_TEMPLATE body;
+	#HTML_TEMPLATE foot;
+}
+</pre>
+<p>Notice that you don't need the <i>#!/usr/bin/wpl -f</i>-line at the top in files you include.</p>
+
+<h2>More resources</h2>
+<p>Please take a look at <a href="/manual/">The reference manual</a> for more in-depth documentation.</p>
+<p>You can also find example programs in the source directory under <i>/tests/</i></p>
+}
+
+SCENE main {
+	GET get;
+
+	if (*get["do_ajax"]) {
+		#JSON_BEGIN;
+		#HTML_TEMPLATE_AS_VAR body;
+		#JSON_END;
+	}
+	else {
+		#CONTENT_TYPE text/html;
+		#SCENE layout_head_scene;
+		#HTML_TEMPLATE body;
+		#HTML_TEMPLATE layout_foot;
+	}
 }
 
