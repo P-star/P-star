@@ -63,8 +63,8 @@ SCENE number_printer {
 }
 
 SCENE main {
-	int number_printer = 55;
-	#SCENE my_first_scene;
+	int my_number = 55;
+	#SCENE number_printer;
 }</pre>
 <p>You can call a scene using the <i>#SCENE</i>-pragma. When you do, all available variables from the location of the call is made available in the other scene. You can see if you run the example that the variable <i>my_number</i> is made available in the scene <i>my_first_scene</i>.</p>
 
