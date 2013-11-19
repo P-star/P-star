@@ -15,7 +15,7 @@ HTML_TEMPLATE body {
 	<h2>Support and discussion</h2>
 	<p>There are two public maling lists available. One is for user questions and opinions, and the other is for more technical discussion about development.</p>
 	<ul>
-		<li>p-star-user@googlegroups.com</li>
+		<li>p-star-users@googlegroups.com</li>
 		<li>p-star-dev@googlegroups.com</li>
 	</ul>
 
