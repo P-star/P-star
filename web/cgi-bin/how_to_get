@@ -4,12 +4,11 @@
 
 HTML_TEMPLATE body {
 	<h1>How to get P*?</h1>
-	<p>P* is currently available for Linux-based operating systems, but it might also work on similar platforms.</p>
-
+	<p>P* is currently runs on Linux-based operating systems, but it might also work on similar platforms.</p>
 
 	<h2>Use precompiled Debian package</h2>
 	<p>P* provides an APT-mirror which contains a package for Debian Wheezy on the amd64 architecture</p>
-	<p>If you use the APT-mirror, your version of P* will always have easy access to the newest version of P*</p>
+	<p>If you use the APT-mirror, you will always have easy access to the newest version of P*</p>
 	<p>Run the following commands as root to install P* using APT</p>
 	<pre># wget -q -O - apt.p-star.org/pub.key | apt-key add -
 # echo -e "\n\ndeb [ arch=amd64 ] http://apt.p-star.org/ unstable main\n\n" \
