@@ -21,12 +21,12 @@
 			<title>What is P*?</title>
 			<para>P* (P-star) is a shortname for "Web P* Language". It is unknown what the "P" actually stands for, so a star is used to indicate that any word starting with a "P" may be used. It does not mean that the name can be any number of P's. Oh, by the way, the word has to relate to computers. If you didn't think about any non-computer P-word, you're in the target audience of this article.
 			</para>
-			<para>P* is a computer programming language specifically designed to make web progamming easy by incorporating frequent operations into the language. P* uses a C-like syntax, so it whould be easy to begin using if you have ever used C, C#, C++, Java, Perl, PHP and many others. P* is also highly inspired from some of these languages, and tries to implement the best of them while also using completely new methods for solving different programming tasks.
+			<para>P* is a computer programming language specifically designed to make web progamming easy by incorporating frequent operations into the language. P* uses a C-like syntax, so it would be easy to begin using if you have ever used C, C#, C++, Java, Perl, PHP and many others. P* is also highly inspired from some of these languages, and tries to implement the best of them while also using completely new methods for solving different programming tasks.
 			</para>
-			<para>P* is run like a script by it's interpreter which is written in C++. It is currently under development, and if you have any suggestions for new features, shout out now! Also feel free to write new features and send them in.
+			<para>P* is run as a script by its interpreter, which is written in C++. It is currently under development so if you have any suggestions for new features, shout out now! Also feel free to write new features and send them in.
 			</para>
 			<para>
-			P* free software and is currently licenced with GPLv3 <ulink>http://www.gnu.org/copyleft/gpl.html</ulink>
+			P* is free software and is currently licenced with GPLv3 <ulink>http://www.gnu.org/copyleft/gpl.html</ulink>
 			</para>
 			<para>
 				This docbook is written by Atle Solbakken <email>atle@goliathdns.no</email>
@@ -43,7 +43,7 @@
 		</section>
 		<section>
 			<title>We want meat!</title>
-			<para>This is the official "Hello World!"-example of P*
+			<para>This is the official "Hello World!" example of P* program:
 			<programlisting language="c">
 #!/usr/bin/wpl -f
 SCENE main {
@@ -62,7 +62,7 @@ autoreconf -i
 make install
 			</programlisting>
 			<para>
-			You should specify an alternative directory to install P* in so that you easilly can remove it later.
+			You should specify an alternative directory to install P* in so that you can easily remove it later.
 			This is done by adding <code>prefix=my_directory</code> when running configure, like <code>./configure --prefix=/usr/test</code>. The files will then be placed in /usr/test/bin and /usr/test/lib.
 			</para>
 			<para>
@@ -73,7 +73,7 @@ export LD_LIBRARY_PATH=/usr/test/lib
 export PATH=$PATH:/usr/test/bin
 			</programlisting>
 			<para>
-			Then the fun part: Create a file named <code>my_program.pstar</code> and paste in the text from the Hello World-example above.
+			Then the fun part: Create a file named <code>my_program.pstar</code> and paste in the text from the Hello-World example above.
 			Then do this to run the program:
 			</para>
 			<programlisting language="shell">
@@ -90,7 +90,7 @@ wpl -f my_program.pstar
 		</section>
 	</chapter>
 	<chapter>
-		<title>Get P* !</title>
+		<title>Get P*!</title>
 		<para>
 		The source of P* is currently available
 <ulink url="https://github.com/atlesn/P-star">from Github</ulink>.
@@ -107,7 +107,7 @@ wpl -f my_program.pstar
 		<para>All programming languages have advantages and disanvantages. These two creatures are happily married, and they can't be separated. If you try to kill a disadvantage, it's beloved advantage will commit suicide, and you're back where you started. If you overlap a disadvantage with another advantage, a new disadvantage comes along with it.
 		</para>
 		<para>
-		Does this means that we will never have a perfect programming lanuage?
+		Does this mean that we will never have a perfect programming lanuage?
 		It probably does.
 		However, P* has made an attempt to get around this by selecting which bad things to have first and seeing what advantages we get with those afterwards.
 		</para>
@@ -126,7 +126,7 @@ wpl -f my_program.pstar
 			Scenes, apart from the <code>main</code> scene are called using the <code>#SCENE</code>-pragma.
 			A scene inherits all variables from it's caller.
 			</para>
-			<para>A simple P* program with two scenes may look like this:
+			<para>A simple P* program with two scenes might look like this:
 			</para>
 			<programlisting language="c">
 #!/usr/bin/wpl -f
@@ -154,12 +154,12 @@ This is my_scene: 'Hello world!'
 			</para>
 			<para>Some languages try to help the user by using automatic types.
 			This is supposed to make it easier to write.
-			P* does allow implict converting between primitive types, but no variables can be typeless.
+			P* does allow implicit converting between primitive types, but no variables can be typeless.
 			</para>
 			<para>It is not much work to write <code>int</code> or <code>string</code> in front of a variable.
 			A good thing about this is that it helps make programs more readable, and it's an easy way for developers to make programs efficient.
 			</para>
-			<para>Variables in P* are stored in memory as their C/C++ equalient type. Size of the type depend on the platform the interpreter is compiled on.
+			<para>Variables in P* are stored in memory as their C/C++ equalient type. Size of the type depends on the platform the interpreter is compiled on.
 			</para>
 			<table>
 				<title>List of P* primitive types</title>
@@ -271,14 +271,14 @@ SCENE main {
 			<title>Strings</title>
 			<para>P* supports defining strings inside the double quote <code>"</code> or single quote <code>'</code>.
 			</para>
-			<para>P* allows you to interpolate variables inside a text string delimeted by double quotes. A variable to be interpolated is prefixed with the dollar sign, <code>$</code>.
-			The string output operators <code>echo</code> and <code>errcho</code> internally uses the C++ <code>iostream</code> output methods <code>cout</code> and <code>cerr</code>.
+			<para>P* allows you to interpolate variables inside a text string delimited by double quotes. A variable to be interpolated is prefixed with the dollar sign, <code>$</code>.
+			The string output operators <code>echo</code> and <code>errcho</code> internally use the C++ <code>iostream</code> output methods <code>cout</code> and <code>cerr</code>.
 			</para>
 			<para>In P*, you can concatenate string using the dot operator, <code>.</code>.
 			Note that the concatenation operator has lower precedence than the equalient in PHP and Perl.
 			</para>
 			<para>
-			A double quote delimeted string supports the following replacement escape sequences:
+			A double quote delimited string supports the following replacement escape sequences:
 			</para>
 			<table>
 				<title>List of double quote escape sequences</title>
@@ -336,7 +336,7 @@ SCENE main {
 				</tgroup>
 			</table>
 			<para>
-			P* will issue an error if you use a double quote escape sequence which is not defined. Single quotes only support the escape sequence <code>\'</code>, and all other sequences with backslash is interpreted literally without any errors.
+			P* will issue an error if you use a double quote escape sequence which is not defined. Single quotes only support the escape sequence <code>\'</code>, and all other sequences with backslash are interpreted literally without any errors.
 			</para>
 			<bridgehead>Example of string usage</bridgehead>
 			<programlisting language="c">
@@ -361,12 +361,12 @@ The number is $num\n
 			Variables passed into a function are usually copied (pass-by-value). Some objects however, like MySQL-objects, are implicitly passed as reference instead (pass-by-reference). The documentation of these special types tells you which are passed by reference.
 			</para>
 			<para>
-			Primitive data types like <code>int</code> and <code>string</code> are implicity converted between eachother to mach the function arguments (weak type checking).
+			Primitive data types like <code>int</code> and <code>string</code> are implicity converted between each other to mach the function arguments (weak type checking).
 			</para>
 			<para>
 			In the example below, we have a function with return type of <code>int</code> called <code>sum</code>.
 			This function takes two integer arguments and returns their sum.
-			We pass in a string as the second argument to show that it implicitly is converted into an integer when passed into the function.
+			We pass in a string as the second argument to show that it is implicitly converted into an integer when passed into the function.
 			</para>
 			<programlisting language="c">
 SCENE main {
@@ -494,12 +494,12 @@ Float result: 11.500000
 					</row>
 					<row>
 						<entry>~</entry>
-						<entry>Biwise not</entry>
+						<entry>Bitwise not</entry>
 						<entry>~invert_this</entry>
 					</row>
 					<row>
 						<entry>!</entry>
-						<entry>Logic not</entry>
+						<entry>Logical not</entry>
 						<entry>!var</entry>
 					</row>
 					<row>
@@ -544,34 +544,34 @@ Float result: 11.500000
 					<row>
 						<entry morerows="3">8</entry>
 						<entry>&lt;=</entry>
-						<entry>Logic less than or equal</entry>
+						<entry>Logical less than or equal</entry>
 						<entry morerows="5">Left</entry>
 						<entry>a &lt;= b</entry>
 					</row>
 					<row>
 						<entry>&gt;=</entry>
-						<entry>Logic more than or equal</entry>
+						<entry>Logical more than or equal</entry>
 						<entry>a &gt;= b</entry>
 					</row>
 					<row>
 						<entry>&lt;</entry>
-						<entry>Logic less than</entry>
+						<entry>Logical less than</entry>
 						<entry>a &lt; b</entry>
 					</row>
 					<row>
 						<entry>&gt;</entry>
-						<entry>Logic more than</entry>
+						<entry>Logical more than</entry>
 						<entry>a &gt; b</entry>
 					</row>
 					<row>
 						<entry morerows="1">9</entry>
 						<entry>==</entry>
-						<entry>Logic equal</entry>
+						<entry>Logical equal</entry>
 						<entry>a == b</entry>
 					</row>
 					<row>
 						<entry>!=</entry>
-						<entry>Logic not equal</entry>
+						<entry>Logical not equal</entry>
 						<entry>a != b</entry>
 					</row>
 					<row>
@@ -596,20 +596,20 @@ Float result: 11.500000
 					<row>
 						<entry>13</entry>
 						<entry>&amp;</entry>
-						<entry>Logic AND</entry>
+						<entry>Logical AND</entry>
 						<entry morerows="1">Left</entry>
 						<entry>a &amp;&amp; b</entry>
 					</row>
 					<row>
 						<entry>14</entry>
 						<entry>||</entry>
-						<entry>Logic OR</entry>
+						<entry>Logical OR</entry>
 						<entry>a || b</entry>
 					</row>
 					<row>
 						<entry>15</entry>
 						<entry>.</entry>
-						<entry>String contatenation</entry>
+						<entry>String concatenation</entry>
 						<entry>Left</entry>
 						<entry>a . b</entry>
 					</row>
@@ -714,8 +714,8 @@ Float result: 11.500000
 		<section>
 			<title>Hashes and arrays</title>
 			<para>P* supports dynamic sized hashes and arrays. These are template types and can only hold values of the type you specify.
-			They can hold any type, including arrays and hashes. This is usefull for creating more dimensions.
-			An element is created the first time you access it, and the value will be initialized to the types default value (numbers are 0, strings are empty etc.).</para>
+			They can hold any type, including arrays and hashes. This is useful for creating more dimensions.
+			An element is created the first time you access it, and the value will be initialized to the type's default value (numbers are 0, strings are empty etc.).</para>
 			<bridgehead>array&lt;default type&gt;</bridgehead>
 			<para>The array is a list of elements stored in sequential order and access by an index number. 
 			Here is an example of an array:
@@ -743,7 +743,7 @@ The value of element 2 is 30
 */
 			</programlisting>
 			<para>
-			Arrays support the special operators "first element selection" <code>*</code> and "element counter" <code>@</code>. These are use like this:
+			Arrays support the special operators "first element selection" <code>*</code> and "element counter" <code>@</code>. These are used like this:
 			</para>
 			<programlisting language="c">
 /* Instantiate an array of type string, no elements are created */
@@ -771,7 +771,7 @@ The value of the first array element is 'First element'
 			<para>
 			A hash is an array except that the values are accessed using string identifiers instead of indexes and that elements are unordered.
 			You can use the counter operator <code>@</code> for hashes the same way as for arrays.
-			An elements of a hash is created the first time you access it.
+			An element of a hash is created the first time you access it.
 			</para>
 			<para>
 			Here is an example program using hashes:
@@ -842,7 +842,7 @@ Atle is 25 years old
 		</section>
 		<section>
 			<title>Data types GET, POST and ENV</title>
-			<para>P* provides three data types which implicitly retrieves data from the environment it runs in, usually the web server.
+			<para>P* provides three data types which implicitly retrieve data from the environment they run in, usually the web server.
 			The data is parsed and stored the first time you use one of them.</para>
 			<bridgehead>GET</bridgehead>
 			<para>
@@ -934,7 +934,7 @@ The value of 'd' instance number 1 is 'Second D'
 			P* will crash your program if you access a variable which is not defined.
 			</para>
 			<para>
-			Example with the <code>ENV</code>-type:
+			Example with the <code>ENV</code> type:
 			</para>
 			<programlisting language="c">
 SCENE main {
@@ -1140,14 +1140,14 @@ preparedStatement.executeUpdate();
 			<programlisting language="c">
 
 string name = "Jo";
-string surename = "Lene";
+string surname = "Lene";
 string email = "jolene@hotmail.com";
 int weight = 135;   /* In kilograms */
 int width = 4;      /* In feet */
 
 SQL sql {
 	INSERT INTO animal_kingdom.persons VALUES (
-		{@name}, {@surename}, {@email}, {@weight}, {@width}
+		{@name}, {@surname}, {@email}, {@weight}, {@width}
 	)
 }
 
@@ -1178,7 +1178,7 @@ stmt->execute();
 		</section>
 		<section>
 			<title>Example of web-application</title>
-			<para>Under follows an example of a full web applications which uses MySQL-databases, POST-variables and HTML templates. The example uses a JavaScript to submit a form to the web server.
+			<para>Below is an example of a full web application which uses MySQL database, POST variables and HTML templates. The example uses a JavaScript to submit a form to the web server.
 			The web server replies with JSON, and the JavaScript replaces the inner HTML of a DIV with the results.
 			</para>
 			<emphasis>This example has to be run on a web server as a CGI-script. You also need a MySQL database with a table with an 'id' column with unique ID-numbers and a 'text' column.</emphasis>
