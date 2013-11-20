@@ -7,19 +7,6 @@ things like HTML templates and database handling.
 **P* is currently under development and help is needed!**
 
 
-Contacts
---------
-
-*   For information about P*, visit its official page: http://www.p-star.org/.
-
-*   If you need support, ask on users' mailing list:
-    p-star-users@googlegroups.com.
-
-*   Should you decide to participate, say hello on the development mailing
-    list: p-star-dev@googlegroups.com
-
-Take a look in directory "tests" for some examples.
-
 Building and running P*
 -----------------------
 
@@ -50,3 +37,20 @@ A P*-program is run like this:
 
     wpl -f my_program.pstar
 
+
+Examples
+--------
+
+Take a look in directory "tests" for some examples.
+
+
+Contacts
+--------
+
+*   For information about P*, visit its official page: http://www.p-star.org/.
+
+*   If you need support, ask on users' mailing list:
+    p-star-users@googlegroups.com.
+
+*   Should you decide to participate, say hello on the development mailing
+    list: p-star-dev@googlegroups.com
