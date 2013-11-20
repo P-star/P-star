@@ -1,38 +1,56 @@
 P*
 ==
 
-P* (P-star) is a web programming language whith in language-support for things like HTML-templates and Database handling..
+P* (P-star) is a web programming language whith in language-support for
+things like HTML templates and database handling.
 
-P* is currently under development, and help is needed!
+**P* is currently under development and help is needed!**
 
-Please visit this page for information about P*: 
-  http://www.p-star.org/
 
-Ask on this mailing list if you need support!
-p-star-users@googlegroups.com
+Building and running P*
+-----------------------
 
-Say hello on the mailing list to participate!
-p-star-dev@googlegroups.com
+To build and run P*, you need to have the libraries and development
+packages of mysql-client and mimetic.  P* uses C++11 features, so GCC
+version 4.7 is required.  If you use Clang, version 3.2 or higher is
+needed.  You also need autotools installed.  This is how you download
+and build P* using your favourite shell:
 
-Take a look in the tests/-directory for some examples.
+    git clone https://github.com/atlesn/P-star.git
+    cd P-star
+    autoreconf -i
+    ./configure
+    make install
 
-To build and run P*, you need to have the libraries and development packages of mysql-client and mimetic. P* uses C++11 features, so GCC version 4.7 is required. If you use Clang, version 3.2 or higher is needed. You also need autotools installed. This is how you download and build P* using your favourite shell:
+You should specify an alternative directory to install P* so that you can
+easily remove it later.  This is done by adding `prefix=my_directory` when
+running configure, like `./configure --prefix=/usr/test`.  The files will
+then be placed in /usr/test/bin and /usr/test/lib.
 
-git clone https://github.com/atlesn/P-star.git
-cd P-star
-autoreconf -i
-./configure
-make install
-			
-You should specify an alternative directory to install P* in so that you easilly can remove it later. This is done by adding prefix=my_directory when running configure, like ./configure --prefix=/usr/test. The files will then be placed in /usr/test/bin and /usr/test/lib.
+To run P* when you have specified an alternative install path, you should
+run this first:
 
-To run P* when you have specified an alternative install path, you should run this first:
+    export LD_LIBRARY_PATH=/usr/test/lib
+    export PATH=$PATH:/usr/test/bin
 
-export LD_LIBRARY_PATH=/usr/test/lib
-export PATH=$PATH:/usr/test/bin
-			
 A P*-program is run like this:
 
-wpl -f my_program.pstar
+    wpl -f my_program.pstar
 
 
+Examples
+--------
+
+Take a look in directory "tests" for some examples.
+
+
+Contacts
+--------
+
+*   For information about P*, visit its official page: http://www.p-star.org/.
+
+*   If you need support, ask on users' mailing list:
+    p-star-users@googlegroups.com.
+
+*   Should you decide to participate, say hello on the development mailing
+    list: p-star-dev@googlegroups.com
