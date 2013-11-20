@@ -74,6 +74,7 @@ const char *wpl_typename_get = "GET";
 const char *wpl_typename_post = "POST";
 const char *wpl_typename_stdin = "STDIN";
 
+const char *wpl_typename_regex = "{regex}";
 const char *wpl_typename_expression = "{expression}";
 const char *wpl_typename_wrapper = "{value wrapper}";
 const char *wpl_typename_output_trigger = "{output trigger}";

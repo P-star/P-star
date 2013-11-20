@@ -5,7 +5,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libwpl-1.0.pc
 
 lib_LTLIBRARIES = libwpl-1.0.la
-libwpl_1_0_la_LDFLAGS = -lmimetic
+libwpl_1_0_la_LDFLAGS = -lmimetic $(BOOST_REGEX_LDFLAGS) $(BOOST_REGEX_LIBS)
 libwpl_1_0_la_SOURCES = \
 	program.cpp parser.cpp block.cpp pragma.cpp \
 	module_loader.cpp \
