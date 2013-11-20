@@ -17,7 +17,7 @@ libwpl_1_0_la_SOURCES = \
 	value.cpp operator.cpp text.cpp \
 	value_array.cpp value_struct.cpp value_hash.cpp \
 	value_unresolved.cpp value_function_ptr.cpp value_list.cpp \
-	value_string.cpp value_vstring.cpp \
+	value_string.cpp value_vstring.cpp value_regex.cpp \
 	value_env.cpp value_get.cpp value_post.cpp value_stdin.cpp \
 	array.cpp hash.cpp struct.cpp template.cpp \
 	namespace_session.cpp \
