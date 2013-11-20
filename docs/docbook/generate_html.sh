@@ -1,4 +1,13 @@
 #!/bin/sh
-xsltproc  --output  /var/www/pstar/manual/docbook.html /usr/share/xml/docbook/stylesheet/docbook-xsl/xhtml/chunk.xsl source.xml
-mkdir /var/www/pstar/manual/images/ 2>&1 > /dev/null
-cp -f ../../logo/logo.png /var/www/pstar/manual/images/
+
+OUTDIR="manual"
+XSLT="/usr/share/xml/docbook/stylesheet/docbook-xsl/xhtml/chunk.xsl"
+
+if [ "$1" ]; then OUTDIR=$1; fi
+
+mkdir -p "$OUTDIR"
+mkdir -p "$OUTDIR/images"
+
+xsltproc --output "$OUTDIR/docbook.html" "$XSLT" source.xml
+
+cp -f ../../logo/logo.png "$OUTDIR/images"
