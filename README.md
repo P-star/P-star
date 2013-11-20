@@ -6,6 +6,10 @@ things like HTML templates and database handling.
 
 **P* is currently under development and help is needed!**
 
+
+Contacts
+--------
+
 *   For information about P*, visit its official page: http://www.p-star.org/.
 
 *   If you need support, ask on users' mailing list:
@@ -15,6 +19,9 @@ things like HTML templates and database handling.
     list: p-star-dev@googlegroups.com
 
 Take a look in directory "tests" for some examples.
+
+Building and running P*
+-----------------------
 
 To build and run P*, you need to have the libraries and development
 packages of mysql-client and mimetic.  P* uses C++11 features, so GCC
