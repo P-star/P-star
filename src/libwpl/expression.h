@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -79,6 +79,7 @@ class wpl_expression : public wpl_runable, public shunting_yard, public wpl_matc
 	void parse_function_call(wpl_namespace *parent_namespace, wpl_value_unresolved_identifier *ui);
 	void parse_unresolved_identifier(wpl_namespace *parent_namespace, const char *text);
 	void parse_quoted_string(wpl_namespace *parent_namespace);
+	void parse_regex(const char *prefix);
 
 	void parse (wpl_namespace *parent_namespace, uint32_t expect);
 

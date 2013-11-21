@@ -1,0 +1,5 @@
+SCENE main {
+	string test = "aaaaaaaab";
+	if (test =~ /^a*b/) {
+	}
+}

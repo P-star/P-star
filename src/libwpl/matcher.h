@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -102,6 +102,8 @@ using namespace std;
 	(v=='?')
 #define M_PERCENT(v) \
 	(v=='%')
+#define M_NON_BACKSLASH(v) \
+	(v!='\\')
 
 #define M_OPERATOR(v) (		\
 	M_EQ(v)||		\
@@ -230,6 +232,7 @@ class wpl_matcher {
 	static const uint32_t UTF8		= 1 << 14;
 	static const uint32_t NONCTRL_ASCII	= 1 << 15;
 
+	static const uint32_t NON_BACKSLASH	= 1 << 16;
 	static const uint32_t NON_ASTERISK	= 1 << 17;
 	static const uint32_t JSON_NEEDS_ESCAPE	= 1 << 18;
 	static const uint32_t NEWLINE		= 1 << 19;

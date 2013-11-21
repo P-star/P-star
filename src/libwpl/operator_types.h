@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -90,6 +90,9 @@ OP_DEC(OP_BITWISE_OR)
 
 OP_DEC(OP_EQ)
 OP_DEC(OP_NOT_EQ)
+
+OP_DEC(OP_PATTERN_EQ)
+OP_DEC(OP_PATTERN_NOT_EQ)
 
 OP_DEC(OP_ASSIGN)
 OP_DEC(OP_LOGIC_NOT)

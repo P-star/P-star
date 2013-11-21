@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -376,6 +376,35 @@ void wpl_expression::parse_unresolved_identifier(wpl_namespace *parent_namespace
 	expect |= EXPECT_OPERATOR;
 }
 
+void wpl_expression::parse_regex(const char *prefix) {
+	wpl_matcher_position start;
+	save_position(&start);
+
+	char letter;
+	string regex_string;
+	regex_string.reserve(50);
+
+	while (letter = get_letter()) {
+		if (letter == '\\') {
+			regex_string += letter;
+			regex_string += get_letter();
+		}
+		else if (letter == '/') {
+			break;
+		}
+		else {
+			regex_string += letter;
+		}
+	}
+
+	if (at_end()) {
+		load_position(&start);
+		THROW_ELEMENT_EXCEPTION("Non-terminated regular expression runs out of file");
+	}
+
+	cout << "Regex parsed: " << regex_string << endl;
+}
+
 void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 	expect = _expect;
 
@@ -416,7 +445,12 @@ void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 		else if (int len = search (WORD, 0, false)) {
 			check_varname_length(len);
 			get_string(buf, len);
-			parse_unresolved_identifier(parent_namespace, buf);
+			if (ignore_letter('/')) {
+				parse_regex(buf);
+			}
+			else {
+				parse_unresolved_identifier(parent_namespace, buf);
+			}
 		}
 		else if (search (QUOTE, 0, false)) {
 			parse_string(parent_namespace);
@@ -424,6 +458,9 @@ void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 /*		else if (ignore_letter ('{')) {
 			parse_block(parent_namespace);
 		}*/
+		else if (ignore_letter ('/')) {
+			parse_regex("");
+		}
 		else if (ignore_letter (';')) {
 			parse_semicolon();
 		}

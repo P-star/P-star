@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -193,6 +193,7 @@ bool wpl_matcher::match_letter (
 		((match & NONCTRL_ASCII) && 	M_NONCTRL_ASCII(letter)) ||
 		((match & JSON_NEEDS_ESCAPE) &&	M_JSON_NEEDS_ESCAPE(letter)) ||
 		((match & QUOTE) && 		M_QUOTE(letter)) ||
+		((match & NON_BACKSLASH) &&	M_NON_BACKSLASH(letter)) ||
 		((match & NON_ASTERISK) &&	M_NON_ASTERISK(letter)) ||
 		((match & NON_CURLY) &&		M_NON_CURLY(letter)) ||
 		((match & NEWLINE) && 		M_NEWLINE(letter)) ||

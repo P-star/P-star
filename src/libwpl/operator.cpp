@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -73,6 +73,9 @@ OP_DEF(OP_GT,		">",  8, WPL_OP_F_LEFT_BOTH, 1)
 OP_DEF(OP_EQ,		"==", 9, WPL_OP_F_LEFT_BOTH, 2)
 OP_DEF(OP_NOT_EQ,	"!=", 9, WPL_OP_F_LEFT_BOTH, 2)
 
+OP_DEF(OP_PATTERN_EQ,		"=~", 9, WPL_OP_F_LEFT_BOTH, 2)
+OP_DEF(OP_PATTERN_NOT_EQ,	"!~", 9, WPL_OP_F_LEFT_BOTH, 2)
+
 OP_DEF(OP_BITWISE_AND,	"&", 10, WPL_OP_F_LEFT_BOTH, 1)
 OP_DEF(OP_BITWISE_XOR,	"^", 11, WPL_OP_F_LEFT_BOTH, 1)
 OP_DEF(OP_BITWISE_OR,	"|", 12, WPL_OP_F_LEFT_BOTH, 1)
@@ -115,11 +118,13 @@ static const struct wpl_operator_struct *operators[] = {
 	&OP_LT,
 	&OP_GT,
 	&OP_EQ,
+	&OP_PATTERN_EQ,
 	&OP_SUM,
 	&OP_SUB,
 	&OP_INC_PREFIX,
 	&OP_ASSIGN_SUM,
 	&OP_NOT_EQ,
+	&OP_PATTERN_NOT_EQ,
 	&OP_LOGIC_AND,
 	&OP_LOGIC_OR,
 	&OP_LOGIC_NOT,
