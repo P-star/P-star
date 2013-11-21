@@ -50,6 +50,8 @@ class wpl_value_regex : public wpl_value {
 		return new wpl_value_regex(*this);
 	}
 
+	bool do_pattern_match (string &subject) override;
+
 	int do_operator (
 			wpl_expression_state *exp_state,
 			wpl_value *final_result,

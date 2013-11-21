@@ -236,7 +236,8 @@ int wpl_value::do_regex (
 		wpl_value *rhs
 		)
 {
-	wpl_value_bool result(rhs->do_pattern_match(toString()));
+	string tmp = toString();
+	wpl_value_bool result(rhs->do_pattern_match(tmp));
 	return result.do_operator_recursive(exp_state, final_result);
 }
 

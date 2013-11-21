@@ -29,6 +29,35 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_regex.h"
 #include "operator_return_values.h"
 
+bool wpl_value_regex::do_pattern_match (string &subject) {
+	/*
+	   TODO
+	   - add /g-modifier for multiple match
+	   - push matches to discard queue
+	   - add new left assoc operator => to push discard queue onto array
+	   */
+
+	bool do_global = false;
+	bool result = false;
+
+	boost::match_results<std::string::const_iterator> what; 
+	boost::match_flag_type flags = boost::match_default;
+	string::const_iterator start, end;
+
+	start = subject.begin();
+	end = subject.end();
+
+	while (regex_search(start, end, what, my_regex, flags)) {
+		result = true;
+
+		if (!do_global) {
+			break;
+		}
+	}
+
+	return result;
+}
+
 int wpl_value_regex::do_operator (
 		wpl_expression_state *exp_state,
 		wpl_value *final_result,
