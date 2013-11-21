@@ -503,20 +503,22 @@ Float result: 11.500000
 						<entry>!var</entry>
 					</row>
 					<row>
-						<entry morerows="4">6</entry>
-						<entry>+</entry>
-						<entry>Sum</entry>
-						<entry morerows="4">Left</entry>
-						<entry>a+b</entry>
+						<entry morerows="1">4</entry>
+						<entry>=~</entry>
+						<entry>Pattern match</entry>
+						<entry morerows="1">Left</entry>
+						<entry>a =~ /regular expression/</entry>
 					</row>
 					<row>
-						<entry>-</entry>
-						<entry>Subtraction</entry>
-						<entry>a-b</entry>
+						<entry>=~</entry>
+						<entry>Pattern negative match</entry>
+						<entry>a !~ /regular expression/</entry>
 					</row>
 					<row>
+						<entry morerows="2">5</entry>
 						<entry>*</entry>
 						<entry>Multiplication</entry>
+						<entry morerows="5">Left</entry>
 						<entry>a*b</entry>
 					</row>
 					<row>
@@ -528,6 +530,22 @@ Float result: 11.500000
 						<entry>%</entry>
 						<entry>Modulus</entry>
 						<entry>a%b</entry>
+					</row>
+					<row>
+						<entry morerows="2">6</entry>
+						<entry>+</entry>
+						<entry>Sum</entry>
+						<entry>a+b</entry>
+					</row>
+					<row>
+						<entry>-</entry>
+						<entry>Subtraction</entry>
+						<entry>a-b</entry>
+					</row>
+					<row>
+						<entry>.</entry>
+						<entry>String concatenation</entry>
+						<entry>a . b</entry>
 					</row>
 					<row>
 						<entry morerows="1">7</entry>
@@ -542,7 +560,26 @@ Float result: 11.500000
 						<entry>a &gt;&gt; 1</entry>
 					</row>
 					<row>
-						<entry morerows="3">8</entry>
+						<entry>8</entry>
+						<entry>&amp;</entry>
+						<entry>Bitwise AND</entry>
+						<entry morerows="2">Left</entry>
+						<entry>a &amp; b</entry>
+					</row>
+					<row>
+						<entry>9</entry>
+						<entry>^</entry>
+						<entry>Bitwise XOR</entry>
+						<entry>a ^ b</entry>
+					</row>
+					<row>
+						<entry>10</entry>
+						<entry>|</entry>
+						<entry>Bitwise OR</entry>
+						<entry>a | b</entry>
+					</row>
+					<row>
+						<entry morerows="3">11</entry>
 						<entry>&lt;=</entry>
 						<entry>Logical less than or equal</entry>
 						<entry morerows="5">Left</entry>
@@ -564,7 +601,7 @@ Float result: 11.500000
 						<entry>a &gt; b</entry>
 					</row>
 					<row>
-						<entry morerows="1">9</entry>
+						<entry morerows="1">12</entry>
 						<entry>==</entry>
 						<entry>Logical equal</entry>
 						<entry>a == b</entry>
@@ -575,27 +612,8 @@ Float result: 11.500000
 						<entry>a != b</entry>
 					</row>
 					<row>
-						<entry>10</entry>
-						<entry>&amp;</entry>
-						<entry>Bitwise AND</entry>
-						<entry morerows="2">Left</entry>
-						<entry>a &amp; b</entry>
-					</row>
-					<row>
-						<entry>11</entry>
-						<entry>^</entry>
-						<entry>Bitwise XOR</entry>
-						<entry>a ^ b</entry>
-					</row>
-					<row>
-						<entry>12</entry>
-						<entry>|</entry>
-						<entry>Bitwise OR</entry>
-						<entry>a | b</entry>
-					</row>
-					<row>
 						<entry>13</entry>
-						<entry>&amp;</entry>
+						<entry>&amp;&amp;</entry>
 						<entry>Logical AND</entry>
 						<entry morerows="1">Left</entry>
 						<entry>a &amp;&amp; b</entry>
@@ -605,13 +623,6 @@ Float result: 11.500000
 						<entry>||</entry>
 						<entry>Logical OR</entry>
 						<entry>a || b</entry>
-					</row>
-					<row>
-						<entry>15</entry>
-						<entry>.</entry>
-						<entry>String concatenation</entry>
-						<entry>Left</entry>
-						<entry>a . b</entry>
 					</row>
 					<row>
 						<entry morerows="11">16</entry>
