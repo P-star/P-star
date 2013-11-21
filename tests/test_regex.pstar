@@ -1,9 +1,14 @@
 SCENE main {
-	string test = "aaaaaaa           bbbbbbbbb";
+	/* Create a strange string */
+	string test = "aaa   bbbb";
+
+	/* Check if a regular expression matches */
 	if (test =~ /a\s*b/) {
 		echo "Does match\n";
 	}
-	else {
+
+	/* Check if a regular expression does not match */
+	if (test !~ /ffff/) { 
 		echo "Does not match\n";
 	}
 }

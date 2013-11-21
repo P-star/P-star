@@ -237,7 +237,14 @@ int wpl_value::do_regex (
 		)
 {
 	string tmp = toString();
-	wpl_value_bool result(rhs->do_pattern_match(tmp));
+	bool match = rhs->do_pattern_match(exp_state, tmp);
+
+	if (op == &OP_PATTERN_NOT_EQ) {
+		match = !match;
+	}
+
+	wpl_value_bool result(match);
+
 	return result.do_operator_recursive(exp_state, final_result);
 }
 
