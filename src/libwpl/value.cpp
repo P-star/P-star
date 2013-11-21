@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -90,8 +90,8 @@ int wpl_value::do_fastop (
 		return do_operator(exp_state, final_result, op, this, this);
 	}
 
-	cerr << "While doing operator '" << op->name << endl;
-	throw ("Too few operands for operator");
+	cerr << "While doing fastop '" << op->name << "'" << " on value of type " << get_type_name() << endl;
+	throw runtime_error("Too few operands for operator");
 }
 
 int wpl_value::do_operator_recursive (
