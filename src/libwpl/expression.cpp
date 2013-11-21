@@ -44,6 +44,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 //#include "value_expression.h"
 #include "value_wrapper.h"
 #include "value_list.h"
+#include "value_regex.h"
 
 #include <typeinfo>
 #include <iostream>
@@ -402,7 +403,12 @@ void wpl_expression::parse_regex(const char *prefix) {
 		THROW_ELEMENT_EXCEPTION("Non-terminated regular expression runs out of file");
 	}
 
-	cout << "Regex parsed: " << regex_string << endl;
+	wpl_value_regex *regex = new wpl_value_regex(regex_string.c_str());
+	add_constant(regex);
+	shunt(regex);
+
+	expect &= ~(EXPECT_NUMBER);
+	expect |= EXPECT_OPERATOR;
 }
 
 void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {

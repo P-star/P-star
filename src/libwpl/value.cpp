@@ -208,7 +208,13 @@ int wpl_value::do_operator_recursive (
 	cout << "- rhs type is " << (rhs?rhs->get_type_name():"-") << endl;
 	cout << "- calling operator " << op->name << "\n";*/
 
-	int ret_op = preferred->do_operator(exp_state, final_result, op, lhs, rhs);
+	int ret_op;
+	if (op == &OP_PATTERN_EQ || op == &OP_PATTERN_NOT_EQ) {
+		ret_op = preferred->do_regex(exp_state, final_result, op, lhs, rhs);
+	}
+	else {
+		ret_op = preferred->do_operator(exp_state, final_result, op, lhs, rhs);
+	}
 	if (ret_op & WPL_OP_UNKNOWN) {
 		cerr << "While running operator '" << op->name << "' on type '" <<
 			preferred->get_type_name() << "' in expression:\n";

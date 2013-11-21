@@ -46,6 +46,10 @@ class wpl_value_regex : public wpl_value {
 		my_regex(regex_string)
 	{}
 
+	wpl_value *clone() const {
+		return new wpl_value_regex(*this);
+	}
+
 	int do_operator (
 			wpl_expression_state *exp_state,
 			wpl_value *final_result,

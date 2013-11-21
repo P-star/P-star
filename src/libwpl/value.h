@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -142,6 +142,16 @@ class wpl_value : public wpl_suicidal {
 			wpl_expression_state *exp_state,
 			wpl_value *final_result
 	);
+
+	virtual int do_regex (
+			wpl_expression_state *exp_state,
+			wpl_value *final_result,
+			const struct wpl_operator_struct *op,
+			wpl_value *lhs,
+			wpl_value *rhs
+	) {
+		return WPL_OP_UNKNOWN;
+	}
 
 	virtual int do_operator (
 			wpl_expression_state *exp_state,
