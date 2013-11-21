@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -48,7 +48,8 @@ int wpl_value_unresolved_identifier::do_fastop (
 		)
 {
 	if ((op->flags & WPL_OP_F_HAS_BOTH) == WPL_OP_F_HAS_BOTH) {
-		cerr << "While doing operator '" << op->name << endl;
+		cerr << "While doing operator '" << op->name <<
+			"' on unresolved identifier '" << value << "':" << endl;
 		throw ("Too few operands for operator");
 	}
 
