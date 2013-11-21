@@ -75,14 +75,6 @@ class wpl_value_string : public wpl_value_strings<string> {
 		value = string(new_value, len);
 	}
 
-	int do_regex (
-			wpl_expression_state *exp_state,
-			wpl_value *final_result,
-			const struct wpl_operator_struct *op,
-			wpl_value *lhs,
-			wpl_value *rhs
-	);
-
 	bool toBool() {
 		return (!value.empty());
 	}

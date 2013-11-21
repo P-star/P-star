@@ -28,15 +28,3 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "value_string.h"
 
-int wpl_value_string::do_regex (
-		wpl_expression_state *exp_state,
-		wpl_value *final_result,
-		const struct wpl_operator_struct *op,
-		wpl_value *lhs,
-		wpl_value *rhs
-	     )
-{
-	cout << "String regex\n";
-	return WPL_OP_UNKNOWN;
-}
-

@@ -228,3 +228,15 @@ int wpl_value::do_operator_recursive (
 	return ret_op;
 }
 
+int wpl_value::do_regex (
+		wpl_expression_state *exp_state,
+		wpl_value *final_result,
+		const struct wpl_operator_struct *op,
+		wpl_value *lhs,
+		wpl_value *rhs
+		)
+{
+	wpl_value_bool result(rhs->do_pattern_match(toString()));
+	return result.do_operator_recursive(exp_state, final_result);
+}
+

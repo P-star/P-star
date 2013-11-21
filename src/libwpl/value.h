@@ -143,14 +143,18 @@ class wpl_value : public wpl_suicidal {
 			wpl_value *final_result
 	);
 
-	virtual int do_regex (
+	int do_regex (
 			wpl_expression_state *exp_state,
 			wpl_value *final_result,
 			const struct wpl_operator_struct *op,
 			wpl_value *lhs,
 			wpl_value *rhs
-	) {
-		return WPL_OP_UNKNOWN;
+	);
+
+	virtual bool do_pattern_match() {
+		cerr << "Attempted to match =~ or !~ with type '" << get_type_name() << 
+		       "' which is not a /regular expression/\n";
+		throw runtime_error("Cannot do pattern match operator");
 	}
 
 	virtual int do_operator (
