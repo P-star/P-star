@@ -11,6 +11,7 @@ HTML_TEMPLATE body {
 		<li>HTML template engine</li>
 		<li>Special syntax to simplify prepared SQL statements</li>
 		<li>Built-in JSON/AJAX output</li>
+		<li>Perl-like regular expression engine</li>
 	</ul>
 	<h2>Support and discussion</h2>
 	<p>There are two public maling lists available. One is for user questions and opinions, and the other is for more technical discussion about development.</p>
