@@ -351,6 +351,28 @@ The number is $num\n
 */
 			</programlisting>
 		</section>
+			<section>
+			<title>Regular expressions</title>
+			<para>P* have adopted the neat and simple regular expression syntax from the Perl language. Regular expression are delimeted with slashes. Here is an example of a program which uses regular expressions:</para>
+			<programlisting language="c">
+SCENE main {
+	/* Create a strange string */
+	string test = "aaa   bbbb";
+
+	/* Check if a regular expression matches */
+	if (test =~ /a\s*b/) {
+		echo "Does match\n";
+	}
+
+	/* Check if a regular expression does not match */
+	if (test !~ /ffff/) {
+		echo "Does not match\n";
+	}
+}
+			</programlisting>
+			<para>Take a look at to the <ulink url="http://perldoc.perl.org/perlre.html">Perl documentation for regular expressions</ulink> for more information.</para>
+			<para>Not that P* by now only supports simple matching like in the example above. Modifiers like <code>/g</code>, replace prefix <code>s/</code> and variable interpolation is not yet supported.</para>
+		</section>
 		<section>
 			<title>Functions</title>
 			<para>The P* function syntax is equal to that of the C-language. A function needs to have a return value of a specific type.
@@ -509,7 +531,7 @@ Float result: 11.500000
 						<entry>a =~ /regular expression/</entry>
 					</row>
 					<row>
-						<entry>=~</entry>
+						<entry>!~</entry>
 						<entry>Pattern negative match</entry>
 						<entry>a !~ /regular expression/</entry>
 					</row>

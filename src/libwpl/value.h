@@ -151,7 +151,7 @@ class wpl_value : public wpl_suicidal {
 			wpl_value *rhs
 	);
 
-	virtual bool do_pattern_match(string &subject) {
+	virtual bool do_pattern_match(wpl_expression_state *exp_state, string &subject) {
 		cerr << "Attempted to match =~ or !~ with type '" << get_type_name() << 
 		       "' which is not a /regular expression/\n";
 		throw runtime_error("Cannot do pattern match operator");

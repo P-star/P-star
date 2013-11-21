@@ -29,7 +29,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_regex.h"
 #include "operator_return_values.h"
 
-bool wpl_value_regex::do_pattern_match (string &subject) {
+bool wpl_value_regex::do_pattern_match (wpl_expression_state *exp_state, string &subject) {
 	/*
 	   TODO
 	   - add /g-modifier for multiple match

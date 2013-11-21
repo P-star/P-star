@@ -6,5 +6,5 @@ Name: WPL
 Description: WPL parser and compiler library
 Requires:
 Version: @PACKAGE_VERSION@
-Libs: -L${libdir} -llibwpl-1.0
-Cflags: -I${includedir}/libwpl-1.0 -I${libdir}/libwpl-1.0/include
+Libs: -L${libdir} -llibwpl-1.1
+Cflags: -I${includedir}/libwpl-1.1 -I${libdir}/libwpl-1.1/include

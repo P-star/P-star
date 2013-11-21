@@ -1,3 +1,12 @@
+p-star (1.1-alpha1) unstable; urgency=low
+
+  * Engine for simple regular expression with mattern matching added
+  * Some changes in operator precedences
+  * Typo fixes in documentation
+  * Version bump
+
+ -- Atle Solbakken <atle@goliathdns.no>  Fri, 22 Nov 2013 00:02:02 +0100
+
 p-star (1.0) unstable; urgency=low
 
   * Initial Release.
