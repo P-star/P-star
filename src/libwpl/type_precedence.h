@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -53,6 +53,7 @@ enum {
 	wpl_type_precedence_class,
 	wpl_type_precedence_array,
 	wpl_type_precedence_hash,
+	wpl_type_precedence_regex,
 
 	wpl_type_precedence_env,
 	wpl_type_precedence_get,

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -90,8 +90,8 @@ int wpl_value::do_fastop (
 		return do_operator(exp_state, final_result, op, this, this);
 	}
 
-	cerr << "While doing operator '" << op->name << endl;
-	throw ("Too few operands for operator");
+	cerr << "While doing fastop '" << op->name << "'" << " on value of type " << get_type_name() << endl;
+	throw runtime_error("Too few operands for operator");
 }
 
 int wpl_value::do_operator_recursive (
@@ -208,7 +208,13 @@ int wpl_value::do_operator_recursive (
 	cout << "- rhs type is " << (rhs?rhs->get_type_name():"-") << endl;
 	cout << "- calling operator " << op->name << "\n";*/
 
-	int ret_op = preferred->do_operator(exp_state, final_result, op, lhs, rhs);
+	int ret_op;
+	if (op == &OP_PATTERN_EQ || op == &OP_PATTERN_NOT_EQ) {
+		ret_op = preferred->do_regex(exp_state, final_result, op, lhs, rhs);
+	}
+	else {
+		ret_op = preferred->do_operator(exp_state, final_result, op, lhs, rhs);
+	}
 	if (ret_op & WPL_OP_UNKNOWN) {
 		cerr << "While running operator '" << op->name << "' on type '" <<
 			preferred->get_type_name() << "' in expression:\n";
@@ -220,5 +226,18 @@ int wpl_value::do_operator_recursive (
 		throw runtime_error("Unresolved identifier");
 	}
 	return ret_op;
+}
+
+int wpl_value::do_regex (
+		wpl_expression_state *exp_state,
+		wpl_value *final_result,
+		const struct wpl_operator_struct *op,
+		wpl_value *lhs,
+		wpl_value *rhs
+		)
+{
+	string tmp = toString();
+	wpl_value_bool result(rhs->do_pattern_match(tmp));
+	return result.do_operator_recursive(exp_state, final_result);
 }
 

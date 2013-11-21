@@ -32,15 +32,22 @@ else
 	MYSQL_INCLUDES="`$MYSQL_CONFIG --include`"
 	MYSQL_LIBS="`$MYSQL_CONFIG --libs`"
 fi
-
-AC_CHECK_LIB([dl], [dlopen], LIB_DL="-ldl")
-#PKG_CHECK_MODULES([LIBDL], [dl])
-
-AX_CXX_CHECK_LIB(mimetic, [mimetic::MimeEntity])
-
-AC_SUBST([LIB_DL])
 AC_SUBST([MYSQL_INCLUDES])
 AC_SUBST([MYSQL_LIBS])
+
+# Stolen from http://stackoverflow.com/questions/3088069/boost-and-autoconf
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADERS([boost/foreach.hpp], [],
+		[AC_MSG_ERROR(You need the Boost libraries.)])
+AC_CHECK_HEADERS([mimetic/mimetic.h], [],
+		[AC_MSG_ERROR(You need the Mimetic libraries.)])
+AC_LANG_POP([C++])
+
+AC_CHECK_LIB([dl], [dlopen], LIB_DL="-ldl")
+AC_SUBST([LIB_DL])
+
+BOOST_REQUIRE([1.46.0])
+BOOST_REGEX
 
 AC_DEFINE_UNQUOTED([WPL_BLOCK_MAX_CHILDREN], 64, [Max variable name length])
 AC_DEFINE_UNQUOTED([WPL_VARNAME_SIZE], 64, [Max variable name length])

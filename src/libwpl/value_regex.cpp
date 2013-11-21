@@ -26,30 +26,46 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-using namespace std;
+#include "value_regex.h"
+#include "operator_return_values.h"
 
-#define WPL_PROCESS_ESCAPE_CHAR(escape,replace) \
-	if (letter == escape) { *target=replace; return true; }
+bool wpl_value_regex::do_pattern_match (string &subject) {
+	/*
+	   TODO
+	   - add /g-modifier for multiple match
+	   - push matches to discard queue
+	   - add new left assoc operator => to push discard queue onto array
+	   */
 
-bool wpl_string_parse_double_escape(char *target, char letter) {
-	WPL_PROCESS_ESCAPE_CHAR('\0', 0)
-	WPL_PROCESS_ESCAPE_CHAR('a', 7)
-	WPL_PROCESS_ESCAPE_CHAR('b', 8)
-	WPL_PROCESS_ESCAPE_CHAR('t', 9)
-	WPL_PROCESS_ESCAPE_CHAR('n', 10)
-	WPL_PROCESS_ESCAPE_CHAR('v', 11)
-	WPL_PROCESS_ESCAPE_CHAR('r', 13)
-	WPL_PROCESS_ESCAPE_CHAR('"', 34)
-	WPL_PROCESS_ESCAPE_CHAR('\\', 92)
-	WPL_PROCESS_ESCAPE_CHAR('$', 36)
-	WPL_PROCESS_ESCAPE_CHAR('{', 123)
-	WPL_PROCESS_ESCAPE_CHAR('}', 124)
+	bool do_global = false;
+	bool result = false;
 
-	return false;
+	boost::match_results<std::string::const_iterator> what; 
+	boost::match_flag_type flags = boost::match_default;
+	string::const_iterator start, end;
+
+	start = subject.begin();
+	end = subject.end();
+
+	while (regex_search(start, end, what, my_regex, flags)) {
+		result = true;
+
+		if (!do_global) {
+			break;
+		}
+	}
+
+	return result;
 }
 
-bool wpl_string_parse_single_escape(char *target, char letter) {
-	WPL_PROCESS_ESCAPE_CHAR('\'', 39)
-	return false;
+int wpl_value_regex::do_operator (
+		wpl_expression_state *exp_state,
+		wpl_value *final_result,
+		const wpl_operator_struct *op,
+		wpl_value *lhs,
+		wpl_value *rhs
+		) {
+	return WPL_OP_UNKNOWN;
 }
+
 

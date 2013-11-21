@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -142,6 +142,20 @@ class wpl_value : public wpl_suicidal {
 			wpl_expression_state *exp_state,
 			wpl_value *final_result
 	);
+
+	int do_regex (
+			wpl_expression_state *exp_state,
+			wpl_value *final_result,
+			const struct wpl_operator_struct *op,
+			wpl_value *lhs,
+			wpl_value *rhs
+	);
+
+	virtual bool do_pattern_match(string &subject) {
+		cerr << "Attempted to match =~ or !~ with type '" << get_type_name() << 
+		       "' which is not a /regular expression/\n";
+		throw runtime_error("Cannot do pattern match operator");
+	}
 
 	virtual int do_operator (
 			wpl_expression_state *exp_state,

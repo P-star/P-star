@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -56,31 +56,34 @@ OP_DEF(OP_DEC_PREFIX,	"--", 3, WPL_OP_F_RIGHT_ONE, 2)
 OP_DEF(OP_BITWISE_NOT,	"~",  3, WPL_OP_F_RIGHT_ONE, 1)
 OP_DEF(OP_LOGIC_NOT,	"!",  3, WPL_OP_F_RIGHT_ONE, 1)
 
+OP_DEF(OP_PATTERN_EQ,		"=~", 4, WPL_OP_F_LEFT_BOTH, 2)
+OP_DEF(OP_PATTERN_NOT_EQ,	"!~", 4, WPL_OP_F_LEFT_BOTH, 2)
+
+OP_DEF(OP_MUL,		"*", 5, WPL_OP_F_LEFT_BOTH, 1)
+OP_DEF(OP_DIV,		"/", 5, WPL_OP_F_LEFT_BOTH, 1)
+OP_DEF(OP_MOD,		"%", 5, WPL_OP_F_LEFT_BOTH, 1)
+
 OP_DEF(OP_SUM,		"+", 6, WPL_OP_F_LEFT_BOTH, 1)
 OP_DEF(OP_SUB,		"-", 6, WPL_OP_F_LEFT_BOTH, 1)
-OP_DEF(OP_MUL,		"*", 6, WPL_OP_F_LEFT_BOTH, 1)
-OP_DEF(OP_DIV,		"/", 6, WPL_OP_F_LEFT_BOTH, 1)
-OP_DEF(OP_MOD,		"%", 6, WPL_OP_F_LEFT_BOTH, 1)
+OP_DEF(OP_CONCAT,	".", 6, WPL_OP_F_LEFT_BOTH, 1)
 
 OP_DEF(OP_SH_LEFT,	"<<", 7, WPL_OP_F_LEFT_BOTH, 2)
 OP_DEF(OP_SH_RIGHT,	">>", 7, WPL_OP_F_LEFT_BOTH, 2)
 
-OP_DEF(OP_LTEQ,		"<=", 8, WPL_OP_F_LEFT_BOTH, 2)
-OP_DEF(OP_GTEQ,		">=", 8, WPL_OP_F_LEFT_BOTH, 2)
-OP_DEF(OP_LT,		"<",  8, WPL_OP_F_LEFT_BOTH, 1)
-OP_DEF(OP_GT,		">",  8, WPL_OP_F_LEFT_BOTH, 1)
+OP_DEF(OP_BITWISE_AND,	"&", 8, WPL_OP_F_LEFT_BOTH, 1)
+OP_DEF(OP_BITWISE_XOR,	"^", 9, WPL_OP_F_LEFT_BOTH, 1)
+OP_DEF(OP_BITWISE_OR,	"|", 10, WPL_OP_F_LEFT_BOTH, 1)
 
-OP_DEF(OP_EQ,		"==", 9, WPL_OP_F_LEFT_BOTH, 2)
-OP_DEF(OP_NOT_EQ,	"!=", 9, WPL_OP_F_LEFT_BOTH, 2)
+OP_DEF(OP_LTEQ,		"<=", 11, WPL_OP_F_LEFT_BOTH, 2)
+OP_DEF(OP_GTEQ,		">=", 11, WPL_OP_F_LEFT_BOTH, 2)
+OP_DEF(OP_LT,		"<",  11, WPL_OP_F_LEFT_BOTH, 1)
+OP_DEF(OP_GT,		">",  11, WPL_OP_F_LEFT_BOTH, 1)
 
-OP_DEF(OP_BITWISE_AND,	"&", 10, WPL_OP_F_LEFT_BOTH, 1)
-OP_DEF(OP_BITWISE_XOR,	"^", 11, WPL_OP_F_LEFT_BOTH, 1)
-OP_DEF(OP_BITWISE_OR,	"|", 12, WPL_OP_F_LEFT_BOTH, 1)
+OP_DEF(OP_EQ,		"==", 12, WPL_OP_F_LEFT_BOTH, 2)
+OP_DEF(OP_NOT_EQ,	"!=", 12, WPL_OP_F_LEFT_BOTH, 2)
 
 OP_DEF(OP_LOGIC_AND,	"&&", 13, WPL_OP_F_LEFT_BOTH, 2)
 OP_DEF(OP_LOGIC_OR,	"||", 14, WPL_OP_F_LEFT_BOTH, 2)
-
-OP_DEF(OP_CONCAT,	".", 15, WPL_OP_F_LEFT_BOTH, 1)
 
 OP_DEF(OP_ASSIGN,		"=",   16, WPL_OP_F_RIGHT_BOTH, 1)
 OP_DEF(OP_ASSIGN_SUM,		"+=",  16, WPL_OP_F_RIGHT_BOTH, 2)
@@ -115,11 +118,13 @@ static const struct wpl_operator_struct *operators[] = {
 	&OP_LT,
 	&OP_GT,
 	&OP_EQ,
+	&OP_PATTERN_EQ,
 	&OP_SUM,
 	&OP_SUB,
 	&OP_INC_PREFIX,
 	&OP_ASSIGN_SUM,
 	&OP_NOT_EQ,
+	&OP_PATTERN_NOT_EQ,
 	&OP_LOGIC_AND,
 	&OP_LOGIC_OR,
 	&OP_LOGIC_NOT,

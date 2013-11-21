@@ -1,0 +1,9 @@
+SCENE main {
+	string test = "aaaaaaa           bbbbbbbbb";
+	if (test =~ /a\s*b/) {
+		echo "Does match\n";
+	}
+	else {
+		echo "Does not match\n";
+	}
+}

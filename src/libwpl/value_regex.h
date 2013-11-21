@@ -26,30 +26,37 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-using namespace std;
+#pragma once
 
-#define WPL_PROCESS_ESCAPE_CHAR(escape,replace) \
-	if (letter == escape) { *target=replace; return true; }
+#include "typenames.h"
+#include "value_holder.h"
+#include "exception.h"
 
-bool wpl_string_parse_double_escape(char *target, char letter) {
-	WPL_PROCESS_ESCAPE_CHAR('\0', 0)
-	WPL_PROCESS_ESCAPE_CHAR('a', 7)
-	WPL_PROCESS_ESCAPE_CHAR('b', 8)
-	WPL_PROCESS_ESCAPE_CHAR('t', 9)
-	WPL_PROCESS_ESCAPE_CHAR('n', 10)
-	WPL_PROCESS_ESCAPE_CHAR('v', 11)
-	WPL_PROCESS_ESCAPE_CHAR('r', 13)
-	WPL_PROCESS_ESCAPE_CHAR('"', 34)
-	WPL_PROCESS_ESCAPE_CHAR('\\', 92)
-	WPL_PROCESS_ESCAPE_CHAR('$', 36)
-	WPL_PROCESS_ESCAPE_CHAR('{', 123)
-	WPL_PROCESS_ESCAPE_CHAR('}', 124)
+#include <boost/regex.hpp>
 
-	return false;
-}
+class wpl_operator_struct;
 
-bool wpl_string_parse_single_escape(char *target, char letter) {
-	WPL_PROCESS_ESCAPE_CHAR('\'', 39)
-	return false;
-}
+class wpl_value_regex : public wpl_value {
+	private:
+	boost::regex my_regex;
 
+	public:
+	PRIMITIVE_TYPEINFO(regex)
+	wpl_value_regex(const char *regex_string) :
+		my_regex(regex_string)
+	{}
+
+	wpl_value *clone() const {
+		return new wpl_value_regex(*this);
+	}
+
+	bool do_pattern_match (string &subject) override;
+
+	int do_operator (
+			wpl_expression_state *exp_state,
+			wpl_value *final_result,
+			const wpl_operator_struct *op,
+			wpl_value *lhs,
+			wpl_value *rhs
+	);
+};

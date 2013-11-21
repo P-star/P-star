@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -50,6 +50,7 @@ extern const char *wpl_typename_unresolved_identifier;
 extern const char *wpl_typename_function_ptr;
 extern const char *wpl_typename_expression;
 extern const char *wpl_typename_list;
+extern const char *wpl_typename_regex;
 
 extern const char *wpl_typename_env;
 extern const char *wpl_typename_get;
