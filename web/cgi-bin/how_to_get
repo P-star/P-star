@@ -28,9 +28,9 @@ $ make</pre>
 	<pre># make install</pre>
 	<h2>Get .tar.gz source</h2>
 	<p>First, <a href="http://apt.p-star.org/pool/main/p/p-star/p-star_1.1-alpha1.tar.gz">download the latest tar.gz-archive</a>.</p>
-	<p>The requirements are the same as for the Github-section above. Run these steps to compile P*:</p>
+	<p>The requirements are the same as for the Github-section above.</p>
 	<pre>$ tar -zxvf p-star_1.1-alpha1.tar.gz
-$ cd p-star-1.1-alpha1
+$ cd P-star
 $ autoreconf -i 
 $ ./configure
 $ make</pre>
