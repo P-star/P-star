@@ -1,4 +1,4 @@
-p-star (1.1) unstable; urgency=low
+p-star (1.1-alpha1) unstable; urgency=low
 
   * Engine for simple regular expression with mattern matching added
   * Some changes in operator precedences
