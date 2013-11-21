@@ -275,7 +275,6 @@ SCENE main {
 			The string output operators <code>echo</code> and <code>errcho</code> internally use the C++ <code>iostream</code> output methods <code>cout</code> and <code>cerr</code>.
 			</para>
 			<para>In P*, you can concatenate string using the dot operator, <code>.</code>.
-			Note that the concatenation operator has lower precedence than the equalient in PHP and Perl.
 			</para>
 			<para>
 			A double quote delimited string supports the following replacement escape sequences:
