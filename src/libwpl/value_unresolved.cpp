@@ -90,7 +90,7 @@ int wpl_value_unresolved_identifier::do_operator_recursive (
 	}
 
 	if (wpl_function *function = exp_state->find_function(value.c_str())) {
-		wpl_value_function_ptr function_ptr(function, NULL, exp_state->get_nss());
+		wpl_value_function_ptr function_ptr(function, NULL, exp_state);
 		return function_ptr.do_operator_recursive(exp_state, final_result);
 	}
 

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -42,11 +42,16 @@ void wpl_namespace_session::replace_variables (wpl_namespace_session *source) {
 	}
 }
 
-bool wpl_namespace_session::set_variables_from_expression (wpl_expression_state *exp_state) {
-	if (variables_ptr.size() != exp_state->get_discard().size()) {
+bool wpl_namespace_session::set_variables_from_expression (wpl_expression_state *exp_state, int discard_pos) {
+
+	discard_pos++;
+
+	int discard_length = exp_state->get_discard().size() - discard_pos;
+
+	if (variables_ptr.size() != discard_length) {
 #ifdef WPL_DEBUG_FUNCTIONS
-		DBG("NSS: Load length mismatch before load attempts (" << variables_ptr.size() << " vs " << exp_state->get_discard().size() << ")\n");
-		for (int i = 0; i < exp_state->get_discard().size(); i++) {
+		DBG("NSS: Load length mismatch before load attempts (" << variables_ptr.size() << " vs " << discard_length << ")\n");
+		for (int i = discard_pos; i < exp_state->get_discard().size(); i++) {
 			wpl_value *value = exp_state->get_discard()[i];
 			DBG("- " << value->get_type_name() << endl);
 		}
@@ -55,10 +60,10 @@ bool wpl_namespace_session::set_variables_from_expression (wpl_expression_state 
 	}
 
 #ifdef WPL_DEBUG_FUNCTIONS
-	DBG("NSS: Loading " << exp_state->get_discard().size() << " arguments to function\n");
+	DBG("NSS: Loading " << discard_length << " arguments to function\n");
 #endif
 
-	int i = 0;
+	int i = discard_pos;
 	int match_count = 0;
 	for (unique_ptr<wpl_variable> &variable_ptr : variables_ptr) {
 		wpl_value *value = exp_state->get_discard()[i++];

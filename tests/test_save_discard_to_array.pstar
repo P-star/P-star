@@ -1,0 +1,25 @@
+SCENE main {
+	/* Instantiate and array */
+	array<int> my_array;
+
+	/* Push the four numbers into the array */
+	int count = (10, 20, "30", 40 => my_array);
+
+	/* Print result */
+	echo "Pushed $count values to the array\n";
+
+	int i = "-1";
+	while (++i < @my_array) {
+		echo "my_array[$i] is " . my_array[i] . "\n";
+	}
+}
+
+/* This program will output:
+
+Pushed 4 values to the array
+my_array[0] is 10
+my_array[1] is 20
+my_array[2] is 30
+my_array[3] is 40
+
+*/

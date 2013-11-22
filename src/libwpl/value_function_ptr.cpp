@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -32,6 +32,17 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <list>
 
+wpl_value_function_ptr::wpl_value_function_ptr (
+		wpl_function *function,
+		wpl_namespace_session *nss_this,
+		wpl_expression_state *exp_state
+		) {
+	this->function = function;
+	this->nss_this = nss_this;
+	this->nss_caller = exp_state->get_nss();
+	this->saved_discard_pos = exp_state->get_discard_pos();
+}
+
 int wpl_value_function_ptr::do_operator (
 		wpl_expression_state *exp_state,
 		wpl_value *final_result,
@@ -57,5 +68,7 @@ int wpl_value_function_ptr::do_operator (
 	}
 
 	int my_exp_pos = exp_state->pos() - 1; // -1 because we were just popped of
-	return exp_state->run_function (function, my_exp_pos, final_result, nss_this, nss_caller);
+	int discard_pos = saved_discard_pos;
+
+	return exp_state->run_function (function, my_exp_pos, discard_pos, final_result, nss_this, nss_caller);
 }

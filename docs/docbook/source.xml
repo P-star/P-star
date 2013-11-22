@@ -428,10 +428,10 @@ SCENE main {
 	float b = "1.5";
 
 	/* The expression a + b will return an integer */
-	echo "Integer result: " . a + b . "\n";
+	echo "Integer result: " . (a + b) . "\n";
 
 	/* The expression b + a will return a float */
-	echo "Float result: " . b + a . "\n";
+	echo "Float result: " . (b + a) . "\n";
 }
 /* This program will output:
 Integer result: 11
@@ -1531,7 +1531,7 @@ SCENE main {
 				<tbody>
 					<row>
 						<entry>Perl-like in-language regular expressions</entry>
-						<entry>Not written</entry>
+						<entry>Partial implementation available from 1.1-alpha1</entry>
 					</row>
 					<row>
 						<entry>File I/O</entry>

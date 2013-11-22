@@ -1,0 +1,11 @@
+SCENE main {
+	int func_a(int a, int b) {
+		return a + b;
+	}
+	int func_b(int a, int b) {
+		return a + b;
+	}
+
+	/* Result should be '7' */
+	echo "final: " . func_b(4,func_a(1,2)) . "\n";
+}

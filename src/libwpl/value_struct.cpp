@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -74,7 +74,7 @@ int wpl_value_struct::do_operator (
 			return variable->get_value()->do_operator_recursive(exp_state, final_result);
 		}
 		else if (wpl_function *function = find_function(name)) {
-			wpl_value_function_ptr function_ptr(function, this, exp_state->get_nss());
+			wpl_value_function_ptr function_ptr(function, this, exp_state);
 			return function_ptr.do_operator_recursive(exp_state, final_result);
 		}
 

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -56,6 +56,9 @@ template<typename T> class wpl_exp_deque {
 	}
 	int pos() {
 		return current_pos;
+	}
+	void goto_pos(int pos) {
+		current_pos = pos;
 	}
 	T &top() {
 		return array[current_pos];
