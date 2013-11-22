@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -73,7 +73,7 @@ class wpl_namespace_session {
 		do_sibling_lookup = true;
 	}
 
-	bool set_variables_from_expression (wpl_expression_state *exp_state);
+	bool set_variables_from_expression (wpl_expression_state *exp_state, int discard_pos);
 	void replace_variables (wpl_namespace_session *source);
 
 	void push(wpl_variable *variable);

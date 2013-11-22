@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -140,8 +140,16 @@ class wpl_expression_state : public wpl_state {
 		discard_chain.push(value);
 	}
 
-	void clear_discard() {
+/*	void clear_discard() {
 		discard_chain.clear();
+	}*/
+
+	int get_discard_pos() {
+		return discard_chain.pos();
+	}
+
+	void set_discard_pos(int pos) {
+		discard_chain.goto_pos(pos);
 	}
 
 	// RUNNING
@@ -149,6 +157,7 @@ class wpl_expression_state : public wpl_state {
 	int run_function (
 			wpl_function *function,
 			int index,
+			int discard_pos,
 			wpl_value *final_result,
 			wpl_namespace_session *nss_this,
 			wpl_namespace_session *nss_caller

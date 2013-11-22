@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -44,6 +44,8 @@ class wpl_value_function_ptr : public wpl_value {
 	wpl_namespace_session *nss_this;
 	wpl_namespace_session *nss_caller;
 
+	int saved_discard_pos;
+
 	public:
 	PRIMITIVE_TYPEINFO(function_ptr)
 
@@ -55,17 +57,14 @@ class wpl_value_function_ptr : public wpl_value {
 		this->function = function;
 		this->nss_this = NULL;
 		this->nss_caller = NULL;
+		this->saved_discard_pos = 0;
 	}
 
 	wpl_value_function_ptr (
 			wpl_function *function,
 			wpl_namespace_session *nss_this,
-			wpl_namespace_session *nss_caller
-	) {
-		this->function = function;
-		this->nss_this = nss_this;
-		this->nss_caller = nss_caller;
-	}
+			wpl_expression_state *exp_state
+	);
 
 	~wpl_value_function_ptr() {
 #ifdef WPL_DEBUG_DESTRUCTION

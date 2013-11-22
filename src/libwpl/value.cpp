@@ -129,7 +129,6 @@ int wpl_value::do_operator_recursive (
 
 	if (value) {
 		exp_state->push_waiting(this);
-		exp_state->clear_discard();
 //		cout << "- next is value of type " << first_carrier.value->get_type_name() << "\n";
 		return first_carrier.value->do_operator_recursive (exp_state, final_result);
 	}

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -45,6 +45,7 @@ void wpl_expression_state::optimize() {
 int wpl_expression_state::run_function (
 		wpl_function *function,
 		int index,
+		int discard_pos,
 		wpl_value *final_result,
 		wpl_namespace_session *nss_this,
 		wpl_namespace_session *nss_caller
@@ -61,11 +62,13 @@ int wpl_expression_state::run_function (
 	wpl_function_state *function_state =
 		(wpl_function_state *) child_states[index].get();
 
-	if (!function_state->set_variables_from_expression(this)) {
+	if (!function_state->set_variables_from_expression(this, discard_pos)) {
 		cerr << "While loading arguments from expression into function with signature ";
 		cerr << "\t'" << function->get_function_name() << "' :\n";
 		throw runtime_error("Function argument mismatch");
 	}
+
+	set_discard_pos(discard_pos);
 
 	int ret = function->run(function_state, function_state->get_return_value());
 	if (!(ret & WPL_OP_OK)) {
