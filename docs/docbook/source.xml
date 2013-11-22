@@ -646,6 +646,13 @@ Float result: 11.500000
 						<entry>a || b</entry>
 					</row>
 					<row>
+						<entry>15</entry>
+						<entry>=></entry>
+						<entry>Push discard chain to array</entry>
+						<entry>Right</entry>
+						<entry>10, 20, 30 => my_array</entry>
+					</row>
+					<row>
 						<entry morerows="11">16</entry>
 						<entry>=</entry>
 						<entry>Assign</entry>
@@ -799,6 +806,35 @@ The value of the first array element is 'First element'
 			<para>
 			The array only creates elements you access. If you skip indexes, like if you only use element 0 and 5, the size of the array will be 6, but memory is not allocated for elements 1-4.
 			</para>
+			<para>You can push a list to the end of an array using a combination of the discard operator <code>,</code>(comma) and the discard save operator <code>=></code>. The discard save operator returns the number of elements added to the array. Here is an example program:</para>
+			<programlisting language="c">
+SCENE main {
+	/* Instantiate and array */
+	array&lt;int&gt; my_array;
+
+	/* Push the four numbers into the array */
+	int count = (10, 20, "30", 40 => my_array);
+
+	/* Print result */
+	echo "Pushed $count values to the array\n";
+
+	int i = "-1";
+	while (++i &lt; @my_array) {
+		echo "my_array[$i] is " . my_array[i] . "\n";
+	}
+}
+
+/* This program will output:
+
+   Pushed 4 values to the array
+   my_array[0] is 10
+   my_array[1] is 20
+   my_array[2] is 30
+   my_array[3] is 40
+
+ */
+
+			</programlisting>
 			<bridgehead>hash&lt;default type&gt;</bridgehead>
 			<para>
 			A hash is an array except that the values are accessed using string identifiers instead of indexes and that elements are unordered.

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -50,11 +50,6 @@ int wpl_value_array::array_subscripting() {
 
 	wpl_value *value = define_if_needed(index);
 
-	if (value == NULL) {
-		value = template_type->new_instance();
-		set (index, value);
-	}
-
 	result = value;
 
 	return (WPL_OP_OK|WPL_OP_NAME_RESOLVED);
@@ -78,6 +73,25 @@ int wpl_value_array::do_operator (
 	else if (op == &OP_INDIRECTION) {
 		wpl_value *value = define_if_needed(0);
 		return value->do_operator_recursive(exp_state, final_result);
+	}
+	else if (op == &OP_SAVE_DISCARD) {
+		if (exp_state->empty_waiting()) {
+			throw runtime_error("Cannot assign discard chain to array with operator '=>' without any previous operands");
+		}
+
+		if (wpl_value *wait_top = exp_state->top_waiting()) {
+			exp_state->pop_waiting();
+			exp_state->push_discard(wait_top);
+		}
+
+		/* Push discard chain to array */
+		int i;
+		for (i = 0; i <= exp_state->get_discard_pos(); i++) {
+			define_if_needed(size())->set_weak(exp_state->get_discard()[i]);
+		}
+
+		wpl_value_int res(i);
+		return res.do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_DISCARD) {
 		ret = discard();
