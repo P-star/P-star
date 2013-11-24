@@ -32,7 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-class wpl_operator_struct;
+struct wpl_operator_struct;
 class wpl_value;
 
 struct shunting_yard_carrier {

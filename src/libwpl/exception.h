@@ -33,6 +33,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "matcher.h" 
 
+#if _MSC_VER
+#define snprintf _snprintf
+#endif
+
 using namespace std;
 
 static const int exception_msg_length = 256;

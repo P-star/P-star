@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4BD57A0B-A8C5-40ED-A36E-E90105F59FB8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Pstarforwindows</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;WPL_VARNAME_SIZE 64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/D WPL_VARNAME_SIZE=64 /D WPL_BLOCK_MAX_CHILDREN=128 /D WPL_EXPRESSION_MAX=128 /D WPL_MYSQL_BIND_MAX=32</AdditionalOptions>
+      <AdditionalIncludeDirectories>C:\Users\Solbakken\Documents\GitHub\P-star\MySQL Server 5.6\include;C:\Users\Solbakken\Documents\GitHub\P-star\mimetic-0.9.7;C:\Users\Solbakken\Documents\GitHub\P-star\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>None</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Users\Solbakken\Documents\GitHub\P-star\MySQL Server 5.6\lib;C:\Users\Solbakken\Documents\GitHub\P-star\boost_1_55_0\stage\lib;C:\Users\Solbakken\Documents\GitHub\P-star\mimetic-0.9.7\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;mysqlclient.lib;libmysql.lib;libmimetic_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\global.h" />
+    <ClInclude Include="..\include\module.h" />
+    <ClInclude Include="..\src\libmysql\libwpl_mysql.h" />
+    <ClInclude Include="..\src\libmysql\mysql.h" />
+    <ClInclude Include="..\src\libmysql\mysql_pointers.h" />
+    <ClInclude Include="..\src\libmysql\mysql_res_holder.h" />
+    <ClInclude Include="..\src\libmysql\mysql_row.h" />
+    <ClInclude Include="..\src\libmysql\mysql_stmt.h" />
+    <ClInclude Include="..\src\libmysql\mysql_types.h" />
+    <ClInclude Include="..\src\libmysql\sql.h" />
+    <ClInclude Include="..\src\libmysql\value_sql.h" />
+    <ClInclude Include="..\src\libwpl\array.h" />
+    <ClInclude Include="..\src\libwpl\block.h" />
+    <ClInclude Include="..\src\libwpl\blocks.h" />
+    <ClInclude Include="..\src\libwpl\block_if.h" />
+    <ClInclude Include="..\src\libwpl\block_state.h" />
+    <ClInclude Include="..\src\libwpl\block_while.h" />
+    <ClInclude Include="..\src\libwpl\class.h" />
+    <ClInclude Include="..\src\libwpl\cloneable.h" />
+    <ClInclude Include="..\src\libwpl\debug.h" />
+    <ClInclude Include="..\src\libwpl\do_operator.h" />
+    <ClInclude Include="..\src\libwpl\exception.h" />
+    <ClInclude Include="..\src\libwpl\expression.h" />
+    <ClInclude Include="..\src\libwpl\expression_state.h" />
+    <ClInclude Include="..\src\libwpl\exp_deque.h" />
+    <ClInclude Include="..\src\libwpl\function.h" />
+    <ClInclude Include="..\src\libwpl\function_state.h" />
+    <ClInclude Include="..\src\libwpl\hash.h" />
+    <ClInclude Include="..\src\libwpl\identifier.h" />
+    <ClInclude Include="..\src\libwpl\internal_function.h" />
+    <ClInclude Include="..\src\libwpl\json.h" />
+    <ClInclude Include="..\src\libwpl\matcher.h" />
+    <ClInclude Include="..\src\libwpl\module_loader.h" />
+    <ClInclude Include="..\src\libwpl\namespace.h" />
+    <ClInclude Include="..\src\libwpl\namespace_session.h" />
+    <ClInclude Include="..\src\libwpl\object.h" />
+    <ClInclude Include="..\src\libwpl\operator.h" />
+    <ClInclude Include="..\src\libwpl\operator_return_values.h" />
+    <ClInclude Include="..\src\libwpl\operator_types.h" />
+    <ClInclude Include="..\src\libwpl\output_json.h" />
+    <ClInclude Include="..\src\libwpl\parseable.h" />
+    <ClInclude Include="..\src\libwpl\parser.h" />
+    <ClInclude Include="..\src\libwpl\pragma.h" />
+    <ClInclude Include="..\src\libwpl\pragma_names.h" />
+    <ClInclude Include="..\src\libwpl\pragma_state.h" />
+    <ClInclude Include="..\src\libwpl\program.h" />
+    <ClInclude Include="..\src\libwpl\runable.h" />
+    <ClInclude Include="..\src\libwpl\scene.h" />
+    <ClInclude Include="..\src\libwpl\shuntable.h" />
+    <ClInclude Include="..\src\libwpl\shunting_yard.h" />
+    <ClInclude Include="..\src\libwpl\shunting_yard_carrier.h" />
+    <ClInclude Include="..\src\libwpl\state.h" />
+    <ClInclude Include="..\src\libwpl\struct.h" />
+    <ClInclude Include="..\src\libwpl\struct_state.h" />
+    <ClInclude Include="..\src\libwpl\suicidal.h" />
+    <ClInclude Include="..\src\libwpl\template.h" />
+    <ClInclude Include="..\src\libwpl\text.h" />
+    <ClInclude Include="..\src\libwpl\text_state.h" />
+    <ClInclude Include="..\src\libwpl\typenames.h" />
+    <ClInclude Include="..\src\libwpl\types.h" />
+    <ClInclude Include="..\src\libwpl\type_precedence.h" />
+    <ClInclude Include="..\src\libwpl\user_function.h" />
+    <ClInclude Include="..\src\libwpl\value.h" />
+    <ClInclude Include="..\src\libwpl\value_array.h" />
+    <ClInclude Include="..\src\libwpl\value_bool.h" />
+    <ClInclude Include="..\src\libwpl\value_constant_pointer.h" />
+    <ClInclude Include="..\src\libwpl\value_cookie.h" />
+    <ClInclude Include="..\src\libwpl\value_cxx_class_wrapper.h" />
+    <ClInclude Include="..\src\libwpl\value_double.h" />
+    <ClInclude Include="..\src\libwpl\value_env.h" />
+    <ClInclude Include="..\src\libwpl\value_expression.h" />
+    <ClInclude Include="..\src\libwpl\value_float.h" />
+    <ClInclude Include="..\src\libwpl\value_function_ptr.h" />
+    <ClInclude Include="..\src\libwpl\value_get.h" />
+    <ClInclude Include="..\src\libwpl\value_hash.h" />
+    <ClInclude Include="..\src\libwpl\value_holder.h" />
+    <ClInclude Include="..\src\libwpl\value_identifier.h" />
+    <ClInclude Include="..\src\libwpl\value_int.h" />
+    <ClInclude Include="..\src\libwpl\value_integer.h" />
+    <ClInclude Include="..\src\libwpl\value_list.h" />
+    <ClInclude Include="..\src\libwpl\value_longlongint.h" />
+    <ClInclude Include="..\src\libwpl\value_longlonguint.h" />
+    <ClInclude Include="..\src\libwpl\value_number.h" />
+    <ClInclude Include="..\src\libwpl\value_output_trigger.h" />
+    <ClInclude Include="..\src\libwpl\value_post.h" />
+    <ClInclude Include="..\src\libwpl\value_regex.h" />
+    <ClInclude Include="..\src\libwpl\value_stdin.h" />
+    <ClInclude Include="..\src\libwpl\value_string.h" />
+    <ClInclude Include="..\src\libwpl\value_struct.h" />
+    <ClInclude Include="..\src\libwpl\value_uint.h" />
+    <ClInclude Include="..\src\libwpl\value_unresolved.h" />
+    <ClInclude Include="..\src\libwpl\value_unsafe_pointer.h" />
+    <ClInclude Include="..\src\libwpl\value_void.h" />
+    <ClInclude Include="..\src\libwpl\value_vstring.h" />
+    <ClInclude Include="..\src\libwpl\value_wrapper.h" />
+    <ClInclude Include="..\src\libwpl\variable.h" />
+    <ClInclude Include="..\src\libwpl\void.h" />
+    <ClInclude Include="..\src\libwpl\wpl_string.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\libmysql\sql.cpp" />
+    <ClCompile Include="..\src\libmysql\value_sql.cpp" />
+    <ClCompile Include="..\src\libwpl\array.cpp" />
+    <ClCompile Include="..\src\libwpl\block.cpp" />
+    <ClCompile Include="..\src\libwpl\block_if.cpp" />
+    <ClCompile Include="..\src\libwpl\block_state.cpp" />
+    <ClCompile Include="..\src\libwpl\block_while.cpp" />
+    <ClCompile Include="..\src\libwpl\expression.cpp" />
+    <ClCompile Include="..\src\libwpl\expression_state.cpp" />
+    <ClCompile Include="..\src\libwpl\function.cpp" />
+    <ClCompile Include="..\src\libwpl\function_state.cpp" />
+    <ClCompile Include="..\src\libwpl\hash.cpp" />
+    <ClCompile Include="..\src\libwpl\identifier.cpp" />
+    <ClCompile Include="..\src\libwpl\internal_function.cpp" />
+    <ClCompile Include="..\src\libwpl\json.cpp" />
+    <ClCompile Include="..\src\libwpl\matcher.cpp" />
+    <ClCompile Include="..\src\libwpl\module_loader.cpp" />
+    <ClCompile Include="..\src\libwpl\namespace.cpp" />
+    <ClCompile Include="..\src\libwpl\namespace_session.cpp" />
+    <ClCompile Include="..\src\libwpl\object.cpp" />
+    <ClCompile Include="..\src\libwpl\operator.cpp" />
+    <ClCompile Include="..\src\libwpl\output_json.cpp" />
+    <ClCompile Include="..\src\libwpl\parser.cpp" />
+    <ClCompile Include="..\src\libwpl\pragma.cpp" />
+    <ClCompile Include="..\src\libwpl\pragma_state.cpp" />
+    <ClCompile Include="..\src\libwpl\program.cpp" />
+    <ClCompile Include="..\src\libwpl\runable.cpp" />
+    <ClCompile Include="..\src\libwpl\scene.cpp" />
+    <ClCompile Include="..\src\libwpl\shunting_yard.cpp" />
+    <ClCompile Include="..\src\libwpl\string.cpp" />
+    <ClCompile Include="..\src\libwpl\struct.cpp" />
+    <ClCompile Include="..\src\libwpl\template.cpp" />
+    <ClCompile Include="..\src\libwpl\text.cpp" />
+    <ClCompile Include="..\src\libwpl\text_state.cpp" />
+    <ClCompile Include="..\src\libwpl\types.cpp" />
+    <ClCompile Include="..\src\libwpl\user_function.cpp" />
+    <ClCompile Include="..\src\libwpl\value.cpp" />
+    <ClCompile Include="..\src\libwpl\value_array.cpp" />
+    <ClCompile Include="..\src\libwpl\value_cookie.cpp" />
+    <ClCompile Include="..\src\libwpl\value_env.cpp" />
+    <ClCompile Include="..\src\libwpl\value_expression.cpp" />
+    <ClCompile Include="..\src\libwpl\value_function_ptr.cpp" />
+    <ClCompile Include="..\src\libwpl\value_get.cpp" />
+    <ClCompile Include="..\src\libwpl\value_hash.cpp" />
+    <ClCompile Include="..\src\libwpl\value_int.cpp" />
+    <ClCompile Include="..\src\libwpl\value_list.cpp" />
+    <ClCompile Include="..\src\libwpl\value_post.cpp" />
+    <ClCompile Include="..\src\libwpl\value_regex.cpp" />
+    <ClCompile Include="..\src\libwpl\value_stdin.cpp" />
+    <ClCompile Include="..\src\libwpl\value_string.cpp" />
+    <ClCompile Include="..\src\libwpl\value_struct.cpp" />
+    <ClCompile Include="..\src\libwpl\value_unresolved.cpp" />
+    <ClCompile Include="..\src\libwpl\value_vstring.cpp" />
+    <ClCompile Include="..\src\libwpl\variable.cpp" />
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

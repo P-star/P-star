@@ -70,6 +70,7 @@ int wpl_pragma_template_var::run(wpl_state *state, wpl_value *final_result) {
 			my_set,
 			final_result
 			);
+	return WPL_OP_OK;
 }
 
 void wpl_pragma_fixed_text::parse_value(wpl_namespace *parent_namespace) {
@@ -82,6 +83,7 @@ void wpl_pragma_fixed_text::parse_value(wpl_namespace *parent_namespace) {
 
 int wpl_pragma_fixed_text::run (wpl_state *state, wpl_value *final_result) {
 	cout << text;
+	return WPL_OP_OK;
 }
 
 void wpl_pragma_template_var::parse_value(wpl_namespace *parent_namespace) {

@@ -29,11 +29,18 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "./mysql.h"
 #include "mysql_stmt.h"
 #include "mysql_types.h"
-#include "operator.h"
-#include "value_string.h"
-#include "value_bool.h"
-#include "function.h"
+#include "../libwpl/operator.h"
+#include "../libwpl/value_string.h"
+#include "../libwpl/value_bool.h"
+#include "../libwpl/function.h"
+
+#ifdef WIN32
+#include <windows.h>
+#include <mysql.h>
+#else
 #include <mysql/mysql.h>
+#endif
+
 #include <cstring>
 
 class wpl_mysql_connect : public wpl_function {
@@ -80,8 +87,7 @@ int wpl_mysql_connect::run (wpl_state *state, wpl_value *final_result) {
 #ifdef WPL_DEBUG_MYSQL
 	DBG("MYSQL (" << this << ") connect (" << host << ", " << user << ", " << passwd << ")\n");
 #endif
-
-	if (mysql_real_connect (this_mysql->get_mysql(), host, user, passwd, NULL, 0, NULL, 0) == NULL) {
+	if (mysql_real_connect(this_mysql->get_mysql(), host, user, passwd, NULL, 0, NULL, 0) == NULL) {
 		cerr << "Failed to connect to mysql database: Error: " <<
 			mysql_error(this_mysql->get_mysql()) << endl;
 		throw runtime_error("Database connection failed");
@@ -91,6 +97,7 @@ int wpl_mysql_connect::run (wpl_state *state, wpl_value *final_result) {
 		cerr << "MySQL error while setting character set: " << mysql_error(this_mysql->get_mysql()) << endl;
 		throw runtime_error("Could not set character set");
 	}
+
 	((wpl_value_bool*) final_result)->set(true);
 
 	return WPL_OP_OK;

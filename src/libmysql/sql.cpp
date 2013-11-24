@@ -27,12 +27,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "sql.h"
-#include "exception.h"
-#include "namespace.h"
-#include "namespace_session.h"
-#include "variable.h"
+#include "../libwpl/exception.h"
+#include "../libwpl/namespace.h"
+#include "../libwpl/namespace_session.h"
+#include "../libwpl/variable.h"
 #include "value_sql.h"
-#include "value_constant_pointer.h"
+#include "../libwpl/value_constant_pointer.h"
 
 #include <string>
 #include <iostream>

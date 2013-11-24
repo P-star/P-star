@@ -1,0 +1,71 @@
+﻿Build started 24.11.2013 21:08:12.
+     1>Project "C:\Users\Solbakken\Documents\GitHub\P-star\P-star for windows\P-star for windows.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\Solbakken\Documents\GitHub\P-star\MySQL Server 5.6\include" /I"C:\Users\Solbakken\Documents\GitHub\P-star\mimetic-0.9.7" /I"C:\Users\Solbakken\Documents\GitHub\P-star\boost_1_55_0" /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _ITERATOR_DEBUG_LEVEL=0 /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt /D WPL_VARNAME_SIZE=64 /D WPL_BLOCK_MAX_CHILDREN=128 /D WPL_EXPRESSION_MAX=128 /D WPL_MYSQL_BIND_MAX=32 ..\src\libwpl\parser.cpp
+         parser.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Solbakken\Documents\GitHub\P-star\P-star for windows\Release\P-star for windows.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Solbakken\Documents\GitHub\P-star\MySQL Server 5.6\lib" /LIBPATH:"C:\Users\Solbakken\Documents\GitHub\P-star\boost_1_55_0\stage\lib" /LIBPATH:"C:\Users\Solbakken\Documents\GitHub\P-star\mimetic-0.9.7\win32" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib mysqlclient.lib libmysql.lib libmimetic_d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Solbakken\Documents\GitHub\P-star\P-star for windows\Release\P-star for windows.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Solbakken\Documents\GitHub\P-star\P-star for windows\Release\P-star for windows.lib" /MACHINE:X86 /SAFESEH Release\sql.obj
+         Release\value_sql.obj
+         Release\array.obj
+         Release\block.obj
+         Release\block_if.obj
+         Release\block_state.obj
+         Release\block_while.obj
+         Release\expression.obj
+         Release\expression_state.obj
+         Release\function.obj
+         Release\function_state.obj
+         Release\hash.obj
+         Release\identifier.obj
+         Release\internal_function.obj
+         Release\json.obj
+         Release\matcher.obj
+         Release\module_loader.obj
+         Release\namespace.obj
+         Release\namespace_session.obj
+         Release\object.obj
+         Release\operator.obj
+         Release\output_json.obj
+         Release\parser.obj
+         Release\pragma.obj
+         Release\pragma_state.obj
+         Release\program.obj
+         Release\runable.obj
+         Release\scene.obj
+         Release\shunting_yard.obj
+         Release\string.obj
+         Release\struct.obj
+         Release\template.obj
+         Release\text.obj
+         Release\text_state.obj
+         Release\types.obj
+         Release\user_function.obj
+         Release\value.obj
+         Release\value_array.obj
+         Release\value_cookie.obj
+         Release\value_env.obj
+         Release\value_expression.obj
+         Release\value_function_ptr.obj
+         Release\value_get.obj
+         Release\value_hash.obj
+         Release\value_int.obj
+         Release\value_list.obj
+         Release\value_post.obj
+         Release\value_regex.obj
+         Release\value_stdin.obj
+         Release\value_string.obj
+         Release\value_struct.obj
+         Release\value_unresolved.obj
+         Release\value_vstring.obj
+         Release\variable.obj
+         Release\main.obj
+         Release\stdafx.obj
+     1>libmimetic_d.lib(base64.obj) : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:ICF' specification
+         Generating code
+         Finished generating code
+         P-star for windows.vcxproj -> C:\Users\Solbakken\Documents\GitHub\P-star\P-star for windows\Release\P-star for windows.exe
+     1>Done Building Project "C:\Users\Solbakken\Documents\GitHub\P-star\P-star for windows\P-star for windows.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:09.98

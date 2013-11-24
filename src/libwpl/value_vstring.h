@@ -72,7 +72,11 @@ class wpl_value_vstring : public wpl_value {
 	wpl_value_vstring(const char *new_value, int len) :
 		my_vstring(len)
 	{
+#ifdef WIN32
+		strncpy_s(*my_vstring, len, new_value, len);
+#else
 		strncpy(*my_vstring, new_value, len);
+#endif
 	}
 
 	wpl_value_vstring(int len) :

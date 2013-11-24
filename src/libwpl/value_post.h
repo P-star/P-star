@@ -37,6 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <tuple>
 #include <memory>
 #include <unordered_map>
+
 #include <mimetic/mimetic.h>
 
 class wpl_operator_struct;

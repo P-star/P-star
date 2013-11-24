@@ -28,8 +28,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "text.h"
-#include "namespace_session.h"
+#include "../libwpl/text.h"
+#include "../libwpl/namespace_session.h"
 
 #include <vector>
 

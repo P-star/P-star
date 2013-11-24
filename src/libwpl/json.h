@@ -25,7 +25,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------
 
 */
-
+/*
 #pragma once
 
 #include "matcher.h"
@@ -50,3 +50,5 @@ class wpl_json : public matcher {
 	static void escape_string (string &result, string &input);
 	void output (wpl_value *id, wpl_value *var);
 };
+
+*/

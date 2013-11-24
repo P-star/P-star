@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef  WIN32
+
 class wpl_namespace;
 
 class wpl_module {
@@ -14,3 +16,4 @@ extern "C" {
 	wpl_namespace *wpl_module_get_namespace();
 }
 
+#endif
