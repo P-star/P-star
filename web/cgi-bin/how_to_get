@@ -4,7 +4,11 @@
 
 HTML_TEMPLATE body {
 	<h1>How to get P*?</h1>
-	<p>P* is currently runs on Linux-based operating systems, but it might also work on similar platforms.</p>
+	<p>P* is currently runs on Linux-based operating systems and Windows 7, but it might also work on similar platforms.</p>
+	<h2>Download ZIP-archive for Windows 7</h2>
+	<p>If you run Windows, you can <a target="_new" href="https://sourceforge.net/projects/p-star/files/p-star-1.1-alpha2-windows7-64bit.zip/download">download the ZIP-archive for Windows</a>. The archive contains a directory called <i>Release</i>. Please refer to the file <i>README.txt</i> in that directory for usage instructions.</p>
+	<p>Note that the Windows 7-build is highly experimental, and you should report any issues using <a href="https://github.com/atlesn/P-star/issues">the issue tracker system</a>.</p>
+
 	<h2>Use precompiled Debian package</h2>
 	<p>P* provides an APT-mirror which contains a package for Debian Wheezy on the amd64 architecture</p>
 	<p>If you use the APT-mirror, you will always have easy access to the newest version of P*</p>
@@ -36,6 +40,7 @@ $ ./configure
 $ make</pre>
 	<p>To install P* after compiling, you must run this as the root user:</p>
 	<pre># make install</pre>
+	<p>The git repository includes project files for Microsoft Visual Studio which you can use to compile on the Windows platform.</p>
 }
 
 SCENE main {
