@@ -4,7 +4,7 @@
 /mimetic-0.9.7
 /mysql-server-5.6
 
-!/.gitignore
+!.gitignore
 test.*
 
 # http://www.gnu.org/software/automake
