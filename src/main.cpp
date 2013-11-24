@@ -9,7 +9,6 @@ MySQL disabled in Windows due to problems with linking
 #define PACKAGE_VERSION "1.1-alpha2"
 #endif
 
-#include "big_endian.h"
 #include "libwpl/program.h"
 #include "libwpl/module_loader.h"
 
