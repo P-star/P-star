@@ -1,15 +1,19 @@
 P* Web Programming Language
 ===========================
 
-P* (P-star) is a web programming language whith in language-support for things like HTML templates and database handling.
-
-P* is free software licenced under GPLv3.
+P* (P-star) is a web programming language with in language-support for things like HTML templates and database handling.
 
 P* is currently under development and help is needed!
 
 Please visit the web site for tutorials, examples and documentation.
 
     http://www.p-star.org
+
+
+-- LICENCE
+P* is free software licenced under GPLv3.
+
+This package also includes pre-build libraries of Boost and Mimetic MIME Parser. The licences for these librares are included in this package. The source code of these libraries have not been modified in any way before compiling.
 
 
 -- DISCLAIMER
