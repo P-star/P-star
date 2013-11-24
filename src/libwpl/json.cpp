@@ -25,7 +25,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------
 
 */
-
+/*
 #include "json.h"
 #include "value.h"
 #include "typenames.h"
@@ -40,3 +40,4 @@ void wpl_json::output (wpl_value *id, wpl_value *var) {
 	var->output_json();
 	cout << "\n\t}\n";
 }
+*/

@@ -29,8 +29,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "sql.h"
-#include "value.h"
-#include "struct.h"
+#include "../libwpl/value.h"
+#include "../libwpl/struct.h"
 #include "mysql_types.h"
 #include "mysql_pointers.h"
 #include "mysql_res_holder.h"

@@ -29,7 +29,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "array.h"
 #include "value.h"
 #include "value_array.h"
-
 #include <iostream>
 	
 wpl_array::wpl_array (const wpl_array &copy) {

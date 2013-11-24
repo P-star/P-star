@@ -101,7 +101,10 @@ NEW_INSTANCE(string,"")
 NEW_INSTANCE(env,0)
 NEW_INSTANCE(get,0)
 NEW_INSTANCE(post,0)
+
+#ifndef WIN32
 NEW_INSTANCE(stdin,0)
+#endif
 
 wpl_value *wpl_type_void::new_instance() const {
 	return new wpl_value_void();
@@ -138,7 +141,9 @@ void wpl_types_add_all_to_namespace(wpl_namespace *name_space) {
 	REGISTER_TYPE(env);
 	REGISTER_TYPE(get);
 	REGISTER_TYPE(post);
+#ifndef WIN32
 	REGISTER_TYPE(stdin);
+#endif
 }
 
 wpl_type_complete_template::wpl_type_complete_template (

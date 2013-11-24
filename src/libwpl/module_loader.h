@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#ifndef WIN32
 #include "module.h"
 
 using namespace std;
@@ -47,3 +48,4 @@ class wpl_module_loader {
 	~wpl_module_loader();
 	wpl_namespace *get_namespace();
 };
+#endif

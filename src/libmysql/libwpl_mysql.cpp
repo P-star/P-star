@@ -29,14 +29,20 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <stdexcept>
 
-#include <mysql/mysql.h>
+#ifdef WIN32
+    #include <windows.h>
+    #include <mysql.h>
+#else
+    #include <mysql/mysql.h>
+    #include "module.h"
+#endif /* WIN32 */
 
-#include "module.h"
+#include "libwpl_mysql.h"
 #include "./mysql.h"
 #include "mysql_stmt.h"
 #include "mysql_row.h"
-#include "namespace.h"
-#include "types.h"
+#include "../libwpl/namespace.h"
+#include "../libwpl/types.h"
 
 using namespace std;
 
@@ -45,8 +51,11 @@ class wpl_mysql : public wpl_namespace {
 
 wpl_mysql mysql;
 
+#ifndef WIN32
 wpl_type_complete *wpl_type_global_bool = NULL;
 wpl_type_complete *wpl_type_global_string = NULL;
+#endif
+
 wpl_type_complete *wpl_type_global_MYSQL_ROW = NULL;
 wpl_type_complete *wpl_type_global_MYSQL_STMT = NULL;
 wpl_type_complete *wpl_type_global_MYSQL = NULL;
@@ -62,8 +71,11 @@ wpl_type_complete *wpl_type_global_MYSQL = NULL;
 
 void register_identifiers() {
 	// This order is important!!
+#ifndef WIN32
 	REGISTER_TYPE(bool)
 	REGISTER_TYPE(string)
+#endif
+
 	REGISTER_TYPE(MYSQL_ROW)
 	REGISTER_TYPE(MYSQL_STMT)
 	REGISTER_TYPE(MYSQL)
@@ -75,6 +87,16 @@ void register_identifiers() {
 	mysql.register_identifier (new wpl_sql());*/
 }
 
+#ifdef WIN32
+void wpl_mysql_init() {
+	register_identifiers();
+}
+
+wpl_namespace *wpl_mysql_get_namespace() {
+	return &mysql;
+}
+
+#else
 int wpl_module_init(int argc, char **argv) {
 	mysql_library_init(argc, argv, NULL);
 
@@ -94,3 +116,4 @@ void wpl_module_exit () {
 wpl_namespace *wpl_module_get_namespace() {
 	return &mysql;
 }
+#endif

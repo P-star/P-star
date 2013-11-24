@@ -96,14 +96,14 @@ void wpl_block::parse_pragma (wpl_namespace *ns) {
 	check_varname_length(len);
 	get_string(name, len);
 
-	const wpl_pragma *__pragma = find_pragma(name);
+	const wpl_pragma *_pragma = find_pragma(name);
 
-	if (!__pragma) {
+	if (!_pragma) {
 		cerr << "While parsing pragma name '" << name << "':\n";
 		revert_string(len);
 		THROW_ELEMENT_EXCEPTION("Unkown pragma type");
 	}
-	wpl_pragma *pragma = __pragma->clone();
+	wpl_pragma *pragma = _pragma->clone();
 	append_child(pragma);
 
 	pragma->load_position(get_static_position());

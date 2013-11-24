@@ -1,6 +1,10 @@
 .*
 
-!/.gitignore
+/boost_1_55_0
+/mimetic-0.9.7
+/mysql-server-5.6
+
+!.gitignore
 test.*
 
 # http://www.gnu.org/software/automake
@@ -31,15 +35,12 @@ Makefile.in
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
 
 # Compiled Static libraries
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
-*.exe
 *.out
 *.app

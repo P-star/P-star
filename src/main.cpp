@@ -1,8 +1,17 @@
 #include <iostream>
 #include <algorithm>
 
-#include <libwpl/program.h>
-#include <libwpl/module_loader.h>
+#ifdef WIN32
+/*
+#include "libmysql/libwpl_mysql.h"
+MySQL disabled in Windows due to problems with linking
+*/
+#define PACKAGE_VERSION "1.1-alpha2"
+#endif
+
+#include "libwpl/program.h"
+#include "libwpl/module_loader.h"
+
 
 using namespace std;
 
@@ -26,12 +35,16 @@ void version() {
 }
 
 void usage (char *argv0) {
-	cout << argv0 << " [-h] -f filename\n";
+	cout << argv0 << " [-h] -f filename\n";
 	cout << "Licenced under GPLv3, Copyright MMXIII Atle Solbakken\n";
 	cout << "Visit http://www.p-star.org/ for documentation\n\n";
 }
 
+#ifdef WIN32
+int main(int argc, char *argv[], char *envp[]) {
+#else
 int main (int argc, char *argv[]) {
+#endif
 	if (cmdOptionExists(argv, argv+argc, "-h")) {
 		usage (argv[0]);
 		return 0;
@@ -50,16 +63,21 @@ int main (int argc, char *argv[]) {
 	int ret = 1;
 
 	try {
+#ifdef WIN32
+		wpl_program program(argc, argv);
+#else
 		wpl_module_loader mysql_loader(argc, argv, "mysql");
 		wpl_program program(argc, argv);
 		program.set_parent_namespace(mysql_loader.get_namespace());
+#endif
 
 		program.parse_file(filename);
 
 		ret = program.run();
 	}
 	catch (exception &e) {
-		throw;
+		cout << e.what();
+		return 1;
 	}
 
 	return ret;

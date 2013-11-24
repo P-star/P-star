@@ -56,6 +56,9 @@ class wpl_text : public wpl_runable, public wpl_parseable {
 		chunk (wpl_text *text, wpl_expression *expression);
 		int run(wpl_text_state *state, int index, wpl_value *final_result, ostream &output);
 
+		chunk(const chunk &copy) {
+			throw runtime_error("Cannot clone text chunk");
+		}
 		const char *get_start() const {
 			return start;
 		}

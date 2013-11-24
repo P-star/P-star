@@ -236,6 +236,7 @@ int wpl_text::output_as_json_var(wpl_state *state, wpl_value *final_result) {
 	json_output.output_json(text.c_str(), text.size());
 
 	cout << "\",\n";
+	return WPL_OP_OK;
 }
 
 void wpl_text::parse_value(wpl_namespace *parent_namespace) {

@@ -28,14 +28,20 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "value.h"
+#include "../libwpl/value.h"
 #include "sql.h"
-#include "types.h"
+#include "../libwpl/types.h"
 #include "mysql_types.h"
 #include "mysql_pointers.h"
 #include "mysql_res_holder.h"
 
+#ifdef WIN32
+#include <windows.h>
+#include <mysql.h>
+#else
 #include <mysql/mysql.h>
+#endif
+
 #include <memory>
 
 class wpl_value_MYSQL_ROW : public wpl_value {

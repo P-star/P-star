@@ -26,6 +26,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+#ifndef WIN32
+
 #include "module_loader.h"
 
 #include <iostream>
@@ -73,3 +75,5 @@ void wpl_module_loader::check_dlerror() {
 		throw runtime_error("Library load failed");
 	}
 }
+
+#endif /* WIN32 */

@@ -206,7 +206,10 @@ DECLARE_COMPLETE_TYPE(string);
 DECLARE_COMPLETE_TYPE(env);
 DECLARE_COMPLETE_TYPE(get);
 DECLARE_COMPLETE_TYPE(post);
+
+#ifndef WIN32
 DECLARE_COMPLETE_TYPE(stdin);
+#endif
 
 void wpl_types_add_all_to_namespace(wpl_namespace *name_space);
 

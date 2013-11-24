@@ -1204,6 +1204,7 @@ preparedStatement.executeUpdate();
 			We don't want to spend time doing this, we want to create web pages! Let's have some more meat.
 			</para>
 			<bridgehead>MySQL prepared statements in P*</bridgehead>
+			<emphasis>The Windows build of P* does not yet support MySQL</emphasis>
 			<para>Next comes the same example in P*, lets just specify the variables first instead of inlining, like you would normally do:
 			<programlisting language="c">
 

@@ -28,7 +28,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include <mysql/mysql.h>
+#ifdef WIN32
+    #include <windows.h>
+    #include <mysql.h>
+#else
+    #include <mysql/mysql.h>
+#endif
 
 #include <vector>
 

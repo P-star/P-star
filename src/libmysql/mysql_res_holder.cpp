@@ -28,13 +28,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "mysql_res_holder.h"
 
-#include "value_int.h"
-#include "value_longlongint.h"
-#include "value_uint.h"
-#include "value_longlonguint.h"
-#include "value_float.h"
-#include "value_double.h"
-#include "value_vstring.h"
+#include "../libwpl/value_int.h"
+#include "../libwpl/value_longlongint.h"
+#include "../libwpl/value_uint.h"
+#include "../libwpl/value_longlonguint.h"
+#include "../libwpl/value_float.h"
+#include "../libwpl/value_double.h"
+#include "../libwpl/value_vstring.h"
 
 #include <cstring>
 

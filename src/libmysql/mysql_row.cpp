@@ -28,7 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "mysql_row.h"
 
-#include "value_bool.h"
+#include "../libwpl/value_bool.h"
 
 void wpl_value_MYSQL_ROW::init (
 		shared_ptr<wpl_mysql_stmt_holder> &stmt_holder,

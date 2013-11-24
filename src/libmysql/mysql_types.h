@@ -29,7 +29,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once 
 
 
-#include "type_precedence.h"
+#include "../libwpl/type_precedence.h"
 
 static const char *wpl_typename_MYSQL = "MYSQL";
 static const char *wpl_typename_MYSQL_STMT = "MYSQL_STMT";

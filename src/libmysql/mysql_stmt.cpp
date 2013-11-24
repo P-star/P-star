@@ -30,10 +30,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "mysql_row.h"
 #include "mysql_types.h"
 #include "sql.h"
-#include "type_precedence.h"
-#include "value_bool.h"
+#include "../libwpl/type_precedence.h"
+#include "../libwpl/value_bool.h"
 #include "value_sql.h"
-#include "function.h"
+#include "../libwpl/function.h"
 
 #include <cstring>
 

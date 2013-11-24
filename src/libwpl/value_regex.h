@@ -34,7 +34,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <boost/regex.hpp>
 
-class wpl_operator_struct;
+struct wpl_operator_struct;
 
 class wpl_value_regex : public wpl_value {
 	private:

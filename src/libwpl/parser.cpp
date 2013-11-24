@@ -166,30 +166,31 @@ void wpl_parser::parse_file (wpl_namespace *parent_namespace, const char *filena
 			"Could not open file '%s': %s (%i)", filename, strerror(errno), errno);
 		throw wpl_parser_exception(exception_msg);
 	}
-
 	try {
 		if (	(fseek (file, 0L, SEEK_END) != 0) ||
-			(!(filesize = ftell (file)) > 0) ||
+			(!((filesize = ftell (file)) > 0)) ||
 			(fseek (file, 0L, SEEK_SET) != 0)
 		) {
 			throw ferror(file);
 		}
 
-		char *buf = new char [filesize+1];
 
-		if (	(fread(buf, 1, filesize, file) != filesize) ||
+		char *buf = new char [filesize+1];
+		int read_bytes = fread(buf, 1, filesize, file);
+		if ((read_bytes <= 0 ) ||
 			(fclose (file) != 0)
 		) {
 			delete buf;
 			throw ferror(file);
 		}
 
-		buf[filesize] = '\0';
-
+		buf[read_bytes] = '\0';
+		/*
+		filesizes are funny on windows, can't do this check
 		if (strlen (buf) != filesize) {
 			delete buf;
 			throw wpl_parser_exception("Source file contains NULL characters");
-		}
+		}*/
 
 		file_content = buf;
 		set_text (file_content, filesize);

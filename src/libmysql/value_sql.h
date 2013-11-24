@@ -28,9 +28,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "value_string.h"
-#include "operator.h"
-#include "namespace.h"
+#include "../libwpl/value_string.h"
+#include "../libwpl/operator.h"
+#include "../libwpl/namespace.h"
 #include "sql.h"
 
 #include <string>
