@@ -76,7 +76,7 @@ int main (int argc, char *argv[]) {
 		ret = program.run();
 	}
 	catch (exception &e) {
-		cout << e.what();
+		cout << e.what() << endl;
 		return 1;
 	}
 

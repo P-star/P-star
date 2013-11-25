@@ -187,27 +187,29 @@ void wpl_namespace_session::push (wpl_variable *variable) {
  *
  * @return Return the variable on success or NULL on failure.
  */
-wpl_variable *wpl_namespace_session::find_variable(const char *name){
+wpl_variable *wpl_namespace_session::find_variable(const char *name, int ctx){
 	// Search for local variable
 	for (unique_ptr<wpl_variable> &variable : variables_ptr) {
 		if (variable->is_name(name)) {
 			return variable.get();
 		}
 	}
+   
+	wpl_variable *tmp;
 
 	// Search for local static variable
-	wpl_variable *tmp;
+/*	XXX DISABLED, don't need this yet
 	if (template_namespace && (tmp = template_namespace->find_static_variable(name))) {
 		return tmp;
-	}
+	}*/
 
 	// Search in parent namespace session
-	if (parent && (tmp = parent->find_variable(name))) {
+	if (parent && (tmp = parent->find_variable(name, WPL_NSS_CTX_CHILD))) {
 		return tmp;
 	}
 
 	// Search in sibling namespace
-	if ((do_sibling_lookup && sibling) && (tmp = sibling->find_variable(name))) {
+	if ((do_sibling_lookup && sibling) && (tmp = sibling->find_variable(name, WPL_NSS_CTX_FRIEND))) {
 		return tmp;
 	}
 
@@ -259,12 +261,12 @@ wpl_variable *wpl_namespace_session::get_variable(int index) {
  *
  * @return A function with matching name on success, or NULL on failure.
  */
-wpl_function *wpl_namespace_session::find_function(const char *name) {
+wpl_function *wpl_namespace_session::find_function(const char *name, int ctx) {
 	if (template_namespace) {
 		return template_namespace->find_function(name);
 	}
 	else if (parent) {
-		return parent->find_function(name);
+		return parent->find_function(name, WPL_NSS_CTX_CHILD);
 	}
 	return NULL;
 }

@@ -35,6 +35,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <list>
 #include <memory>
 
+enum {
+	WPL_NSS_CTX_NONE,
+	WPL_NSS_CTX_CHILD,
+	WPL_NSS_CTX_SELF,
+	WPL_NSS_CTX_FRIEND
+};
+
 class wpl_expression_state;
 
 /**
@@ -79,8 +86,8 @@ class wpl_namespace_session {
 	void push(wpl_variable *variable);
 
 	wpl_variable *find_variable(const wpl_value *return_value);
-	wpl_variable *find_variable(const char *name);
-	wpl_function *find_function(const char *name);
+	wpl_variable *find_variable(const char *name, int ctx);
+	wpl_function *find_function(const char *name, int ctx);
 
 	wpl_variable *get_variable(int i);
 	int variable_index(const char *name);

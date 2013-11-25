@@ -92,7 +92,7 @@ int wpl_text::chunk::run (
 }
 
 wpl_text::chunk *wpl_text::push_chunk(const char *start, const char *end) {
-	chunks.push_back(chunk(start, end));
+	chunks.emplace_back(start, end);
 	return &chunks.back();
 }
 

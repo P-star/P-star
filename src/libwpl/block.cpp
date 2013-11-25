@@ -335,7 +335,7 @@ void wpl_block::parse_complete_type (
 		parse_function_declaration(ns, type, buf);
 	}
 	else {
-		wpl_variable_holder variable(type->new_instance(), buf);
+		wpl_variable_holder variable(type->new_instance(), buf, WPL_VARIABLE_ACCESS_PRIVATE);
 		ns->register_identifier(&variable);
 		if (!function_ctx) {
 			load_position (&position_at_name);

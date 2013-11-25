@@ -68,7 +68,7 @@ class wpl_value_struct : public wpl_value, public wpl_namespace_session {
 
 	wpl_variable *get_this() {
 		if (!this_ptr) {
-			this_ptr = find_variable("this");
+			this_ptr = find_variable("this", WPL_NSS_CTX_SELF);
 		}
 		return this_ptr;
 	}

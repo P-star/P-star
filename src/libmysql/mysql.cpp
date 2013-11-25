@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -48,9 +48,9 @@ class wpl_mysql_connect : public wpl_function {
 	wpl_mysql_connect() :
 		wpl_function("connect", wpl_type_global_bool)
 	{
-		wpl_variable_holder host("host", new wpl_value_string());
-		wpl_variable_holder user("user", new wpl_value_string());
-		wpl_variable_holder passwd("passwd", new wpl_value_string());
+		wpl_variable_holder host("host", new wpl_value_string(), WPL_VARIABLE_ACCESS_PRIVATE);
+		wpl_variable_holder user("user", new wpl_value_string(), WPL_VARIABLE_ACCESS_PRIVATE);
+		wpl_variable_holder passwd("passwd", new wpl_value_string(), WPL_VARIABLE_ACCESS_PRIVATE);
 		register_identifier(&host);
 		register_identifier(&user);
 		register_identifier(&passwd);
@@ -66,16 +66,16 @@ int wpl_mysql_connect::run (wpl_state *state, wpl_value *final_result) {
 
 	wpl_block_state *block_state = (wpl_block_state*) state;
 
-	if (!(this_var = block_state->find_variable("this"))) {
+	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_connect(): Could not find 'this' variable");
 	}
-	if (!(host_var = block_state->find_variable("host"))) {
+	if (!(host_var = block_state->find_variable("host", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_connect(): Could not find 'host' variable");
 	}
-	if (!(user_var = block_state->find_variable("user"))) {
+	if (!(user_var = block_state->find_variable("user", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_connect(): Could not find 'user' variable");
 	}
-	if (!(passwd_var = block_state->find_variable("passwd"))) {
+	if (!(passwd_var = block_state->find_variable("passwd", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_connect(): Could not find 'passwd' variable");
 	}
 
@@ -108,7 +108,7 @@ class wpl_mysql_select_db : public wpl_function {
 	wpl_mysql_select_db() :
 		wpl_function("select_db", wpl_type_global_bool)
 	{
-		wpl_variable_holder db("db", new wpl_value_string());
+		wpl_variable_holder db("db", new wpl_value_string(), WPL_VARIABLE_ACCESS_PRIVATE);
 		register_identifier(&db);
 	}
 	int run (wpl_state *state, wpl_value *final_result);
@@ -120,11 +120,11 @@ int wpl_mysql_select_db::run (wpl_state *state, wpl_value *final_result) {
 
 	wpl_block_state *block_state = (wpl_block_state*) state;
 
-	if (!(this_var = block_state->find_variable("this"))) {
+	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_select_db(): Could not find 'this' variable");
 	}
 
-	if (!(db_var = block_state->find_variable("db"))) {
+	if (!(db_var = block_state->find_variable("db", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_select_db(): Could not find 'db' variable");
 	}
 
@@ -153,7 +153,7 @@ int wpl_mysql_error::run (wpl_state *state, wpl_value *final_result) {
 
 	wpl_block_state *block_state = (wpl_block_state*) state;
 
-	if (!(this_var = block_state->find_variable("this"))) {
+	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_error(): Could not find 'this' variable");
 	}
 
@@ -177,7 +177,7 @@ int wpl_mysql_stmt_init::run (wpl_state *state, wpl_value *final_result) {
 
 	wpl_block_state *block_state = (wpl_block_state*) state;
 
-	if (!(this_var = block_state->find_variable("this"))) {
+	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_stmt_init(): Could not find 'this' variable");
 	}
 	wpl_value_MYSQL *this_mysql = (wpl_value_MYSQL*) this_var->get_value();
@@ -198,7 +198,7 @@ int wpl_mysql_stmt_init::run (wpl_state *state, wpl_value *final_result) {
 wpl_type_MYSQL::wpl_type_MYSQL(const char *name) :
 	wpl_struct(name)
 {
-	wpl_variable_holder this_var("this", new wpl_value_MYSQL());
+	wpl_variable_holder this_var("this", new wpl_value_MYSQL(), WPL_VARIABLE_ACCESS_PRIVATE);
 	register_identifier(&this_var);
 	register_identifier(new wpl_mysql_connect());
 	register_identifier(new wpl_mysql_select_db());

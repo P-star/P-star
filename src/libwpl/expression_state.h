@@ -68,11 +68,11 @@ class wpl_expression_state : public wpl_state {
 	}
 
 	wpl_variable *find_variable (const char *name) {
-		return nss->find_variable(name);
+		return nss->find_variable(name, WPL_NSS_CTX_SELF);
 	}
 
 	wpl_function *find_function (const char *name) {
-		return nss->find_function(name);
+		return nss->find_function(name, WPL_NSS_CTX_SELF);
 	}
 
 	wpl_state *get_child_state(int index) {

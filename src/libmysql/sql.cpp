@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -84,7 +84,7 @@ void wpl_sql::parse_value (wpl_namespace *parent_namespace) {
 	wpl_sql *sql = new wpl_sql();
 	wpl_value_sql *value_sql = new wpl_value_sql(sql);
 
-	wpl_variable_holder new_variable (value_sql, buf);
+	wpl_variable_holder new_variable (value_sql, buf, WPL_VARIABLE_ACCESS_PRIVATE);
 
 	parent_namespace->register_identifier(&new_variable);
 
