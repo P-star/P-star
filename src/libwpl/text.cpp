@@ -256,7 +256,7 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 				wpl_expression *exp =
 					new wpl_expression_par_enclosed();
 
-				chunks.push_back(chunk(text, exp));
+				chunks.emplace_back(text, exp);
 
 				exp->load_position(get_static_position());
 				exp->parse_value(parent_namespace);
@@ -275,7 +275,7 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 
 				wpl_expression *exp =
 					new wpl_expression_loose_end();
-				chunks.push_back(chunk(exp));
+				chunks.emplace_back(exp);
 
 				exp->load_position(get_static_position());
 				exp->parse_value(parent_namespace);
