@@ -43,4 +43,10 @@ done
 
 rm $TMP
 
+if [ "$SOMETHING_WENT_WRONG" == "0" ]; then
+	echo "All good"
+else
+	echo "Something went wrong"
+fi
+
 exit $SOMETHING_WENT_WRONG
