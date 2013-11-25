@@ -40,4 +40,5 @@ SCENE main {
 		echo "\n";
 		i++;
 	}
+	return 0;
 }

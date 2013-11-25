@@ -19,4 +19,5 @@ SCENE main {
 		echo "The name of my " . pet_keys[i] . " is '" . my_pets[pet_keys[i]] . "'.\n";
 		i++;
 	}
+	return 0;
 }

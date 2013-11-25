@@ -1,0 +1,15 @@
+The key 'a' is set in the query string
+	There are 1 instances of this key
+	The only value of 'a' is 'true'
+
+Could not find key 'b' in the query string
+
+The key 'c' is set in the query string
+	There are 1 instances of this key
+	The only value of 'c' is '1'
+
+The key 'd' is set in the query string
+	There are 2 instances of this key
+	The value of 'd' instance number 0is '2'
+	The value of 'd' instance number 1is '3'
+

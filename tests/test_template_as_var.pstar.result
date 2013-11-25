@@ -1,0 +1,13 @@
+Content-type: text/html;
+
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<title>P* template as var output test</title>
+	</head>
+	<body>
+	<div id="body">
+	This is the body
+	</div>
+	</body>
+	</html>

@@ -1,0 +1,11 @@
+Content-type: text/html;
+
+	<!DOCTYPE HTML>
+	<html>
+	<head>
+	<title>P* Web Programming Language</title>
+	</head>
+	<body>
+	<h1 id="header">This is the header</h1>
+	</body>
+	</html>
