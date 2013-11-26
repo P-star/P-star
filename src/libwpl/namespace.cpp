@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -42,6 +42,38 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <list>
 
 int wpl_namespace::id_counter = 0;
+
+void wpl_namespace::new_register_parseable (wpl_parseable *parseable) {
+	if (new_find_parseable_no_parent (parseable->get_name())) {
+		throw wpl_exception_name_exists();
+	}
+	new_parseables.emplace_back(parseable);
+}
+/*void wpl_namespace::new_register_function (wpl_function *function) {
+}
+void wpl_namespace::new_register_variable (wpl_variable *variable) {
+}*/
+
+wpl_parseable *wpl_namespace::new_find_parseable(const char *name) {
+	for (unique_ptr<wpl_parseable> &parseable : new_parseables) {
+		if (parseable->is_name(name)) {
+			return parseable.get();
+		}
+	}
+	if (parent_namespace) {
+		return parent_namespace->new_find_parseable(name);
+	}
+	return NULL;
+}
+
+wpl_parseable *wpl_namespace::new_find_parseable_no_parent(const char *name) {
+	for (unique_ptr<wpl_parseable> &parseable : new_parseables) {
+		if (parseable->is_name(name)) {
+			return parseable.get();
+		}
+	}
+	return NULL;
+}
 
 void wpl_namespace::generate_typename_list(ostringstream &target) {
 	bool first = true;

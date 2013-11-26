@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "identifier.h"
 #include "exception.h"
 #include "variable.h"
+#include "parseable.h"
 
 #include <list>
 #include <sstream>
@@ -47,10 +48,12 @@ class wpl_type_complete;
 class wpl_type_incomplete;
 class wpl_type_template;
 class wpl_namespace_session;
-class wpl_parseable;
+//class wpl_parseable;
 class wpl_template;
 class wpl_scene;
 class wpl_pragma;
+
+class wpl_exception_name_exists {};
 
 class wpl_namespace {
 	private:
@@ -58,18 +61,34 @@ class wpl_namespace {
 	int id;
 	static int id_counter;
 
+	/*
+	   TODO
+	   This is the old system, remove this
+	   */
 	list<unique_ptr<wpl_identifier>> identifiers;
 
+	list<wpl_function*> functions;
 	list<wpl_pragma*> pragmas;
 	list<wpl_template*> templates;
 	list<wpl_scene*> scenes;
-	list<wpl_function*> functions;
 	list<wpl_parseable*> parseables;
 	list<wpl_type_complete*> complete_types;
 	list<wpl_type_incomplete*> incomplete_types;
 	list<wpl_type_template*> template_types;
 
 	list<shared_ptr<wpl_variable>> variables;
+
+	/*
+	   TODO
+	   Convert old system stuff to the new system where all
+	   identifiers are parseables.
+	   - Functions are looked up at run-time and need a separate list (no RAII)
+	   - Variables are cloned and need also need a separate list (no RAII)
+	   */
+
+	list<unique_ptr<wpl_parseable>> new_parseables;
+/*	list<wpl_variable*> variables_new;
+	list<wpl_function*> functions_new;*/
 
 	wpl_namespace *parent_namespace;
 
@@ -84,6 +103,13 @@ class wpl_namespace {
 	wpl_namespace(const wpl_namespace &copy) {
 		throw runtime_error("No cloning of namespace");
 	}
+
+	void new_register_parseable (wpl_parseable *parseable);
+/*	void new_register_function (wpl_function *function);
+	void new_register_variable (wpl_variable *variable);*/
+
+	wpl_parseable *new_find_parseable(const char *name);
+	wpl_parseable *new_find_parseable_no_parent(const char *name);
 
 	int variables_count() const {
 		return variables.size();
