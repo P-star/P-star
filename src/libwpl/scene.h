@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -31,10 +31,22 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "identifier.h"
 #include "block.h"
 
+#include <list>
+
 class wpl_scene : public wpl_block, public wpl_identifier {
+	private:
+	list<wpl_scene*> base_scenes;
+	
 	public:
 	wpl_scene (const char *name) : wpl_identifier(name) {}
 	virtual ~wpl_scene() {}
+
+	wpl_state *new_state(wpl_namespace_session *nss);
+	int run (wpl_state *state, wpl_value *final_result);
+
+	void add_base (wpl_scene *base) {
+		base_scenes.push_back(base);
+	}
 
 	bool isScene() const {
 		return true;

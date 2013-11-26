@@ -71,6 +71,10 @@ class wpl_variable : public wpl_identifier {
 		is_protected = true;
 	}
 
+	int get_access_flags() {
+		return access_flags;
+	}
+
 	bool isStatic() const {
 		return is_static;
 	}

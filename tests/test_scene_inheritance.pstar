@@ -1,0 +1,18 @@
+SCENE a {
+	echo "This is A\n";
+}
+
+SCENE b : a {
+	echo "This is B\n";
+}
+
+SCENE c {
+	int var_c = 3;
+	echo "This is C\n";
+	echo "var_c is " . var_c . "\n";
+}
+
+SCENE main : b, c {
+	echo "This is Main\n";
+	echo "var_c is " . var_c . "\n";
+}

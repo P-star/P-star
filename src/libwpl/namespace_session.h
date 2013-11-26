@@ -86,8 +86,8 @@ class wpl_namespace_session {
 	void push(wpl_variable *variable);
 
 	wpl_variable *find_variable(const wpl_value *return_value);
-	wpl_variable *find_variable(const char *name, int ctx);
-	wpl_function *find_function(const char *name, int ctx);
+	virtual wpl_variable *find_variable(const char *name, int ctx);
+	virtual wpl_function *find_function(const char *name, int ctx);
 
 	wpl_variable *get_variable(int i);
 	int variable_index(const char *name);

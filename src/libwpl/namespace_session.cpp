@@ -180,6 +180,30 @@ void wpl_namespace_session::push (wpl_variable *variable) {
 	this->variables_ptr.emplace_back(variable);
 }
 
+/* XXX
+   TODO
+   Improve error message
+   */
+void check_variable_ctx (wpl_variable *variable, int ctx) {
+	int var_flags = variable->get_access_flags();
+
+	if ((ctx == WPL_NSS_CTX_SELF) || (var_flags == WPL_VARIABLE_ACCESS_PUBLIC)) {
+		return;
+	}
+	else if (ctx == WPL_NSS_CTX_CHILD) {
+		if (var_flags == WPL_VARIABLE_ACCESS_PRIVATE) {
+			cerr << "While accessing variable " << variable->get_name() <<
+				" from child context:\n";
+			throw runtime_error("Cannot access private variable from this context");
+		}
+		return;
+	}
+	cerr << "variable was " << variable->get_name() << endl;
+	cerr << "variable flags was " << var_flags << endl;
+	cerr << "ctx was " << ctx << endl;
+	throw runtime_error("Unhandled variable context");
+}
+
 /**
  * @brief Find a variable in the current namespace session by its name.
  *
@@ -191,6 +215,7 @@ wpl_variable *wpl_namespace_session::find_variable(const char *name, int ctx){
 	// Search for local variable
 	for (unique_ptr<wpl_variable> &variable : variables_ptr) {
 		if (variable->is_name(name)) {
+			check_variable_ctx(variable.get(), ctx);
 			return variable.get();
 		}
 	}
