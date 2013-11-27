@@ -34,6 +34,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 
 wpl_value *wpl_value_unresolved_identifier::resolve(wpl_namespace_session *nss) {
+	cout << "Resolve identifier " << value << "\n";
 	if (wpl_variable *variable = nss->find_variable(value.c_str(), WPL_NSS_CTX_SELF)) {
 		return variable->get_value();
 	}
@@ -47,10 +48,10 @@ int wpl_value_unresolved_identifier::do_fastop (
 		const wpl_operator_struct *op
 		)
 {
-	if ((op->flags & WPL_OP_F_HAS_BOTH) == WPL_OP_F_HAS_BOTH) {
+	if (((op->flags & WPL_OP_F_HAS_BOTH) == WPL_OP_F_HAS_BOTH) && !(op->flags & (WPL_OP_F_OPTIONAL_LHS|WPL_OP_F_OPTIONAL_RHS))) {
 		cerr << "While doing operator '" << op->name <<
 			"' on unresolved identifier '" << value << "':" << endl;
-		throw ("Too few operands for operator");
+		throw runtime_error("Too few operands for operator");
 	}
 
 	if (wpl_variable *variable = exp_state->find_variable(value.c_str())) {
@@ -65,6 +66,11 @@ int wpl_value_unresolved_identifier::do_fastop (
 		exp_state->replace(my_pos, ca);
 
 		return value->do_fastop(exp_state, final_result, op);
+	}
+
+	if (wpl_function *function = exp_state->find_function(value.c_str())) {
+		wpl_value_function_ptr function_ptr(function, NULL, exp_state);
+		return function_ptr.do_fastop(exp_state, final_result, op);
 	}
 
 	return wpl_value::do_fastop(exp_state, final_result, op);
