@@ -45,7 +45,7 @@ wpl_program::wpl_program(int argc, char **argv) {
 
 	unique_ptr<wpl_value_array> val_argv (
 			new wpl_value_array (
-				find_complete_type("string"),
+				wpl_type_global_string,
 				argc
 				)
 			);

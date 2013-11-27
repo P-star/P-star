@@ -1,10 +1,6 @@
-Base scene a
-Base scene b
-Base scene c
-Run base scene b
-Run base scene a
 This is A
 This is B
-Run base scene c
 This is C
+var_c is 3
 This is Main
+var_c is 3

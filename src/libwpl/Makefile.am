@@ -14,7 +14,7 @@ libwpl_1_1_la_SOURCES = \
 	shunting_yard.cpp block_if.cpp block_while.cpp \
 	scene.cpp string.cpp object.cpp types.cpp \
 	function.cpp user_function.cpp internal_function.cpp \
-	value.cpp operator.cpp text.cpp \
+	value.cpp operator.cpp text.cpp modifier.cpp \
 	value_array.cpp value_struct.cpp value_hash.cpp \
 	value_unresolved.cpp value_function_ptr.cpp value_list.cpp \
 	value_string.cpp value_vstring.cpp value_regex.cpp \

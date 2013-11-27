@@ -108,6 +108,7 @@ wpl_variable_holder::wpl_variable_holder (const wpl_variable_holder &copy) :
 	value->set_flags(wpl_value_is_constant);
 	is_protected = false;
 	is_static = copy.is_static;
+	access_flags = copy.access_flags;
 }
 /*
 wpl_variable_pointer *wpl_variable_pointer::clone() const {

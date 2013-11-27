@@ -121,8 +121,9 @@ wpl_namespace_session::wpl_namespace_session(
 ) {
 	this->template_namespace = NULL;
 	this->parent = parent;
-	this->sibling = sibling;
+	this->sibling = NULL;
 	this->do_sibling_lookup = false;
+	this->parent_nss_context = WPL_NSS_CTX_CHILD;
 }
 
 wpl_namespace_session::wpl_namespace_session(
@@ -130,8 +131,9 @@ wpl_namespace_session::wpl_namespace_session(
 ) {
 	this->template_namespace = template_namespace;
 	this->parent = NULL;
-	this->sibling = sibling;
+	this->sibling = NULL;
 	this->do_sibling_lookup = false;
+	this->parent_nss_context = WPL_NSS_CTX_CHILD;
 
 	template_namespace->copy_variables_to_namespace_session(this);
 }
@@ -144,6 +146,21 @@ wpl_namespace_session::wpl_namespace_session(
 	this->sibling = NULL;
 	this->template_namespace = template_namespace;
 	this->do_sibling_lookup = false;
+	this->parent_nss_context = WPL_NSS_CTX_CHILD;
+
+	template_namespace->copy_variables_to_namespace_session(this);
+}
+
+wpl_namespace_session::wpl_namespace_session (
+		wpl_namespace_session *parent,
+		const wpl_namespace *template_namespace,
+		int parent_access_context
+) {
+	this->parent = parent;
+	this->sibling = NULL;
+	this->template_namespace = template_namespace;
+	this->do_sibling_lookup = false;
+	this->parent_nss_context = parent_access_context;
 
 	template_namespace->copy_variables_to_namespace_session(this);
 }
@@ -151,12 +168,14 @@ wpl_namespace_session::wpl_namespace_session(
 wpl_namespace_session::wpl_namespace_session (
 		wpl_namespace_session *parent,
 		wpl_namespace_session *sibling,
-		const wpl_namespace *template_namespace
+		const wpl_namespace *template_namespace,
+		int parent_access_context
 ) {
 	this->parent = parent;
 	this->sibling = sibling;
 	this->template_namespace = template_namespace;
 	this->do_sibling_lookup = false;
+	this->parent_nss_context = parent_access_context;
 
 	template_namespace->copy_variables_to_namespace_session(this);
 }
@@ -166,6 +185,7 @@ wpl_namespace_session::wpl_namespace_session() {
 	this->parent = NULL;
 	this->sibling = NULL;
 	this->do_sibling_lookup = false;
+	this->parent_nss_context = WPL_NSS_CTX_CHILD;
 }
 
 wpl_namespace_session::~wpl_namespace_session() {
@@ -195,6 +215,14 @@ void check_variable_ctx (wpl_variable *variable, int ctx) {
 			cerr << "While accessing variable " << variable->get_name() <<
 				" from child context:\n";
 			throw runtime_error("Cannot access private variable from this context");
+		}
+		return;
+	}
+	else if (ctx == WPL_NSS_CTX_OUTSIDE) {
+		if (var_flags != WPL_VARIABLE_ACCESS_PUBLIC) {
+			cerr << "While accessing variable " << variable->get_name() <<
+				" from outside context:\n";
+			throw runtime_error("Cannot access private or protected variable from this context");
 		}
 		return;
 	}
@@ -229,7 +257,7 @@ wpl_variable *wpl_namespace_session::find_variable(const char *name, int ctx){
 	}*/
 
 	// Search in parent namespace session
-	if (parent && (tmp = parent->find_variable(name, WPL_NSS_CTX_CHILD))) {
+	if (parent && (tmp = parent->find_variable(name, parent_nss_context))) {
 		return tmp;
 	}
 
@@ -291,7 +319,7 @@ wpl_function *wpl_namespace_session::find_function(const char *name, int ctx) {
 		return template_namespace->find_function(name);
 	}
 	else if (parent) {
-		return parent->find_function(name, WPL_NSS_CTX_CHILD);
+		return parent->find_function(name, parent_nss_context);
 	}
 	return NULL;
 }

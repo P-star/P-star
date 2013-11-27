@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -40,6 +40,7 @@ class wpl_class : public wpl_struct {
 class wpl_type_class : public wpl_type_struct {
 	public:
 	~wpl_type_class() {}
-	wpl_type_class (const char *name) : wpl_type_struct (name) {
+	wpl_type_class () : wpl_type_struct (wpl_typename_class) {
 	}
 };
+

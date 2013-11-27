@@ -51,11 +51,13 @@ class wpl_function : public wpl_identifier, public wpl_runable, public wpl_names
 
 	public:
 	virtual ~wpl_function() {}
-	wpl_function (const char *name, const wpl_type_complete *new_return_type) :
+	wpl_function (
+		const wpl_type_complete *new_return_type,
+		const char *name
+	) :
 		wpl_identifier(name),
 		return_type(new_return_type)
-	{
-	}
+	{}
 
 	const char *get_function_name() const {
 		return function_name;

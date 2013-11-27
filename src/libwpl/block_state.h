@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -45,19 +45,33 @@ class wpl_block_state : public wpl_namespace_session, public wpl_state {
 //	void register_child (wpl_runable *runable, int index);
 
 	public:
+	/**
+	 * @brief This constructor is used by function blocks
+	 *
+	 * @param parent Function namespace, function arguments
+	 * @param sibling Sibling namespace, namespace where the function is defined in
+	 * @param template_namespace Template namespace of block
+	 */
 	wpl_block_state (
 			wpl_namespace_session *parent,
 			wpl_namespace_session *sibling,
 			wpl_namespace *template_namespace
 	) :
-		wpl_namespace_session(parent, sibling, template_namespace),
+		wpl_namespace_session(parent, sibling, template_namespace, WPL_NSS_CTX_SELF),
 		wpl_state(parent)
 	{}
+
+	/**
+	 * @brief This constructor is used by normal blocks
+	 *
+	 * @param parent Namespace of parent block
+	 * @param template_namespace Template namespace of block
+	 */
 	wpl_block_state (
 			wpl_namespace_session *parent,
 			wpl_namespace *template_namespace
 	) :
-		wpl_namespace_session(parent, template_namespace),
+		wpl_namespace_session(parent, template_namespace, WPL_NSS_CTX_SELF),
 		wpl_state(parent)
 	{}
 	int run_child (wpl_runable *child, int index, wpl_value *final_result);

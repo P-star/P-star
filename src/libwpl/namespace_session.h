@@ -39,7 +39,8 @@ enum {
 	WPL_NSS_CTX_NONE,
 	WPL_NSS_CTX_CHILD,
 	WPL_NSS_CTX_SELF,
-	WPL_NSS_CTX_FRIEND
+	WPL_NSS_CTX_FRIEND,
+	WPL_NSS_CTX_OUTSIDE
 };
 
 class wpl_expression_state;
@@ -54,6 +55,7 @@ class wpl_namespace_session {
 
 	bool do_sibling_lookup;
 	const wpl_namespace *template_namespace;
+	int parent_nss_context;
 
 	vector<unique_ptr<wpl_variable>> variables_ptr;
 
@@ -69,8 +71,14 @@ class wpl_namespace_session {
 	);
 	wpl_namespace_session(
 			wpl_namespace_session *parent,
+			const wpl_namespace *template_namespace,
+			int parent_access_context
+	);
+	wpl_namespace_session(
+			wpl_namespace_session *parent,
 			wpl_namespace_session *sibling,
-			const wpl_namespace *template_namespace
+			const wpl_namespace *template_namespace,
+			int parent_access_context
 	);
 	wpl_namespace_session(const wpl_namespace *template_namespace);
 	wpl_namespace_session();

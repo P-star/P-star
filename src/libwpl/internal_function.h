@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -33,10 +33,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 class wpl_internal_function : public wpl_function {
 	public:
 	wpl_internal_function (
-			const char *name,
-			const wpl_type_complete *return_type
+			const wpl_type_complete *return_type,
+			const char *name
 			) :
-		wpl_function(name, return_type)
+		wpl_function(return_type, name)
 	{}
 
 //	void generate_argument_list (ostringstream &name_builder);

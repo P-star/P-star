@@ -39,7 +39,6 @@ int wpl_scene::run (wpl_state *state, wpl_value *final_result) {
 	int index = 0;
 	int ret;
 	for (wpl_scene *base : base_scenes) {
-		cout << "Run base scene " << base->get_name() << endl;
 		ret = scene_state->run_base_scene(base, index++, final_result);
 	}
 	return wpl_block::run(state, final_result);

@@ -250,6 +250,7 @@ class wpl_matcher {
 	static const uint32_t WORD		= 1 << 30;
 	static const uint32_t INVALID		= 1 << 31;
 
+	wpl_matcher(const wpl_matcher_position *pos);
 	wpl_matcher();
 	~wpl_matcher();
 
@@ -313,6 +314,7 @@ class wpl_matcher {
 
 	void get_word (char *target);
 	void ignore_blockstart();
+	void ignore_whitespace();
 	void set_text (const char *text, const int len);
 	void check_varname_length (const int len);
 

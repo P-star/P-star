@@ -70,10 +70,10 @@ int wpl_value_struct::do_operator (
 	if (op == &OP_ELEMENT) {
 		const char *name = rhs->toString().c_str();
 
-		if (wpl_variable *variable = find_variable(name, WPL_NSS_CTX_SELF)) {
+		if (wpl_variable *variable = find_variable(name, WPL_NSS_CTX_OUTSIDE)) {
 			return variable->get_value()->do_operator_recursive(exp_state, final_result);
 		}
-		else if (wpl_function *function = find_function(name, WPL_NSS_CTX_SELF)) {
+		else if (wpl_function *function = find_function(name, WPL_NSS_CTX_OUTSIDE)) {
 			wpl_value_function_ptr function_ptr(function, this, exp_state);
 			return function_ptr.do_operator_recursive(exp_state, final_result);
 		}

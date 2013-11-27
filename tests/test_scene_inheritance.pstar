@@ -7,7 +7,7 @@ SCENE b : a {
 }
 
 SCENE c {
-	int var_c = 3;
+	protected int var_c = 3;
 	echo "This is C\n";
 	echo "var_c is " . var_c . "\n";
 }

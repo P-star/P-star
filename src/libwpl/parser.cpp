@@ -102,8 +102,6 @@ void wpl_parser::parse_scene(wpl_namespace *parent_namespace) {
 		do {
 			get_word(buf);
 
-			cout << "Base scene " << buf << endl;
-
 			wpl_scene *base = parent_namespace->find_scene(buf);
 			if (!base) {
 				load_position(&pos);

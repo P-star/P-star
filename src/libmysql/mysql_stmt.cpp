@@ -84,7 +84,7 @@ void wpl_mysql_bind (
 class wpl_mysql_stmt_prepare : public wpl_function {
 	public:
 	wpl_mysql_stmt_prepare() :
-		wpl_function("prepare", wpl_type_global_bool)
+		wpl_function(wpl_type_global_bool, "prepare")
 	{
 		wpl_variable_holder sql("sql", new wpl_value_sql(), WPL_VARIABLE_ACCESS_PRIVATE);
 		register_identifier(&sql);
@@ -145,7 +145,7 @@ int wpl_mysql_stmt_prepare::run (
 class wpl_mysql_stmt_execute : public wpl_function {
 	public:
 	wpl_mysql_stmt_execute() :
-		wpl_function("execute", wpl_type_global_bool)
+		wpl_function(wpl_type_global_bool, "execute")
 	{}
 	int run (wpl_state *state, wpl_value *final_result);
 };
@@ -189,7 +189,7 @@ int wpl_mysql_stmt_execute::run (
 class wpl_mysql_stmt_error : public wpl_function {
 	public:
 	wpl_mysql_stmt_error() :
-		wpl_function("error", wpl_type_global_string)
+		wpl_function(wpl_type_global_string, "error")
 	{}
 	int run (wpl_state *state, wpl_value *final_result);
 };
@@ -222,7 +222,7 @@ int wpl_mysql_stmt_error::run (
 class wpl_mysql_stmt_get_row_iterator : public wpl_function {
 	public:
 	wpl_mysql_stmt_get_row_iterator() :
-		wpl_function("get_row_iterator", wpl_type_global_MYSQL_ROW)
+		wpl_function(mysql_type_global_MYSQL_ROW, "get_row_iterator")
 	{}
 	int run (wpl_state *state, wpl_value *final_result);
 };
@@ -261,8 +261,8 @@ int wpl_mysql_stmt_get_row_iterator::run (
 	return WPL_OP_OK;
 }
 
-wpl_type_MYSQL_STMT::wpl_type_MYSQL_STMT(const char *name) :
-	wpl_struct(name)
+wpl_type_MYSQL_STMT::wpl_type_MYSQL_STMT() :
+	wpl_struct(wpl_typename_MYSQL_STMT)
 {
 	wpl_variable_holder this_var("this", new wpl_value_MYSQL_STMT(), WPL_VARIABLE_ACCESS_PRIVATE);
 	register_identifier(&this_var);

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -51,9 +51,7 @@ class wpl_value_get : public wpl_value {
 	wpl_value_hash hash;
 
 	// Initialized in .cpp
-	static const wpl_type_array type_array;
-	static const wpl_type_bool type_bool;
-	static const wpl_type_array_instance type_complete_array;
+	static wpl_type_array_instance type_complete_array;
 
 	public:
 	PRIMITIVE_TYPEINFO(get)

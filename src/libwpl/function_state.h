@@ -56,7 +56,7 @@ class wpl_function_state : public wpl_state, public wpl_namespace_session {
 	) :
 		wpl_state(nss_this),
 		nss_caller(nss_caller),
-		wpl_namespace_session(nss_this, nss_caller, template_namespace),
+		wpl_namespace_session(nss_this, nss_caller, template_namespace, WPL_NSS_CTX_SELF),
 		return_value(return_type->new_instance())
 	{}
 	int run_block(wpl_block *block, wpl_value *final_result);

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -86,7 +86,7 @@ class wpl_type_hash_instance : public wpl_type_complete_template {
  */
 class wpl_type_hash : public wpl_type_template {
 	public:
-	wpl_type_hash (const char *type) : wpl_type_template(type) {}
+	wpl_type_hash () : wpl_type_template(wpl_typename_hash) {}
 
 	void suicide() {
 		delete this;

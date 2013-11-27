@@ -45,18 +45,6 @@ class wpl_block_if : public wpl_block {
 		next_else_if = NULL;
 	}
 
-	wpl_block_if (const wpl_block_if &copy) : wpl_block (copy) {
-		next_else_if = NULL;
-		if (copy.next_else_if) {
-			next_else_if = copy.next_else_if->clone();
-			next_else_if->set_parent_namespace(get_parent_namespace());
-		}
-	}
-
-	wpl_block_if *clone() const {
-		return new wpl_block_if(*this);
-	}
-
 	~wpl_block_if() {
 		if (next_else_if) {
 			delete next_else_if;

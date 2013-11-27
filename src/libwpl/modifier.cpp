@@ -27,3 +27,36 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "modifier.h"
+#include "namespace.h"
+
+static wpl_modifier_protected	constant_protected;
+static wpl_modifier_private	constant_private;
+static wpl_modifier_public	constant_public;
+
+void wpl_modifier::parse_value (wpl_namespace *parent_namespace) {
+	char buf[WPL_VARNAME_SIZE];
+	get_word(buf);
+
+	wpl_parseable *parseable;
+	if (!(parseable = parent_namespace->new_find_parseable (buf))) {
+		cerr << "While parsing name '" << buf << 
+			"' after modifier '" << get_name() << "':\n";
+		THROW_ELEMENT_EXCEPTION("Undefined name");
+	}
+
+	parseable->load_position(get_static_position());
+	try {
+		parseable->parse_value(parent_namespace);
+	}
+	catch (wpl_type_begin_declaration &e) {
+		modify_access_flags(e);
+		load_position(parseable->get_static_position());
+		throw;
+	}
+}
+
+void wpl_modifier_add_all_to_namespace(wpl_namespace *parent_namespace) {
+	parent_namespace->new_register_parseable (&constant_protected);
+	parent_namespace->new_register_parseable (&constant_private);
+	parent_namespace->new_register_parseable (&constant_public);
+}

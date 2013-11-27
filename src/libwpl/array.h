@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -88,7 +88,7 @@ class wpl_type_array_instance : public wpl_type_complete_template {
  */
 class wpl_type_array : public wpl_type_template {
 	public:
-	wpl_type_array (const char *type) : wpl_type_template(type) {}
+	wpl_type_array () : wpl_type_template(wpl_typename_array) {}
 
 	void suicide() {
 		delete this;
@@ -106,4 +106,3 @@ class wpl_type_array : public wpl_type_template {
 		return new wpl_type_array_instance(this, template_type);
 	}
 };
-

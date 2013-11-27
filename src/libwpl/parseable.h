@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -39,6 +39,12 @@ class wpl_parseable : public wpl_identifier, public wpl_suicidal, public wpl_mat
 	wpl_parseable (const char *name) : wpl_identifier(name) {
 	}
 	virtual ~wpl_parseable() {}
+
+	/*
+	   TODO
+	   XXX
+	   Definition of these functions are temporary. Remove the non-const.
+	   */
 
 	virtual void parse_value (wpl_namespace *parent_namespace) = 0;
 };

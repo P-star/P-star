@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -26,6 +26,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+#include "types.h"
 #include "value_get.h"
 #include "operator.h"
 #include "value_string.h"
@@ -37,9 +38,11 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstring>
 #include <map>
 
-const wpl_type_array wpl_value_get::type_array("GET array");
-const wpl_type_bool wpl_value_get::type_bool("GET bool");
-const wpl_type_array_instance wpl_value_get::type_complete_array(&type_array, &type_bool);
+extern wpl_type_array *wpl_type_global_array;
+
+wpl_type_array_instance wpl_value_get::type_complete_array(
+		wpl_type_global_array, wpl_type_global_bool
+);
 
 void wpl_value_get::parse(const char *query_string) {
 	int len = strlen(query_string);

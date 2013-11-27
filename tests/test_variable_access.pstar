@@ -1,0 +1,13 @@
+SCENE base {
+	protected int b = 2;
+}
+
+SCENE main : base {
+	private int a;
+	b = 1;
+	{
+		a = 2;
+	}
+	echo "A is: $a\n";
+	echo "B is: $b\n";
+}

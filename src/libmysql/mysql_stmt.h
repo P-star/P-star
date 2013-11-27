@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -39,7 +39,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 class wpl_type_MYSQL_STMT : public wpl_struct {
 	public:
-	wpl_type_MYSQL_STMT(const char *name);
+	wpl_type_MYSQL_STMT();
 	void suicide() override {
 		delete this;
 	}

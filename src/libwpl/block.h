@@ -61,19 +61,12 @@ class wpl_block : public wpl_runable, public wpl_namespace, public wpl_matcher {
 	void parse_while(wpl_namespace *ns);
 	void parse_if_else_sequenze(wpl_namespace *ns);
 
-	void parse_function_argument(wpl_namespace *ns);
-	void parse_function_declaration (wpl_namespace *ns, const wpl_type_complete *type, const char *name);
-	void parse_template_type (wpl_namespace *ns, const wpl_type_template *type, bool function_ctx);
-	void parse_complete_type (wpl_namespace *ns, const wpl_type_complete *type, bool function_ctx);
-	void parse_incomplete_type (wpl_namespace *ns, const wpl_type_incomplete *type);
 	void parse_text(wpl_namespace *ns);
 	void parse_parseable(wpl_namespace *ns, wpl_parseable *parseable);
 	void parse_comment();
 
 	static const int parse_f_none			= 0;
 	static const int parse_f_only_declarations	= 1<<0;
-
-	void __parse_value(wpl_namespace *ns, int flags);
 
 	int run_children(wpl_block_state *block_state, wpl_value *final_result);
 
@@ -83,22 +76,13 @@ class wpl_block : public wpl_runable, public wpl_namespace, public wpl_matcher {
 
 	public:
 	wpl_block();
-	wpl_block (const wpl_block &copy);
 	virtual ~wpl_block();
 
 	wpl_state *new_state(wpl_namespace_session *nss) override;
 
 	int run (wpl_state *state, wpl_value *final_result);
 
-	void parse_function_arguments(wpl_namespace *ns);
-
-	void parse_value_only_declarations(wpl_namespace *ns) {
-		__parse_value(ns, parse_f_only_declarations);
-	}
-
-	void parse_value(wpl_namespace *ns) {
-		__parse_value(ns, parse_f_none);
-	}
+	void parse_value(wpl_namespace *ns);
 
 	void set_run_condition(wpl_expression *exp) {
 		run_condition = exp;

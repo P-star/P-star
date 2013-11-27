@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -54,9 +54,7 @@ class wpl_value_post : public wpl_value {
 	bool use_get;
 
 	// Initialized in .cpp
-	static const wpl_type_array type_array;
-	static const wpl_type_bool type_bool;
-	static const wpl_type_array_instance type_complete_array;
+	static wpl_type_array_instance type_complete_array;
 
 	void parse_entity (mimetic::MimeEntity *me);
 
