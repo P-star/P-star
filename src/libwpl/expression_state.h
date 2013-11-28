@@ -155,8 +155,7 @@ class wpl_expression_state : public wpl_state {
 		int index,
 		int discard_pos,
 		wpl_value *final_result,
-		wpl_namespace_session *nss_this,
-		wpl_namespace_session *nss_caller
+		wpl_namespace_session *nss_this
 	);
 
 	int do_operator_on_unresolved (

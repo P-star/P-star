@@ -114,7 +114,7 @@ DEFINE_TYPE(stdin);
 
 
 void wpl_type_begin_function_declaration::parse_value (wpl_namespace *parent_namespace) {
-	wpl_user_function *function = new wpl_user_function(type, name.c_str());
+	wpl_user_function *function = new wpl_user_function(type, name.c_str(), access_flags);
 	parent_namespace->register_identifier(function);
 
 	function->load_position(get_static_position());

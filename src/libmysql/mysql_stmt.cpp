@@ -84,7 +84,7 @@ void wpl_mysql_bind (
 class wpl_mysql_stmt_prepare : public wpl_function {
 	public:
 	wpl_mysql_stmt_prepare() :
-		wpl_function(wpl_type_global_bool, "prepare")
+		wpl_function(wpl_type_global_bool, "prepare", WPL_VARIABLE_ACCESS_PUBLIC)
 	{
 		wpl_variable_holder sql("sql", new wpl_value_sql(), WPL_VARIABLE_ACCESS_PRIVATE);
 		register_identifier(&sql);
@@ -108,8 +108,6 @@ int wpl_mysql_stmt_prepare::run (
 	if (!(sql_var = block_state->find_variable("sql", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("MySQL error: stmt_prepare(): Could not find 'sql' variable");
 	}
-
-	block_state->use_sibling_lookup();
 
 	wpl_value_MYSQL_STMT *this_stmt = (wpl_value_MYSQL_STMT*) this_var->get_value();
 
@@ -145,7 +143,7 @@ int wpl_mysql_stmt_prepare::run (
 class wpl_mysql_stmt_execute : public wpl_function {
 	public:
 	wpl_mysql_stmt_execute() :
-		wpl_function(wpl_type_global_bool, "execute")
+		wpl_function(wpl_type_global_bool, "execute", WPL_VARIABLE_ACCESS_PUBLIC)
 	{}
 	int run (wpl_state *state, wpl_value *final_result);
 };
@@ -189,7 +187,7 @@ int wpl_mysql_stmt_execute::run (
 class wpl_mysql_stmt_error : public wpl_function {
 	public:
 	wpl_mysql_stmt_error() :
-		wpl_function(wpl_type_global_string, "error")
+		wpl_function(wpl_type_global_string, "error", WPL_VARIABLE_ACCESS_PUBLIC)
 	{}
 	int run (wpl_state *state, wpl_value *final_result);
 };
@@ -222,7 +220,7 @@ int wpl_mysql_stmt_error::run (
 class wpl_mysql_stmt_get_row_iterator : public wpl_function {
 	public:
 	wpl_mysql_stmt_get_row_iterator() :
-		wpl_function(mysql_type_global_MYSQL_ROW, "get_row_iterator")
+		wpl_function(mysql_type_global_MYSQL_ROW, "get_row_iterator", WPL_VARIABLE_ACCESS_PUBLIC)
 	{}
 	int run (wpl_state *state, wpl_value *final_result);
 };

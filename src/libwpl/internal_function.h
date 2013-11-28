@@ -34,9 +34,10 @@ class wpl_internal_function : public wpl_function {
 	public:
 	wpl_internal_function (
 			const wpl_type_complete *return_type,
-			const char *name
+			const char *name,
+			int access_flags
 			) :
-		wpl_function(return_type, name)
+		wpl_function(return_type, name, access_flags)
 	{}
 
 //	void generate_argument_list (ostringstream &name_builder);

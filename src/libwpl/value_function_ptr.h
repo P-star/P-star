@@ -42,7 +42,6 @@ class wpl_value_function_ptr : public wpl_value {
 	private:
 	wpl_function *function;
 	wpl_namespace_session *nss_this;
-	wpl_namespace_session *nss_caller;
 
 	int saved_discard_pos;
 
@@ -56,7 +55,6 @@ class wpl_value_function_ptr : public wpl_value {
 	wpl_value_function_ptr(wpl_function *function) {
 		this->function = function;
 		this->nss_this = NULL;
-		this->nss_caller = NULL;
 		this->saved_discard_pos = 0;
 	}
 

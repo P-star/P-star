@@ -46,7 +46,8 @@ class wpl_user_function : public wpl_function, public wpl_matcher {
 	public:
 	wpl_user_function (
 			const wpl_type_complete *return_type,
-			const char *name
+			const char *name,
+			int access_flags
 			);
 
 	int run(wpl_state *state, wpl_value *final_result);
