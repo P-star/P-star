@@ -29,6 +29,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "namespace_session.h"
 #include "expression_state.h"
 #include "value.h"
+#include "value_unresolved.h"
+#include "value_function_ptr.h"
 
 void wpl_namespace_session::replace_variables (wpl_namespace_session *source) {
 	list<wpl_variable*> variables;
@@ -174,7 +176,7 @@ wpl_namespace_session::wpl_namespace_session (
 	this->parent = parent;
 	this->sibling = sibling;
 	this->template_namespace = template_namespace;
-	this->do_sibling_lookup = false;
+	this->do_sibling_lookup = true;
 	this->parent_nss_context = parent_access_context;
 
 	template_namespace->copy_variables_to_namespace_session(this);
@@ -314,14 +316,35 @@ wpl_variable *wpl_namespace_session::get_variable(int index) {
  *
  * @return A function with matching name on success, or NULL on failure.
  */
-wpl_function *wpl_namespace_session::find_function(const char *name, int ctx) {
+wpl_function *wpl_namespace_session::find_function_no_parent(const char *name, int ctx) {
 	if (template_namespace) {
 		return template_namespace->find_function(name);
 	}
-	else if (parent) {
-		return parent->find_function(name, parent_nss_context);
-	}
 	return NULL;
+}
+
+int wpl_namespace_session::do_operator_on_unresolved (
+	wpl_value_unresolved_identifier *unresolved,
+	wpl_expression_state *exp_state,
+	wpl_value *final_result,
+	int ctx
+) {
+	wpl_function *function = find_function_no_parent(unresolved->get().c_str(), ctx);
+
+	if (!function) {
+		if (parent) {
+			return parent->do_operator_on_unresolved(
+				unresolved,
+				exp_state,
+				final_result,
+				ctx
+			);
+		}
+		return WPL_OP_NAME_UNRESOLVED;
+	}
+
+	wpl_value_function_ptr function_ptr(function, NULL, exp_state);
+	return function_ptr.do_operator_recursive(exp_state, final_result);
 }
 
 /**

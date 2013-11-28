@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "expression_state.h"
+#include "operator_types.h"
 #include "function.h"
 
 void wpl_expression_state::optimize() {
@@ -35,6 +36,11 @@ void wpl_expression_state::optimize() {
 	   expressions, makes i++ etc. faster
 	   */
 	if (run_stack.size() == 2) {
+		// fastop for function calls is not implemented,
+		// only variables can be resolved
+		if (run_stack[0].op == &OP_FUNCTION_CALL) {
+			return;
+		}
 		shunting_yard_carrier ca(run_stack[1].value, run_stack[0].op);
 		run_stack.clear();
 		run_stack.push(ca);

@@ -67,13 +67,22 @@ int wpl_value_unresolved_identifier::do_fastop (
 
 		return value->do_fastop(exp_state, final_result, op);
 	}
+	return wpl_value::do_fastop(exp_state, final_result, op);
+/*
+   XXX
+   Fastop for function calles is currently not implemented. Might
+   implement, might not. The optimization does not merge value and
+   operator into the same carrier if the operator is a function call.
 
 	if (wpl_function *function = exp_state->find_function(value.c_str())) {
 		wpl_value_function_ptr function_ptr(function, NULL, exp_state);
 		return function_ptr.do_fastop(exp_state, final_result, op);
 	}
 
-	return wpl_value::do_fastop(exp_state, final_result, op);
+	int ret = exp_state->do_operator_on_unresolved(this, final_result);
+	if (ret & WPL_OP_NAME_UNRESOLVED) {
+		return wpl_value::do_fastop(exp_state, final_result, op);
+	}*/
 }
 
 int wpl_value_unresolved_identifier::do_operator_recursive (
@@ -95,10 +104,9 @@ int wpl_value_unresolved_identifier::do_operator_recursive (
 		return value->do_operator_recursive(exp_state, final_result);
 	}
 
-	if (wpl_function *function = exp_state->find_function(value.c_str())) {
-		wpl_value_function_ptr function_ptr(function, NULL, exp_state);
-		return function_ptr.do_operator_recursive(exp_state, final_result);
+	int ret = exp_state->do_operator_on_unresolved(this, final_result);
+	if (ret & WPL_OP_NAME_UNRESOLVED) {
+		return wpl_value::do_operator_recursive(exp_state, final_result);
 	}
-
-	return wpl_value::do_operator_recursive(exp_state, final_result);
+	return ret;
 }

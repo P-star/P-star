@@ -47,7 +47,13 @@ class wpl_scene_state : public wpl_block_state {
 	);
 
 	wpl_variable *find_variable(const char *name, int ctx) override;
-	wpl_function *find_function(const char *name, int ctx) override;
+
+	int do_operator_on_unresolved (
+		wpl_value_unresolved_identifier *unresolved,
+		wpl_expression_state *exp_state,
+		wpl_value *final_result,
+		int ctx
+	) override;
 
 	int run_base_scene (wpl_scene *scene, int index, wpl_value *final_result);
 };

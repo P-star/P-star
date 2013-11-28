@@ -1,7 +1,9 @@
 SCENE base {
 	protected int b = 2;
+	private int c = 2;
 	protected int print_b() {
 		echo "B is: $b\n";
+		echo "C is: $c\n";
 	}
 }
 

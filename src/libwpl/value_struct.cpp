@@ -73,7 +73,7 @@ int wpl_value_struct::do_operator (
 		if (wpl_variable *variable = find_variable(name, WPL_NSS_CTX_OUTSIDE)) {
 			return variable->get_value()->do_operator_recursive(exp_state, final_result);
 		}
-		else if (wpl_function *function = find_function(name, WPL_NSS_CTX_OUTSIDE)) {
+		else if (wpl_function *function = find_function_no_parent(name, WPL_NSS_CTX_OUTSIDE)) {
 			wpl_value_function_ptr function_ptr(function, this, exp_state);
 			return function_ptr.do_operator_recursive(exp_state, final_result);
 		}

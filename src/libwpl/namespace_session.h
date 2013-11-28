@@ -44,6 +44,7 @@ enum {
 };
 
 class wpl_expression_state;
+class wpl_value_unresolved_identifier;
 
 /**
  * @brief This class is passed into all runables which are called with the run() function. The runables copy their identifiers into this temporary namespace. The namespace session creates a child of itself when a runable calls another runable.
@@ -63,22 +64,22 @@ class wpl_namespace_session {
 	wpl_namespace_session(const wpl_namespace_session &copy);
 	wpl_namespace_session &operator= (const wpl_namespace_session &rhs);
 	wpl_namespace_session(
-			wpl_namespace_session *parent
+		wpl_namespace_session *parent
 	);
 	wpl_namespace_session(
-			wpl_namespace_session *parent,
-			const wpl_namespace *template_namespace
+		wpl_namespace_session *parent,
+		const wpl_namespace *template_namespace
 	);
 	wpl_namespace_session(
-			wpl_namespace_session *parent,
-			const wpl_namespace *template_namespace,
-			int parent_access_context
+		wpl_namespace_session *parent,
+		const wpl_namespace *template_namespace,
+		int parent_access_context
 	);
 	wpl_namespace_session(
-			wpl_namespace_session *parent,
-			wpl_namespace_session *sibling,
-			const wpl_namespace *template_namespace,
-			int parent_access_context
+		wpl_namespace_session *parent,
+		wpl_namespace_session *sibling,
+		const wpl_namespace *template_namespace,
+		int parent_access_context
 	);
 	wpl_namespace_session(const wpl_namespace *template_namespace);
 	wpl_namespace_session();
@@ -95,7 +96,14 @@ class wpl_namespace_session {
 
 	wpl_variable *find_variable(const wpl_value *return_value);
 	virtual wpl_variable *find_variable(const char *name, int ctx);
-	virtual wpl_function *find_function(const char *name, int ctx);
+	wpl_function *find_function_no_parent(const char *name, int ctx);
+
+	virtual int do_operator_on_unresolved (
+		wpl_value_unresolved_identifier *unresolved,
+		wpl_expression_state *exp_state,
+		wpl_value *final_result,
+		int ctx
+	);
 
 	wpl_variable *get_variable(int i);
 	int variable_index(const char *name);
