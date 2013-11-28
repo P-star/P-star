@@ -31,9 +31,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 wpl_user_function::wpl_user_function(
 		const wpl_type_complete *return_type,
-		const char *name
+		const char *name,
+		int access_flags
 ) :
-	wpl_function(return_type, name)
+	wpl_function(return_type, name, access_flags)
 {}
 
 int wpl_user_function::run (wpl_state *state, wpl_value *final_result) {

@@ -42,7 +42,7 @@ using namespace std;
 class wpl_value;
 class wpl_block;
 
-class wpl_function : public wpl_identifier, public wpl_runable, public wpl_namespace {
+class wpl_function : public wpl_identifier_access_holder, public wpl_runable, public wpl_namespace {
 	private:
 	char function_name[WPL_VARNAME_SIZE];
 
@@ -53,9 +53,10 @@ class wpl_function : public wpl_identifier, public wpl_runable, public wpl_names
 	virtual ~wpl_function() {}
 	wpl_function (
 		const wpl_type_complete *new_return_type,
-		const char *name
+		const char *name,
+		int access_flags
 	) :
-		wpl_identifier(name),
+		wpl_identifier_access_holder(name, access_flags),
 		return_type(new_return_type)
 	{}
 
@@ -71,7 +72,7 @@ class wpl_function : public wpl_identifier, public wpl_runable, public wpl_names
 		return true;
 	}
 
-	wpl_state *new_state(wpl_namespace_session *nss_this, wpl_namespace_session *nss_caller);
+	wpl_state *new_state(wpl_namespace_session *nss_this);
 
 	void generate_signature();
 

@@ -31,21 +31,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <utility>
 
-wpl_variable::wpl_variable (wpl_value *new_value, int access_flags) : value(new_value) {
-	is_static = false;
-	is_protected = false;
-	value->set_flags(wpl_value_is_constant);
-	this->access_flags = access_flags;
-}
-
 wpl_variable::wpl_variable (wpl_value *new_value, const char *name, int access_flags) :
 	value(new_value),
-	wpl_identifier(name)
+	wpl_identifier_access_holder(name, access_flags)
 {
 	is_static = false;
 	is_protected = false;
 	value->set_flags(wpl_value_is_constant);
-	this->access_flags = access_flags;
 }
 
 const char *wpl_variable::get_type_name() const {
@@ -92,11 +84,7 @@ void wpl_variable_holder::set_value(wpl_value *new_value) {
 	value->suicide();
 	value = new_value;
 }
-/*
-void wpl_variable_pointer::set_value(wpl_value *new_value) {
-	value = new_value;
-}
-*/
+
 wpl_variable_holder::wpl_variable_holder (const wpl_variable_holder &copy) :
 	wpl_variable(copy)
 {
@@ -108,7 +96,6 @@ wpl_variable_holder::wpl_variable_holder (const wpl_variable_holder &copy) :
 	value->set_flags(wpl_value_is_constant);
 	is_protected = false;
 	is_static = copy.is_static;
-	access_flags = copy.access_flags;
 }
 /*
 wpl_variable_pointer *wpl_variable_pointer::clone() const {

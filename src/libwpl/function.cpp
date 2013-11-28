@@ -42,6 +42,6 @@ void wpl_function::generate_signature() {
 	strncpy (function_name, name_builder.str().c_str(), WPL_VARNAME_SIZE);
 }
 
-wpl_state *wpl_function::new_state(wpl_namespace_session *nss_this, wpl_namespace_session *nss_caller) {
-	return new wpl_function_state (nss_this, nss_caller, this, return_type);
+wpl_state *wpl_function::new_state(wpl_namespace_session *nss_this) {
+	return new wpl_function_state (nss_this, this, return_type);
 }

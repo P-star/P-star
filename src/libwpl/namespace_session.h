@@ -52,9 +52,8 @@ class wpl_value_unresolved_identifier;
 class wpl_namespace_session {
 	private:
 	wpl_namespace_session *parent;
-	wpl_namespace_session *sibling;
+	wpl_namespace_session *nss_this;
 
-	bool do_sibling_lookup;
 	const wpl_namespace *template_namespace;
 	int parent_nss_context;
 
@@ -77,17 +76,13 @@ class wpl_namespace_session {
 	);
 	wpl_namespace_session(
 		wpl_namespace_session *parent,
-		wpl_namespace_session *sibling,
+		wpl_namespace_session *nss_this,
 		const wpl_namespace *template_namespace,
 		int parent_access_context
 	);
 	wpl_namespace_session(const wpl_namespace *template_namespace);
 	wpl_namespace_session();
 	~wpl_namespace_session();
-
-	void use_sibling_lookup() {
-		do_sibling_lookup = true;
-	}
 
 	bool set_variables_from_expression (wpl_expression_state *exp_state, int discard_pos);
 	void replace_variables (wpl_namespace_session *source);
@@ -107,18 +102,6 @@ class wpl_namespace_session {
 
 	wpl_variable *get_variable(int i);
 	int variable_index(const char *name);
-
-	void set_namespace(wpl_namespace *template_namespace) {
-		this->template_namespace = template_namespace;
-	}
-
-	void set_parent(wpl_namespace_session *parent) {
-		this->parent = parent;
-	}
-
-	void set_sibling(wpl_namespace_session *sibling) {
-		this->sibling = sibling;
-	}
 
 	void variable_list(list<wpl_variable*> &target) {
 		for (unique_ptr<wpl_variable> &variable : variables_ptr) {

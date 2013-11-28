@@ -31,6 +31,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value.h"
 #include "value_unresolved.h"
 #include "value_function_ptr.h"
+#include "function.h"
+#include "variable.h"
 
 void wpl_namespace_session::replace_variables (wpl_namespace_session *source) {
 	list<wpl_variable*> variables;
@@ -106,8 +108,7 @@ wpl_namespace_session &wpl_namespace_session::operator= (const wpl_namespace_ses
 
 	template_namespace = rhs.template_namespace;
 	parent = rhs.parent;
-	sibling = rhs.sibling;
-	do_sibling_lookup = rhs.do_sibling_lookup;
+	nss_this = rhs.nss_this;
 
 	return *this;
 }
@@ -123,8 +124,7 @@ wpl_namespace_session::wpl_namespace_session(
 ) {
 	this->template_namespace = NULL;
 	this->parent = parent;
-	this->sibling = NULL;
-	this->do_sibling_lookup = false;
+	this->nss_this = NULL;
 	this->parent_nss_context = WPL_NSS_CTX_CHILD;
 }
 
@@ -133,8 +133,7 @@ wpl_namespace_session::wpl_namespace_session(
 ) {
 	this->template_namespace = template_namespace;
 	this->parent = NULL;
-	this->sibling = NULL;
-	this->do_sibling_lookup = false;
+	this->nss_this = NULL;
 	this->parent_nss_context = WPL_NSS_CTX_CHILD;
 
 	template_namespace->copy_variables_to_namespace_session(this);
@@ -145,9 +144,8 @@ wpl_namespace_session::wpl_namespace_session(
 		const wpl_namespace *template_namespace
 ) {
 	this->parent = parent;
-	this->sibling = NULL;
+	this->nss_this = NULL;
 	this->template_namespace = template_namespace;
-	this->do_sibling_lookup = false;
 	this->parent_nss_context = WPL_NSS_CTX_CHILD;
 
 	template_namespace->copy_variables_to_namespace_session(this);
@@ -159,9 +157,8 @@ wpl_namespace_session::wpl_namespace_session (
 		int parent_access_context
 ) {
 	this->parent = parent;
-	this->sibling = NULL;
+	this->nss_this = NULL;
 	this->template_namespace = template_namespace;
-	this->do_sibling_lookup = false;
 	this->parent_nss_context = parent_access_context;
 
 	template_namespace->copy_variables_to_namespace_session(this);
@@ -169,14 +166,13 @@ wpl_namespace_session::wpl_namespace_session (
 
 wpl_namespace_session::wpl_namespace_session (
 		wpl_namespace_session *parent,
-		wpl_namespace_session *sibling,
+		wpl_namespace_session *nss_this,
 		const wpl_namespace *template_namespace,
 		int parent_access_context
 ) {
 	this->parent = parent;
-	this->sibling = sibling;
+	this->nss_this = nss_this;
 	this->template_namespace = template_namespace;
-	this->do_sibling_lookup = true;
 	this->parent_nss_context = parent_access_context;
 
 	template_namespace->copy_variables_to_namespace_session(this);
@@ -185,8 +181,7 @@ wpl_namespace_session::wpl_namespace_session (
 wpl_namespace_session::wpl_namespace_session() {
 	this->template_namespace = NULL;
 	this->parent = NULL;
-	this->sibling = NULL;
-	this->do_sibling_lookup = false;
+	this->nss_this = NULL;
 	this->parent_nss_context = WPL_NSS_CTX_CHILD;
 }
 
@@ -206,32 +201,36 @@ void wpl_namespace_session::push (wpl_variable *variable) {
    TODO
    Improve error message
    */
-void check_variable_ctx (wpl_variable *variable, int ctx) {
-	int var_flags = variable->get_access_flags();
+void check_identifier_ctx (wpl_identifier_access_holder *identifier, int ctx) {
+	int var_flags = identifier->get_access_flags();
 
-	if ((ctx == WPL_NSS_CTX_SELF) || (var_flags == WPL_VARIABLE_ACCESS_PUBLIC)) {
+	if (
+		(ctx == WPL_NSS_CTX_SELF) ||
+		(ctx == WPL_NSS_CTX_FRIEND) ||
+		(var_flags == WPL_VARIABLE_ACCESS_PUBLIC)
+	) {
 		return;
 	}
 	else if (ctx == WPL_NSS_CTX_CHILD) {
 		if (var_flags == WPL_VARIABLE_ACCESS_PRIVATE) {
-			cerr << "While accessing variable " << variable->get_name() <<
+			cerr << "While accessing identifier " << identifier->get_name() <<
 				" from child context:\n";
-			throw runtime_error("Cannot access private variable from this context");
+			throw runtime_error("Cannot access private identifier from this context");
 		}
 		return;
 	}
 	else if (ctx == WPL_NSS_CTX_OUTSIDE) {
 		if (var_flags != WPL_VARIABLE_ACCESS_PUBLIC) {
-			cerr << "While accessing variable " << variable->get_name() <<
+			cerr << "While accessing identifier " << identifier->get_name() <<
 				" from outside context:\n";
-			throw runtime_error("Cannot access private or protected variable from this context");
+			throw runtime_error("Cannot access private or protected identifier from this context");
 		}
 		return;
 	}
-	cerr << "variable was " << variable->get_name() << endl;
-	cerr << "variable flags was " << var_flags << endl;
+	cerr << "identifier was " << identifier->get_name() << endl;
+	cerr << "identifier flags was " << var_flags << endl;
 	cerr << "ctx was " << ctx << endl;
-	throw runtime_error("Unhandled variable context");
+	throw runtime_error("Unhandled identifier context");
 }
 
 /**
@@ -245,7 +244,7 @@ wpl_variable *wpl_namespace_session::find_variable(const char *name, int ctx){
 	// Search for local variable
 	for (unique_ptr<wpl_variable> &variable : variables_ptr) {
 		if (variable->is_name(name)) {
-			check_variable_ctx(variable.get(), ctx);
+			check_identifier_ctx(variable.get(), ctx);
 			return variable.get();
 		}
 	}
@@ -258,13 +257,16 @@ wpl_variable *wpl_namespace_session::find_variable(const char *name, int ctx){
 		return tmp;
 	}*/
 
-	// Search in parent namespace session
-	if (parent && (tmp = parent->find_variable(name, parent_nss_context))) {
+	/*
+	   Search in nss_this namespace, which is our friend. In function
+	   calls, the nss_this of the function is the block in which the function is defined.
+	   */
+	if (nss_this && (tmp = nss_this->find_variable(name, WPL_NSS_CTX_FRIEND))) {
 		return tmp;
 	}
 
-	// Search in sibling namespace
-	if ((do_sibling_lookup && sibling) && (tmp = sibling->find_variable(name, WPL_NSS_CTX_FRIEND))) {
+	// Search in parent namespace session
+	if (parent && (tmp = parent->find_variable(name, parent_nss_context))) {
 		return tmp;
 	}
 
@@ -318,7 +320,11 @@ wpl_variable *wpl_namespace_session::get_variable(int index) {
  */
 wpl_function *wpl_namespace_session::find_function_no_parent(const char *name, int ctx) {
 	if (template_namespace) {
-		return template_namespace->find_function(name);
+		wpl_function *function = template_namespace->find_function(name);
+		if (function) {
+			check_identifier_ctx(function, ctx);
+			return function;
+		}
 	}
 	return NULL;
 }

@@ -46,7 +46,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 class wpl_mysql_connect : public wpl_function {
 	public:
 	wpl_mysql_connect() :
-		wpl_function(wpl_type_global_bool, "connect")
+		wpl_function(wpl_type_global_bool, "connect", WPL_VARIABLE_ACCESS_PUBLIC)
 	{
 		wpl_variable_holder host("host", new wpl_value_string(), WPL_VARIABLE_ACCESS_PRIVATE);
 		wpl_variable_holder user("user", new wpl_value_string(), WPL_VARIABLE_ACCESS_PRIVATE);
@@ -106,7 +106,7 @@ int wpl_mysql_connect::run (wpl_state *state, wpl_value *final_result) {
 class wpl_mysql_select_db : public wpl_function {
 	public:
 	wpl_mysql_select_db() :
-		wpl_function(wpl_type_global_bool, "select_db")
+		wpl_function(wpl_type_global_bool, "select_db", WPL_VARIABLE_ACCESS_PUBLIC)
 	{
 		wpl_variable_holder db("db", new wpl_value_string(), WPL_VARIABLE_ACCESS_PRIVATE);
 		register_identifier(&db);
@@ -143,7 +143,7 @@ int wpl_mysql_select_db::run (wpl_state *state, wpl_value *final_result) {
 class wpl_mysql_error : public wpl_function {
 	public:
 	wpl_mysql_error() :
-		wpl_function(wpl_type_global_string, "error")
+		wpl_function(wpl_type_global_string, "error", WPL_VARIABLE_ACCESS_PUBLIC)
 	{}
 	int run (wpl_state *state, wpl_value *final_result);
 };
@@ -167,7 +167,7 @@ int wpl_mysql_error::run (wpl_state *state, wpl_value *final_result) {
 class wpl_mysql_stmt_init : public wpl_function {
 	public:
 	wpl_mysql_stmt_init() :
-		wpl_function(mysql_type_global_MYSQL_STMT, "new_statement")
+		wpl_function(mysql_type_global_MYSQL_STMT, "new_statement", WPL_VARIABLE_ACCESS_PUBLIC)
 	{}
 	int run (wpl_state *state, wpl_value *final_result);
 };

@@ -84,6 +84,6 @@ int wpl_scene_state::do_operator_on_unresolved (
 		return ret;
 	}
 
-	wpl_value_function_ptr function_ptr(function, NULL, exp_state);
+	wpl_value_function_ptr function_ptr(function, this, exp_state);
 	return function_ptr.do_operator_recursive(exp_state, final_result);
 }
