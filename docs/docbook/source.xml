@@ -124,7 +124,7 @@ wpl -f my_program.pstar
 			</para>
 			<para>
 			Scenes, apart from the <code>main</code> scene are called using the <code>#SCENE</code>-pragma.
-			A scene inherits all variables from it's caller.
+			A scene may access all variables from it's caller.
 			</para>
 			<para>A simple P* program with two scenes might look like this:
 			</para>
@@ -411,6 +411,69 @@ Adding number 1 and 3
 The result is 4
 */
 
+			</programlisting>
+		</section>
+		<section>
+			<title>Scene inheritance</title>
+			<para>A scene can extend another scene. This is useful for instance if we want to put configuration stuff inside a scene and include it in other scenes.
+			</para>
+			<para>In a scene inheritance setup, we can use the keywords <code>private</code> and <code>protected</code> to restrict access to variables and functions.
+			If we don't specify any keyword, private is assumed.
+			</para>
+			<para>A variable or function which is private can only be accessed from within the same scene, but protected ones can be accessed from derived scenes.
+			</para>
+			<para>Base scenes are specified by putting a colon <code>:</code> after the scene name followed by a comma separated list of the base scenes, like <code>SCENE main : b, c</code>. Base scenes are run prior to the derived scene in the order in which they are defined.
+			</para>
+			<para>The example below has a total of four scenes which inherits from each other.
+			The main scene inherits from scene <code>b</code> and <code>c</code>, which makes them base scenes of main.
+			Scene <code>b</code> inherits further from scene <code>a</code>, and the order of execution of all the scenes will be <code>a -> b -> c -> main</code>
+			</para>
+			<para>If we call a function of a base scene from a derived scene, the function can access private variables of the scene in which it is defined.
+			</para>
+			<programlisting language="c">
+SCENE a {
+	echo "This is A\n";
+}
+
+SCENE b : a {
+	echo "This is B\n";
+
+	/* This variable is private, and can only be accessed from within b */
+	int var_b = 1;
+
+	/* This function is protected, and can be accessed from derived scenes */
+	protected int b_function(int argument) {
+		echo "This is B's function:\n";
+
+		/* The function can access the private variable var_b */
+		echo "\tvar_b is " . var_b . "\n";
+	}
+}
+
+SCENE c {
+	/* This variable is protected, and can be accessed from derived scenes */
+	protected int var_c = 2;
+
+	echo "This is C: var_c is " . var_c . "\n";
+}
+
+SCENE main : b, c {
+	/* Here, the protected variable var_c is accessed */
+	echo "This is Main: var_c is " . var_c . "\n";
+
+	/* Call the protected function b_function */
+	b_function();
+}
+
+			</programlisting>
+			<para>When this program is run, it will output:</para>
+			<programlisting>
+This is A
+This is B
+This is C: var_c is 2
+This is Main: var_c is 2
+This is B's function:
+	var_b is 1
 			</programlisting>
 		</section>
 		<section>
