@@ -1,6 +1,6 @@
 This is A
 This is B
-This is C
-var_c is 3
-This is Main
-var_c is 3
+This is C: var_c is 2
+This is Main: var_c is 2
+This is B's function:
+	var_b is 1
