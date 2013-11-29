@@ -32,7 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 int wpl_function_state::run_block (wpl_block *block, wpl_value *final_result) {
 	if (block_state.get() == nullptr) {
-		block_state.reset (new wpl_block_state(this, nss_caller, block));
+		block_state.reset (new wpl_block_state(this, /*nss_caller,*/this, block));
 	}
 	return block->run(block_state.get(), return_value.get());
 }

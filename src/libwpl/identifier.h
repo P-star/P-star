@@ -82,6 +82,25 @@ class wpl_identifier {
 };
 
 /**
+ * @brief This class is used by variables and functions to tell if they are private, protected or public
+ */
+class wpl_identifier_access_holder : public wpl_identifier {
+	private:
+	int access_flags;
+
+	public:
+	wpl_identifier_access_holder (const char *name, int access) :
+		wpl_identifier(name),
+		access_flags(access)
+	{}
+	virtual ~wpl_identifier_access_holder() {}
+
+	int get_access_flags() {
+		return access_flags;
+	}
+};
+
+/**
  * @brief Use this to register identifiers coming from libraries so that we don't free their memory (they must free it themselves). This is a dummy class which only holds the identifiers name to prevent duplication.
  */
 class wpl_identifier_reserved_name : public wpl_identifier {

@@ -1,0 +1,34 @@
+SCENE a {
+	echo "This is A\n";
+}
+
+SCENE b : a {
+	echo "This is B\n";
+
+	/* This variable is private, and can only be accessed from within b */
+	int var_b = 1;
+
+	/* This function is protected, and can be accessed from derived scenes */
+	protected int b_function() {
+		echo "This is B's function:\n";
+
+		/* The function can access the private variable var_b */
+		echo "\tvar_b is " . var_b . "\n";
+	}
+}
+
+SCENE c {
+	/* This variable is protected, and can be accessed from derived scenes */
+	protected int var_c = 2;
+
+	echo "This is C: var_c is " . var_c . "\n";
+}
+
+SCENE main : b, c {
+	/* Here, the protected variable var_c is accessed */
+	echo "This is Main: var_c is " . var_c . "\n";
+
+	/* Call the protected function b_function */
+	b_function();
+}
+

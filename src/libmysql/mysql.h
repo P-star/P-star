@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -41,7 +41,7 @@ using namespace std;
 
 class wpl_type_MYSQL : public wpl_struct {
 	public:
-	wpl_type_MYSQL(const char *name);
+	wpl_type_MYSQL();
 	int get_precedence() const {
 		return wpl_type_precedence_MYSQL;
 	}

@@ -1,0 +1,21 @@
+SCENE base {
+	protected int b = 2;
+	private int c = 2;
+	protected int print_b() {
+		echo "B is: $b\n";
+		echo "C is: $c\n";
+	}
+}
+
+SCENE main : base {
+	private int a;
+	b = 1;
+	{
+		a = 2;
+	}
+
+	echo "A is: $a\n";
+	echo "B is: $b\n";
+
+	print_b();
+}

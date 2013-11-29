@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "expression_state.h"
+#include "operator_types.h"
 #include "function.h"
 
 void wpl_expression_state::optimize() {
@@ -35,6 +36,11 @@ void wpl_expression_state::optimize() {
 	   expressions, makes i++ etc. faster
 	   */
 	if (run_stack.size() == 2) {
+		// fastop for function calls is not implemented,
+		// only variables can be resolved
+		if (run_stack[0].op == &OP_FUNCTION_CALL) {
+			return;
+		}
 		shunting_yard_carrier ca(run_stack[1].value, run_stack[0].op);
 		run_stack.clear();
 		run_stack.push(ca);
@@ -47,8 +53,7 @@ int wpl_expression_state::run_function (
 		int index,
 		int discard_pos,
 		wpl_value *final_result,
-		wpl_namespace_session *nss_this,
-		wpl_namespace_session *nss_caller
+		wpl_namespace_session *nss_this
 		)
 {
 	if (index >= WPL_EXPRESSION_MAX) {
@@ -56,7 +61,7 @@ int wpl_expression_state::run_function (
 	}
 
 	if (child_states[index].get() == nullptr) {
-		child_states[index].reset(function->new_state(nss_this, nss_caller));
+		child_states[index].reset(function->new_state(nss_this));
 	}
 
 	wpl_function_state *function_state =

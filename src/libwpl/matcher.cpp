@@ -34,6 +34,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstdio>
 #include <stdexcept>
 
+wpl_matcher::wpl_matcher(const wpl_matcher_position *pos) {
+	load_position(pos);
+}
+
 wpl_matcher::wpl_matcher () {
 	text = NULL;
 	text_rpos = NULL;
@@ -59,6 +63,10 @@ void wpl_matcher::get_word(char *target) {
 		THROW_ELEMENT_EXCEPTION("Expected name")
 	}
 	get_string(target, len);
+}
+
+void wpl_matcher::ignore_whitespace() {
+	ignore_string_match (WHITESPACE,0);
 }
 
 void wpl_matcher::ignore_blockstart() {

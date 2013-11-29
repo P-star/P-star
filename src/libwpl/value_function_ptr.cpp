@@ -39,7 +39,6 @@ wpl_value_function_ptr::wpl_value_function_ptr (
 		) {
 	this->function = function;
 	this->nss_this = nss_this;
-	this->nss_caller = exp_state->get_nss();
 	this->saved_discard_pos = exp_state->get_discard_pos();
 }
 
@@ -70,5 +69,5 @@ int wpl_value_function_ptr::do_operator (
 	int my_exp_pos = exp_state->pos() - 1; // -1 because we were just popped of
 	int discard_pos = saved_discard_pos;
 
-	return exp_state->run_function (function, my_exp_pos, discard_pos, final_result, nss_this, nss_caller);
+	return exp_state->run_function (function, my_exp_pos, discard_pos, final_result, nss_this);
 }

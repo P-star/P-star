@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -29,36 +29,81 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "user_function.h"
 #include "block.h"
 
-wpl_user_function::wpl_user_function(const char *name, const wpl_type_complete *return_type)
-	: wpl_function(name, return_type)
-{
-	block = new wpl_block();
-}
-
-wpl_user_function::~wpl_user_function() {
-	delete block;
-}
+wpl_user_function::wpl_user_function(
+		const wpl_type_complete *return_type,
+		const char *name,
+		int access_flags
+) :
+	wpl_function(return_type, name, access_flags)
+{}
 
 int wpl_user_function::run (wpl_state *state, wpl_value *final_result) {
 	wpl_function_state *function_state = (wpl_function_state*) state;
-	return function_state->run_block(block, final_result);
+	return function_state->run_block(&block, final_result);
 }
 
 void wpl_user_function::parse_value(wpl_namespace *ns) {
 	set_parent_namespace(ns);
-	block->load_position(get_static_position());
-	block->parse_function_arguments(this);
-	load_position(block->get_static_position());
+	wpl_matcher_position begin_pos(*get_static_position());
 
-	ignore_string_match (WHITESPACE, 0);
+	ignore_whitespace();
+	if (ignore_letter (')')) {
+		goto no_arguments;
+	}
 
+	do {
+		char buf[WPL_VARNAME_SIZE];
+		try {
+			get_word(buf);
+		}
+		catch (wpl_element_exception &e) {
+			cerr << "While looking for word in function argument list:\n";
+			throw;
+		}
+
+		wpl_parseable *parseable;
+		if (!(parseable = ns->new_find_parseable (buf))) {
+			load_position(&begin_pos);
+			cerr << "While parsing name '" << buf <<
+				"' inside function argument declaration of function '" << get_name() <<
+				"':\n";
+			THROW_ELEMENT_EXCEPTION("Undefined name");
+		}
+
+		parseable->load_position(get_static_position());
+
+		try {
+			parseable->parse_value(this);
+		}
+		catch (wpl_type_begin_variable_declaration &e) {
+			e.create_variable(this);
+			load_position(parseable->get_static_position());
+		}
+
+		ignore_whitespace();
+		if (ignore_letter (')')) {
+			break;
+		}
+		else if (ignore_letter (',')) {
+			continue;
+		}
+		else {
+			load_position(&begin_pos);
+			THROW_ELEMENT_EXCEPTION("Syntax error in function argument declaration");
+		}
+	} while (!at_end());
+
+	no_arguments:
+
+	ignore_whitespace();
 	if (!ignore_letter ('{')) {
 		THROW_ELEMENT_EXCEPTION("Expected definition of function block after declaration");
 	}
 
-	block->load_position(get_static_position());
-	block->parse_value(block);
-	load_position(block->get_static_position());
+	block.set_parent_namespace(this);
+	block.load_position(get_static_position());
+	block.parse_value(&block);
+	load_position(block.get_static_position());
 
 	generate_signature();
 }

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -87,10 +87,33 @@ void wpl_parser::throw_parser_exception(const char *msg, const struct wpl_matche
 }
 
 void wpl_parser::parse_scene(wpl_namespace *parent_namespace) {
+	wpl_matcher_position pos;
+	save_position(&pos);
+
 	char buf[WPL_VARNAME_SIZE];
 	get_word(buf);
 	wpl_scene *scene = new wpl_scene(buf);
 	parent_namespace->register_identifier(scene);
+
+	ignore_string_match(WHITESPACE, 0);
+
+	// Check for base scenes
+	if (ignore_letter (':')) {
+		do {
+			get_word(buf);
+
+			wpl_scene *base = parent_namespace->find_scene(buf);
+			if (!base) {
+				load_position(&pos);
+				cerr << "While parsing base scene name '" << buf << "':\n";
+				THROW_ELEMENT_EXCEPTION("Could not find base scene");
+			}
+
+			scene->add_base(base);
+
+			ignore_string_match(WHITESPACE, 0);
+		} while (ignore_letter (','));
+	}
 
 	ignore_blockstart();
 

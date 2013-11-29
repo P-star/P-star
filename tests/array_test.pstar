@@ -12,4 +12,5 @@ SCENE main {
 		echo "The value of element $i is " . my_first_array[i] . "\n";
 		i++;
 	}
+	return 0;
 }

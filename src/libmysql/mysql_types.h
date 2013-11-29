@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,8 +28,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once 
 
-
 #include "../libwpl/type_precedence.h"
+
+class wpl_type_complete;
+
+static wpl_type_complete *mysql_type_global_MYSQL;
+static wpl_type_complete *mysql_type_global_MYSQL_STMT;
+static wpl_type_complete *mysql_type_global_MYSQL_ROW;
 
 static const char *wpl_typename_MYSQL = "MYSQL";
 static const char *wpl_typename_MYSQL_STMT = "MYSQL_STMT";
@@ -38,9 +43,3 @@ static const char *wpl_typename_MYSQL_ROW = "MYSQL_ROW";
 static const int wpl_type_precedence_MYSQL = wpl_type_precedence_middle;
 static const int wpl_type_precedence_MYSQL_STMT = wpl_type_precedence_middle;
 static const int wpl_type_precedence_MYSQL_ROW = wpl_type_precedence_middle;
-
-extern wpl_type_complete *wpl_type_global_bool;
-extern wpl_type_complete *wpl_type_global_string;
-extern wpl_type_complete *wpl_type_global_MYSQL;
-extern wpl_type_complete *wpl_type_global_MYSQL_STMT;
-extern wpl_type_complete *wpl_type_global_MYSQL_ROW;

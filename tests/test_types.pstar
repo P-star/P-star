@@ -9,5 +9,6 @@ SCENE main {
 		echo "$base exp $exp is $result\n";
 		exp++;
 	}
+	return 0;
 
 }

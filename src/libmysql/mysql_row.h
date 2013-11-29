@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -123,8 +123,8 @@ class wpl_value_MYSQL_ROW : public wpl_value {
 
 class wpl_type_MYSQL_ROW : public wpl_type_complete {
 	public:
-	wpl_type_MYSQL_ROW(const char *name) :
-		wpl_type_complete(name)
+	wpl_type_MYSQL_ROW() :
+		wpl_type_complete(wpl_typename_MYSQL_ROW)
 	{}
 	wpl_value *new_instance() const override {
 		wpl_value *ret = new wpl_value_MYSQL_ROW();

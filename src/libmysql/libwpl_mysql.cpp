@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -41,6 +41,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "./mysql.h"
 #include "mysql_stmt.h"
 #include "mysql_row.h"
+#include "mysql_types.h"
 #include "../libwpl/namespace.h"
 #include "../libwpl/types.h"
 
@@ -51,40 +52,20 @@ class wpl_mysql : public wpl_namespace {
 
 wpl_mysql mysql;
 
-#ifndef WIN32
-wpl_type_complete *wpl_type_global_bool = NULL;
-wpl_type_complete *wpl_type_global_string = NULL;
-#endif
+static wpl_sql sql;
 
-wpl_type_complete *wpl_type_global_MYSQL_ROW = NULL;
-wpl_type_complete *wpl_type_global_MYSQL_STMT = NULL;
-wpl_type_complete *wpl_type_global_MYSQL = NULL;
-
-#define REGISTER_TYPE(name)					\
-{								\
-	wpl_type_##name *type =					\
-		new wpl_type_##name(wpl_typename_##name);	\
-	wpl_type_global_##name = type;				\
-	mysql.register_identifier (type);			\
-}
-
+#define REGISTER_TYPE(name)						\
+	static wpl_type_##name mysql_type_constant_##name;		\
+	mysql_type_global_##name = &mysql_type_constant_##name;			\
+	mysql.new_register_parseable(&mysql_type_constant_##name);
 
 void register_identifiers() {
 	// This order is important!!
-#ifndef WIN32
-	REGISTER_TYPE(bool)
-	REGISTER_TYPE(string)
-#endif
-
 	REGISTER_TYPE(MYSQL_ROW)
 	REGISTER_TYPE(MYSQL_STMT)
 	REGISTER_TYPE(MYSQL)
-	wpl_parseable *sql = new wpl_sql();
-	mysql.register_identifier(sql);
-	/*
-	REGISTER_TYPE(MYSQL)
 
-	mysql.register_identifier (new wpl_sql());*/
+	mysql.new_register_parseable(&sql);
 }
 
 #ifdef WIN32

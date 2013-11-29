@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "block.h"
 #include "matcher.h"
 #include "function.h"
 
@@ -40,14 +41,14 @@ class wpl_type_complete;
 
 class wpl_user_function : public wpl_function, public wpl_matcher {
 	private:
-	wpl_block *block;
+	wpl_block block;
 
 	public:
 	wpl_user_function (
+			const wpl_type_complete *return_type,
 			const char *name,
-			const wpl_type_complete *return_type
+			int access_flags
 			);
-	~wpl_user_function();
 
 	int run(wpl_state *state, wpl_value *final_result);
 	void parse_value (wpl_namespace *ns);

@@ -42,6 +42,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_bool.h"
 #include "parseable.h"
 
+#include "modifier.h"
+
 #include <utility>
 #include <cstring>
 #include <cstdio>
@@ -50,6 +52,7 @@ using namespace std;
 
 wpl_block::wpl_block() {
 	run_condition = NULL;
+	wpl_modifier_add_all_to_namespace(this);
 }
 
 wpl_block::~wpl_block() {
@@ -193,179 +196,6 @@ void wpl_block::parse_if_else_sequenze(wpl_namespace *ns) {
 }
 
 /**
- * @brief Parse a variable declaration like in a function like 'int a'
- *
- * @param Pointer to the type object (int, array etc.)
- */
-void wpl_block::parse_function_argument (wpl_namespace *ns) {
-	char buf[WPL_VARNAME_SIZE];
-	get_word (buf);
-
-	if (wpl_type_complete *type = ns->find_complete_type(buf)) {
-		parse_complete_type(ns, type, true);
-	}
-	else if (wpl_type_template *type = ns->find_template_type(buf)) {
-		parse_template_type(ns, type, true);
-	}
-	else {
-		cerr << "While parsing name '" << buf << "':\n";
-		THROW_ELEMENT_EXCEPTION("wpl_block::parse_function_argument(): Unknown complete or template type");
-	}
-}
-
-/**
- * @brief Parse this block as a function argument block like '(int a, int b, string c)'
- */
-void wpl_block::parse_function_arguments(wpl_namespace *ns) {
-	ignore_string_match(WHITESPACE, 0);
-
-	if (ignore_letter (')')) {
-		// No arguments
-		return;
-	}
-
-	do {
-		ignore_string_match(WHITESPACE, 0);
-		parse_function_argument(ns);
-		ignore_string_match(WHITESPACE, 0);
-
-		if (ignore_letter (',')) {
-			continue;
-		}
-		else if (ignore_letter (')')) {
-			return;
-		}
-		else {
-			snprintf (exception_msg, exception_msg_length,
-				"Syntax error in function declaration near '%c'", get_string_pointer()[0]);
-			THROW_ELEMENT_EXCEPTION(exception_msg);
-		}
-	} while (!at_end());
-
-	THROW_ELEMENT_EXCEPTION("Expected ')' after function argument declaration");
-}
-
-void wpl_block::parse_function_declaration (
-	wpl_namespace *ns,
-	const wpl_type_complete *return_type,
-	const char *name
-) {
-	wpl_user_function *function = new wpl_user_function(name, return_type);
-	ns->register_identifier(function);
-
-	function->load_position(get_static_position());
-	function->parse_value(ns);
-	load_position(function->get_static_position());
-}
-
-/**
- * @brief Parse a template specification for template types in a declaration
- *
- * @param type Pointer to the template type
- */
-void wpl_block::parse_template_type (
-	wpl_namespace *ns,
-	const wpl_type_template *type,
-	bool function_ctx
-) {
-	char buf[WPL_VARNAME_SIZE];
-
-	ignore_string_match (WHITESPACE, 0);
-
-	if (!ignore_letter ('<')) {
-		THROW_ELEMENT_EXCEPTION("Expected '<' after declaration of template type");
-	}
-
-	get_word (buf);
-
-	if (wpl_type_complete *subtype = ns->find_complete_type(buf)) {
-		unique_ptr<wpl_type_complete> new_type (
-			type->new_instance(subtype)
-			);
-
-		const wpl_type_complete *final_type;
-		if (!(final_type = ns->find_complete_type(new_type->get_name()))) {
-			ns->register_identifier(new_type.get());
-			final_type = new_type.release();
-		}
-
-		ignore_string_match (WHITESPACE, 0);
-		if (!ignore_letter ('>')) {
-			THROW_ELEMENT_EXCEPTION("Expected '>' after template specification");
-		}
-
-		parse_complete_type(ns, final_type, function_ctx);
-	}
-	else if (wpl_type_template *subtype = ns->find_template_type(buf)) {
-		parse_template_type(ns, subtype, function_ctx);
-
-		ignore_string_match (WHITESPACE, 0);
-		if (!ignore_letter ('>')) {
-			THROW_ELEMENT_EXCEPTION("Expected '>' after template specification");
-		}
-	}
-	else {
-		THROW_ELEMENT_EXCEPTION("Could not find complete type from template specification");
-	}
-}
-
-/**
- * @brief Parse a complete type like 'int a', possibly followed by a function argument declaration '('
- *
- * @param type Pointer to the complete type
- * @param name Name of the new variable
- */
-void wpl_block::parse_complete_type (
-	wpl_namespace *ns,
-	const wpl_type_complete *type,
-	bool function_ctx
-) {
-	struct wpl_matcher_position position_at_name;
-	save_position (&position_at_name);
-
-	char buf[WPL_VARNAME_SIZE];
-	get_word(buf);
-
-	ignore_string_match(WHITESPACE, 0);
-
-	if (ignore_letter('(')) {
-		if (function_ctx) {
-			THROW_ELEMENT_EXCEPTION("No function declaration allowed inside function argument list");
-		}
-		parse_function_declaration(ns, type, buf);
-	}
-	else {
-		wpl_variable_holder variable(type->new_instance(), buf);
-		ns->register_identifier(&variable);
-		if (!function_ctx) {
-			load_position (&position_at_name);
-		}
-	}
-}
-
-/**
- * @brief Parse and incomplete type declaration, like struct
- *
- * @param type Pointer to the incomplete type
- * @param name Name of the new type created by the incomplete
- */
-void wpl_block::parse_incomplete_type (
-	wpl_namespace *ns,
-	const wpl_type_incomplete *type
-) {
-	char buf[WPL_VARNAME_SIZE];
-	get_word(buf);
-
-	wpl_type_user_incomplete *usr_obj = type->new_instance(buf);
-	register_identifier(usr_obj);
-
-	usr_obj->set_parent_namespace(this);
-	usr_obj->load_position(get_static_position());
-	usr_obj->parse_value(usr_obj);
-	load_position(usr_obj->get_static_position());
-}
-
-/**
  * @brief Parse a TEXT{}-block
  */
 void wpl_block::parse_text(wpl_namespace *ns) {
@@ -382,8 +212,30 @@ void wpl_block::parse_text(wpl_namespace *ns) {
  */
 void wpl_block::parse_parseable(wpl_namespace *ns, wpl_parseable *parseable) {
 	parseable->load_position(get_static_position());
-	parseable->parse_value(ns);
-	load_position(parseable->get_static_position());
+	try {
+		try {
+			try {
+				parseable->parse_value(ns);
+			}
+			catch (wpl_type_begin_variable_declaration &e) {
+				e.create_variable(ns);
+				load_position(e.get_position_at_name());
+				parse_expression(ns);
+			}
+		}
+		catch (wpl_type_begin_function_declaration &e) {
+			e.load_position(parseable->get_static_position());
+			e.parse_value(ns);
+			load_position(e.get_static_position());
+		}
+	}
+	catch (wpl_type_end_statement &e) {
+		load_position(e.get_static_position());
+		ignore_whitespace();
+		if (!ignore_letter (';')) {
+			THROW_ELEMENT_EXCEPTION("Expected ';' after declaration of incomplete type");
+		}
+	}
 }
 
 /**
@@ -410,7 +262,7 @@ void wpl_block::parse_comment() {
  *
  * @param Flags to limit which elements we allow depening on current context
  */
-void wpl_block::__parse_value(wpl_namespace *ns, int flags) {
+void wpl_block::parse_value(wpl_namespace *ns) {
 #ifdef WPL_DEBUG_BLOCKS
 	DBG("B: (" << this << "): Parse" << endl);
 #endif
@@ -431,96 +283,38 @@ void wpl_block::__parse_value(wpl_namespace *ns, int flags) {
 			get_string(buf, len);
 
 			if (strcmp (buf, wpl_blockname_if) == 0) {
-				if (flags & parse_f_only_declarations) {
-					THROW_ELEMENT_EXCEPTION("'if' not allowed here");
-				}
 				parse_if_else_sequenze(ns);
-				continue;
 			}
 			else if (strcmp (buf, wpl_blockname_while) == 0) {
-				if (flags & parse_f_only_declarations) {
-					THROW_ELEMENT_EXCEPTION("'while' not allowed here");
-				}
 				parse_while(ns);
-				continue;
 			}
 			else if (strcmp (buf, wpl_blockname_text) == 0) {
-				if (flags & parse_f_only_declarations) {
-					THROW_ELEMENT_EXCEPTION("'TEXT' not allowed here");
-				}
 				parse_text(ns);
-				continue;
 			}
-			else if (const wpl_type_complete *type = ns->find_complete_type(buf)) {
-				parse_complete_type(ns, type, false);
-				continue;
-			}
-			else if (const wpl_type_template *type = ns->find_template_type(buf)) {
-				parse_template_type(ns, type, false);
-				continue;
-			}
-			else if (const wpl_type_incomplete *type = ns->find_incomplete_type(buf)) {
-				parse_incomplete_type(ns, type);
-				continue;
-			}
-			else if (wpl_parseable *parseable = ns->find_parseable(buf)) {
+			else if (wpl_parseable *parseable = ns->new_find_parseable(buf)) {
 				parse_parseable(ns, parseable);
-				continue;
-			}
-			else if (wpl_variable *variable = ns->find_variable(buf)) {
-			}
-			else if (wpl_function *function= ns->find_function(buf)) {
-			}
-			else if (wpl_function *function= ns->find_function(buf)) {
-			}
-			else if (wpl_get_operator(buf, WPL_OP_F_ASSOC_ALL)) {
 			}
 			else {
 				revert_string(len);
-				cerr << "While parsing name '" << buf << "':\n";
-				THROW_ELEMENT_EXCEPTION("Unresolved name");
+				parse_expression(ns);
 			}
-
-			if (!(flags & parse_f_only_declarations)) {
-				revert_string(len);
-			}
-			else {
-				if (!ignore_letter (';')) {
-					THROW_ELEMENT_EXCEPTION("Excepted ';' after declaration");
-				}
-				continue;
-			}	
 		}
-
-		ignore_string_match (WHITESPACE,0);
-
-		if (ignore_string ("/*")) {
+		else if (ignore_string ("/*")) {
 			parse_comment();
 		}
 		else if (ignore_letter ('{')) {
-			if (flags & parse_f_only_declarations) {
-				THROW_ELEMENT_EXCEPTION("'{' or blockstart not allowed here");
-			}
 			parse_block(ns);
 		}
 		else if (ignore_letter ('}')) {
 			return;
 		}
+		else if (ignore_letter ('#')) {
+			parse_pragma(ns);
+		}
 		else if (search (EXPRESSION, WHITESPACE, false)) {
-			if (flags & parse_f_only_declarations) {
-				THROW_ELEMENT_EXCEPTION("Expression not allowed here");
-			}
 			parse_expression(ns);
 		}
-		else if (ignore_letter ('#')) {
-			if (flags & parse_f_only_declarations) {
-				THROW_ELEMENT_EXCEPTION("'#' or pragma not allowed here");
-			}
-			parse_pragma(ns);
-			continue;
-		}
-
-		if (prev_pos == get_string_pointer()) {
+		else {
 			snprintf (exception_msg, exception_msg_length,
 				"Syntax error in block near '%c'", get_string_pointer()[0]);
 			THROW_ELEMENT_EXCEPTION(exception_msg);

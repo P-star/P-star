@@ -89,6 +89,12 @@ int wpl_value::do_fastop (
 	if ((op->flags & WPL_OP_F_HAS_BOTH) != WPL_OP_F_HAS_BOTH) {
 		return do_operator(exp_state, final_result, op, this, this);
 	}
+	if (op->flags & WPL_OP_F_OPTIONAL_LHS) {
+		return do_operator(exp_state, final_result, op, NULL, this);
+	}
+	if (op->flags & WPL_OP_F_OPTIONAL_RHS) {
+		return do_operator(exp_state, final_result, op, this, NULL);
+	}
 
 	cerr << "While doing fastop '" << op->name << "'" << " on value of type " << get_type_name() << endl;
 	throw runtime_error("Too few operands for operator");

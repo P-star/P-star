@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -45,7 +45,7 @@ wpl_program::wpl_program(int argc, char **argv) {
 
 	unique_ptr<wpl_value_array> val_argv (
 			new wpl_value_array (
-				find_complete_type("string"),
+				wpl_type_global_string,
 				argc
 				)
 			);
@@ -54,7 +54,7 @@ wpl_program::wpl_program(int argc, char **argv) {
 		val_argv->set (i, new wpl_value_string(argv[i]));
 	}
 
-	wpl_variable_holder new_variable (val_argv.release(), "argv");
+	wpl_variable_holder new_variable (val_argv.release(), "argv", WPL_VARIABLE_ACCESS_PRIVATE);
 	new_variable.setStatic();
 
 	register_identifier(&new_variable);

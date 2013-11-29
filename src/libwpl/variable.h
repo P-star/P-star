@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -38,19 +38,25 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
+enum {
+	WPL_VARIABLE_ACCESS_NONE,
+	WPL_VARIABLE_ACCESS_PUBLIC,
+	WPL_VARIABLE_ACCESS_PROTECTED,
+	WPL_VARIABLE_ACCESS_PRIVATE
+};
+
 class wpl_value;
 
-class wpl_variable : public wpl_identifier {
+class wpl_variable : public wpl_identifier_access_holder {
 	protected:
 	wpl_value *value;
 	bool is_static;
 	bool is_protected;
 
 	public:
-	wpl_variable (wpl_value *new_value);
-	wpl_variable (wpl_value *new_value, const char *name);
+	wpl_variable (wpl_value *new_value, const char *name, int access_flags);
 
-	virtual ~wpl_variable () {};
+	virtual ~wpl_variable() {}
 
 	virtual wpl_variable *clone() const = 0;
 	virtual wpl_value *clone_value() const;
@@ -78,30 +84,18 @@ class wpl_variable : public wpl_identifier {
 	bool set_strong (wpl_value *value);
 };
 
-class wpl_variable_pointer : public wpl_variable {
-	public:
-	wpl_variable_pointer (wpl_value *new_value) :
-		wpl_variable (new_value)
-	{}
-	wpl_variable_pointer (wpl_value *new_value, const char *name) :
-		wpl_variable (new_value, name)
-	{}
-	wpl_variable_pointer *clone() const;
-	void set_value (wpl_value *new_value);
-};
-
 class wpl_variable_holder : public wpl_variable {
 	public:
 	wpl_variable_holder (const wpl_variable_holder &copy);
-	wpl_variable_holder (wpl_value *new_value) :
-		wpl_variable (new_value)
+
+	wpl_variable_holder (wpl_value *new_value, const char *name, int access_flags) :
+		wpl_variable (new_value, name, access_flags)
 	{}
-	wpl_variable_holder (wpl_value *new_value, const char *name) :
-		wpl_variable (new_value, name)
+
+	wpl_variable_holder (const char *name, wpl_value *new_value, int access_flags) :
+		wpl_variable (new_value, name, access_flags)
 	{}
-	wpl_variable_holder (const char *name, wpl_value *new_value) :
-		wpl_variable (new_value, name)
-	{}
+
 	~wpl_variable_holder();
 	wpl_variable_holder *clone() const;
 	void set_value (wpl_value *new_value);

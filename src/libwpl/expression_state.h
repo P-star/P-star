@@ -68,11 +68,7 @@ class wpl_expression_state : public wpl_state {
 	}
 
 	wpl_variable *find_variable (const char *name) {
-		return nss->find_variable(name);
-	}
-
-	wpl_function *find_function (const char *name) {
-		return nss->find_function(name);
+		return nss->find_variable(name, WPL_NSS_CTX_SELF);
 	}
 
 	wpl_state *get_child_state(int index) {
@@ -155,11 +151,22 @@ class wpl_expression_state : public wpl_state {
 	// RUNNING
 	int run_child (wpl_runable *runable, int index, wpl_value *final_result);
 	int run_function (
-			wpl_function *function,
-			int index,
-			int discard_pos,
-			wpl_value *final_result,
-			wpl_namespace_session *nss_this,
-			wpl_namespace_session *nss_caller
+		wpl_function *function,
+		int index,
+		int discard_pos,
+		wpl_value *final_result,
+		wpl_namespace_session *nss_this
 	);
+
+	int do_operator_on_unresolved (
+		wpl_value_unresolved_identifier *unresolved,
+		wpl_value *final_result
+	) {
+		return nss->do_operator_on_unresolved (
+			unresolved,
+			this,
+			final_result,
+			WPL_NSS_CTX_SELF
+		);
+	}
 };

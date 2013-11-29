@@ -26,3 +26,20 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+#include "scene.h"
+#include "scene_state.h"
+
+wpl_state *wpl_scene::new_state(wpl_namespace_session *nss) {
+	return new wpl_scene_state(nss, this, base_scenes);
+}
+
+int wpl_scene::run (wpl_state *state, wpl_value *final_result) {
+	wpl_scene_state *scene_state = (wpl_scene_state*) state;
+
+	int index = 0;
+	int ret;
+	for (wpl_scene *base : base_scenes) {
+		ret = scene_state->run_base_scene(base, index++, final_result);
+	}
+	return wpl_block::run(state, final_result);
+}

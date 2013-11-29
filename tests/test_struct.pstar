@@ -1,12 +1,12 @@
 SCENE main {
 	/* Define a new struct type with two variables and one function */
 	struct person {
-		string name;
-		int age;
+		public string name;
+		public int age;
 
-		int print() {
+		public int print() {
 			echo "$name is $age years old\n";
-		}
+		};
 	};
 
 	/* Create an instance of the struct */

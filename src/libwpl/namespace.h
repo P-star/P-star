@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "identifier.h"
 #include "exception.h"
 #include "variable.h"
+#include "parseable.h"
 
 #include <list>
 #include <sstream>
@@ -43,14 +44,13 @@ class wpl_type;
 class wpl_function;
 class wpl_variable;
 class wpl_value;
-class wpl_type_complete;
-class wpl_type_incomplete;
-class wpl_type_template;
 class wpl_namespace_session;
-class wpl_parseable;
+//class wpl_parseable;
 class wpl_template;
 class wpl_scene;
 class wpl_pragma;
+
+class wpl_exception_name_exists {};
 
 class wpl_namespace {
 	private:
@@ -58,18 +58,34 @@ class wpl_namespace {
 	int id;
 	static int id_counter;
 
+	list<unique_ptr<wpl_identifier>> managed_pointers;
+
+	/*
+	   TODO
+	   This is the old system, remove this
+	   */
 	list<unique_ptr<wpl_identifier>> identifiers;
 
+	list<wpl_function*> functions;
 	list<wpl_pragma*> pragmas;
 	list<wpl_template*> templates;
 	list<wpl_scene*> scenes;
-	list<wpl_function*> functions;
 	list<wpl_parseable*> parseables;
-	list<wpl_type_complete*> complete_types;
-	list<wpl_type_incomplete*> incomplete_types;
-	list<wpl_type_template*> template_types;
 
 	list<shared_ptr<wpl_variable>> variables;
+
+	/*
+	   TODO
+	   Convert old system stuff to the new system where all
+	   identifiers are parseables. Memory of parseables should be managed in
+	   static variables inside files for each type.
+	   - Functions are looked up at run-time and need a separate list (no RAII)
+	   - Variables are cloned and need also need a separate list (no RAII)
+	   */
+
+	list<wpl_parseable*> new_parseables;
+/*	list<wpl_variable*> variables_new;
+	list<wpl_function*> functions_new;*/
 
 	wpl_namespace *parent_namespace;
 
@@ -84,6 +100,17 @@ class wpl_namespace {
 	wpl_namespace(const wpl_namespace &copy) {
 		throw runtime_error("No cloning of namespace");
 	}
+
+	void add_managed_pointer (wpl_identifier *identifier) {
+		managed_pointers.emplace_back(identifier);
+	}
+
+	void new_register_parseable (wpl_parseable *parseable);
+/*	void new_register_function (wpl_function *function);
+	void new_register_variable (wpl_variable *variable);*/
+
+	wpl_parseable *new_find_parseable(const char *name);
+	wpl_parseable *new_find_parseable_no_parent(const char *name);
 
 	int variables_count() const {
 		return variables.size();
@@ -118,10 +145,6 @@ class wpl_namespace {
 	wpl_variable *find_nonstatic_variable (const char *name);
 	wpl_function *find_function (const char *name) const;
 
-	wpl_type_complete *find_complete_type (const char *name);
-	wpl_type_incomplete *find_incomplete_type (const char *name);
-	wpl_type_template *find_template_type (const char *name);
-
 	wpl_parseable *find_parseable (const char *name);
 
 	void register_identifier(wpl_pragma *pragma);
@@ -132,11 +155,6 @@ class wpl_namespace {
 	void register_identifier_hard(wpl_variable *variable);
 	void register_identifier(wpl_variable *variable);
 	void register_identifier(wpl_function *function);
-
-	void push_complete_type(wpl_type_complete *type);
-	void register_identifier(wpl_type_complete *type);
-	void register_identifier(wpl_type_incomplete *type);
-	void register_identifier(wpl_type_template *type);
 
 	void register_identifier(wpl_parseable *parseable);
 

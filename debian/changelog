@@ -1,3 +1,14 @@
+p-star (1.1-alpha3) unstable; urgency=low
+
+  * Fix for nesting function calls
+  * New operator => to push the discard queue of an expression onto an array
+  * Added scene inheritance with C++ syntax
+  * Variables and functions in scenes can be private or protected
+  * Internal restructuring of how variable- and function definitiions are parsed
+  * Version bump
+
+ -- Atle Solbakken <atle@goliathdns.no>  Fri, 29 Nov 2013 01:13:23 +0100
+
 p-star (1.1-alpha1) unstable; urgency=low
 
   * Engine for simple regular expression with mattern matching added

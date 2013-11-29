@@ -30,7 +30,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value.h"
 #include "value_array.h"
 #include <iostream>
-	
+
 wpl_array::wpl_array (const wpl_array &copy) {
 	array.reserve(copy.array.size());
 	for (wpl_value *value : copy.array) {

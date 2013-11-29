@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -30,7 +30,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "namespace_session.h"
 #include "identifier.h"
 #include "scene.h"
-#include "types.h"
 #include "debug.h"
 #include "pragma.h"
 #include "function.h"
@@ -42,6 +41,38 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <list>
 
 int wpl_namespace::id_counter = 0;
+
+void wpl_namespace::new_register_parseable (wpl_parseable *parseable) {
+	if (new_find_parseable_no_parent (parseable->get_name())) {
+		throw wpl_exception_name_exists();
+	}
+	new_parseables.push_back(parseable);
+}
+/*void wpl_namespace::new_register_function (wpl_function *function) {
+}
+void wpl_namespace::new_register_variable (wpl_variable *variable) {
+}*/
+
+wpl_parseable *wpl_namespace::new_find_parseable(const char *name) {
+	for (wpl_parseable *parseable : new_parseables) {
+		if (parseable->is_name(name)) {
+			return parseable;
+		}
+	}
+	if (parent_namespace) {
+		return parent_namespace->new_find_parseable(name);
+	}
+	return NULL;
+}
+
+wpl_parseable *wpl_namespace::new_find_parseable_no_parent(const char *name) {
+	for (wpl_parseable *parseable : new_parseables) {
+		if (parseable->is_name(name)) {
+			return parseable;
+		}
+	}
+	return NULL;
+}
 
 void wpl_namespace::generate_typename_list(ostringstream &target) {
 	bool first = true;
@@ -204,114 +235,6 @@ wpl_parseable *wpl_namespace::find_parseable (const char *name) {
 		return parent_namespace->find_parseable(name);
 	}
 	return NULL;
-}
-
-/**
- * @brief Find a registered complete type by its name
- *
- * @param name NULL-terminated string with the name
- *
- * @return Return the type on success or NULL on failure.
- */
-wpl_type_complete *wpl_namespace::find_complete_type (const char *name) {
-	for (wpl_type_complete *type : complete_types) {
-		if (type->is_name(name)) {
-			return type;
-		}
-	}
-	if (parent_namespace != NULL) {
-		return parent_namespace->find_complete_type(name);
-	}
-	return NULL;
-}
-
-/**
- * @brief Find a registered incomplete type by its name
- *
- * @param name NULL-terminated string with the name
- *
- * @return Return the type on success or NULL on failure.
- */
-wpl_type_incomplete *wpl_namespace::find_incomplete_type (const char *name) {
-	for (wpl_type_incomplete *type : incomplete_types) {
-		if (type->is_name(name)) {
-			return type;
-		}
-	}
-	if (parent_namespace != NULL) {
-		return parent_namespace->find_incomplete_type(name);
-	}
-	return NULL;
-}
-
-/**
- * @brief Find a registered template type by its name
- *
- * @param name NULL-terminated string with the name
- *
- * @return Return the type on success or NULL on failure.
- */
-wpl_type_template *wpl_namespace::find_template_type (const char *name) {
-	for (wpl_type_template *type : template_types) {
-		if (type->is_name(name)) {
-			return type;
-		}
-	}
-	if (parent_namespace != NULL) {
-		return parent_namespace->find_template_type(name);
-	}
-	return NULL;
-}
-
-void wpl_namespace::push_complete_type(wpl_type_complete *complete_type) {
-	complete_types.push_back(complete_type);
-}
-
-void wpl_namespace::register_identifier(wpl_type_complete *complete_type) {
-#ifdef WPL_DEBUG_NAMESPACE
-	DBG("NS (" << this << "): Register complete type '" << complete_type->get_name() << "'" << endl);
-#endif
-	wpl_identifier *tmp = new wpl_suicidal_holder(complete_type, complete_type->get_name());
-	identifiers.emplace_back(tmp);
-
-	if (find_identifier_no_parent (complete_type->get_name()) != tmp) {
-		snprintf (exception_msg, exception_msg_length,
-			"Name '%s' was already defined in namespace %p", complete_type->get_name(), this);
-		THROW_RUNTIME_EXCEPTION(exception_msg);
-	}
-
-	complete_types.push_back(complete_type);
-}
-
-void wpl_namespace::register_identifier(wpl_type_incomplete *incomplete_type) {
-#ifdef WPL_DEBUG_NAMESPACE
-	DBG("NS (" << this << "): Register incomplete type '" << incomplete_type->get_name() << "'" << endl);
-#endif
-	wpl_identifier *tmp = new wpl_suicidal_holder(incomplete_type, incomplete_type->get_name());
-	identifiers.emplace_back(tmp);
-
-	if (find_identifier_no_parent (incomplete_type->get_name()) != tmp) {
-		snprintf (exception_msg, exception_msg_length,
-			"Name '%s' was already defined in namespace %p", incomplete_type->get_name(), this);
-		THROW_RUNTIME_EXCEPTION(exception_msg);
-	}
-
-	incomplete_types.push_back(incomplete_type);
-}
-
-void wpl_namespace::register_identifier(wpl_type_template *template_type) {
-#ifdef WPL_DEBUG_NAMESPACE
-	DBG("NS (" << this << "): Register template type '" << template_type->get_name() << "'" << endl);
-#endif
-	wpl_identifier *tmp = new wpl_suicidal_holder(template_type, template_type->get_name());
-	identifiers.emplace_back(tmp);
-
-	if (find_identifier_no_parent (template_type->get_name()) != tmp) {
-		snprintf (exception_msg, exception_msg_length,
-			"Name '%s' was already defined in namespace %p", template_type->get_name(), this);
-		THROW_RUNTIME_EXCEPTION(exception_msg);
-	}
-	template_types.push_back(template_type);
 }
 
 void wpl_namespace::register_identifier(wpl_pragma *pragma) {
