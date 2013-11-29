@@ -19,20 +19,9 @@ HTML_TEMPLATE body {
 # apt-get update
 # apt-get install p-star</pre>
 
-	<h2>Download the source from Github</h2>
-	<p>The full source of P* is available on Github and can be obtained using <i>git</i> like this:</p>
-	<pre>
-$ git clone https://github.com/atlesn/P-star.git</pre>
+	<h2>Get the latest P* tarball</h2>
+	<p>First, <a href="http://apt.p-star.org/pool/main/p/p-star/p-star_1.1-alpha3.tar.gz">download the latest tar.gz-archive</a>.</p>
 	<p>The source of P* will be put into a directory called "P-star". To complile the program, you will need to have <i>autotools</i> and a C++11 compliant compiler installed. You also need the development packages for <i>MySQL client</i>, <i>Boost regex</i> and <i>Mimetic</i>.</p>
-	<pre>$ cd P-star 
-$ autoreconf -i 
-$ ./configure
-$ make</pre>
-	<p>To install P* after compiling, you must run this as the root user:</p>
-	<pre># make install</pre>
-	<h2>Get .tar.gz source</h2>
-	<p>First, <a href="http://apt.p-star.org/pool/main/p/p-star/p-star_1.1-alpha1.tar.gz">download the latest tar.gz-archive</a>.</p>
-	<p>The requirements are the same as for the Github-section above.</p>
 	<pre>$ tar -zxvf p-star_1.1-alpha1.tar.gz
 $ cd P-star
 $ autoreconf -i 
@@ -40,7 +29,19 @@ $ ./configure
 $ make</pre>
 	<p>To install P* after compiling, you must run this as the root user:</p>
 	<pre># make install</pre>
-	<p>The git repository includes project files for Microsoft Visual Studio which you can use to compile on the Windows platform.</p>
+
+	<h2>Download the source from Github</h2>
+	<p>The full source of P* is available on Github and can be obtained using <i>git</i> like this:</p>
+	<pre>
+$ git clone https://github.com/atlesn/P-star.git</pre>
+	<p>The requirements are the same as for the tarball section above.</p>
+	<pre>$ cd P-star 
+$ autoreconf -i 
+$ ./configure
+$ make</pre>
+	<p>To install P* after compiling, you must run this as the root user:</p>
+	<pre># make install</pre>
+	<p>Note that the github version of the source is even newer than the tarball, and that the online documentation only is updated for each new tarball version.</p>
 }
 
 SCENE main {
