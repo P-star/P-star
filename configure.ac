@@ -5,8 +5,9 @@ AC_PREREQ([2.67])
 AC_INIT([P* Web Programming Language Interpreter], [1.1], [atle@goliathdns.no])
 AC_CONFIG_SRCDIR([src/])
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile src/Makefile bin/Makefile src/libwpl/Makefile src/libwpl/libwpl-1.1.pc src/libmysql/Makefile src/libmysql/libwpl_mysql-1.1.pc])
 AC_CONFIG_MACRO_DIR([m4])
+
+AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE()
 LT_INIT
@@ -49,10 +50,25 @@ AC_SUBST([LIB_DL])
 BOOST_REQUIRE([1.46.0])
 BOOST_REGEX
 
+# Stolen from https://mod.gnutls.org/browser/mod_gnutls/configure.ac
+AP_VERSION=2.2.22
+CHECK_APACHE(,$AP_VERSION,
+	:,:,
+	AC_MSG_ERROR([*** Apache version $AP_VERSION not found!])
+)
+
+AP_MODULE_CFLAGS="${LIBGNUTLS_CFLAGS} ${SRP_CFLAGS} ${APR_MEMCACHE_CFLAGS} ${APXS_CFLAGS} ${AP_INCLUDES} ${APR_INCLUDES} ${APU_INCLUDES}"
+AP_MODULE_LIBS="${APR_MEMCACHE_LIBS} ${LIBGNUTLS_LIBS}"
+
+AC_SUBST(AC_MODULE_CFLAGS)
+AC_SUBST(AC_MODULE_LIBS)
+
 AC_DEFINE_UNQUOTED([WPL_BLOCK_MAX_CHILDREN], 64, [Max variable name length])
 AC_DEFINE_UNQUOTED([WPL_VARNAME_SIZE], 64, [Max variable name length])
 AC_DEFINE_UNQUOTED([WPL_EXPRESSION_MAX], 64, [Maximum number of elements in an expression])
 AC_DEFINE_UNQUOTED([WPL_MYSQL_BIND_MAX], 32, [Maximum number of variables which can be used in MySQL prepared statements])
+
+AC_CONFIG_FILES([Makefile src/Makefile bin/Makefile src/libwpl/Makefile src/libwpl/libwpl-1.1.pc src/libmysql/Makefile src/libmysql/libwpl_mysql-1.1.pc] src/apache2/Makefile)
 
 #AC_DEFINE_UNQUOTED([WPL_DEBUG_EXPRESSIONS], 1, [Debug expression handling])
 #AC_DEFINE_UNQUOTED([WPL_DEBUG_PARSING], 1, [Debug parsing])

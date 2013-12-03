@@ -1,2 +1,0 @@
-shlibs:Depends=libboost-regex1.49.0 (>= 1.49.0-1), libc6 (>= 2.14), libgcc1 (>= 1:4.1.1), libmimetic0, libmysqlclient18 (>= 5.5.24+dfsg-1), libstdc++6 (>= 4.6), p-star, zlib1g (>= 1:1.1.4)
-misc:Depends=

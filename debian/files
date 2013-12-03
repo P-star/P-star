@@ -1,1 +1,4 @@
-p-star_1.1-alpha3_amd64.deb misc extra
+libpstar_1.1-alpha4_amd64.deb web extra
+libpstar-dev_1.1-alpha4_all.deb web extra
+pstar_1.1-alpha4_amd64.deb web extra
+libapache2-mod-pstar_1.1-alpha4_amd64.deb web extra

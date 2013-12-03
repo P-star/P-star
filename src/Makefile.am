@@ -1,4 +1,4 @@
-SUBDIRS = libwpl/ libmysql/
+SUBDIRS = libwpl/ libmysql/ apache2/
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -include $(top_srcdir)/config.h
 AM_CXXFLAGS = -std=c++11

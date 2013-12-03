@@ -1,9 +1,11 @@
-dh_autotools-dev_updateconfig
 dh_auto_configure
 dh_auto_build
 dh_auto_test
 dh_prep
+dh_installdirs
+override_dh_auto_install dh_auto_install
 dh_auto_install
+dh_install
 dh_installdocs
 dh_installchangelogs
 dh_pysupport
@@ -17,5 +19,8 @@ dh_shlibdeps
 dh_installdeb
 dh_gencontrol
 dh_md5sums
+dh_builddeb
+dh_builddeb
+dh_builddeb
 dh_builddeb
 dh_builddeb
