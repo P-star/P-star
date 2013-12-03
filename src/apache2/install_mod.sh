@@ -4,6 +4,11 @@ APXS_BIN=$1
 
 echo "Installing apache module..."
 
+if type "chrpath" > /dev/null; then
+	echo " - Removing hardcoded rpath"
+	chrpath -d .libs/libmod_pstar.so
+fi
+
 if test ! -L mod_pstar.so ; then ln -s .libs/libmod_pstar.so mod_pstar.so ; fi
 
 if [ "$APXS_DH_CONTEXT" == "1" ]; then
