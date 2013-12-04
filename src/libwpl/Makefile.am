@@ -8,7 +8,7 @@ lib_LTLIBRARIES = libwpl-1.1.la
 libwpl_1_1_la_LDFLAGS = -rpath $(libdir) -lmimetic $(BOOST_REGEX_LDFLAGS) $(BOOST_REGEX_LIBS)
 libwpl_1_1_la_SOURCES = \
 	program.cpp parser.cpp block.cpp pragma.cpp \
-	module_loader.cpp \
+	module_loader.cpp output.cpp \
 	expression.cpp matcher.cpp identifier.cpp \
 	variable.cpp namespace.cpp runable.cpp \
 	shunting_yard.cpp block_if.cpp block_while.cpp \
