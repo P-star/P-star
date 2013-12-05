@@ -32,8 +32,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "namespace.h"
 #include "variable.h"
 #include "value_unsafe_pointer.h"
+#include "io.h"
 
 #include <set>
+#include <sstream>
 #include <iostream>
 #include <cstring>
 #include <cstdio>
@@ -82,7 +84,7 @@ void wpl_pragma_fixed_text::parse_value(wpl_namespace *parent_namespace) {
 }
 
 int wpl_pragma_fixed_text::run (wpl_state *state, wpl_value *final_result) {
-	cout << text;
+	state->get_io() << text;
 	return WPL_OP_OK;
 }
 
@@ -109,14 +111,11 @@ void wpl_pragma_template_var::parse_value(wpl_namespace *parent_namespace) {
 	load_position(exp->get_static_position());
 }
 
-void wpl_pragma_text::print() {
-	fwrite (text_start, text_end-text_start, 1, stdout);
-}
-
 int wpl_pragma_text_content_type::run (wpl_state *state, wpl_value *final_result) {
-	printf ("Content-type: ");
-	print();
-	printf (";\r\n\r\n");
+	wpl_io &io = state->get_io();
+	string buf;
+	add_to_string(buf);
+	io.http_header("Content-type", buf.c_str());
 	return WPL_OP_NO_RETURN;
 }
 

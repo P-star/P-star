@@ -109,12 +109,12 @@ class wpl_value_string : public wpl_value_strings<string> {
 		value = new_string;
 	}
 
-	virtual void output(ostream &output) override {
-		output << value;
+	virtual void output(wpl_io &io) override {
+		io << value;
 	}
 
-	void output_json() {
+	void output_json(wpl_io &io) {
 		wpl_output_json worker;
-		worker.output_json(value.c_str(), value.size());
+		worker.output_json(io, value.c_str(), value.size());
 	}
 };

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -58,20 +58,20 @@ void wpl_hash::replace (wpl_hash &new_hash) {
 	}
 }
 
-void wpl_hash::output_json () {
-	cout << "{\n";
+void wpl_hash::output_json (wpl_io &io) {
+	io << "{\n";
 	bool first = true;
 	wpl_output_json output_json;
 	for (auto &my_pair : hash) {
 		if (!first) {
-			cout << ", ";
+			io << ", ";
 		}
-		output_json.output_json(my_pair.first.c_str(), my_pair.first.size());
-		cout << ": ";
-		my_pair.second->output_json();
+		output_json.output_json(io, my_pair.first.c_str(), my_pair.first.size());
+		io << ": ";
+		my_pair.second->output_json(io);
 		first = false;
 	}
-	cout << "}\n";
+	io << "}\n";
 }
 
 wpl_value *wpl_type_hash_instance::new_instance() const {

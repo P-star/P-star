@@ -49,7 +49,7 @@ void wpl_mysql_bind (
 	}
 
 	vector<wpl_value*> values;
-	unique_ptr<wpl_text_state> text_state((wpl_text_state*) sql->new_state(nss));
+	unique_ptr<wpl_text_state> text_state((wpl_text_state*) sql->new_state(nss, NULL));
 
 	values.reserve(param_count);
 	sql->get_params(text_state.get(), values);

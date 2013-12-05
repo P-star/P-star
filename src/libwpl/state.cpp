@@ -26,18 +26,5 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include <sstream>
+#include "state.h"
 
-class wpl_output : public std::ostringstream {
-	private:
-	virtual void emit() = 0;
-	void flush() {
-		emit();
-		clear();
-	}
-
-	public:
-	wpl_output () {
-	}
-	virtual void output_header (const char *header) = 0;
-};

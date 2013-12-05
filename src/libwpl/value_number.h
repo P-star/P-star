@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -52,7 +52,13 @@ template<typename A> class wpl_value_number : public wpl_value_holder<A> {
 	int add() {RESULT = LHS + RHS; return WPL_OP_OK; }
 	int sub() {RESULT = LHS - RHS; return WPL_OP_OK; }
 	int mul() {RESULT = LHS * RHS; return WPL_OP_OK; }
-	int div() {RESULT = LHS / RHS; return WPL_OP_OK; }
+	int div() {
+		if (RHS == 0) {
+			throw runtime_error("Divide by zero prevented");
+		}
+		RESULT = LHS / RHS;
+		return WPL_OP_OK;
+	}
 
 	int assign_sum() {RESULT = LHS += RHS; return WPL_OP_OK; }
 	int assign_sub() {RESULT = LHS -= RHS; return WPL_OP_OK; }
@@ -111,12 +117,12 @@ template<typename A> class wpl_value_number : public wpl_value_holder<A> {
 
 	public:
 
-	virtual void output(ostream &output) override {
-		output << wpl_value_holder<A>::value;
+	virtual void output(wpl_io &io) override {
+		io << wpl_value_holder<A>::value;
 	}
 
-	virtual void output_json() override {
-		cout << wpl_value_holder<A>::value;
+	virtual void output_json(wpl_io &io) override {
+		io << wpl_value_holder<A>::value;
 	}
 
 	char *toVoid() {

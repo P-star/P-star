@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -40,11 +40,12 @@ class wpl_state;
 class wpl_value;
 struct wpl_operator;
 class wpl_namespace;
+class wpl_io;
 
 class wpl_runable {
 	protected:
 	public:
 	virtual ~wpl_runable() {};
 	virtual int run(wpl_state *state, wpl_value *res) = 0;
-	virtual wpl_state *new_state(wpl_namespace_session *nss);
+	virtual wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io);
 };

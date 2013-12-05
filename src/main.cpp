@@ -10,8 +10,8 @@ MySQL disabled in Windows due to problems with linking
 #endif
 
 #include "libwpl/program.h"
+#include "libwpl/io.h"
 #include "libwpl/module_loader.h"
-
 
 using namespace std;
 
@@ -30,7 +30,8 @@ bool cmdOptionExists(char **begin, char **end, const std::string &option) {
 }
 
 void version() {
-	cout << "The P* Web Programming Language interpreter version " PACKAGE_VERSION << "\n";
+	cout << "The P* Web Programming Language interpreter version " PACKAGE_VERSION <<
+		" build " __DATE__ " " __TIME__ "\n";
 	cout << "Visit http://www.p-star.org/ for documentation\n\n";
 }
 
@@ -73,10 +74,11 @@ int main (int argc, char *argv[]) {
 
 		program.parse_file(filename);
 
-		ret = program.run();
+		wpl_io_standard output;
+		ret = program.run(&output);
 	}
 	catch (exception &e) {
-		cout << e.what() << endl;
+		cerr << e.what() << endl;
 		return 1;
 	}
 

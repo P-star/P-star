@@ -88,7 +88,7 @@ void wpl_value_post::parse_entity (MimeEntity *me) {
 	}
 }
 
-void wpl_value_post::parse() {
+void wpl_value_post::parse(wpl_io &io) {
 	const char *content_type = getenv("CONTENT_TYPE");
 	const char *content_length = getenv("CONTENT_LENGTH");
 	const char *request_method = getenv("REQUEST_METHOD");
@@ -111,7 +111,7 @@ void wpl_value_post::parse() {
 	unique_ptr<char[]> buf_ptr(new char[500+1]);
 	char *buf = buf_ptr.get();
 
-	cin.read(buf, length);
+	io.read(buf, length);
 	buf[length] = '\0';
 
 	if (strcmp(content_type, "application/x-www-form-urlencoded") == 0) {
@@ -145,7 +145,7 @@ int wpl_value_post::do_operator (
 		wpl_value *rhs
 ) {
 	if (!did_parse) {
-		parse();
+		parse(exp_state->get_io());
 		did_parse = true;
 	}
 

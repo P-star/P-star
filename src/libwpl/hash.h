@@ -31,6 +31,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "types.h"
 #include "exception.h"
 #include "value.h"
+#include "io.h"
 
 #include <memory>
 #include <map>
@@ -52,7 +53,7 @@ class wpl_hash {
 	wpl_hash (const wpl_hash &copy);
 	~wpl_hash();
 	void replace (wpl_hash &new_hash);
-	void output_json();
+	void output_json(wpl_io &io);
 	int size() {
 		return hash.size();
 	}

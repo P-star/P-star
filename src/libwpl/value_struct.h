@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -83,7 +83,7 @@ class wpl_value_struct : public wpl_value, public wpl_namespace_session {
 			wpl_value *rhs
 	);
 
-	void output_json();
+	void output_json(wpl_io &io) override;
 
 	const wpl_type *get_mother_struct() {
 		return mother_struct;

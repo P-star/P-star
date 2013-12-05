@@ -33,8 +33,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-void wpl_value_struct::output_json() {
-	cout << "{}";
+void wpl_value_struct::output_json(wpl_io &io) {
+	io << "{}";
 }
 
 bool wpl_value_struct::set_strong (wpl_value *value) {

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -29,11 +29,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "matcher.h"
-
-#include <string>
+#include "io.h"
 
 class wpl_output_json : public wpl_matcher {
 	private:
 	public:
-	void output_json(const char *str, int len);
+	void output_json(wpl_io &io, const char *str, int len);
 };

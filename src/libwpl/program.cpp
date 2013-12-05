@@ -35,11 +35,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_string.h"
 #include "value_int.h"
 #include "namespace_session.h"
+#include "io.h"
 
 #include <utility>
 #include <memory>
 
-wpl_program::wpl_program(int argc, char **argv) {
+wpl_program::wpl_program(int argc, char **argv) : parser(0) {
 	wpl_types_add_all_to_namespace(this);
 	wpl_pragma_add_all_to_namespace(this);
 
@@ -64,7 +65,7 @@ void wpl_program::parse_file (const char *filename) {
 	parser.parse_file(this, filename);
 }
 
-int wpl_program::__run() {
+int wpl_program::run(wpl_io *io) {
 	int ret;
 	wpl_value *value;
 	wpl_value_return retval;
@@ -78,22 +79,11 @@ int wpl_program::__run() {
 
 	wpl_value_int return_value;
 
-	wpl_block_state program_state(NULL, this);
-	unique_ptr<wpl_state> main_state(main->new_state(&program_state));
+	wpl_block_state program_state(NULL, io, this);
+
+	unique_ptr<wpl_state> main_state(main->new_state(&program_state, io));
 
 	ret = main->run(main_state.get(), &return_value);
 
 	return return_value.get();
-}
-
-int wpl_program::run() {
-	int ret;
-	try {
-		ret = __run();
-	}
-	catch (const wpl_element_exception &e) {
-		cerr << "WPL Exception at run time: " <<  e.what() << "\n";
-		ret = -1;
-	}
-	return ret;
 }

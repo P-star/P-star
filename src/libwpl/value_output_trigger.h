@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "io.h"
 #include "value.h"
 
 #include <sstream>
@@ -36,14 +37,14 @@ using namespace std;
 
 class wpl_value_output_trigger : public wpl_value {
 	private:
-	ostream *output;
+	wpl_io *io;
 
 	public:
 	int get_precedence() const { return wpl_type_precedence_output_trigger; };
 	const char *get_type_name() const { return wpl_typename_output_trigger; }
 
-	wpl_value_output_trigger (ostream &output) {
-		this->output = &output;
+	wpl_value_output_trigger (wpl_io &io) {
+		this->io = &io;
 	}
 
 	wpl_value *clone() const {
@@ -51,7 +52,7 @@ class wpl_value_output_trigger : public wpl_value {
 	};
 
 	int finalize_expression (wpl_expression_state *exp_state, wpl_value *value) {
-		value->output(*output);
+		value->output(*io);
 		return WPL_OP_OK;
 	}
 };

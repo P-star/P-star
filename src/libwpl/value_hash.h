@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -71,7 +71,9 @@ class wpl_value_hash : public wpl_value_template, public wpl_hash {
 			wpl_value *rhs
 	); 
 
-	void output_json() { wpl_hash::output_json(); }
+	void output_json(wpl_io &io) override {
+		wpl_hash::output_json(io);
+	}
 
 	bool isArray() {
 		return true;

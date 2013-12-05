@@ -35,8 +35,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "exception.h"
 #include "suicidal.h"
 #include "debug.h"
-
-#include <sstream>
+#include "io.h"
 
 enum {
 	wpl_value_no_flags,
@@ -171,11 +170,11 @@ class wpl_value : public wpl_suicidal {
 		return this;
 	}
 
-	virtual void output_json() {
+	virtual void output_json(wpl_io &io) {
 		cerr << "In value output_json() of type '" << get_type_name() << "':\n";
 		throw runtime_error ("Cannot output JSON of this type");
 	}
-	virtual void output(ostream &output) {
+	virtual void output(wpl_io &io) {
 		cerr << "In value output() of type '" << get_type_name() << "':\n";
 		throw runtime_error ("Cannot output this type");
 	}

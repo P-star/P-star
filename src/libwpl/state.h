@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,15 +28,27 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "io.h"
+
+#include <sstream>
+
+using namespace std;
+
 class wpl_namespace_session;
+class wpl_io;
 
 class wpl_state {
 	protected:
 	wpl_namespace_session *nss;
+	wpl_io *io;
 
 	public:
-	wpl_state(wpl_namespace_session *nss) {
+	wpl_state(wpl_namespace_session *nss, wpl_io *io) {
 		this->nss = nss;
+		this->io = io;
+	}
+	wpl_io &get_io() {
+		return *io;
 	}
 	virtual ~wpl_state() {}
 };

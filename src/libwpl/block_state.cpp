@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -43,21 +43,21 @@ int wpl_block_state::run_child (wpl_runable *child, int index, wpl_value *final_
 		throw runtime_error("Child index out of range in wpl_block_state");
 	}
 	if (child_states[index].get() == nullptr) {
-		child_states[index].reset(child->new_state(this));
+		child_states[index].reset(child->new_state(this, io));
 	}
 	return child->run(child_states[index].get(), final_result);
 }
 
 int wpl_block_state::run_run_condition (wpl_runable *runable, wpl_value *final_result) {
 	if (run_condition_state.get() == nullptr) {
-		run_condition_state.reset(runable->new_state(this));
+		run_condition_state.reset(runable->new_state(this, io));
 	}
 	return runable->run(run_condition_state.get(), final_result);
 }
 
 int wpl_block_state::run_next_else_if (wpl_runable *runable, wpl_value *final_result) {
 	if (next_else_if_state.get() == nullptr) {
-		next_else_if_state.reset(runable->new_state(this));
+		next_else_if_state.reset(runable->new_state(this, io));
 	}
 	return runable->run(next_else_if_state.get(), final_result);
 }

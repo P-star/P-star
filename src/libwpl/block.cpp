@@ -64,8 +64,8 @@ wpl_block::~wpl_block() {
 	}
 }
 
-wpl_state *wpl_block::new_state(wpl_namespace_session *nss) {
-	return new wpl_block_state (nss, this);
+wpl_state *wpl_block::new_state(wpl_namespace_session *nss, wpl_io *io) {
+	return new wpl_block_state (nss, io, this);
 }
 
 void wpl_block::append_child (wpl_runable *element) {

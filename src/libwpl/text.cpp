@@ -66,11 +66,11 @@ int wpl_text::chunk::run (
 		wpl_text_state *state,
 		int index,
 		wpl_value *final_result,
-		ostream &output
+		wpl_io &io
 ) {
-	static wpl_value_output_trigger output_trigger(output);
+	static wpl_value_output_trigger output_trigger(io);
 	if (expression.get() == nullptr) {
-		output.write (start, end-start);
+		io.write_immortal (start, end-start);
 		return WPL_OP_NO_RETURN;
 	}
 
@@ -82,7 +82,7 @@ int wpl_text::chunk::run (
 				loop_text.get(),
 				index,
 				final_result,
-				output
+				io
 			);
 		}
 		return ret;
@@ -96,18 +96,18 @@ wpl_text::chunk *wpl_text::push_chunk(const char *start, const char *end) {
 	return &chunks.back();
 }
 
-int wpl_text::run(wpl_state *state, wpl_value *final_result, ostream &output) {
+int wpl_text::run(wpl_state *state, wpl_value *final_result, wpl_io &io) {
 	wpl_text_state *text_state = (wpl_text_state*) state;
 	int index = 0;
 	for (chunk &my_chunk : chunks) {
-		my_chunk.run(text_state, index, final_result, output);
+		my_chunk.run(text_state, index, final_result, io);
 		index++;
 	}
 	return WPL_OP_NO_RETURN;
 }
 
 int wpl_text::run(wpl_state *state, wpl_value *final_result) {
-	return run(state, final_result, std::cout);
+	return run(state, final_result, state->get_io());
 }
 
 int wpl_text::output_json (
@@ -116,6 +116,8 @@ int wpl_text::output_json (
 		wpl_value *final_result
 ) {
 	wpl_text_state *text_state = (wpl_text_state*) state;
+
+	wpl_io &io = state->get_io();
 
 	const char id_string[] = "id=\"";
 	const int id_string_len = sizeof(id_string)-1;
@@ -152,13 +154,13 @@ int wpl_text::output_json (
 			wpl_value *value = unsafe_pointer.dereference();
 
 			if (value && vars.find(unsafe_pointer.dereference()) != vars.end()) {
-				cout << "\"";
+				io << "\"";
 				text_state->run_expression (id_exp, id_exp_index, &tmp_string);
-				tmp_string.output_json();
-				cout << "\": \"";
+				tmp_string.output_json(io);
+				io << "\": \"";
 
 				if (current_text) {
-					ostringstream buf;
+					wpl_io_buffer buf;
 					while (text_state->run_expression (
 								current_exp, index, &tmp_bool
 						) && tmp_bool.get()
@@ -167,20 +169,16 @@ int wpl_text::output_json (
 						ret = text_state->run_text(current_text, index,
 								final_result, buf);
 					}
-					/*
-					   TODO
-					   Optimize this copy-stuff
-					 */
+
 					wpl_output_json json_output;
-					string text = buf.str();	
-					json_output.output_json(text.c_str(), text.size());
+					json_output.output_json(io, buf.c_str(), buf.size());
 				}
 				else {
 					text_state->run_expression (current_exp, index, &tmp_string);
-					tmp_string.output_json();
+					tmp_string.output_json(io);
 				}
 
-				cout << "\",\n";
+				io << "\",\n";
 
 				id_exp = NULL;
 				continue;
@@ -224,18 +222,21 @@ int wpl_text::output_json (
 
 int wpl_text::output_as_json_var(wpl_state *state, wpl_value *final_result) {
 	wpl_value_string name_string(get_name());
-	cout << "\"";
-	name_string.output_json();
-	cout << "\": \"";
 
-	ostringstream buf;
-	int ret = run(state, final_result, buf);
+	wpl_io &io = state->get_io();
 
-	wpl_output_json json_output;
-	string text = buf.str();	
-	json_output.output_json(text.c_str(), text.size());
+	io << "\"";
+	name_string.output_json(io);
+	io << "\": \"";
 
-	cout << "\",\n";
+	wpl_io_buffer buf;
+	wpl_output_json json_io;
+
+	run(state, final_result, buf);
+
+	json_io.output_json(io, buf.c_str(), buf.size());
+
+	io << "\",\n";
 	return WPL_OP_OK;
 }
 

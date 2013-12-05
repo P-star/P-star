@@ -44,8 +44,8 @@ class wpl_namespace;
 class wpl_parser : public wpl_matcher {
 	private:
 
-	static int files_count;
 	list<unique_ptr<wpl_parser>> includes;
+	int num_parents;
 
 	char varname_tmp[WPL_VARNAME_SIZE+1];
 
@@ -61,7 +61,7 @@ class wpl_parser : public wpl_matcher {
 
 	public:
 
-	wpl_parser ();
+	wpl_parser (int num_parents);
 	~wpl_parser ();
 	void parse_file(wpl_namespace *parent_namespace, const char *filename);
 };

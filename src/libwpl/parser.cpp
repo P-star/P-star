@@ -43,15 +43,14 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-int wpl_parser::files_count = 0;
-
 /**
  * @brief 
  */
-wpl_parser::wpl_parser () {
-	if (++files_count > 64) {
+wpl_parser::wpl_parser (int num_parents) {
+	if (num_parents > 64) {
 		throw runtime_error("Max file includes reached");
 	}
+	this->num_parents = num_parents;
 	file_content = NULL;
 }
 
@@ -137,7 +136,7 @@ void wpl_parser::parse_template(wpl_namespace *parent_namespace) {
 }
 
 void wpl_parser::parse_include(wpl_namespace *parent_namespace) {
-	wpl_parser *include = new wpl_parser();
+	wpl_parser *include = new wpl_parser(num_parents+1);
 	includes.emplace_back(include);
 
 	ignore_string_match(WHITESPACE, 0);

@@ -56,8 +56,8 @@ using namespace std;
 wpl_expression::~wpl_expression() {
 }
 
-wpl_state *wpl_expression::new_state(wpl_namespace_session *nss) {
-	return new wpl_expression_state(nss, get_run_stack());
+wpl_state *wpl_expression::new_state(wpl_namespace_session *nss, wpl_io *io) {
+	return new wpl_expression_state(nss, io, get_run_stack());
 //	this->nss = nss;wpl_block_state *parent_block_state;
 /*	if (!(parent_block_state = dynamic_cast<wpl_block_state*>(parent))) {
 		cerr << "Parent pointer was " << parent << " of type " << typeid(parent).name() << endl;

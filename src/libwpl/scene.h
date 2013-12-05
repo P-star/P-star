@@ -41,7 +41,7 @@ class wpl_scene : public wpl_block, public wpl_identifier {
 	wpl_scene (const char *name) : wpl_identifier(name) {}
 	virtual ~wpl_scene() {}
 
-	wpl_state *new_state(wpl_namespace_session *nss);
+	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io);
 	int run (wpl_state *state, wpl_value *final_result);
 
 	void add_base (wpl_scene *base) {

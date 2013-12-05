@@ -17,32 +17,36 @@
    limitations under the License.
 */
 
+#include "io.h"
+
 #include "httpd.h"
 
-#include "../libwpl/program.h"
-#include "../libwpl/exception.h"
-
-#include <string>
 #include <map>
+#include <sstream>
 
-struct pstar_file {
+class pstar_io : private wpl_io {
 	private:
-	int mtime;
-	wpl_program program;
+	string input;
+	int rpos;
+	bool headers_sent;
+
+	map<string,string> http_headers;
+	request_rec *r;
+	apr_bucket_brigade *bb;
 
 	public:
-	bool check_modified (int mtime) {
-		return (this->mtime != mtime ? false : true);
+	pstar_io (request_rec *r);
+	~pstar_io ();
+
+	void read (char *str, int len) override;
+	void write (const char *str, int len) override;
+	void write_immortal (const char *str, int len) override;
+	void http_header (const char *field, const char *str) override;
+
+	void append_input (const char *str, int len);
+	void output_headers ();
+
+	wpl_io *get_io() {
+		return this;
 	}
-	pstar_file (const char *filename, int mtime);
-};
-
-class pstar_pool {
-	private:	
-	map<string, pstar_file> files;
-
-	int handle_file (request_rec *r, const char *filename, int mtime);
-
-	public:
-	apr_status_t handle_request(request_rec *r);
 };

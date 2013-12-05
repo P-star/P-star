@@ -30,6 +30,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "types.h"
 #include "exception.h"
+#include "io.h"
 
 #include <vector>
 
@@ -50,7 +51,7 @@ class wpl_array {
 	wpl_array (const wpl_array &copy);
 	wpl_value *get(int index);
 	void replace (wpl_array &new_array);
-	void output_json();
+	void output_json(wpl_io &io);
 	~wpl_array();
 	int size() {
 		return array.size();

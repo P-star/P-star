@@ -54,9 +54,10 @@ class wpl_expression_state : public wpl_state {
 	public:
 	wpl_expression_state (
 			wpl_namespace_session *nss,
+			wpl_io *io,
 			const wpl_exp_deque<shunting_yard_carrier> &my_list
 			) :
-		wpl_state(nss),
+		wpl_state(nss, io),
 		run_stack(my_list)
 	{
 		optimize();

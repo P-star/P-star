@@ -78,7 +78,7 @@ class wpl_block : public wpl_runable, public wpl_namespace, public wpl_matcher {
 	wpl_block();
 	virtual ~wpl_block();
 
-	wpl_state *new_state(wpl_namespace_session *nss) override;
+	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) override;
 
 	int run (wpl_state *state, wpl_value *final_result);
 

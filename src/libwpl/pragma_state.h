@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -42,8 +42,8 @@ class wpl_pragma_state : public wpl_state {
 	vector<unique_ptr<wpl_state>> child_state;
 
 	public:
-	wpl_pragma_state (wpl_namespace_session *nss) :
-		wpl_state(nss)
+	wpl_pragma_state (wpl_namespace_session *nss, wpl_io *io) :
+		wpl_state(nss, io)
 	{
 		child_state.resize(2);
 	}

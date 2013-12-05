@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -29,8 +29,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "scene.h"
 #include "scene_state.h"
 
-wpl_state *wpl_scene::new_state(wpl_namespace_session *nss) {
-	return new wpl_scene_state(nss, this, base_scenes);
+wpl_state *wpl_scene::new_state(wpl_namespace_session *nss, wpl_io *io) {
+	return new wpl_scene_state(nss, io, this, base_scenes);
 }
 
 int wpl_scene::run (wpl_state *state, wpl_value *final_result) {

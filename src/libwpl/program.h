@@ -34,10 +34,11 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 
+class wpl_io;
+
 class wpl_program : public wpl_namespace {
 	private:
 	wpl_parser parser;
-	int __run();
 
 	int argc;
 	char **argv;
@@ -53,5 +54,5 @@ class wpl_program : public wpl_namespace {
 
 	void parse_file (const char *filename);
 
-	int run();
+	int run(wpl_io *io);
 };

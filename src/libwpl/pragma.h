@@ -47,8 +47,8 @@ class wpl_pragma : public wpl_identifier, public wpl_runable, public wpl_matcher
 	}
 	virtual ~wpl_pragma() {}
 	virtual wpl_pragma *clone() const = 0;
-	wpl_state *new_state(wpl_namespace_session *nss) override {
-		return new wpl_pragma_state(nss);
+	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) override {
+		return new wpl_pragma_state(nss, io);
 	}
 	void parse_default_end();
 	virtual void parse_value(wpl_namespace *parent_namespace) = 0;
@@ -147,7 +147,7 @@ class wpl_pragma_template_as_var : public wpl_pragma_template {
 	int run(wpl_state *state, wpl_value *final_result) override {
 		wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
 
-		wpl_text_var_output_method run_wrapper(my_template);
+		wpl_text_var_io_method run_wrapper(my_template);
 		return pragma_state->run_child(&run_wrapper, 0, final_result);
 	}
 };
@@ -190,9 +190,13 @@ class wpl_pragma_text : public wpl_pragma {
 		text_end = end;
 	}
 
+	protected:
+	void add_to_string (string &buf) {
+		buf.append(text_start, (text_end-text_start));
+	}
+
 	public:
 	virtual ~wpl_pragma_text() {}
-	void print();
 	wpl_pragma_text(const char *name) : wpl_pragma(name) {}
 
 	virtual void parse_value(wpl_namespace *parent_namespace);

@@ -104,7 +104,7 @@ class wpl_expression : public wpl_runable, public shunting_yard, public wpl_matc
 	public:
 	virtual ~wpl_expression();
 
-	wpl_state *new_state(wpl_namespace_session *nss) override;
+	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) override;
 
 	int run(wpl_state *exp_state, wpl_value *final_result) override;
 

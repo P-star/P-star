@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -31,7 +31,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
    TODO
    implement as ostream
  */
-void wpl_output_json::output_json(const char *str, int len) {
+void wpl_output_json::output_json(wpl_io &io, const char *str, int len) {
 	string result;
 	result.reserve(len*2);
 
@@ -84,5 +84,5 @@ void wpl_output_json::output_json(const char *str, int len) {
 		throw runtime_error("Could not convert string to JSON format");
 	}
 
-	cout << result;
+	io << result;
 }

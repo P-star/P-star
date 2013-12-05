@@ -72,7 +72,7 @@ class wpl_function : public wpl_identifier_access_holder, public wpl_runable, pu
 		return true;
 	}
 
-	wpl_state *new_state(wpl_namespace_session *nss_this);
+	wpl_state *new_state(wpl_namespace_session *nss_this, wpl_io *io);
 
 	void generate_signature();
 

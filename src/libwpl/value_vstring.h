@@ -126,11 +126,11 @@ class wpl_value_vstring : public wpl_value {
 	char *toVoid() {
 		return *my_vstring;
 	}
-	void output(ostream &output) {
-		output << *my_vstring;
+	void output(wpl_io &io) override {
+		io << *my_vstring;
 	}
-	void output_json() {
+	void output_json(wpl_io &io) override {
 		wpl_output_json worker;
-		worker.output_json(*my_vstring, my_vstring.size());
+		worker.output_json(io, *my_vstring, my_vstring.size());
 	}
 };

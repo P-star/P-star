@@ -34,6 +34,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_get.h"
 #include "array.h"
 
+#include <sstream>
 #include <tuple>
 #include <memory>
 #include <unordered_map>
@@ -46,7 +47,7 @@ class wpl_value_post : public wpl_value {
 	private:
 
 	bool did_parse;
-	void parse();
+	void parse(wpl_io &io);
 
 	wpl_value_hash hash;
 	wpl_value_get value_get;

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMIII Atle Solbakken
+Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -30,6 +30,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "state.h"
 #include "block_state.h"
+#include "io.h"
 
 #include <set>
 #include <memory>
@@ -45,8 +46,8 @@ class wpl_text_state : public wpl_state {
 	unordered_map<int,unique_ptr<wpl_state>> text_states;
 
 	public:
-	wpl_text_state(wpl_namespace_session *nss, int children) :
-		wpl_state(nss)
+	wpl_text_state(wpl_namespace_session *nss, wpl_io *io, int children) :
+		wpl_state(nss, io)
 	{
 		expression_states.reserve(children/2);
 	}
@@ -65,7 +66,7 @@ class wpl_text_state : public wpl_state {
 			wpl_text *text,
 			int index,
 			wpl_value *final_result,
-			ostream &output
+			wpl_io &io
 	);
 	int run_text_output_json(
 			wpl_text *text,

@@ -29,7 +29,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "array.h"
 #include "value.h"
 #include "value_array.h"
-#include <iostream>
 
 wpl_array::wpl_array (const wpl_array &copy) {
 	array.reserve(copy.array.size());
@@ -80,17 +79,17 @@ void wpl_array::replace (wpl_array &new_array) {
 	}
 }
 
-void wpl_array::output_json () {
-	cout << "[";
+void wpl_array::output_json (wpl_io &io) {
+	io << "[";
 	bool first = true;
 	for (wpl_value *value : array) {
 		if (!first) {
-			cout << ", ";
+			io << ", ";
 		}
-		value->output_json();
+		value->output_json(io);
 		first = false;
 	}
-	cout << "]";
+	io << "]";
 }
 
 wpl_value *wpl_type_array_instance::new_instance() const {

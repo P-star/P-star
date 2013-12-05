@@ -33,13 +33,14 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 wpl_scene_state::wpl_scene_state (
 		wpl_namespace_session *parent,
+		wpl_io *io,
 		wpl_namespace *template_namespace,
 		list<wpl_scene*> base_scenes
 		) :
-	wpl_block_state (parent, template_namespace)
+	wpl_block_state (parent, io, template_namespace)
 {
 	for (wpl_scene *base : base_scenes) {
-		base_states.emplace_back((wpl_scene_state*) base->new_state(parent));
+		base_states.emplace_back((wpl_scene_state*) base->new_state(parent, io));
 	}
 }
 

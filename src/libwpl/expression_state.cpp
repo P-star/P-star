@@ -61,7 +61,7 @@ int wpl_expression_state::run_function (
 	}
 
 	if (child_states[index].get() == nullptr) {
-		child_states[index].reset(function->new_state(nss_this));
+		child_states[index].reset(function->new_state(nss_this, io));
 	}
 
 	wpl_function_state *function_state =
@@ -90,7 +90,7 @@ int wpl_expression_state::run_child(wpl_runable *runable, int index, wpl_value *
 		throw runtime_error("Index out of range in wpl_expression_state");
 	}
 	if (child_states[index].get() == nullptr) {
-		child_states[index].reset(runable->new_state(nss));
+		child_states[index].reset(runable->new_state(nss, io));
 	}
 
 	return runable->run(child_states[index].get(), final_result);

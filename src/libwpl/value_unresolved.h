@@ -68,7 +68,7 @@ class wpl_value_unresolved_identifier : public wpl_value_strings<string> {
 
 	wpl_value *resolve(wpl_namespace_session *nss) override;
 
-	void output(ostream &output) override {
+	void output(wpl_io &io) override {
 		cerr << "In output() of unresolved identifier '" << value << "':\n";
 		throw runtime_error("Cannot output unresolved identifiers");
 	}
