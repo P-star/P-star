@@ -86,7 +86,7 @@ void wpl_matcher::set_text (const char *text, const int len) {
 
 void wpl_matcher::check_varname_length (const int len) {
 	if (len > WPL_VARNAME_SIZE) {
-		static char tmp[WPL_VARNAME_SIZE]; // TODO does this duplicate in all objects wasting memory?
+		char tmp[WPL_VARNAME_SIZE];
 		get_string (tmp, WPL_VARNAME_SIZE);
 		snprintf (exception_msg, exception_msg_length,
 			"Name '%s' exceeds maximum length (%i vs %i)", tmp, len, WPL_VARNAME_SIZE);

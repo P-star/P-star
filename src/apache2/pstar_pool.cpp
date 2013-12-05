@@ -130,7 +130,7 @@ int pstar_pool::handle_file (request_rec *r, const char *filename, int mtime) {
 int pstar_pool::handle_request (request_rec *r) {
 //	ap_set_content_type(r, "text/html");
 	const char *filename;
-	
+
 	filename = r->filename;//apr_filepath_name_get(r->filename);
 	if (r->finfo.filetype == 0)
 		return HTTP_NOT_FOUND;
