@@ -33,7 +33,16 @@ pstar_io::pstar_io(request_rec *r) : wpl_io() {
 }
 
 pstar_io::~pstar_io() {
-	apr_brigade_cleanup(bb);
+	apr_status_t rv;
+	apr_bucket *b;
+
+	b = apr_bucket_eos_create(r->connection->bucket_alloc);
+	APR_BRIGADE_INSERT_TAIL(bb, b);
+
+	rv = ap_pass_brigade(r->output_filters, bb);
+	if (rv != APR_SUCCESS) {
+		throw runtime_error("pstar_io::write(); Could not write to client");
+	}
 }
 
 void pstar_io::http_header(const char *field, const char *str) {
@@ -82,14 +91,6 @@ void pstar_io::write(const char *str, int len) {
 	b = apr_bucket_transient_create (str, len, r->connection->bucket_alloc);
 	APR_BRIGADE_INSERT_TAIL(bb, b);
 
-	b = apr_bucket_eos_create(r->connection->bucket_alloc);
-	APR_BRIGADE_INSERT_TAIL(bb, b);
-
-	rv = ap_pass_brigade(r->output_filters, bb);
-	if (rv != APR_SUCCESS) {
-		throw runtime_error("pstar_io::write(); Could not write to client");
-	}
-
 	apr_brigade_cleanup(bb);
 }
 
@@ -101,9 +102,6 @@ void pstar_io::write_immortal(const char *str, int len) {
 	apr_bucket *b;
 
 	b = apr_bucket_immortal_create (str, len, r->connection->bucket_alloc);
-	APR_BRIGADE_INSERT_TAIL(bb, b);
-
-	b = apr_bucket_eos_create(r->connection->bucket_alloc);
 	APR_BRIGADE_INSERT_TAIL(bb, b);
 
 	rv = ap_pass_brigade(r->output_filters, bb);
