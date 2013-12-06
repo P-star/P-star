@@ -42,7 +42,7 @@ apr_status_t pstar_pool_destruct (void *arg) {
 }
 
 static void pstar_pool_init (apr_pool_t *pool) {
-	pool_global = new pstar_pool();
+	pool_global = new pstar_pool(pool);
 	apr_pool_cleanup_register (pool, pool_global, pstar_pool_destruct, NULL);
 }
 

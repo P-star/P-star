@@ -17,10 +17,11 @@
    limitations under the License.
 */
 
-#include "httpd.h"
-
 #include "../libwpl/program.h"
 #include "../libwpl/exception.h"
+
+#include "httpd.h"
+#include "apr_proc_mutex.h"
 
 #include <string>
 #include <map>
@@ -45,10 +46,12 @@ typedef map<string, shared_ptr<pstar_file>> pstar_map_t;
 class pstar_pool {
 	private:	
 	pstar_map_t files;
+	apr_proc_mutex_t *mutex;
 
-	pstar_file *get_file_handle(request_rec *r, const char *filename, int mtime);
+	shared_ptr<pstar_file> get_file_handle(request_rec *r, const char *filename, int mtime);
 	int handle_file (request_rec *r, const char *filename, int mtime);
 
 	public:
+	pstar_pool(apr_pool_t *pool);
 	apr_status_t handle_request(request_rec *r);
 };

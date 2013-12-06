@@ -93,8 +93,17 @@ int fill_input (request_rec *r, pstar_io &io) {
 
 	return OK;
 }
-	
-pstar_file *pstar_pool::get_file_handle (request_rec *r, const char *filename, int mtime) {
+
+pstar_pool::pstar_pool(apr_pool_t *pool) {
+	apr_proc_mutex_create (
+			&mutex,
+			"pstar_pool_mutex",
+			APR_LOCK_DEFAULT,
+			pool
+	);
+}
+
+shared_ptr<pstar_file> pstar_pool::get_file_handle (request_rec *r, const char *filename, int mtime) {
 	pstar_map_t::iterator it;
 
 	/*
@@ -102,27 +111,35 @@ pstar_file *pstar_pool::get_file_handle (request_rec *r, const char *filename, i
 	   Apache may be handling modification-issues itself, check this out
 	   */
 
+	apr_proc_mutex_lock (mutex);
+
 	// Check if a cached program exists
 	it = files.find(filename);
 	if (it != files.end()) {
-		pstar_file *file = it->second.get();
-		if (file->is_modified (mtime)) {
+		if (it->second->is_modified (mtime)) {
 			files.erase(it);
 		}
 		else {
-			return file;
+			apr_proc_mutex_unlock (mutex);
+			return it->second;
 		}
 	}
 
+	apr_proc_mutex_unlock (mutex);
+
 	shared_ptr<pstar_file> file_ptr(new pstar_file(filename, mtime));
+
+	apr_proc_mutex_lock (mutex);
 	files.insert(std::pair<string,shared_ptr<pstar_file>>(filename, file_ptr));
-	return file_ptr.get();
+	apr_proc_mutex_unlock (mutex);
+
+	return file_ptr;
 }
 
 int pstar_pool::handle_file (request_rec *r, const char *filename, int mtime) {
 	int ret;
 
-	pstar_file *file = get_file_handle(r, filename, mtime);
+	shared_ptr<pstar_file> file = get_file_handle(r, filename, mtime);
 	wpl_program *program = file->get_program();
 
 	pstar_io io(r);
