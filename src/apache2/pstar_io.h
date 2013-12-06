@@ -24,7 +24,7 @@
 #include <map>
 #include <sstream>
 
-class pstar_io : private wpl_io {
+class pstar_io : public wpl_io {
 	private:
 	string input;
 	int rpos;
@@ -45,8 +45,4 @@ class pstar_io : private wpl_io {
 
 	void append_input (const char *str, int len);
 	void output_headers ();
-
-	wpl_io *get_io() {
-		return this;
-	}
 };

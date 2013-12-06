@@ -31,16 +31,22 @@ struct pstar_file {
 	wpl_program program;
 
 	public:
-	bool check_modified (int mtime) {
-		return (this->mtime != mtime ? false : true);
+	bool is_modified (int mtime) {
+		return (this->mtime != mtime ? true : false);
 	}
 	pstar_file (const char *filename, int mtime);
+	wpl_program *get_program() {
+		return &program;
+	}
 };
+
+typedef map<string, shared_ptr<pstar_file>> pstar_map_t;
 
 class pstar_pool {
 	private:	
-	map<string, pstar_file> files;
+	pstar_map_t files;
 
+	pstar_file *get_file_handle(request_rec *r, const char *filename, int mtime);
 	int handle_file (request_rec *r, const char *filename, int mtime);
 
 	public:

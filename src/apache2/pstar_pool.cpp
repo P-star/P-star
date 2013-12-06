@@ -93,16 +93,37 @@ int fill_input (request_rec *r, pstar_io &io) {
 
 	return OK;
 }
+	
+pstar_file *pstar_pool::get_file_handle (request_rec *r, const char *filename, int mtime) {
+	pstar_map_t::iterator it;
+
+	/*
+	   TODO
+	   Apache may be handling modification-issues itself, check this out
+	   */
+
+	// Check if a cached program exists
+	it = files.find(filename);
+	if (it != files.end()) {
+		pstar_file *file = it->second.get();
+		if (file->is_modified (mtime)) {
+			files.erase(it);
+		}
+		else {
+			return file;
+		}
+	}
+
+	shared_ptr<pstar_file> file_ptr(new pstar_file(filename, mtime));
+	files.insert(std::pair<string,shared_ptr<pstar_file>>(filename, file_ptr));
+	return file_ptr.get();
+}
 
 int pstar_pool::handle_file (request_rec *r, const char *filename, int mtime) {
 	int ret;
 
-	/*
-	   TODO
-	   Cache file parsing (problems with GCC4.7 map::emplace() )
-	   */
-	wpl_program file(0, NULL);
-	file.parse_file(filename);
+	pstar_file *file = get_file_handle(r, filename, mtime);
+	wpl_program *program = file->get_program();
 
 	pstar_io io(r);
 
@@ -111,7 +132,7 @@ int pstar_pool::handle_file (request_rec *r, const char *filename, int mtime) {
 		return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
-	ret = file.run(io.get_io());
+	ret = program->run(&io);
 	if (ret != 0) {
 		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 				"P* Non-zero return (%i) from script %s", ret, r->filename);
