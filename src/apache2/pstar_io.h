@@ -31,6 +31,7 @@ class pstar_io : public wpl_io {
 	bool headers_sent;
 
 	map<string,string> http_headers;
+
 	request_rec *r;
 	apr_bucket_brigade *bb;
 
@@ -41,7 +42,9 @@ class pstar_io : public wpl_io {
 	void read (char *str, int len) override;
 	void write (const char *str, int len) override;
 	void write_immortal (const char *str, int len) override;
+	const char *getenv(const char *name) override;
 	void http_header (const char *field, const char *str) override;
+	void debug (const char *str) override;
 
 	void append_input (const char *str, int len);
 	void output_headers ();

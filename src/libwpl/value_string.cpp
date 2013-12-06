@@ -28,3 +28,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "value_string.h"
 
+void wpl_value_string::output(wpl_io &io) {
+	io << value;
+}
+
+void wpl_value_string::output_json(wpl_io &io) {
+	wpl_output_json worker;
+	worker.output_json(io, value.c_str(), value.size());
+}
+

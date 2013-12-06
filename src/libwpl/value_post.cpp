@@ -32,7 +32,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_array.h"
 #include "matcher.h"
 
-#include <stdlib.h>
 #include <memory>
 #include <cstring>
 #include <map>
@@ -89,9 +88,9 @@ void wpl_value_post::parse_entity (MimeEntity *me) {
 }
 
 void wpl_value_post::parse(wpl_io &io) {
-	const char *content_type = getenv("CONTENT_TYPE");
-	const char *content_length = getenv("CONTENT_LENGTH");
-	const char *request_method = getenv("REQUEST_METHOD");
+	const char *content_type = io.getenv("CONTENT_TYPE");
+	const char *content_length = io.getenv("CONTENT_LENGTH");
+	const char *request_method = io.getenv("REQUEST_METHOD");
 
 	if (!request_method || strcmp(request_method, "POST") != 0 || !content_type) {
 		return;

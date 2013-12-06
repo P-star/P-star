@@ -183,6 +183,11 @@ int pstar_pool::handle_request (request_rec *r) {
 	ap_add_common_vars(r);
 	ap_add_cgi_vars(r);
 
+	apr_table_t *e = r->subprocess_env;
+	if (r->args) {
+		apr_table_setn(e, "QUERY_STRING", r->args);
+	}
+
 	try {
 		try {
 		 	return handle_file(r, filename, r->finfo.mtime);

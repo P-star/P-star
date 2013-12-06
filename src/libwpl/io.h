@@ -91,7 +91,9 @@ class wpl_io {
 
 	virtual void read (char *str, int len) = 0;
 	virtual void write (const char *str, int len) = 0;
+	virtual const char *getenv (const char *name) = 0;
 	virtual void http_header(const char *field, const char *str) = 0;
+	virtual void debug (const char *str) = 0;
 
 	virtual void write_immortal (const char *str, int len) {
 		write(str, len);
@@ -109,7 +111,12 @@ class wpl_io_standard : public wpl_io {
 		std::cout.write(str, len);
 	}
 
+	const char *getenv (const char *name) override;
 	void http_header(const char *field, const char *str) override;
+
+	void debug (const char *str) override {
+		std::cerr << str;
+	}
 };
 
 class wpl_io_buffer : public wpl_io {
@@ -118,15 +125,23 @@ class wpl_io_buffer : public wpl_io {
 
 	public:
 	void read (char *str, int len) override {
-		throw runtime_error("read() not supported for wpl_io_buffer()");
+		throw runtime_error("read() not supported for wpl_io_buffer");
 	}
 
 	void write (const char *str, int len) override {
 		buffer.append(str, len);
 	}
 
+	const char *getenv (const char *name) override {
+		throw runtime_error("getenv() not supported for wpl_io_buffer");
+	}
+
 	void http_header(const char *field, const char *str) override {
-		throw runtime_error("http_header() not supported for wpl_io_buffer()");
+		throw runtime_error("http_header() not supported for wpl_io_buffer");
+	}
+
+	void debug (const char *str) override {
+		buffer += string(str);
 	}
 
 	void output (wpl_io &target) {

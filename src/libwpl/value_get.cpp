@@ -33,7 +33,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_array.h"
 #include "matcher.h"
 
-#include <stdlib.h>
 #include <memory>
 #include <cstring>
 #include <map>
@@ -143,7 +142,7 @@ int wpl_value_get::do_operator (
 		wpl_value *rhs
 ) {
 	if (!did_parse) {
-		const char *query_string = getenv("QUERY_STRING");
+		const char *query_string = exp_state->get_io().getenv("QUERY_STRING");
 		if (!query_string) {
 			throw runtime_error("Could not find the QUERY_STRING environment variable while constructing GET-object");
 		}

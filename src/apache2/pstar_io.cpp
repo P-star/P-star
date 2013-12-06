@@ -91,6 +91,11 @@ void pstar_io::write(const char *str, int len) {
 	b = apr_bucket_transient_create (str, len, r->connection->bucket_alloc);
 	APR_BRIGADE_INSERT_TAIL(bb, b);
 
+	rv = ap_pass_brigade(r->output_filters, bb);
+	if (rv != APR_SUCCESS) {
+		throw runtime_error("pstar_io::write(); Could not write to client");
+	}
+
 	apr_brigade_cleanup(bb);
 }
 
@@ -118,3 +123,12 @@ void pstar_io::output_headers () {
 		apr_table_set (r->headers_out, my_pair.first.c_str(), my_pair.second.c_str());
 	}
 }
+
+const char *pstar_io::getenv(const char *name) {
+	return apr_table_get (r->subprocess_env, name);
+}
+
+void pstar_io::debug(const char *str) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "%s", str);
+}
+

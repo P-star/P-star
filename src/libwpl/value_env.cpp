@@ -30,8 +30,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "operator.h"
 #include "value_string.h"
 
-#include <stdlib.h>
-
 int wpl_value_env::do_operator (
 		wpl_expression_state *exp_state,
 		wpl_value *final_result,
@@ -40,7 +38,7 @@ int wpl_value_env::do_operator (
 		wpl_value *rhs
 ) {
 	if (op == &OP_ELEMENT) {
-		const char *str = getenv(rhs->toString().c_str());
+		const char *str = exp_state->get_io().getenv(rhs->toString().c_str());
 		if (!str) {
 			cerr << "While searching for environment variable '" <<
 				rhs->toString() << "':\n";
