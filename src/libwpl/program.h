@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "io.h"
 #include "namespace.h"
 #include "parser.h"
 #include "debug.h"
@@ -35,8 +36,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <list>
-
-class wpl_io;
 
 /* Module memory needs to be freed after namespace */
 class wpl_program_base {
@@ -49,6 +48,7 @@ class wpl_program : public wpl_program_base, public wpl_namespace {
 	private:
 	wpl_parser parser;
 
+	wpl_io *io;
 	int argc;
 	char **argv;
 
@@ -59,9 +59,9 @@ class wpl_program : public wpl_program_base, public wpl_namespace {
 #endif
 	}
 
-	wpl_program(int argc, char **argv);
+	wpl_program(wpl_io &io, int argc, char **argv);
 
 	void parse_file (const char *filename);
 
-	int run(wpl_io *io);
+	int run();
 };

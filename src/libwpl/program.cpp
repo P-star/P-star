@@ -40,7 +40,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <utility>
 #include <memory>
 
-wpl_program::wpl_program(int argc, char **argv) : parser(0) {
+wpl_program::wpl_program(wpl_io &io, int argc, char **argv) : parser(io, 0) {
+	this->io = &io;
+
 	wpl_types_add_all_to_namespace(this);
 	wpl_pragma_add_all_to_namespace(this);
 
@@ -72,7 +74,7 @@ void wpl_program::parse_file (const char *filename) {
 	parser.parse_file(this, filename);
 }
 
-int wpl_program::run(wpl_io *io) {
+int wpl_program::run() {
 	int ret;
 	wpl_value *value;
 	wpl_value_return retval;

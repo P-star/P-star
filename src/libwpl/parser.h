@@ -26,9 +26,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#ifndef __WPL_PARSER_H
-  #define __WPL_PARSER_H
+#pragma once
 
+#include "io.h"
 #include "scene.h"
 #include "matcher.h"
 #include "namespace.h"
@@ -43,6 +43,8 @@ class wpl_namespace;
 
 class wpl_parser : public wpl_matcher {
 	private:
+
+	wpl_io *io;
 
 	list<unique_ptr<wpl_parser>> includes;
 	int num_parents;
@@ -61,9 +63,8 @@ class wpl_parser : public wpl_matcher {
 
 	public:
 
-	wpl_parser (int num_parents);
+	wpl_parser (wpl_io &io, int num_parents);
 	~wpl_parser ();
 	void parse_file(wpl_namespace *parent_namespace, const char *filename);
 };
 
-#endif // __WPL_PARSER_H

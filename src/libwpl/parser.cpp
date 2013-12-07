@@ -46,7 +46,8 @@ using namespace std;
 /**
  * @brief 
  */
-wpl_parser::wpl_parser (int num_parents) {
+wpl_parser::wpl_parser (wpl_io &io, int num_parents) {
+	this->io = &io;
 	if (num_parents > 64) {
 		throw runtime_error("Max file includes reached");
 	}
@@ -136,7 +137,7 @@ void wpl_parser::parse_template(wpl_namespace *parent_namespace) {
 }
 
 void wpl_parser::parse_include(wpl_namespace *parent_namespace) {
-	wpl_parser *include = new wpl_parser(num_parents+1);
+	wpl_parser *include = new wpl_parser(*io, num_parents+1);
 	includes.emplace_back(include);
 
 	ignore_string_match(WHITESPACE, 0);
@@ -147,6 +148,12 @@ void wpl_parser::parse_include(wpl_namespace *parent_namespace) {
 	}
 
 	string name(get_string_pointer(), len);
+
+	if (name.at(0) != '/') {
+		// Relative path requested, add root folder
+		name.insert(0, string(io->get_env("PSTAR_ROOT")) + "/");
+	}
+
 	include->parse_file(parent_namespace, name.c_str());
 
 	ignore_string(len);

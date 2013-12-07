@@ -32,10 +32,14 @@
 #include "http_protocol.h"
 #include "util_script.h"
 #include "apr_lib.h"
+#include "apr_strings.h"
 
-pstar_file::pstar_file (const char *filename, int mtime) :
-	program(0, NULL)
+#include <cstring>
+
+pstar_file::pstar_file (wpl_io &io, const char *filename, int mtime) :
+	program(io, 0, NULL)
 {
+	this->io = &io;
 	this->mtime = mtime;
 	program.parse_file(filename);
 }
@@ -103,7 +107,13 @@ pstar_pool::pstar_pool(apr_pool_t *pool) {
 	);
 }
 
-shared_ptr<pstar_file> pstar_pool::get_file_handle (request_rec *r, const char *filename, int mtime) {
+shared_ptr<pstar_file> pstar_pool::get_file_handle (
+		request_rec *r,
+		wpl_io &io,
+		const char *filename,
+		int mtime
+		)
+{
 	pstar_map_t::iterator it;
 
 	/*
@@ -127,7 +137,7 @@ shared_ptr<pstar_file> pstar_pool::get_file_handle (request_rec *r, const char *
 
 	apr_proc_mutex_unlock (mutex);
 
-	shared_ptr<pstar_file> file_ptr(new pstar_file(filename, mtime));
+	shared_ptr<pstar_file> file_ptr(new pstar_file(io, filename, mtime));
 
 	apr_proc_mutex_lock (mutex);
 	files.insert(std::pair<string,shared_ptr<pstar_file>>(filename, file_ptr));
@@ -139,17 +149,17 @@ shared_ptr<pstar_file> pstar_pool::get_file_handle (request_rec *r, const char *
 int pstar_pool::handle_file (request_rec *r, const char *filename, int mtime) {
 	int ret;
 
-	shared_ptr<pstar_file> file = get_file_handle(r, filename, mtime);
-	wpl_program *program = file->get_program();
-
 	pstar_io io(r);
+
+	shared_ptr<pstar_file> file = get_file_handle(r, io, filename, mtime);
+	wpl_program *program = file->get_program();
 
 	ret = fill_input(r, io);
 	if (ret != OK) {
 		return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
-	ret = program->run(&io);
+	ret = program->run();
 	if (ret != 0) {
 		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 				"P* Non-zero return (%i) from script %s", ret, r->filename);
@@ -187,6 +197,18 @@ int pstar_pool::handle_request (request_rec *r) {
 	if (r->args) {
 		apr_table_setn(e, "QUERY_STRING", r->args);
 	}
+
+	// Remove filename from path
+	char *path = apr_pstrdup(r->pool, filename);
+	char *pos = strrchr(path, '/');
+
+	if (!pos) {
+		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+			"P* did not understand this filename: '%s'", filename);
+	}
+
+	*pos = '\0';
+	apr_table_setn(e, "PSTAR_ROOT", path);
 
 	try {
 		try {

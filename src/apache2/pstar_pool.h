@@ -30,12 +30,13 @@ struct pstar_file {
 	private:
 	int mtime;
 	wpl_program program;
+	wpl_io *io;
 
 	public:
 	bool is_modified (int mtime) {
 		return (this->mtime != mtime ? true : false);
 	}
-	pstar_file (const char *filename, int mtime);
+	pstar_file (wpl_io &io, const char *filename, int mtime);
 	wpl_program *get_program() {
 		return &program;
 	}
@@ -48,7 +49,7 @@ class pstar_pool {
 	pstar_map_t files;
 	apr_proc_mutex_t *mutex;
 
-	shared_ptr<pstar_file> get_file_handle(request_rec *r, const char *filename, int mtime);
+	shared_ptr<pstar_file> get_file_handle(request_rec *r, wpl_io &io, const char *filename, int mtime);
 	int handle_file (request_rec *r, const char *filename, int mtime);
 
 	public:

@@ -12,6 +12,8 @@ MySQL disabled in Windows due to problems with linking
 #include "libwpl/program.h"
 #include "libwpl/io.h"
 
+#include <cstdlib>
+
 using namespace std;
 
 // Code for command line parsing
@@ -60,15 +62,17 @@ int main (int argc, char *argv[]) {
 		return -1;
 	}
 
+	setenv ("PSTAR_ROOT", ".", 1);
+
 	int ret = 1;
 
 	try {
-		wpl_program program(argc, argv);
+		wpl_io_standard output;
+		wpl_program program(output, argc, argv);
 
 		program.parse_file(filename);
 
-		wpl_io_standard output;
-		ret = program.run(&output);
+		ret = program.run();
 	}
 	catch (exception &e) {
 		cerr << e.what() << endl;
