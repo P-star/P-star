@@ -114,8 +114,6 @@ void wpl_value_post::parse(wpl_io &io) {
 	buf[length] = '\0';
 
 	if (strcmp(content_type, "application/x-www-form-urlencoded") == 0) {
-		cerr << "Found application/x-www-form-urlencoded\n";
-
 		value_get.parse(buf);
 
 		use_get = true;

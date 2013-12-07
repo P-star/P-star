@@ -60,14 +60,19 @@ void wpl_value_get::parse(const char *query_string) {
 	buf.reserve(len);
 	buf_key.reserve(len);
 
+	bool finish = false;
+
 	while (true) {
 		char letter = '\0';
 		if (!matcher.at_end()) {
 			letter = matcher.get_letter();
 		}
+		else {
+			finish = true;
+		}
 
 //		cout << "Parse letter " << letter << "\n";
-		if (M_AMP(letter) || M_SEMICOLON(letter) || matcher.at_end()) {
+		if (M_AMP(letter) || M_SEMICOLON(letter) || finish) {
 			wpl_value *new_val;
 
 			if (matcher.at_end() && letter) {
