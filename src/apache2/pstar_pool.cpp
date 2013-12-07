@@ -205,6 +205,7 @@ int pstar_pool::handle_request (request_rec *r) {
 	if (!pos) {
 		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 			"P* did not understand this filename: '%s'", filename);
+		return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
 	*pos = '\0';
