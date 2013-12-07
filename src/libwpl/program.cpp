@@ -55,10 +55,17 @@ wpl_program::wpl_program(int argc, char **argv) : parser(0) {
 		val_argv->set (i, new wpl_value_string(argv[i]));
 	}
 
-	wpl_variable_holder new_variable (val_argv.release(), "argv", WPL_VARIABLE_ACCESS_PRIVATE);
+	wpl_variable_holder new_variable ("argv", val_argv.release(), WPL_VARIABLE_ACCESS_PRIVATE);
 	new_variable.setStatic();
 
 	register_identifier(&new_variable);
+
+	list<wpl_module_loader>::iterator it;
+
+#ifndef WIN32
+	it = modules.emplace(modules.end(), argc, argv, "mysql");
+	insert_parent_namespace(it->get_namespace());
+#endif
 }
 
 void wpl_program::parse_file (const char *filename) {

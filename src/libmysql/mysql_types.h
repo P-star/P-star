@@ -32,9 +32,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 class wpl_type_complete;
 
-static wpl_type_complete *mysql_type_global_MYSQL;
-static wpl_type_complete *mysql_type_global_MYSQL_STMT;
-static wpl_type_complete *mysql_type_global_MYSQL_ROW;
+wpl_type_complete *wpl_mysql_get_global_type_MYSQL_STMT();
+wpl_type_complete *wpl_mysql_get_global_type_MYSQL_ROW();
 
 static const char *wpl_typename_MYSQL = "MYSQL";
 static const char *wpl_typename_MYSQL_STMT = "MYSQL_STMT";

@@ -31,12 +31,21 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "namespace.h"
 #include "parser.h"
 #include "debug.h"
+#include "module_loader.h"
 
 #include <iostream>
+#include <list>
 
 class wpl_io;
 
-class wpl_program : public wpl_namespace {
+/* Module memory needs to be freed after namespace */
+class wpl_program_base {
+	protected:
+	list<wpl_module_loader> modules;
+};
+
+/* Order of destruction of these two base classes is IMPORTANT */
+class wpl_program : public wpl_program_base, public wpl_namespace {
 	private:
 	wpl_parser parser;
 

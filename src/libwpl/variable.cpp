@@ -85,6 +85,10 @@ void wpl_variable_holder::set_value(wpl_value *new_value) {
 	value = new_value;
 }
 
+wpl_variable_holder::wpl_variable_holder (const char *name, wpl_value *new_value, int access_flags) :
+	wpl_variable (new_value, name, access_flags)
+{}
+
 wpl_variable_holder::wpl_variable_holder (const wpl_variable_holder &copy) :
 	wpl_variable(copy)
 {
@@ -92,7 +96,7 @@ wpl_variable_holder::wpl_variable_holder (const wpl_variable_holder &copy) :
 		cerr << "In copy constructor of variable with const argument of variable " << copy.get_name() << endl;
 		throw runtime_error("No access to protected variable");
 	}
-	value = copy.clone_value();
+	value = value->clone();//copy.clone_value();
 	value->set_flags(wpl_value_is_constant);
 	is_protected = false;
 	is_static = copy.is_static;

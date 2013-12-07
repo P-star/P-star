@@ -91,7 +91,7 @@ class wpl_io {
 
 	virtual void read (char *str, int len) = 0;
 	virtual void write (const char *str, int len) = 0;
-	virtual const char *getenv (const char *name) = 0;
+	virtual const char *get_env (const char *name) = 0;
 	virtual void http_header(const char *field, const char *str) = 0;
 	virtual void debug (const char *str) = 0;
 
@@ -111,7 +111,7 @@ class wpl_io_standard : public wpl_io {
 		std::cout.write(str, len);
 	}
 
-	const char *getenv (const char *name) override;
+	const char *get_env (const char *name) override;
 	void http_header(const char *field, const char *str) override;
 
 	void debug (const char *str) override {
@@ -132,7 +132,7 @@ class wpl_io_buffer : public wpl_io {
 		buffer.append(str, len);
 	}
 
-	const char *getenv (const char *name) override {
+	const char *get_env (const char *name) override {
 		throw runtime_error("getenv() not supported for wpl_io_buffer");
 	}
 

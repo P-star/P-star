@@ -106,7 +106,7 @@ class wpl_value : public wpl_suicidal {
 		flags = 0;
 	}
 	virtual ~wpl_value();
-	void suicide() override {
+	virtual void suicide() override {
 		delete this;
 	}
 

@@ -123,7 +123,7 @@ void wpl_type_begin_function_declaration::parse_value (wpl_namespace *parent_nam
 }
 
 void wpl_type_begin_variable_declaration::create_variable (wpl_namespace *parent_namespace) {
-	wpl_variable_holder new_var (type->new_instance(), name.c_str(), access_flags);
+	wpl_variable_holder new_var (name.c_str(), type->new_instance(), access_flags);
 	parent_namespace->register_identifier(&new_var);
 }
 

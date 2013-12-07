@@ -33,7 +33,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 class wpl_class : public wpl_struct {
 	public:
 	~wpl_class() {}
-	wpl_class (const char *name) : wpl_struct (name) {
+	wpl_class (const char *name) : wpl_struct (name, false) {
 	}
 };
 

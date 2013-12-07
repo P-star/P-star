@@ -308,7 +308,7 @@ void wpl_namespace::register_identifier_hard (wpl_variable *variable) {
 
 void wpl_namespace::register_identifier(wpl_variable *variable) {
 #ifdef WPL_DEBUG_NAMESPACE
-	DBG("NS (" << this << "): Register variable '" << variable->get_name() << "'" << endl);
+	DBG("NS (" << this << "): Register variable " << variable << " '" << variable->get_name() << "'" << endl);
 #endif
 	if (find_nonstatic_variable (variable->get_name()) || find_static_variable (variable->get_name())) {
 		snprintf (exception_msg, exception_msg_length,

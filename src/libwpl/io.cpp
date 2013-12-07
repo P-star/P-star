@@ -34,6 +34,6 @@ void wpl_io_standard::http_header(const char *field, const char *str) {
         cout << field << ": " << str << ";\r\n\r\n";
 }
 
-const char *wpl_io_standard::getenv(const char *name) {
+const char *wpl_io_standard::get_env(const char *name) {
 	return getenv(name);
 }

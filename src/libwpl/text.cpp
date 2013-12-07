@@ -68,7 +68,7 @@ int wpl_text::chunk::run (
 		wpl_value *final_result,
 		wpl_io &io
 ) {
-	static wpl_value_output_trigger output_trigger(io);
+	wpl_value_output_trigger output_trigger(io);
 	if (expression.get() == nullptr) {
 		io.write_immortal (start, end-start);
 		return WPL_OP_NO_RETURN;

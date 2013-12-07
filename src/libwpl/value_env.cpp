@@ -38,7 +38,7 @@ int wpl_value_env::do_operator (
 		wpl_value *rhs
 ) {
 	if (op == &OP_ELEMENT) {
-		const char *str = exp_state->get_io().getenv(rhs->toString().c_str());
+		const char *str = exp_state->get_io().get_env(rhs->toString().c_str());
 		if (!str) {
 			cerr << "While searching for environment variable '" <<
 				rhs->toString() << "':\n";

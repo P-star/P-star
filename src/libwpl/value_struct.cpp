@@ -31,6 +31,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "exception.h"
 #include "debug.h"
 
+
+#include "function.h"
+
 using namespace std;
 
 void wpl_value_struct::output_json(wpl_io &io) {
@@ -74,6 +77,7 @@ int wpl_value_struct::do_operator (
 			return variable->get_value()->do_operator_recursive(exp_state, final_result);
 		}
 		else if (wpl_function *function = find_function_no_parent(name, WPL_NSS_CTX_OUTSIDE)) {
+			cout << "Function is " << function << " - " << function->get_name() << endl;
 			wpl_value_function_ptr function_ptr(function, this, exp_state);
 			return function_ptr.do_operator_recursive(exp_state, final_result);
 		}

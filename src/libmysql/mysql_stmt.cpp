@@ -100,12 +100,12 @@ int wpl_mysql_stmt_prepare::run (
 	wpl_variable *this_var;
 	wpl_variable *sql_var;
 
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
+	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("MySQL error: stmt_prepare(): Could not find 'this' variable");
 	}
-	if (!(sql_var = block_state->find_variable("sql", WPL_NSS_CTX_SELF))) {
+	if (!(sql_var = function_state->find_variable("sql", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("MySQL error: stmt_prepare(): Could not find 'sql' variable");
 	}
 
@@ -133,7 +133,7 @@ int wpl_mysql_stmt_prepare::run (
 		ret = false;
 	}
 
-	wpl_mysql_bind (block_state, this_stmt->get_stmt(), sql);
+	wpl_mysql_bind (function_state, this_stmt->get_stmt(), sql);
 
 	((wpl_value_bool*) final_result)->set(ret);
 
@@ -155,9 +155,9 @@ int wpl_mysql_stmt_execute::run (
 {
 	wpl_variable *this_var;
 
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
+	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("MySQL error: stmt_execute(): Could not find 'this' variable");
 	}
 
@@ -199,9 +199,9 @@ int wpl_mysql_stmt_error::run (
 {
 	wpl_variable *this_var;
 
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
+	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("MySQL error: stmt_execute(): Could not find 'this' variable");
 	}
 
@@ -220,7 +220,11 @@ int wpl_mysql_stmt_error::run (
 class wpl_mysql_stmt_get_row_iterator : public wpl_function {
 	public:
 	wpl_mysql_stmt_get_row_iterator() :
-		wpl_function(mysql_type_global_MYSQL_ROW, "get_row_iterator", WPL_VARIABLE_ACCESS_PUBLIC)
+		wpl_function (
+			wpl_mysql_get_global_type_MYSQL_ROW(),
+			"get_row_iterator",
+			WPL_VARIABLE_ACCESS_PUBLIC
+		)
 	{}
 	int run (wpl_state *state, wpl_value *final_result);
 };
@@ -233,9 +237,9 @@ int wpl_mysql_stmt_get_row_iterator::run (
 {
 	wpl_variable *this_var;
 
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
+	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("MySQL error: stmt_execute(): Could not find 'this' variable");
 	}
 
@@ -260,7 +264,7 @@ int wpl_mysql_stmt_get_row_iterator::run (
 }
 
 wpl_type_MYSQL_STMT::wpl_type_MYSQL_STMT() :
-	wpl_struct(wpl_typename_MYSQL_STMT)
+	wpl_struct(wpl_typename_MYSQL_STMT, true)
 {
 	wpl_variable_holder this_var("this", new wpl_value_MYSQL_STMT(), WPL_VARIABLE_ACCESS_PRIVATE);
 	register_identifier(&this_var);

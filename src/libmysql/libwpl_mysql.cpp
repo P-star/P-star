@@ -54,10 +54,20 @@ wpl_mysql mysql;
 
 static wpl_sql sql;
 
+static wpl_type_MYSQL mysql_type_constant_MYSQL;
+static wpl_type_MYSQL_STMT mysql_type_constant_MYSQL_STMT;
+static wpl_type_MYSQL_ROW mysql_type_constant_MYSQL_ROW;
+
+wpl_type_complete *wpl_mysql_get_global_type_MYSQL_STMT() {
+	return &mysql_type_constant_MYSQL_STMT;
+}
+
+wpl_type_complete *wpl_mysql_get_global_type_MYSQL_ROW() {
+	return &mysql_type_constant_MYSQL_ROW;
+}
+	
 #define REGISTER_TYPE(name)						\
-	static wpl_type_##name mysql_type_constant_##name;		\
-	mysql_type_global_##name = &mysql_type_constant_##name;			\
-	mysql.new_register_parseable(&mysql_type_constant_##name);
+	mysql.new_register_parseable(&mysql_type_constant_##name);	\
 
 void register_identifiers() {
 	// This order is important!!

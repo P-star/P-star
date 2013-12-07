@@ -88,9 +88,9 @@ void wpl_value_post::parse_entity (MimeEntity *me) {
 }
 
 void wpl_value_post::parse(wpl_io &io) {
-	const char *content_type = io.getenv("CONTENT_TYPE");
-	const char *content_length = io.getenv("CONTENT_LENGTH");
-	const char *request_method = io.getenv("REQUEST_METHOD");
+	const char *content_type = io.get_env("CONTENT_TYPE");
+	const char *content_length = io.get_env("CONTENT_LENGTH");
+	const char *request_method = io.get_env("REQUEST_METHOD");
 
 	if (!request_method || strcmp(request_method, "POST") != 0 || !content_type) {
 		return;

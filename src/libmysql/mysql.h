@@ -42,6 +42,9 @@ using namespace std;
 class wpl_type_MYSQL : public wpl_struct {
 	public:
 	wpl_type_MYSQL();
+	void suicide() override {
+		delete this;
+	}
 	int get_precedence() const {
 		return wpl_type_precedence_MYSQL;
 	}
@@ -52,9 +55,11 @@ class wpl_value_MYSQL : public wpl_value {
 	shared_ptr<wpl_mysql_holder> mysql;
 
 	public:
-	wpl_value_MYSQL() :
-		mysql(new wpl_mysql_holder())
-	{}
+	wpl_value_MYSQL() {
+		/*
+		   DO NOT initialize wpl_mysql_holder here
+		   */
+	}
 
 	const char *get_type_name() const override { return wpl_typename_MYSQL; };
 	int get_precedence() const override { return wpl_type_precedence_MYSQL; };
@@ -65,17 +70,23 @@ class wpl_value_MYSQL : public wpl_value {
 
 	wpl_value_MYSQL *clone() const override {
 		return new wpl_value_MYSQL(*this);
-	};
+	}
 
 	wpl_value_MYSQL *clone_empty() const override {
 		return new wpl_value_MYSQL();
-	};
+	}
 
 	MYSQL *get_mysql() {
+		if (mysql.get() == nullptr) {
+			mysql.reset(new wpl_mysql_holder());
+		}
 		return mysql.get()->get_mysql();
 	}
 
 	shared_ptr<wpl_mysql_holder> &get_mysql_shared_ptr() {
+		if (mysql.get() == nullptr) {
+			mysql.reset(new wpl_mysql_holder());
+		}
 		return mysql;
 	}
 

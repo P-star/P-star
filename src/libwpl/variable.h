@@ -88,13 +88,7 @@ class wpl_variable_holder : public wpl_variable {
 	public:
 	wpl_variable_holder (const wpl_variable_holder &copy);
 
-	wpl_variable_holder (wpl_value *new_value, const char *name, int access_flags) :
-		wpl_variable (new_value, name, access_flags)
-	{}
-
-	wpl_variable_holder (const char *name, wpl_value *new_value, int access_flags) :
-		wpl_variable (new_value, name, access_flags)
-	{}
+	wpl_variable_holder (const char *name, wpl_value *new_value, int access_flags);
 
 	~wpl_variable_holder();
 	wpl_variable_holder *clone() const;

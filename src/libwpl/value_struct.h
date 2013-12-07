@@ -52,6 +52,9 @@ class wpl_value_struct : public wpl_value, public wpl_namespace_session {
 		this->mother_struct = mother_struct;
 	}
 	virtual ~wpl_value_struct() {}
+	virtual void suicide() {
+		delete this;
+	}
 	virtual const char *get_type_name() const { return mother_struct->get_name(); };
 	virtual int get_precedence() const { return mother_struct->get_precedence(); };
 	virtual wpl_value_struct *clone() const { return new wpl_value_struct(*this); };

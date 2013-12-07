@@ -43,8 +43,8 @@ class wpl_struct : public wpl_type_user_incomplete {
 	bool parse_complete;
 
 	public:
-	wpl_struct (const char *name) : wpl_type_user_incomplete(name) {
-		parse_complete = false;
+	wpl_struct (const char *name, bool no_parsing) : wpl_type_user_incomplete(name) {
+		parse_complete = no_parsing;
 	}
 	virtual ~wpl_struct();
 	virtual void suicide() override {
@@ -67,7 +67,7 @@ class wpl_type_struct : public wpl_type_incomplete {
 	wpl_type_struct (const char *name) : wpl_type_incomplete(name) {}
 	wpl_type_struct () : wpl_type_incomplete(wpl_typename_struct) {}
 	wpl_type_user_incomplete *new_instance(const char *name) const {
-		return new wpl_struct(name);
+		return new wpl_struct(name, false);
 	}
 	int get_precedence() const { return wpl_type_precedence_struct; }
 	virtual void suicide() {

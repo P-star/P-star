@@ -44,6 +44,8 @@ wpl_type_array_instance wpl_value_get::type_complete_array(
 );
 
 void wpl_value_get::parse(const char *query_string) {
+	did_parse = true;
+
 	int len = strlen(query_string);
 
 	if (len <= 0) {
@@ -135,8 +137,6 @@ void wpl_value_get::parse(const char *query_string) {
 			do_value = true;
 		}
 	}
-
-	did_parse = true;
 }
 
 int wpl_value_get::do_operator (
@@ -147,7 +147,8 @@ int wpl_value_get::do_operator (
 		wpl_value *rhs
 ) {
 	if (!did_parse) {
-		const char *query_string = exp_state->get_io().getenv("QUERY_STRING");
+		wpl_io &io = exp_state->get_io();
+		const char *query_string = exp_state->get_io().get_env("QUERY_STRING");
 		if (!query_string) {
 			throw runtime_error("Could not find the QUERY_STRING environment variable while constructing GET-object");
 		}

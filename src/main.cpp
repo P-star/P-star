@@ -11,7 +11,6 @@ MySQL disabled in Windows due to problems with linking
 
 #include "libwpl/program.h"
 #include "libwpl/io.h"
-#include "libwpl/module_loader.h"
 
 using namespace std;
 
@@ -64,13 +63,7 @@ int main (int argc, char *argv[]) {
 	int ret = 1;
 
 	try {
-#ifdef WIN32
 		wpl_program program(argc, argv);
-#else
-		wpl_module_loader mysql_loader(argc, argv, "mysql");
-		wpl_program program(argc, argv);
-		program.set_parent_namespace(mysql_loader.get_namespace());
-#endif
 
 		program.parse_file(filename);
 

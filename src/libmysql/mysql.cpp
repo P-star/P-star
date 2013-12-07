@@ -64,18 +64,18 @@ int wpl_mysql_connect::run (wpl_state *state, wpl_value *final_result) {
 	wpl_variable *user_var;
 	wpl_variable *passwd_var;
 
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
+	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_connect(): Could not find 'this' variable");
 	}
-	if (!(host_var = block_state->find_variable("host", WPL_NSS_CTX_SELF))) {
+	if (!(host_var = function_state->find_variable("host", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_connect(): Could not find 'host' variable");
 	}
-	if (!(user_var = block_state->find_variable("user", WPL_NSS_CTX_SELF))) {
+	if (!(user_var = function_state->find_variable("user", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_connect(): Could not find 'user' variable");
 	}
-	if (!(passwd_var = block_state->find_variable("passwd", WPL_NSS_CTX_SELF))) {
+	if (!(passwd_var = function_state->find_variable("passwd", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_connect(): Could not find 'passwd' variable");
 	}
 
@@ -118,13 +118,13 @@ int wpl_mysql_select_db::run (wpl_state *state, wpl_value *final_result) {
 	wpl_variable *this_var;
 	wpl_variable *db_var;
 
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
+	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_select_db(): Could not find 'this' variable");
 	}
 
-	if (!(db_var = block_state->find_variable("db", WPL_NSS_CTX_SELF))) {
+	if (!(db_var = function_state->find_variable("db", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_select_db(): Could not find 'db' variable");
 	}
 
@@ -151,9 +151,9 @@ class wpl_mysql_error : public wpl_function {
 int wpl_mysql_error::run (wpl_state *state, wpl_value *final_result) {
 	wpl_variable *this_var;
 
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
+	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_mysql_error(): Could not find 'this' variable");
 	}
 
@@ -167,7 +167,11 @@ int wpl_mysql_error::run (wpl_state *state, wpl_value *final_result) {
 class wpl_mysql_stmt_init : public wpl_function {
 	public:
 	wpl_mysql_stmt_init() :
-		wpl_function(mysql_type_global_MYSQL_STMT, "new_statement", WPL_VARIABLE_ACCESS_PUBLIC)
+		wpl_function (
+			wpl_mysql_get_global_type_MYSQL_STMT(),
+			"new_statement",
+			WPL_VARIABLE_ACCESS_PUBLIC
+		)
 	{}
 	int run (wpl_state *state, wpl_value *final_result);
 };
@@ -175,9 +179,9 @@ class wpl_mysql_stmt_init : public wpl_function {
 int wpl_mysql_stmt_init::run (wpl_state *state, wpl_value *final_result) {
 	wpl_variable *this_var;
 
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = block_state->find_variable("this", WPL_NSS_CTX_SELF))) {
+	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
 		throw runtime_error("wpl_stmt_init(): Could not find 'this' variable");
 	}
 	wpl_value_MYSQL *this_mysql = (wpl_value_MYSQL*) this_var->get_value();
@@ -196,7 +200,7 @@ int wpl_mysql_stmt_init::run (wpl_state *state, wpl_value *final_result) {
 }
 
 wpl_type_MYSQL::wpl_type_MYSQL() :
-	wpl_struct(wpl_typename_MYSQL)
+	wpl_struct(wpl_typename_MYSQL, true)
 {
 	wpl_variable_holder this_var("this", new wpl_value_MYSQL(), WPL_VARIABLE_ACCESS_PRIVATE);
 	register_identifier(&this_var);

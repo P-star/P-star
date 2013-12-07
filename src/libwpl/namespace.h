@@ -132,6 +132,15 @@ class wpl_namespace {
 		parent_namespace = parent;
 	}
 
+	void insert_parent_namespace (wpl_namespace *parent) {
+		if (parent_namespace) {
+			parent_namespace->insert_parent_namespace(parent);
+		}
+		else {
+			parent_namespace = parent;
+		}
+	}
+
 	void clear_namespace();
 
 	void generate_typename_list (ostringstream &target);

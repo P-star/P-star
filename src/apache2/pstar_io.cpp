@@ -124,7 +124,7 @@ void pstar_io::output_headers () {
 	}
 }
 
-const char *pstar_io::getenv(const char *name) {
+const char *pstar_io::get_env(const char *name) {
 	return apr_table_get (r->subprocess_env, name);
 }
 

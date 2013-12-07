@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "sql.h"
+#include "../libwpl/types.h"
 #include "../libwpl/exception.h"
 #include "../libwpl/namespace.h"
 #include "../libwpl/namespace_session.h"
@@ -84,7 +85,7 @@ void wpl_sql::parse_value (wpl_namespace *parent_namespace) {
 	wpl_sql *sql = new wpl_sql();
 	wpl_value_sql *value_sql = new wpl_value_sql(sql);
 
-	wpl_variable_holder new_variable (value_sql, buf, WPL_VARIABLE_ACCESS_PRIVATE);
+	wpl_variable_holder new_variable (buf, value_sql, WPL_VARIABLE_ACCESS_PRIVATE);
 
 	parent_namespace->register_identifier(&new_variable);
 
@@ -93,6 +94,8 @@ void wpl_sql::parse_value (wpl_namespace *parent_namespace) {
 	sql->load_position(get_static_position());
 	sql->__parse_value(parent_namespace);
 	load_position(sql->get_static_position());
+
+	throw wpl_type_end_statement(get_static_position());
 }
 
 void wpl_sql::__parse_value (wpl_namespace *parent_namespace) {
