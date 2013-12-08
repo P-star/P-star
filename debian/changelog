@@ -1,8 +1,16 @@
-pstar (1.1-alpha4) UNRELEASED; urgency=low
+pstar (1.1-alpha4) unstable; urgency=low
 
-  * Changed package name
+  * Misc bug fizes
+  * New method for module loading
+  * Few fixes for thread safety
+  * Fix bugs in the MySQL module
+  * Changed package name to pstar
+  * Added command line package (pstar)
+  * Added library package (libpstar)
+  * Added development package (libpstar-dev)
+  * Added module for the Apache 2 web server (libapache2-mod-pstar)
 
- -- Atle Solbakken <atle@goliathdns.no>  Mon, 02 Dec 2013 00:01:32 +0100
+ -- Atle Solbakken <atle@goliathdns.no>  Sun, 08 Dec 2013 22:27:13 +0100
 
 p-star (1.1-alpha3) unstable; urgency=low
 
