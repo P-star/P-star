@@ -54,6 +54,9 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 
 	if (parse_complete) {
 		ignore_whitespace();
+		if (ignore_letter ('>')) {
+			throw wpl_type_end_template_declaration(this);
+		}
 		try {
 			get_word(buf);
 		}
