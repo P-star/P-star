@@ -1,3 +1,9 @@
+pstar (1.1-alpha5) unstable; urgency=low
+
+  * Fix memory issues with Apache module
+
+ -- Atle Solbakken <atle@goliathdns.no>  Mon, 09 Dec 2013 23:59:30 +0100
+
 pstar (1.1-alpha4) unstable; urgency=low
 
   * Misc bug fizes
