@@ -30,9 +30,9 @@ SCENE layout_head_scene {
 
 	string title = "-";
 	struct button {
-		string name;
-		string text;
-		string classname;
+		public string name;
+		public string text;
+		public string classname;
 	};
 
 	array<button> buttons;
