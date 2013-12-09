@@ -1,6 +1,6 @@
 #!/usr/bin/wpl -f
 
-#INCLUDE layout;
+#INCLUDE layout.pstar;
 
 HTML_TEMPLATE body {
 	<h1>How to get P*?</h1>
