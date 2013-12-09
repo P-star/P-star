@@ -34,16 +34,32 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "debug.h"
 #include "module_loader.h"
 
+#include <mutex>
 #include <iostream>
 #include <list>
 
-/* Module memory needs to be freed after namespace */
 class wpl_program_base {
+	private:
+	static mutex init_lock;
+	static bool initialized;
+	static list<wpl_module_loader> modules;
+
 	protected:
-	list<wpl_module_loader> modules;
+
+	list<wpl_module_loader> &get_modules() {
+		return modules;
+	}
+
+	wpl_program_base() {
+		lock_guard<mutex> lock(init_lock);
+		if (!initialized) {
+			char *dummy;
+			modules.emplace_back(0, &dummy, "mysql");
+			initialized = true;
+		}
+	}
 };
 
-/* Order of destruction of these two base classes is IMPORTANT */
 class wpl_program : public wpl_program_base, public wpl_namespace {
 	private:
 	wpl_parser parser;

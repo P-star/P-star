@@ -54,7 +54,6 @@ void pstar_io::http_header(const char *field, const char *str) {
 	   Replace with emplace() when Debian stops using GCC 4.7
 	 */
 	http_headers.insert(std::pair<string,string>(field, str));
-	headers_sent = true;
 }
 
 void pstar_io::append_input(const char *str, int len) {

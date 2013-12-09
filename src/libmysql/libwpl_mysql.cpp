@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <stdexcept>
+#include <mutex>
 
 #ifdef WIN32
     #include <windows.h>
@@ -47,16 +48,33 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-class wpl_mysql : public wpl_namespace {
-};
-
-wpl_mysql mysql;
-
+// Types for this module
 static wpl_sql sql;
-
 static wpl_type_MYSQL mysql_type_constant_MYSQL;
 static wpl_type_MYSQL_STMT mysql_type_constant_MYSQL_STMT;
 static wpl_type_MYSQL_ROW mysql_type_constant_MYSQL_ROW;
+	
+#define REGISTER_TYPE(name)						\
+	new_register_parseable(&mysql_type_constant_##name);	\
+
+static bool is_initialized = false;
+static mutex is_initialized_lock;
+
+class wpl_mysql : public wpl_namespace {
+	public:
+	wpl_mysql() {
+		// This order is important!!
+		REGISTER_TYPE(MYSQL_ROW)
+		REGISTER_TYPE(MYSQL_STMT)
+		REGISTER_TYPE(MYSQL)
+
+		new_register_parseable(&sql);
+	}
+	~wpl_mysql() {
+	}
+};
+
+wpl_mysql mysql;
 
 wpl_type_complete *wpl_mysql_get_global_type_MYSQL_STMT() {
 	return &mysql_type_constant_MYSQL_STMT;
@@ -65,22 +83,22 @@ wpl_type_complete *wpl_mysql_get_global_type_MYSQL_STMT() {
 wpl_type_complete *wpl_mysql_get_global_type_MYSQL_ROW() {
 	return &mysql_type_constant_MYSQL_ROW;
 }
-	
-#define REGISTER_TYPE(name)						\
-	mysql.new_register_parseable(&mysql_type_constant_##name);	\
 
 void register_identifiers() {
-	// This order is important!!
-	REGISTER_TYPE(MYSQL_ROW)
-	REGISTER_TYPE(MYSQL_STMT)
-	REGISTER_TYPE(MYSQL)
-
-	mysql.new_register_parseable(&sql);
 }
 
 #ifdef WIN32
 void wpl_mysql_init() {
-	register_identifiers();
+	lock_guard<mutex> lock(is_initialized_lock);
+
+	if (is_initialized)
+		return;
+
+	if (mysql_library_init(0, NULL, NULL)) {
+		throw runtime_error("Error while initializing the MySQL library\n");
+	}
+
+	is_initialized = true;
 }
 
 wpl_namespace *wpl_mysql_get_namespace() {
@@ -89,21 +107,18 @@ wpl_namespace *wpl_mysql_get_namespace() {
 
 #else
 int wpl_module_init(int argc, char **argv) {
-	mysql_library_init(argc, argv, NULL);
-
-	if (mysql_library_init(argc, argv, NULL)) {
-		throw runtime_error("Error while initializing the MySQL library\n");
-	}
-
-	register_identifiers();
-
 	return 0;
 }
-
 void wpl_module_exit () {
-	mysql_library_end();
-}
+	lock_guard<mutex> lock(is_initialized_lock);
 
+	if (!is_initialized)
+		return;
+
+	mysql_library_end();
+
+	is_initialized = false;
+}
 wpl_namespace *wpl_module_get_namespace() {
 	return &mysql;
 }

@@ -40,7 +40,14 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <utility>
 #include <memory>
 
-wpl_program::wpl_program(wpl_io &io, int argc, char **argv) : parser(io, 0) {
+mutex wpl_program_base::init_lock;
+bool wpl_program_base::initialized = false;
+list<wpl_module_loader> wpl_program_base::modules;
+
+wpl_program::wpl_program(wpl_io &io, int argc, char **argv) :
+	wpl_program_base(),
+	parser(io, 0)
+{
 	this->io = &io;
 
 	wpl_types_add_all_to_namespace(this);
@@ -62,11 +69,10 @@ wpl_program::wpl_program(wpl_io &io, int argc, char **argv) : parser(io, 0) {
 
 	register_identifier(&new_variable);
 
-	list<wpl_module_loader>::iterator it;
-
 #ifndef WIN32
-	it = modules.emplace(modules.end(), argc, argv, "mysql");
-	insert_parent_namespace(it->get_namespace());
+	for (wpl_module_loader &module : get_modules()) {
+		insert_parent_namespace(module.get_namespace());
+	}
 #endif
 }
 

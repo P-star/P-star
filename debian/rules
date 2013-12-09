@@ -5,4 +5,6 @@
 	dh $@
 
 override_dh_auto_install:
+	cp src/apache2/pstar.load \
+		debian/libapache2-mod-pstar/etc/apache2/mods-available/
 	APXS_DH_CONTEXT=1 dh_auto_install
