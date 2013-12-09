@@ -59,7 +59,7 @@ class wpl_parser : public wpl_matcher {
 	void parse_template(wpl_namespace *parent_namespace);
 	void first_level(wpl_namespace *parent_namespace);
 
-	char *file_content;
+	string file_content;
 
 	public:
 

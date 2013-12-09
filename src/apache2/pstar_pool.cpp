@@ -106,6 +106,7 @@ shared_ptr<pstar_file> pstar_pool::get_file_handle (
 		)
 {
 	pstar_map_t::iterator it;
+
 	lock_guard<mutex> lock(pool_lock);
 
 	// Check if a cached program exists

@@ -37,30 +37,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <mutex>
 #include <iostream>
 #include <list>
+	
 
-class wpl_program_base {
-	private:
-	static mutex init_lock;
-	static bool initialized;
-	static list<wpl_module_loader> modules;
-
-	protected:
-
-	list<wpl_module_loader> &get_modules() {
-		return modules;
-	}
-
-	wpl_program_base() {
-		lock_guard<mutex> lock(init_lock);
-		if (!initialized) {
-			char *dummy;
-			modules.emplace_back(0, &dummy, "mysql");
-			initialized = true;
-		}
-	}
-};
-
-class wpl_program : public wpl_program_base, public wpl_namespace {
+class wpl_program : public wpl_namespace {
 	private:
 	wpl_parser parser;
 

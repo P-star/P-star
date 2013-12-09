@@ -52,16 +52,12 @@ wpl_parser::wpl_parser (wpl_io &io, int num_parents) {
 		throw runtime_error("Max file includes reached");
 	}
 	this->num_parents = num_parents;
-	file_content = NULL;
 }
 
 /**
  * @brief 
  */
 wpl_parser::~wpl_parser () {
-	if (file_content != NULL) {
-		delete[] file_content;
-	}
 }
 
 /**
@@ -222,7 +218,7 @@ void wpl_parser::parse_file (wpl_namespace *parent_namespace, const char *filena
 		}*/
 
 		file_content = buf;
-		set_text (file_content, filesize);
+		set_text (file_content.c_str(), filesize);
 	}
 	catch (int e) {
 		fclose (file);
