@@ -176,5 +176,6 @@ SCENE main {
 		#HTML_TEMPLATE body;
 		#HTML_TEMPLATE layout_foot;
 	}
+	return 0;
 }
 

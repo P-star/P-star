@@ -30,5 +30,6 @@ SCENE main {
 	#SCENE layout_head_scene;
 	#HTML_TEMPLATE body;
 	#HTML_TEMPLATE layout_foot;
+	return 0;
 }
 
