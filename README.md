@@ -45,6 +45,21 @@ A P*-program is run like this:
     wpl -f my_program.pstar
 
 
+Using the Apache module
+-----------------------
+This package provides a module for the Apache-series web server, version
+2.2.22 or higher is required. To enable the module after installing P*,
+run this as root:
+
+    a2enmod pstar
+    service apache2 restart
+
+To tell Apache to run P* scripts, add this directive somewhere in the
+configuration (usually in <Directory>, <Location> or <File> sections).
+
+    AddHandler pstar-handler .pstar
+
+
 Examples
 --------
 
