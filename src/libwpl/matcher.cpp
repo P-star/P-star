@@ -72,9 +72,9 @@ void wpl_matcher::ignore_whitespace() {
 void wpl_matcher::ignore_blockstart() {
 	ignore_string_match (WHITESPACE,0);
 	if (!ignore_letter ('{')) {
-		snprintf (exception_msg, exception_msg_length,
-			"Syntax error near '%c', expected '{'", get_string_pointer()[0]);
-		THROW_ELEMENT_EXCEPTION(exception_msg);
+		ostringstream msg;
+		msg << "Syntax error near '" << get_string_pointer()[0] << "'";
+		THROW_ELEMENT_EXCEPTION(msg.str());
 	}
 }
 
@@ -88,9 +88,10 @@ void wpl_matcher::check_varname_length (const int len) {
 	if (len > WPL_VARNAME_SIZE) {
 		char tmp[WPL_VARNAME_SIZE];
 		get_string (tmp, WPL_VARNAME_SIZE);
-		snprintf (exception_msg, exception_msg_length,
-			"Name '%s' exceeds maximum length (%i vs %i)", tmp, len, WPL_VARNAME_SIZE);
-		THROW_MATCHER_EXCEPTION(exception_msg)
+		ostringstream msg;
+		msg << "Name '" << tmp << "' exceeds maximum length (" <<
+			len << " vs " << WPL_VARNAME_SIZE << ")";
+		THROW_MATCHER_EXCEPTION(msg.str())
 	}
 }
 
@@ -224,8 +225,11 @@ bool wpl_matcher::match_letter (
 	}
 
 	if (M_INVALID(letter)) {
-		snprintf (exception_msg, exception_msg_length, "Invalid charater '%02x'/'%c'", letter, letter);
-		THROW_MATCHER_EXCEPTION(exception_msg)
+		ostringstream msg;
+		char buf[32];
+		sprintf(buf, "%02x", letter);
+		msg << "Invalid charater '" << letter << "'/'" << buf << "'";
+		THROW_ELEMENT_EXCEPTION(msg.str())
 	}
 
 	return false;
@@ -263,8 +267,9 @@ int wpl_matcher::search (
 			pre_length++;
 		}
 		else if (critical_mismatch) {
-			snprintf (exception_msg, exception_msg_length, "Unexpected '%c'", letter);
-			THROW_MATCHER_EXCEPTION(exception_msg)
+			ostringstream msg;
+			msg << "Unexpected character '" << letter << "'";
+			THROW_ELEMENT_EXCEPTION(msg.str())
 		}
 		else {
 			length = 0;

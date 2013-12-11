@@ -315,9 +315,9 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 			parse_expression(ns);
 		}
 		else {
-			snprintf (exception_msg, exception_msg_length,
-				"Syntax error in block near '%c'", get_string_pointer()[0]);
-			THROW_ELEMENT_EXCEPTION(exception_msg);
+			ostringstream msg;
+			msg << "Syntax error in block near '" << get_string_pointer()[0] << "'";
+			THROW_ELEMENT_EXCEPTION(msg.str());
 		}
 	}
 	load_position(&start_pos);

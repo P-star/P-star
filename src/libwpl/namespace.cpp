@@ -244,9 +244,9 @@ void wpl_namespace::register_identifier(wpl_pragma *pragma) {
 	identifiers.emplace_back(pragma);
 
 	if (find_identifier_no_parent (pragma->get_name()) != pragma) {
-		snprintf (exception_msg, exception_msg_length,
-			"Name '%s' was already defined in namespace %p", pragma->get_name(), this);
-		THROW_RUNTIME_EXCEPTION(exception_msg);
+		ostringstream msg;
+		msg << "Name '" << pragma->get_name() << "' was already defined in namespace " << this;
+		THROW_RUNTIME_EXCEPTION(msg.str());
 	}
 
 	pragmas.push_back(pragma);
@@ -259,9 +259,9 @@ void wpl_namespace::register_identifier(wpl_scene *scene) {
 	identifiers.emplace_back(scene);
 
 	if (find_identifier_no_parent (scene->get_name()) != scene) {
-		snprintf (exception_msg, exception_msg_length,
-			"Name '%s' was already defined in namespace %p", scene->get_name(), this);
-		THROW_RUNTIME_EXCEPTION(exception_msg);
+		ostringstream msg;
+		msg << "Name '" << scene->get_name() << "' was already defined in namespace " << this;
+		THROW_RUNTIME_EXCEPTION(msg.str());
 	}
 
 	scenes.push_back(scene);
@@ -275,9 +275,9 @@ void wpl_namespace::register_identifier(wpl_template *my_template) {
 	identifiers.emplace_back(tmp);
 
 	if (find_identifier_no_parent (my_template->get_name()) != tmp) {
-		snprintf (exception_msg, exception_msg_length,
-			"Name '%s' was already defined in namespace %p", my_template->get_name(), this);
-		THROW_RUNTIME_EXCEPTION(exception_msg);
+		ostringstream msg;
+		msg << "Name '" << my_template->get_name() << "' was already defined in namespace " << this;
+		THROW_RUNTIME_EXCEPTION(msg.str());
 	}
 
 	templates.push_back(my_template);
@@ -290,9 +290,9 @@ void wpl_namespace::register_identifier(wpl_function *function) {
 	identifiers.emplace_back(function);
 
 	if (find_identifier_no_parent (function->get_name()) != function) {
-		snprintf (exception_msg, exception_msg_length,
-			"Name '%s' was already defined in namespace %p", function->get_name(), this);
-		THROW_RUNTIME_EXCEPTION(exception_msg);
+		ostringstream msg;
+		msg << "Name '" << function->get_name() << "' was already defined in namespace " << this;
+		THROW_RUNTIME_EXCEPTION(msg.str());
 	}
 
 	functions.push_back(function);
@@ -311,9 +311,9 @@ void wpl_namespace::register_identifier(wpl_variable *variable) {
 	DBG("NS (" << this << "): Register variable " << variable << " '" << variable->get_name() << "'" << endl);
 #endif
 	if (find_nonstatic_variable (variable->get_name()) || find_static_variable (variable->get_name())) {
-		snprintf (exception_msg, exception_msg_length,
-			"Name '%s' was already defined in namespace %p", variable->get_name(), this);
-		THROW_RUNTIME_EXCEPTION(exception_msg);
+		ostringstream msg;
+		msg << "Name '" << variable->get_name() << "' was already defined in namespace " << this;
+		THROW_RUNTIME_EXCEPTION(msg.str());
 	}
 
 	variables.emplace_back(variable->clone());
@@ -326,9 +326,9 @@ void wpl_namespace::register_identifier (wpl_parseable *parseable) {
 	identifiers.emplace_back(parseable);
 
 	if (find_identifier_no_parent (parseable->get_name()) != parseable) {
-		snprintf (exception_msg, exception_msg_length,
-			"Name '%s' was already defined in namespace %p", parseable->get_name(), this);
-		THROW_RUNTIME_EXCEPTION(exception_msg);
+		ostringstream msg;
+		msg << "Name '" << parseable->get_name() << "' was already defined in namespace " << this;
+		THROW_RUNTIME_EXCEPTION(msg.str());
 	}
 
 	parseables.push_back(parseable);

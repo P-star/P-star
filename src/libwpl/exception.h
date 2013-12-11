@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include <sstream>
 #include <string>
 #include <stdexcept>
 
@@ -37,11 +38,35 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #define snprintf _snprintf
 #endif
 
+#define THROW_ELEMENT_EXCEPTION(msg) \
+	throw wpl_element_exception(msg, *get_static_position());
+
+#define THROW_RUNTIME_EXCEPTION(msg) \
+	throw wpl_runtime_exception(msg);
+
 using namespace std;
 
-static const int exception_msg_length = 256;
-static char exception_msg[exception_msg_length];
-static wpl_matcher_position exception_matcher_position;
+class wpl_element_exception {
+	private:
+	const string msg;
+	const struct wpl_matcher_position pos;
+
+	public:
+	wpl_element_exception (const char *_msg, const struct wpl_matcher_position &_pos) :
+		msg(_msg),
+		pos(_pos)
+	{}
+	wpl_element_exception (const string &_msg, const struct wpl_matcher_position &_pos) :
+		msg(_msg),
+		pos(_pos)
+	{}
+	const char *what() const {
+		return msg.c_str();
+	}
+	const struct wpl_matcher_position *where() const {
+		return &pos;
+	}
+};
 
 class wpl_runtime_exception : public runtime_error {
 	public:
@@ -58,28 +83,4 @@ class wpl_parser_exception : public runtime_error {
 	wpl_parser_exception (const string &msg) : runtime_error (msg) {}
 };
 
-class wpl_element_exception : exception {
-	private:
-	const char *what_text;
-	const struct wpl_matcher_position *where_text;
-
-	public:
-	wpl_element_exception (const char *what, const struct wpl_matcher_position *where) {
-		this->what_text = what;
-		this->where_text = where;
-	}
-	const char *what() const throw() {
-		return what_text;
-	}
-	const struct wpl_matcher_position *where() const throw() {
-		return where_text;
-	}
-};
-
-#define THROW_RUNTIME_EXCEPTION(msg) \
-	throw wpl_runtime_exception(msg);
-
-#define THROW_ELEMENT_EXCEPTION(msg) \
-	save_position(&exception_matcher_position); \
-	throw wpl_element_exception(msg,&exception_matcher_position);
 

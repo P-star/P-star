@@ -482,11 +482,9 @@ void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 			break;
 		}
 		else {
-			snprintf (exception_msg, exception_msg_length,
-					"Syntax error in expression near '%c'",
-					get_string_pointer()[0]
-				 );
-			THROW_ELEMENT_EXCEPTION(exception_msg);
+			ostringstream msg;
+			msg << "Syntax error in expression near '" << get_string_pointer()[0] << "'";
+			THROW_ELEMENT_EXCEPTION(msg.str());
 		}
 	}
 }

@@ -37,6 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstring>
 #include <cerrno>
 #include <cstdio>
@@ -76,10 +77,12 @@ void wpl_parser::throw_parser_exception(const char *msg, const struct wpl_matche
 	get_string_unsafe (tmp, 40);
 	tmp[40] = '\0';
 
-	snprintf (exception_msg, exception_msg_length, "Line %i col %i near '%s': %s",
-		get_linepos(), get_colpos(), tmp, msg);
+	ostringstream final_msg;
 
-	throw wpl_parser_exception(exception_msg);
+	final_msg << "Line " << get_linepos() << " column " << get_colpos() << " near '" <<
+		tmp << "': " << msg;
+
+	throw wpl_parser_exception(final_msg.str());
 }
 
 void wpl_parser::parse_scene(wpl_namespace *parent_namespace) {
@@ -100,9 +103,10 @@ void wpl_parser::parse_scene(wpl_namespace *parent_namespace) {
 
 			wpl_scene *base = parent_namespace->find_scene(buf);
 			if (!base) {
-				load_position(&pos);
-				cerr << "While parsing base scene name '" << buf << "':\n";
-				THROW_ELEMENT_EXCEPTION("Could not find base scene");
+				ostringstream msg;
+				msg << "Could not find base scene '" << buf << "' " <<
+					"while parsing base scene list";
+				THROW_ELEMENT_EXCEPTION(msg.str());
 			}
 
 			scene->add_base(base);
@@ -187,9 +191,9 @@ void wpl_parser::parse_file (wpl_namespace *parent_namespace, const char *filena
 	size_t filesize;
 
 	if (!file) {
-		snprintf (exception_msg, exception_msg_length,
-			"Could not open file '%s': %s (%i)", filename, strerror(errno), errno);
-		throw wpl_parser_exception(exception_msg);
+		ostringstream msg;
+		msg << "Could not open file '" << filename << "': " << strerror(errno);
+		throw wpl_parser_exception(msg.str());
 	}
 	try {
 		if (	(fseek (file, 0L, SEEK_END) != 0) ||
@@ -222,9 +226,9 @@ void wpl_parser::parse_file (wpl_namespace *parent_namespace, const char *filena
 	}
 	catch (int e) {
 		fclose (file);
-		snprintf (exception_msg, exception_msg_length,
-			"Could not read file: %s (%i)", strerror(e), e);
-		throw wpl_parser_exception(exception_msg);
+		ostringstream msg;
+		msg << "Could not read file: " << strerror(e);
+		throw wpl_parser_exception(msg.str());
 	}
 	
 	try {
