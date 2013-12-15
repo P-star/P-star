@@ -31,6 +31,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_bool.h"
 #include "output_json.h"
 
+#include <cstdlib>
 #include <string>
 
 using namespace std;

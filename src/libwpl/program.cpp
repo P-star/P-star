@@ -42,11 +42,15 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 static mutex init_lock;
 static bool initialized = false;
+
+#ifndef WIN32
 static list<wpl_module_loader> modules;
+#endif
 
 wpl_program::wpl_program(wpl_io &io, int argc, char **argv) :
 	parser(io, 0)
 {
+#ifndef WIN32
 	{
 		lock_guard<mutex> lock(init_lock);
 		if (!initialized) {
@@ -55,6 +59,7 @@ wpl_program::wpl_program(wpl_io &io, int argc, char **argv) :
 			initialized = true;
 		}
 	}
+#endif /* WIN32 */
 
 	this->io = &io;
 

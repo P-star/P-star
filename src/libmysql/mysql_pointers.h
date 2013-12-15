@@ -30,7 +30,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifdef WIN32
     #include <windows.h>
-    #include <mysql.h>
+	#include <mysql.h>
 #else
     #include <mysql/mysql.h>
 #endif

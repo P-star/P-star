@@ -19,13 +19,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -68,7 +68,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalOptions>/D WPL_VARNAME_SIZE=64 /D WPL_BLOCK_MAX_CHILDREN=128 /D WPL_EXPRESSION_MAX=128 /D WPL_MYSQL_BIND_MAX=32</AdditionalOptions>
-      <AdditionalIncludeDirectories>C:\Users\Solbakken\Documents\GitHub\P-star\MySQL Server 5.6\include;C:\Users\Solbakken\Documents\GitHub\P-star\mimetic-0.9.7;C:\Users\Solbakken\Documents\GitHub\P-star\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\mimetic-0.9.7;C:\boost_1_55_0;C:\mysql-5.6.15-win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -76,7 +76,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\Solbakken\Documents\GitHub\P-star\MySQL Server 5.6\lib;C:\Users\Solbakken\Documents\GitHub\P-star\boost_1_55_0\stage\lib;C:\Users\Solbakken\Documents\GitHub\P-star\mimetic-0.9.7\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\MySQL\MySQL Server 5.6\lib;C:\boost_1_55_0\stage\lib;C:\mimetic-0.9.7\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;mysqlclient.lib;libmysql.lib;libmimetic_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -186,6 +186,21 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\libmysql\libwpl_mysql.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\libmysql\mysql.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\libmysql\mysql_res_holder.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\libmysql\mysql_row.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\libmysql\mysql_stmt.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\src\libmysql\sql.cpp" />
     <ClCompile Include="..\src\libmysql\value_sql.cpp" />
     <ClCompile Include="..\src\libwpl\array.cpp" />
@@ -200,8 +215,10 @@
     <ClCompile Include="..\src\libwpl\hash.cpp" />
     <ClCompile Include="..\src\libwpl\identifier.cpp" />
     <ClCompile Include="..\src\libwpl\internal_function.cpp" />
+    <ClCompile Include="..\src\libwpl\io.cpp" />
     <ClCompile Include="..\src\libwpl\json.cpp" />
     <ClCompile Include="..\src\libwpl\matcher.cpp" />
+    <ClCompile Include="..\src\libwpl\modifier.cpp" />
     <ClCompile Include="..\src\libwpl\module_loader.cpp" />
     <ClCompile Include="..\src\libwpl\namespace.cpp" />
     <ClCompile Include="..\src\libwpl\namespace_session.cpp" />
@@ -214,7 +231,9 @@
     <ClCompile Include="..\src\libwpl\program.cpp" />
     <ClCompile Include="..\src\libwpl\runable.cpp" />
     <ClCompile Include="..\src\libwpl\scene.cpp" />
+    <ClCompile Include="..\src\libwpl\scene_state.cpp" />
     <ClCompile Include="..\src\libwpl\shunting_yard.cpp" />
+    <ClCompile Include="..\src\libwpl\state.cpp" />
     <ClCompile Include="..\src\libwpl\string.cpp" />
     <ClCompile Include="..\src\libwpl\struct.cpp" />
     <ClCompile Include="..\src\libwpl\template.cpp" />
@@ -232,6 +251,7 @@
     <ClCompile Include="..\src\libwpl\value_hash.cpp" />
     <ClCompile Include="..\src\libwpl\value_int.cpp" />
     <ClCompile Include="..\src\libwpl\value_list.cpp" />
+    <ClCompile Include="..\src\libwpl\value_output_trigger.cpp" />
     <ClCompile Include="..\src\libwpl\value_post.cpp" />
     <ClCompile Include="..\src\libwpl\value_regex.cpp" />
     <ClCompile Include="..\src\libwpl\value_stdin.cpp" />

@@ -51,7 +51,7 @@ void shunting_yard::finish () {
 	const wpl_operator_struct *op;
 	while (op = stack_pop()) {
 		if (WPL_OP_IS_LEFT_PAR (op)) {
-			THROW_RUNTIME_EXCEPTION("shunting_yard::finish(): Mismatch parantheses in expression");
+			throw runtime_error("shunting_yard::finish(): Mismatch parantheses in expression");
 		}
 		out_add(op);
 	}
@@ -119,7 +119,7 @@ void shunting_yard::shunt_operator (const wpl_operator_struct *new_op) {
 			}
 		}
 		if (stack_op == NULL) {
-			THROW_RUNTIME_EXCEPTION("shunting_yard::add_operator(): Mismatch parantheses in expression");
+			throw runtime_error("shunting_yard::add_operator(): Mismatch parantheses in expression");
 		}
 	}
 	else {

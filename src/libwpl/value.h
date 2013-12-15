@@ -37,6 +37,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "debug.h"
 #include "io.h"
 
+#if defined(_MSC_VER)
+#define strtoll _strtoi64
+#define strtoull _strtoui64
+#define strtof strtod
+#endif
+
 enum {
 	wpl_value_no_flags,
 	wpl_value_is_constant,

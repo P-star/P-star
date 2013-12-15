@@ -244,7 +244,7 @@ void wpl_namespace::register_identifier(wpl_pragma *pragma) {
 	if (find_identifier_no_parent (pragma->get_name()) != pragma) {
 		ostringstream msg;
 		msg << "Name '" << pragma->get_name() << "' was already defined in namespace " << this;
-		THROW_RUNTIME_EXCEPTION(msg.str());
+		throw runtime_error(msg.str());
 	}
 
 	pragmas.push_back(pragma);
@@ -259,7 +259,7 @@ void wpl_namespace::register_identifier(wpl_scene *scene) {
 	if (find_identifier_no_parent (scene->get_name()) != scene) {
 		ostringstream msg;
 		msg << "Name '" << scene->get_name() << "' was already defined in namespace " << this;
-		THROW_RUNTIME_EXCEPTION(msg.str());
+		throw runtime_error(msg.str());
 	}
 
 	scenes.push_back(scene);
@@ -275,7 +275,7 @@ void wpl_namespace::register_identifier(wpl_template *my_template) {
 	if (find_identifier_no_parent (my_template->get_name()) != tmp) {
 		ostringstream msg;
 		msg << "Name '" << my_template->get_name() << "' was already defined in namespace " << this;
-		THROW_RUNTIME_EXCEPTION(msg.str());
+		throw runtime_error(msg.str());
 	}
 
 	templates.push_back(my_template);
@@ -290,7 +290,7 @@ void wpl_namespace::register_identifier(wpl_function *function) {
 	if (find_identifier_no_parent (function->get_name()) != function) {
 		ostringstream msg;
 		msg << "Name '" << function->get_name() << "' was already defined in namespace " << this;
-		THROW_RUNTIME_EXCEPTION(msg.str());
+		throw runtime_error(msg.str());
 	}
 
 	functions.push_back(function);
@@ -311,7 +311,7 @@ void wpl_namespace::register_identifier(wpl_variable *variable) {
 	if (find_nonstatic_variable (variable->get_name()) || find_static_variable (variable->get_name())) {
 		ostringstream msg;
 		msg << "Name '" << variable->get_name() << "' was already defined in namespace " << this;
-		THROW_RUNTIME_EXCEPTION(msg.str());
+		throw runtime_error(msg.str());
 	}
 
 	variables.emplace_back(variable->clone());
@@ -326,7 +326,7 @@ void wpl_namespace::register_identifier (wpl_parseable *parseable) {
 	if (find_identifier_no_parent (parseable->get_name()) != parseable) {
 		ostringstream msg;
 		msg << "Name '" << parseable->get_name() << "' was already defined in namespace " << this;
-		THROW_RUNTIME_EXCEPTION(msg.str());
+		throw runtime_error(msg.str());
 	}
 
 	parseables.push_back(parseable);
