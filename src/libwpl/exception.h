@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <stdexcept>
 
+#include "io.h" 
 #include "matcher.h" 
 
 #if _MSC_VER
@@ -41,21 +42,19 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #define THROW_ELEMENT_EXCEPTION(msg) \
 	throw wpl_element_exception(msg, get_position());
 
-#define THROW_RUNTIME_EXCEPTION(msg) \
-	throw wpl_runtime_exception(msg);
-
 using namespace std;
 
-class wpl_runtime_exception : public ostringstream {
+class wpl_parser_exception {
+	private:
+	string text;
+
 	public:
-	wpl_runtime_exception (const string &msg) :
-		ostringstream(msg)
+	wpl_parser_exception (const string &msg) :
+		text(msg)
 	{}
-	wpl_runtime_exception () {
+	const string &what() const {
+		return text;
 	}
-	wpl_runtime_exception (const wpl_runtime_exception &copy) :
-		ostringstream(copy.str())
-	{}
 };
 
 class wpl_element_exception : public ostringstream {
@@ -91,16 +90,11 @@ class wpl_element_exception : public ostringstream {
 	const struct wpl_matcher_position where() const {
 		return pos;
 	}
+	void output(wpl_io &io);
 };
 
 class wpl_matcher_exception : public runtime_error {
 	public:
 	wpl_matcher_exception (const string &msg) : runtime_error (msg) {}
 };
-
-class wpl_parser_exception : public runtime_error {
-	public:
-	wpl_parser_exception (const string &msg) : runtime_error (msg) {}
-};
-
 

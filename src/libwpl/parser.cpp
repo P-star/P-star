@@ -34,6 +34,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "blocks.h"
 #include "types.h"
 #include "template.h"
+#include "exception.h"
 
 #include <iostream>
 #include <fstream>
@@ -59,28 +60,6 @@ wpl_parser::wpl_parser (wpl_io &io, int num_parents) {
  * @brief 
  */
 wpl_parser::~wpl_parser () {
-}
-
-/**
- * @brief Initialize a parser exception with text and line/column information
- *
- * @param msg Descriptive text of errer
- * @param where Struct which contains position data
- */
-void wpl_parser::throw_parser_exception(const string &msg, const struct wpl_matcher_position &where) {
-	char tmp[40+1];
-
-	load_position (where);
-
-	get_string_unsafe (tmp, 40);
-	tmp[40] = '\0';
-
-	ostringstream final_msg;
-
-	final_msg << "Line " << get_linepos() << " column " << get_colpos() << " near '" <<
-		tmp << "': " << msg;
-
-	throw wpl_parser_exception(final_msg.str());
 }
 
 void wpl_parser::parse_scene(wpl_namespace *parent_namespace) {
@@ -229,10 +208,5 @@ void wpl_parser::parse_file (wpl_namespace *parent_namespace, const char *filena
 		throw wpl_parser_exception(msg.str());
 	}
 	
-	try {
-		first_level(parent_namespace);
-	}
-	catch (const wpl_element_exception &e) {
-		throw_parser_exception(e.what(), e.where());
-	}
+	first_level(parent_namespace);
 }

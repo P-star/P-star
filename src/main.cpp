@@ -74,7 +74,7 @@ int main (int argc, char *argv[]) {
 
 		ret = program.run();
 	}
-	catch (exception &e) {
+	catch (wpl_element_exception &e) {
 		cerr << e.what() << endl;
 		return 1;
 	}

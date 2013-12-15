@@ -28,8 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "exception.h"
-
+#include <stdexcept>
 #include <sstream>
 #include <iostream>
 #include <cstring>
