@@ -62,7 +62,12 @@ int main (int argc, char *argv[]) {
 		return -1;
 	}
 
-	setenv ("PSTAR_ROOT", ".", 1);
+#ifdef WIN32
+	const char *env_tmp = "PSTAR_ROOT=.";
+	_putenv(env_tmp);
+#else
+	setenv("PSTAR_ROOT", ".", 1);
+#endif
 
 	int ret = 1;
 

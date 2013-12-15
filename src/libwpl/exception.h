@@ -41,9 +41,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #define THROW_ELEMENT_EXCEPTION(msg) \
 	throw wpl_element_exception(msg, get_position());
 
-#define THROW_RUNTIME_EXCEPTION(msg) \
-	throw wpl_runtime_exception(msg);
-
 using namespace std;
 
 class wpl_runtime_exception : public ostringstream {
@@ -58,35 +55,34 @@ class wpl_runtime_exception : public ostringstream {
 	{}
 };
 
-class wpl_element_exception : public ostringstream {
+class wpl_element_exception {
 	private:
 	const struct wpl_matcher_position pos;
+	string text;
 
 	public:
 	wpl_element_exception (const struct wpl_matcher_position &_pos) :
-		ostringstream(),
+		text(),
 		pos(_pos)
 	{}
 	wpl_element_exception (const char *msg, const struct wpl_matcher_position &_pos) :
-		ostringstream(),
+		text(msg),
 		pos(_pos)
-	{
-		str(msg);
-	}
+	{}
 	wpl_element_exception (const string &msg, const struct wpl_matcher_position &_pos) :
-		ostringstream(msg),
+		text(msg),
 		pos(_pos)
 	{}
 	wpl_element_exception (const ostringstream &msg, const struct wpl_matcher_position &_pos) :
-		ostringstream(msg.str()),
+		text(msg.str()),
 		pos(_pos)
 	{}
 	wpl_element_exception (const wpl_element_exception &copy) :
-		ostringstream(copy.str()),
+		text(copy.text),
 		pos(copy.pos)
 	{}
 	const string what() const {
-		return str();
+		return text;
 	}
 	const struct wpl_matcher_position where() const {
 		return pos;

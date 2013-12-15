@@ -90,7 +90,7 @@ class wpl_type_array_instance : public wpl_type_complete_template {
 class wpl_type_array : public wpl_type_template {
 	public:
 	wpl_type_array () : wpl_type_template(wpl_typename_array) {}
-
+	wpl_type_array(const char *name) : wpl_type_template(name) {}
 	void suicide() {
 		delete this;
 	}
