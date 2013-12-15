@@ -49,7 +49,7 @@ wpl_value *wpl_struct::new_instance() const {
 
 void wpl_struct::parse_value(wpl_namespace *ns) {
 	char buf[WPL_VARNAME_SIZE];
-	wpl_matcher_position begin_pos(*get_static_position());
+	wpl_matcher_position begin_pos(get_position());
 	ignore_string_match(WHITESPACE,0);
 
 	if (parse_complete) {
@@ -84,12 +84,12 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 
 		wpl_parseable *parseable;
 		if (!(parseable = ns->new_find_parseable(buf))) {
-			load_position(&begin_pos);
+			load_position(begin_pos);
 			cerr << "While parsing name '" << buf << "' inside struct:\n";
 			THROW_ELEMENT_EXCEPTION("Undefined name");
 		}
 
-		parseable->load_position(get_static_position());
+		parseable->load_position(get_position());
 
 		try {
 			try {
@@ -97,12 +97,12 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 			}
 			catch (wpl_type_begin_variable_declaration &e) {
 				e.create_variable(this);
-				load_position(parseable->get_static_position());
+				load_position(parseable->get_position());
 			}
 		}
 		catch (wpl_type_begin_function_declaration &e) {
 			e.parse_value(this);
-			load_position(e.get_static_position());
+			load_position(e.get_position());
 		}
 
 		ignore_whitespace();
@@ -119,5 +119,5 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 	no_members:
 
 	parse_complete = true;
-	throw wpl_type_end_statement(get_static_position());
+	throw wpl_type_end_statement(get_position());
 }

@@ -39,38 +39,58 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #define THROW_ELEMENT_EXCEPTION(msg) \
-	throw wpl_element_exception(msg, *get_static_position());
+	throw wpl_element_exception(msg, get_position());
 
 #define THROW_RUNTIME_EXCEPTION(msg) \
 	throw wpl_runtime_exception(msg);
 
 using namespace std;
 
-class wpl_element_exception {
+class wpl_runtime_exception : public ostringstream {
+	public:
+	wpl_runtime_exception (const string &msg) :
+		ostringstream(msg)
+	{}
+	wpl_runtime_exception () {
+	}
+	wpl_runtime_exception (const wpl_runtime_exception &copy) :
+		ostringstream(copy.str())
+	{}
+};
+
+class wpl_element_exception : public ostringstream {
 	private:
-	const string msg;
 	const struct wpl_matcher_position pos;
 
 	public:
-	wpl_element_exception (const char *_msg, const struct wpl_matcher_position &_pos) :
-		msg(_msg),
+	wpl_element_exception (const struct wpl_matcher_position &_pos) :
+		ostringstream(),
 		pos(_pos)
 	{}
-	wpl_element_exception (const string &_msg, const struct wpl_matcher_position &_pos) :
-		msg(_msg),
+	wpl_element_exception (const char *msg, const struct wpl_matcher_position &_pos) :
+		ostringstream(),
+		pos(_pos)
+	{
+		str(msg);
+	}
+	wpl_element_exception (const string &msg, const struct wpl_matcher_position &_pos) :
+		ostringstream(msg),
 		pos(_pos)
 	{}
-	const char *what() const {
-		return msg.c_str();
+	wpl_element_exception (const ostringstream &msg, const struct wpl_matcher_position &_pos) :
+		ostringstream(msg.str()),
+		pos(_pos)
+	{}
+	wpl_element_exception (const wpl_element_exception &copy) :
+		ostringstream(copy.str()),
+		pos(copy.pos)
+	{}
+	const string what() const {
+		return str();
 	}
-	const struct wpl_matcher_position *where() const {
-		return &pos;
+	const struct wpl_matcher_position where() const {
+		return pos;
 	}
-};
-
-class wpl_runtime_exception : public runtime_error {
-	public:
-	wpl_runtime_exception (const string &msg) : runtime_error (msg) {}
 };
 
 class wpl_matcher_exception : public runtime_error {

@@ -34,7 +34,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstdio>
 #include <stdexcept>
 
-wpl_matcher::wpl_matcher(const wpl_matcher_position *pos) {
+wpl_matcher::wpl_matcher(const wpl_matcher_position &pos) {
 	load_position(pos);
 }
 

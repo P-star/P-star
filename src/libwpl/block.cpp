@@ -77,9 +77,9 @@ void wpl_block::parse_expression (wpl_namespace *ns) {
 
 	append_child(exp);
 
-	exp->load_position(get_static_position());
+	exp->load_position(get_position());
 	exp->parse_value(ns);
-	load_position(exp->get_static_position());
+	load_position(exp->get_position());
 }
 
 void wpl_block::parse_block (wpl_namespace *ns) {
@@ -87,9 +87,9 @@ void wpl_block::parse_block (wpl_namespace *ns) {
 	append_child (block);
 
 	block->set_parent_namespace(ns);
-	block->load_position(get_static_position());
+	block->load_position(get_position());
 	block->parse_value(block);
-	load_position(block->get_static_position());
+	load_position(block->get_position());
 }
 
 void wpl_block::parse_pragma (wpl_namespace *ns) {
@@ -109,9 +109,9 @@ void wpl_block::parse_pragma (wpl_namespace *ns) {
 	wpl_pragma *pragma = _pragma->clone();
 	append_child(pragma);
 
-	pragma->load_position(get_static_position());
+	pragma->load_position(get_position());
 	pragma->parse_value(ns);
-	load_position(pragma->get_static_position());
+	load_position(pragma->get_position());
 }
 
 void wpl_block::parse_while(wpl_namespace *ns) {
@@ -121,16 +121,16 @@ void wpl_block::parse_while(wpl_namespace *ns) {
 	wpl_expression *exp = new wpl_expression_par_enclosed();
 	block->set_run_condition(exp);
 
-	exp->load_position(get_static_position());
+	exp->load_position(get_position());
 	exp->parse_value(ns);
-	load_position(exp->get_static_position());
+	load_position(exp->get_position());
 
 	ignore_blockstart();
 
 	block->set_parent_namespace(ns);
-	block->load_position(get_static_position());
+	block->load_position(get_position());
 	block->parse_value(block);
-	load_position(block->get_static_position());
+	load_position(block->get_position());
 }
 
 void wpl_block::parse_if_else_sequenze(wpl_namespace *ns) {
@@ -146,16 +146,16 @@ void wpl_block::parse_if_else_sequenze(wpl_namespace *ns) {
 	exp = new wpl_expression_par_enclosed();
 	block->set_run_condition(exp);
 
-	exp->load_position(get_static_position());
+	exp->load_position(get_position());
 	exp->parse_value(ns);
-	load_position(exp->get_static_position());
+	load_position(exp->get_position());
 
 	ignore_blockstart();
 
 	block->set_parent_namespace(ns);
-	block->load_position(get_static_position());
+	block->load_position(get_position());
 	block->parse_value(block);
-	load_position(block->get_static_position());
+	load_position(block->get_position());
 
 	wpl_block_if *block_if_prev = block;
 
@@ -170,9 +170,9 @@ void wpl_block::parse_if_else_sequenze(wpl_namespace *ns) {
 
 		ignore_blockstart();
 		block_else_if->set_parent_namespace(ns);
-		block_else_if->load_position(get_static_position());
+		block_else_if->load_position(get_position());
 		block_else_if->parse_value(block_else_if);
-		load_position(block_else_if->get_static_position());
+		load_position(block_else_if->get_position());
 
 		block_if_prev = block_else_if;
 
@@ -189,9 +189,9 @@ void wpl_block::parse_if_else_sequenze(wpl_namespace *ns) {
 		ignore_blockstart();
 
 		block_else->set_parent_namespace(ns);
-		block_else->load_position(get_static_position());
+		block_else->load_position(get_position());
 		block_else->parse_value(block_else);
-		load_position(block_else->get_static_position());
+		load_position(block_else->get_position());
 	}
 }
 
@@ -202,16 +202,16 @@ void wpl_block::parse_text(wpl_namespace *ns) {
 	ignore_blockstart();
 	wpl_text *text = new wpl_text();
 	append_child(text);
-	text->load_position(get_static_position());
+	text->load_position(get_position());
 	text->parse_value(ns);
-	load_position(text->get_static_position());
+	load_position(text->get_position());
 }
 
 /**
  * @brief Parse a parseable with unknown, but funky syntax. The parseable can add something to our namespace if it wants to.
  */
 void wpl_block::parse_parseable(wpl_namespace *ns, wpl_parseable *parseable) {
-	parseable->load_position(get_static_position());
+	parseable->load_position(get_position());
 	try {
 		try {
 			try {
@@ -224,13 +224,13 @@ void wpl_block::parse_parseable(wpl_namespace *ns, wpl_parseable *parseable) {
 			}
 		}
 		catch (wpl_type_begin_function_declaration &e) {
-			e.load_position(parseable->get_static_position());
+			e.load_position(parseable->get_position());
 			e.parse_value(ns);
-			load_position(e.get_static_position());
+			load_position(e.get_position());
 		}
 	}
 	catch (wpl_type_end_statement &e) {
-		load_position(e.get_static_position());
+		load_position(e.get_position());
 		ignore_whitespace();
 		if (!ignore_letter (';')) {
 			THROW_ELEMENT_EXCEPTION("Expected ';' after declaration of incomplete type");
@@ -242,8 +242,7 @@ void wpl_block::parse_parseable(wpl_namespace *ns, wpl_parseable *parseable) {
  * @brief Parse a comment block ending with * / (without the space, can't write it here in C++ :-) )
  */
 void wpl_block::parse_comment() {
-	wpl_matcher_position start;
-	save_position(&start);
+	wpl_matcher_position start = get_position();
 
 	while (get_letter ('*', NON_ASTERISK)) {
 		if (ignore_letter ('/')) {
@@ -251,7 +250,7 @@ void wpl_block::parse_comment() {
 		}
 	}
 
-	load_position(&start);
+	load_position(start);
 	revert_string(2);
 
 	THROW_ELEMENT_EXCEPTION("Could not find comment end for this comment");
@@ -266,8 +265,7 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 #ifdef WPL_DEBUG_BLOCKS
 	DBG("B: (" << this << "): Parse" << endl);
 #endif
-	wpl_matcher_position start_pos;
-	save_position(&start_pos);
+	wpl_matcher_position start_pos = get_position();
 
 	char buf[WPL_VARNAME_SIZE+1];
 	// Descend into block and find child blocks and elements
@@ -320,7 +318,7 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 			THROW_ELEMENT_EXCEPTION(msg.str());
 		}
 	}
-	load_position(&start_pos);
+	load_position(start_pos);
 	revert_string(1);
 	THROW_ELEMENT_EXCEPTION("Missing '}' after block, block began here:");
 }
@@ -330,7 +328,12 @@ int wpl_block::run_children (wpl_block_state *block_state, wpl_value *final_resu
 
 	int i = 0;
 	for (unique_ptr<wpl_runable> &r : child_elements) {
-		ret = block_state->run_child(r.get(), i, final_result);
+		try {
+			ret = block_state->run_child(r.get(), i, final_result);
+		}
+		catch (const runtime_error &e) {
+			throw wpl_element_exception(e.what(), get_position());
+		}
 		if (ret & (WPL_OP_RETURN|WPL_OP_BREAK)) {
 			break;
 		}

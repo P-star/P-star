@@ -259,15 +259,15 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 
 				chunks.emplace_back(text, exp);
 
-				exp->load_position(get_static_position());
+				exp->load_position(get_position());
 				exp->parse_value(parent_namespace);
-				load_position(exp->get_static_position());
+				load_position(exp->get_position());
 
 				ignore_string_match(NEWLINE, NON_NEWLINE_WS);
 
-				text->load_position(get_static_position());
+				text->load_position(get_position());
 				text->parse_value(parent_namespace);
-				load_position(text->get_static_position());
+				load_position(text->get_position());
 
 				start = get_string_pointer();
 			}
@@ -278,9 +278,9 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 					new wpl_expression_loose_end();
 				chunks.emplace_back(exp);
 
-				exp->load_position(get_static_position());
+				exp->load_position(get_position());
 				exp->parse_value(parent_namespace);
-				load_position(exp->get_static_position());
+				load_position(exp->get_position());
 
 				ignore_string_match(WHITESPACE, 0);
 				if (!ignore_letter('}')) {

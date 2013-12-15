@@ -104,7 +104,7 @@ class wpl_type_begin_function_declaration : public wpl_type_begin_declaration, p
 	wpl_type_begin_function_declaration(
 		wpl_type_complete *type,
 		const char *name,
-		const wpl_matcher_position *pos
+		const wpl_matcher_position &pos
 	) :
 		wpl_type_begin_declaration (type, name, WPL_VARIABLE_ACCESS_PRIVATE),
 		wpl_matcher(pos)
@@ -129,8 +129,8 @@ class wpl_type_begin_variable_declaration : public wpl_type_begin_declaration {
 		wpl_type_begin_declaration (type, name, WPL_VARIABLE_ACCESS_PRIVATE)
 	{}
 	void create_variable(wpl_namespace *parent_namespace);
-	const wpl_matcher_position *get_position_at_name() {
-		return &position_at_name;
+	const wpl_matcher_position get_position_at_name() {
+		return position_at_name;
 	}
 };
 
@@ -157,11 +157,11 @@ class wpl_type_end_statement {
 	private:
 	wpl_matcher_position end_pos;
 	public:
-	wpl_type_end_statement(const wpl_matcher_position *pos) :
-		end_pos(*pos)
+	wpl_type_end_statement(const wpl_matcher_position &pos) :
+		end_pos(pos)
 	{}
-	const wpl_matcher_position *get_static_position() {
-		return &end_pos;
+	const wpl_matcher_position get_position() {
+		return end_pos;
 	}
 };
 

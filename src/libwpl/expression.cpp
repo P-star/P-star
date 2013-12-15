@@ -205,26 +205,6 @@ void wpl_expression::parse_semicolon() {
 	}
 }
 
-#define LOAD_POSITION_AND_PARSE(element) \
-	element->load_position(get_static_position()); \
-	element->parse_value(parent_namespace); \
-	load_position(element->get_static_position())
-/*
-void wpl_expression::parse_block(wpl_namespace *parent_namespace) {
-	wpl_block *block = new wpl_block();
-	add_constant(block);
-
-	block->set_parent_namespace(parent_namespace);
-	block->load_position(get_static_position());
-	block->parse_value();
-	load_position(block->get_static_position());
-
-	shunt(block);
-
-	expect &= ~(EXPECT_NUMBER);
-	expect |= EXPECT_OPERATOR;
-}
-*/
 void wpl_expression::parse_string(wpl_namespace *parent_namespace) {
 	char quote = get_letter (QUOTE);
 
@@ -292,30 +272,6 @@ void wpl_expression::parse_string(wpl_namespace *parent_namespace) {
 				original_string = "";
 				element_count++;
 			}
-/*			else if (double_escape && (letter == '{')) {
-				wpl_value_string *val = new wpl_value_string(original_string.c_str());
-				add_constant (val);
-
-				wpl_expression *exp = new wpl_expression_loose_end();
-				wpl_value_expression *exp_value = new wpl_value_expression(exp);
-				add_constant (exp_value);
-
-				LOAD_POSITION_AND_PARSE(exp);
-
-				if (!ignore_letter('}')) {
-					THROW_ELEMENT_EXCEPTION("Expected '}' after inline expression");
-				}
-
-				if (element_count > 1) {
-					shunt_operator(&OP_CONCAT);
-				}
-				shunt(val);
-				shunt_operator(&OP_CONCAT);
-				shunt(exp_value);
-
-				original_string = "";
-				element_count++;
-			}*/
 			else {
 				original_string += letter;
 			}
@@ -343,18 +299,6 @@ void wpl_expression::parse_function_call (
 	parse (parent_namespace, (EXPECT_OPEN_PAR|EXPECT_END_ON_PAR|EXPECT_NUMBER));
 	shunt_operator(&OP_FUNCTION_CALL);
 
-/*	wpl_expression_par_enclosed *function_arguments = 
-		new wpl_expression_par_enclosed();
-	wpl_value_expression *exp_value = new wpl_value_expression(function_arguments);
-	add_constant(exp_value);
-
-	LOAD_POSITION_AND_PARSE(function_arguments);
-	function_arguments->shunt_operator(&OP_FUNCTION_CALL);
-	function_arguments->shunt(ui);
-	function_arguments->finish();
-
-	shunt(exp_value);*/
-
 	par_level = par_level_save;
 	expect = expect_save;
 }
@@ -378,8 +322,7 @@ void wpl_expression::parse_unresolved_identifier(wpl_namespace *parent_namespace
 }
 
 void wpl_expression::parse_regex(const char *prefix) {
-	wpl_matcher_position start;
-	save_position(&start);
+	wpl_matcher_position start = get_position();
 
 	char letter;
 	string regex_string;
@@ -399,7 +342,7 @@ void wpl_expression::parse_regex(const char *prefix) {
 	}
 
 	if (at_end()) {
-		load_position(&start);
+		load_position(start);
 		THROW_ELEMENT_EXCEPTION("Non-terminated regular expression runs out of file");
 	}
 

@@ -208,8 +208,6 @@ class wpl_matcher {
 	const char *text_rpos;
 	const char *text_max;
 
-	struct wpl_matcher_position static_position;
-
 	int match_utf8 (const char *text);
 	bool match_letter (uint32_t match, const char letter);
 
@@ -250,7 +248,7 @@ class wpl_matcher {
 	static const uint32_t WORD		= 1 << 30;
 	static const uint32_t INVALID		= 1 << 31;
 
-	wpl_matcher(const wpl_matcher_position *pos);
+	wpl_matcher(const wpl_matcher_position &pos);
 	wpl_matcher();
 	~wpl_matcher();
 
@@ -343,23 +341,18 @@ class wpl_matcher {
 	int ignore_string_match (const uint32_t match, const uint32_t ignore);
 
 	public:
-	void save_position (wpl_matcher_position *pos) {
-		pos->text = text;
-		pos->text_rpos = text_rpos;
-		pos->text_max = text_max;
+	void load_position (const wpl_matcher_position &pos) {
+		text = pos.text;
+		text_rpos = pos.text_rpos;
+		text_max = pos.text_max;
 	}
 
-	void load_position (const wpl_matcher_position *pos) {
-		text = pos->text;
-		text_rpos = pos->text_rpos;
-		text_max = pos->text_max;
-	}
-
-	const wpl_matcher_position *get_static_position () {
-		static_position.text = text;
-		static_position.text_rpos = text_rpos;
-		static_position.text_max = text_max;
-		return &static_position;
+	struct wpl_matcher_position get_position () {
+		struct wpl_matcher_position ret;
+		ret.text = text;
+		ret.text_rpos = text_rpos;
+		ret.text_max = text_max;
+		return ret;
 	}
 };
 

@@ -44,13 +44,13 @@ void wpl_modifier::parse_value (wpl_namespace *parent_namespace) {
 		THROW_ELEMENT_EXCEPTION("Undefined name");
 	}
 
-	parseable->load_position(get_static_position());
+	parseable->load_position(get_position());
 	try {
 		parseable->parse_value(parent_namespace);
 	}
 	catch (wpl_type_begin_declaration &e) {
 		modify_access_flags(e);
-		load_position(parseable->get_static_position());
+		load_position(parseable->get_position());
 		throw;
 	}
 }

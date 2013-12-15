@@ -44,7 +44,7 @@ int wpl_user_function::run (wpl_state *state, wpl_value *final_result) {
 
 void wpl_user_function::parse_value(wpl_namespace *ns) {
 	set_parent_namespace(ns);
-	wpl_matcher_position begin_pos(*get_static_position());
+	wpl_matcher_position begin_pos(get_position());
 
 	ignore_whitespace();
 	if (ignore_letter (')')) {
@@ -63,21 +63,21 @@ void wpl_user_function::parse_value(wpl_namespace *ns) {
 
 		wpl_parseable *parseable;
 		if (!(parseable = ns->new_find_parseable (buf))) {
-			load_position(&begin_pos);
+			load_position(begin_pos);
 			cerr << "While parsing name '" << buf <<
 				"' inside function argument declaration of function '" << get_name() <<
 				"':\n";
 			THROW_ELEMENT_EXCEPTION("Undefined name");
 		}
 
-		parseable->load_position(get_static_position());
+		parseable->load_position(get_position());
 
 		try {
 			parseable->parse_value(this);
 		}
 		catch (wpl_type_begin_variable_declaration &e) {
 			e.create_variable(this);
-			load_position(parseable->get_static_position());
+			load_position(parseable->get_position());
 		}
 
 		ignore_whitespace();
@@ -88,7 +88,7 @@ void wpl_user_function::parse_value(wpl_namespace *ns) {
 			continue;
 		}
 		else {
-			load_position(&begin_pos);
+			load_position(begin_pos);
 			THROW_ELEMENT_EXCEPTION("Syntax error in function argument declaration");
 		}
 	} while (!at_end());
@@ -101,9 +101,9 @@ void wpl_user_function::parse_value(wpl_namespace *ns) {
 	}
 
 	block.set_parent_namespace(this);
-	block.load_position(get_static_position());
+	block.load_position(get_position());
 	block.parse_value(&block);
-	load_position(block.get_static_position());
+	load_position(block.get_position());
 
 	generate_signature();
 }

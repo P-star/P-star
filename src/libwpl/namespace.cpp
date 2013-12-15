@@ -40,8 +40,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <utility>
 #include <list>
 
-int wpl_namespace::id_counter = 0;
-
 void wpl_namespace::new_register_parseable (wpl_parseable *parseable) {
 	if (new_find_parseable_no_parent (parseable->get_name())) {
 		throw wpl_exception_name_exists();

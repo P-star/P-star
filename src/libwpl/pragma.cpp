@@ -106,9 +106,9 @@ void wpl_pragma_template_var::parse_value(wpl_namespace *parent_namespace) {
 	wpl_expression *exp = new wpl_expression();
 	value_expression.reset(exp);
 
-	exp->load_position(get_static_position());
+	exp->load_position(get_position());
 	exp->parse_value(parent_namespace);
-	load_position(exp->get_static_position());
+	load_position(exp->get_position());
 }
 
 int wpl_pragma_text_content_type::run (wpl_state *state, wpl_value *final_result) {

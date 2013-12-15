@@ -51,7 +51,7 @@ class wpl_parser : public wpl_matcher {
 
 	char varname_tmp[WPL_VARNAME_SIZE+1];
 
-	void throw_parser_exception(const char *msg, const struct wpl_matcher_position *where);
+	void throw_parser_exception(const string &msg, const struct wpl_matcher_position &where);
 	void syntax_error();
 
 	void parse_include(wpl_namespace *parent_namespace);

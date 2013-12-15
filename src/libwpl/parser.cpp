@@ -67,12 +67,10 @@ wpl_parser::~wpl_parser () {
  * @param msg Descriptive text of errer
  * @param where Struct which contains position data
  */
-void wpl_parser::throw_parser_exception(const char *msg, const struct wpl_matcher_position *where) {
+void wpl_parser::throw_parser_exception(const string &msg, const struct wpl_matcher_position &where) {
 	char tmp[40+1];
 
-	if (where != NULL) {
-		load_position (where);
-	}
+	load_position (where);
 
 	get_string_unsafe (tmp, 40);
 	tmp[40] = '\0';
@@ -86,8 +84,7 @@ void wpl_parser::throw_parser_exception(const char *msg, const struct wpl_matche
 }
 
 void wpl_parser::parse_scene(wpl_namespace *parent_namespace) {
-	wpl_matcher_position pos;
-	save_position(&pos);
+	wpl_matcher_position start(get_position());
 
 	char buf[WPL_VARNAME_SIZE];
 	get_word(buf);
@@ -103,6 +100,7 @@ void wpl_parser::parse_scene(wpl_namespace *parent_namespace) {
 
 			wpl_scene *base = parent_namespace->find_scene(buf);
 			if (!base) {
+				load_position(start);
 				ostringstream msg;
 				msg << "Could not find base scene '" << buf << "' " <<
 					"while parsing base scene list";
@@ -118,9 +116,9 @@ void wpl_parser::parse_scene(wpl_namespace *parent_namespace) {
 	ignore_blockstart();
 
 	scene->set_parent_namespace(parent_namespace);
-	scene->load_position(get_static_position());
+	scene->load_position(get_position());
 	scene->parse_value(scene);
-	load_position(scene->get_static_position());
+	load_position(scene->get_position());
 }
 
 void wpl_parser::parse_template(wpl_namespace *parent_namespace) {
@@ -131,9 +129,9 @@ void wpl_parser::parse_template(wpl_namespace *parent_namespace) {
 
 	ignore_blockstart();
 
-	my_template->load_position(get_static_position());
+	my_template->load_position(get_position());
 	my_template->parse_value(parent_namespace);
-	load_position(my_template->get_static_position());
+	load_position(my_template->get_position());
 }
 
 void wpl_parser::parse_include(wpl_namespace *parent_namespace) {

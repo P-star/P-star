@@ -91,11 +91,11 @@ void wpl_sql::parse_value (wpl_namespace *parent_namespace) {
 
 	ignore_blockstart();
 
-	sql->load_position(get_static_position());
+	sql->load_position(get_position());
 	sql->__parse_value(parent_namespace);
-	load_position(sql->get_static_position());
+	load_position(sql->get_position());
 
-	throw wpl_type_end_statement(get_static_position());
+	throw wpl_type_end_statement(get_position());
 }
 
 void wpl_sql::__parse_value (wpl_namespace *parent_namespace) {

@@ -56,7 +56,6 @@ class wpl_namespace {
 	private:
 
 	int id;
-	static int id_counter;
 
 	list<unique_ptr<wpl_identifier>> managed_pointers;
 
@@ -94,7 +93,6 @@ class wpl_namespace {
 
 	public:
 	wpl_namespace() {
-		id = ++id_counter;
 		parent_namespace = NULL;
 	}
 	wpl_namespace(const wpl_namespace &copy) {

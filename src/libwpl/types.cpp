@@ -117,9 +117,9 @@ void wpl_type_begin_function_declaration::parse_value (wpl_namespace *parent_nam
 	wpl_user_function *function = new wpl_user_function(type, name.c_str(), access_flags);
 	parent_namespace->register_identifier(function);
 
-	function->load_position(get_static_position());
+	function->load_position(get_position());
 	function->parse_value(parent_namespace);
-	load_position(function->get_static_position());
+	load_position(function->get_position());
 }
 
 void wpl_type_begin_variable_declaration::create_variable (wpl_namespace *parent_namespace) {
@@ -128,7 +128,7 @@ void wpl_type_begin_variable_declaration::create_variable (wpl_namespace *parent
 }
 
 void wpl_type_complete::parse_value (wpl_namespace *parent_namespace) {
-	wpl_matcher_position begin_pos(*get_static_position());
+	wpl_matcher_position begin_pos(get_position());
 
 	ignore_whitespace();
 	if (ignore_letter ('>')) {
@@ -146,7 +146,7 @@ void wpl_type_complete::parse_value (wpl_namespace *parent_namespace) {
 
 	ignore_whitespace();
 	if (ignore_letter ('(')) {
-		throw wpl_type_begin_function_declaration(this, name, get_static_position());
+		throw wpl_type_begin_function_declaration(this, name, get_position());
 	}
 	else {
 		throw wpl_type_begin_variable_declaration(this, name, begin_pos);
@@ -176,12 +176,12 @@ void wpl_type_template::parse_value (wpl_namespace *parent_namespace) {
 	}
 
 	try {
-		parseable->load_position(get_static_position());
+		parseable->load_position(get_position());
 		parseable->parse_value(parent_namespace);
 	}
 	catch (wpl_type_end_template_declaration &e) {
 		unique_ptr<wpl_type_complete> new_type(new_instance(e.get_type()));
-		load_position(parseable->get_static_position());
+		load_position(parseable->get_position());
 
 		// Check if this template type is already defined
 		parseable = NULL;
@@ -191,7 +191,7 @@ void wpl_type_template::parse_value (wpl_namespace *parent_namespace) {
 			parent_namespace->add_managed_pointer(parseable);
 		}
 
-		parseable->load_position(get_static_position());
+		parseable->load_position(get_position());
 		parseable->parse_value(parent_namespace);
 	}
 }
@@ -222,7 +222,7 @@ void wpl_type_incomplete::parse_value (wpl_namespace *parent_namespace) {
 	parent_namespace->add_managed_pointer (usr_obj);
 
 	usr_obj->set_parent_namespace(parent_namespace);
-	usr_obj->load_position(get_static_position());
+	usr_obj->load_position(get_position());
 
 	usr_obj->parse_value(usr_obj);
 
