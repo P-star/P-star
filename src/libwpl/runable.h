@@ -30,6 +30,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 
+#include "matcher.h"
 #include "namespace_session.h"
 #include "operator_return_values.h"
 #include "debug.h"

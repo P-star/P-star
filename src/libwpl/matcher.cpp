@@ -38,7 +38,9 @@ wpl_matcher::wpl_matcher(const wpl_matcher_position &pos) {
 	load_position(pos);
 }
 
-wpl_matcher::wpl_matcher () {
+wpl_matcher::wpl_matcher () :
+	filename()
+{
 	text = NULL;
 	text_rpos = NULL;
 	text_max = NULL;
@@ -78,10 +80,11 @@ void wpl_matcher::ignore_blockstart() {
 	}
 }
 
-void wpl_matcher::set_text (const char *text, const int len) {
+void wpl_matcher::set_text (const char *text, const int len, const char *filename) {
 	this->text = text;
 	this->text_rpos = text;
 	this->text_max = text + len;
+	this->filename = filename;
 }
 
 void wpl_matcher::check_varname_length (const int len) {

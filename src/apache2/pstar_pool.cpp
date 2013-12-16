@@ -132,15 +132,32 @@ int pstar_pool::handle_file (request_rec *r, const char *filename, int mtime) {
 
 	pstar_io io(r);
 
-	shared_ptr<pstar_file> file = get_file_handle(r, io, filename, mtime);
-	wpl_program *program = file->get_program();
+	try {
+		try {
+			shared_ptr<pstar_file> file = get_file_handle(r, io, filename, mtime);
+			wpl_program *program = file->get_program();
 
-	ret = fill_input(r, io);
-	if (ret != OK) {
+			ret = fill_input(r, io);
+			if (ret != OK) {
+				return HTTP_INTERNAL_SERVER_ERROR;
+			}
+
+			ret = program->run();
+		}
+		catch (const wpl_parser_exception &e) {
+			ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+					"P* Parse error: %s: %s", e.what().c_str(), r->filename);
+			return HTTP_INTERNAL_SERVER_ERROR;
+		}
+	}
+	catch (const wpl_element_exception &e) {
+		ostringstream msg;
+		msg << "P* exception in file '" << r->filename << "':";
+		io.debug(msg.str().c_str());
+		e.output(io);
 		return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
-	ret = program->run();
 	if (ret != 0) {
 		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 				"P* Non-zero return (%i) from script %s", ret, r->filename);
@@ -192,19 +209,5 @@ int pstar_pool::handle_request (request_rec *r) {
 	*pos = '\0';
 	apr_table_setn(e, "PSTAR_ROOT", path);
 
-	try {
-		try {
-		 	return handle_file(r, filename, r->finfo.mtime);
-		}
-		catch (const runtime_error &e) {
-			ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-					"P* Run error: %s: %s", e.what(), r->filename);
-			return HTTP_INTERNAL_SERVER_ERROR;
-		}
-	}
-	catch (const wpl_parser_exception &e) {
-		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-				"P* Parse error: %s: %s", e.what(), r->filename);
-		return HTTP_INTERNAL_SERVER_ERROR;
-	}
+	return handle_file(r, filename, r->finfo.mtime);
 }

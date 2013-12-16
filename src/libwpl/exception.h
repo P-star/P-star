@@ -59,8 +59,8 @@ class wpl_parser_exception {
 
 class wpl_element_exception {
 	private:
-	const struct wpl_matcher_position pos;
 	string text;
+	const struct wpl_matcher_position pos;
 
 	public:
 	wpl_element_exception (const struct wpl_matcher_position &_pos) :
@@ -89,7 +89,7 @@ class wpl_element_exception {
 	const struct wpl_matcher_position where() const {
 		return pos;
 	}
-	void output(wpl_io &io);
+	void output(wpl_io &io) const;
 };
 
 class wpl_matcher_exception : public runtime_error {

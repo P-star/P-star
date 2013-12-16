@@ -199,7 +199,7 @@ void wpl_parser::parse_file (wpl_namespace *parent_namespace, const char *filena
 		}*/
 
 		file_content = buf;
-		set_text (file_content.c_str(), filesize);
+		set_text (file_content.c_str(), filesize, filename);
 	}
 	catch (int e) {
 		fclose (file);

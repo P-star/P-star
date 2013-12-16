@@ -48,8 +48,10 @@ class wpl_block : public wpl_runable, public wpl_namespace, public wpl_matcher {
 	private:
 	int parse_statement_to_semicolon (const char **target, uint32_t match, uint32_t ignore);
 	list <unique_ptr<wpl_runable>> child_elements;
+	vector<struct wpl_matcher_position> child_positions;
 
 	void append_child (wpl_runable *element);
+	void append_child_position ();
 
 	template<typename T> void parse_element_set_namespace(T *obj);
 	template<typename T> void parse_element_send_namespace(T *obj);

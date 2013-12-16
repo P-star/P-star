@@ -35,7 +35,7 @@ void wpl_output_json::output_json(wpl_io &io, const char *str, int len) {
 	string result;
 	result.reserve(len*2);
 
-	set_text(str, len);
+	set_text(str, len, "JSON_OUTPUT");
 
 	while (!at_end()) {
 		const char *pos_start = get_string_pointer();

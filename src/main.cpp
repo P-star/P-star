@@ -71,16 +71,23 @@ int main (int argc, char *argv[]) {
 
 	int ret = 1;
 
+	wpl_io_standard output;
+
 	try {
-		wpl_io_standard output;
 		wpl_program program(output, argc, argv);
 
-		program.parse_file(filename);
+		try {
+			program.parse_file(filename);
+		}
+		catch (wpl_parser_exception &e) {
+			cerr << e.what() << endl;
+			return 1;
+		}
 
 		ret = program.run();
 	}
 	catch (wpl_element_exception &e) {
-		cerr << e.what() << endl;
+		e.output(output);
 		return 1;
 	}
 

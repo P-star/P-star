@@ -200,6 +200,7 @@ struct wpl_matcher_position {
 	const char *text;
 	const char *text_rpos;
 	const char *text_max;
+	string filename;
 };
 
 class wpl_matcher {
@@ -207,6 +208,7 @@ class wpl_matcher {
 	const char *text;
 	const char *text_rpos;
 	const char *text_max;
+	string filename;
 
 	int match_utf8 (const char *text);
 	bool match_letter (uint32_t match, const char letter);
@@ -313,7 +315,7 @@ class wpl_matcher {
 	void get_word (char *target);
 	void ignore_blockstart();
 	void ignore_whitespace();
-	void set_text (const char *text, const int len);
+	void set_text (const char *text, const int len, const char *filename);
 	void check_varname_length (const int len);
 
 	bool get_letter (const char letter, const uint32_t ignore);
@@ -345,13 +347,15 @@ class wpl_matcher {
 		text = pos.text;
 		text_rpos = pos.text_rpos;
 		text_max = pos.text_max;
+		filename = pos.filename;
 	}
 
-	struct wpl_matcher_position get_position () {
+	struct wpl_matcher_position get_position () const {
 		struct wpl_matcher_position ret;
 		ret.text = text;
 		ret.text_rpos = text_rpos;
 		ret.text_max = text_max;
+		ret.filename = filename;
 		return ret;
 	}
 };

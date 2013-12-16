@@ -72,6 +72,10 @@ void wpl_block::append_child (wpl_runable *element) {
 	child_elements.push_back(unique_ptr<wpl_runable>(element));
 }
 
+void wpl_block::append_child_position() {
+	child_positions.emplace_back(get_position());
+}
+
 void wpl_block::parse_expression (wpl_namespace *ns) {
 	wpl_expression *exp = new wpl_expression();
 
@@ -280,6 +284,8 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 			check_varname_length(len);
 			get_string(buf, len);
 
+			append_child_position();
+
 			if (strcmp (buf, wpl_blockname_if) == 0) {
 				parse_if_else_sequenze(ns);
 			}
@@ -301,15 +307,18 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 			parse_comment();
 		}
 		else if (ignore_letter ('{')) {
+			append_child_position();
 			parse_block(ns);
 		}
 		else if (ignore_letter ('}')) {
 			return;
 		}
 		else if (ignore_letter ('#')) {
+			append_child_position();
 			parse_pragma(ns);
 		}
 		else if (search (EXPRESSION, WHITESPACE, false)) {
+			append_child_position();
 			parse_expression(ns);
 		}
 		else {
@@ -332,7 +341,7 @@ int wpl_block::run_children (wpl_block_state *block_state, wpl_value *final_resu
 			ret = block_state->run_child(r.get(), i, final_result);
 		}
 		catch (const runtime_error &e) {
-			throw wpl_element_exception(e.what(), get_position());
+			throw wpl_element_exception(e.what(), child_positions[i]);
 		}
 		if (ret & (WPL_OP_RETURN|WPL_OP_BREAK)) {
 			break;

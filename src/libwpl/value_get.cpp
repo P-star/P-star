@@ -53,7 +53,7 @@ void wpl_value_get::parse(const char *query_string) {
 	}
 
 	wpl_matcher matcher;
-	matcher.set_text(query_string, len);
+	matcher.set_text(query_string, len, "QUERY_STRING");
 
 	bool do_value = false;
 
