@@ -44,6 +44,11 @@ class wpl_namespace;
 class wpl_parser : public wpl_matcher {
 	private:
 
+	/*
+	   When we run in Apache, this pointer goes out
+	   of scope after the first time the program is run,
+	   and we should not use it at run-time.
+	   */
 	wpl_io *io;
 
 	list<unique_ptr<wpl_parser>> includes;

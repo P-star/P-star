@@ -30,7 +30,6 @@ struct pstar_file {
 	private:
 	int mtime;
 	wpl_program program;
-	wpl_io *io;
 
 	public:
 	bool is_modified (int mtime) {

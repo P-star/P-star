@@ -84,7 +84,7 @@ int main (int argc, char *argv[]) {
 			return 1;
 		}
 
-		ret = program.run();
+		ret = program.run(output);
 	}
 	catch (wpl_element_exception &e) {
 		e.output(output);

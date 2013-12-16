@@ -39,7 +39,6 @@
 pstar_file::pstar_file (wpl_io &io, const char *filename, int mtime) :
 	program(io, 0, NULL)
 {
-	this->io = &io;
 	this->mtime = mtime;
 	program.parse_file(filename);
 }
@@ -142,11 +141,11 @@ int pstar_pool::handle_file (request_rec *r, const char *filename, int mtime) {
 				return HTTP_INTERNAL_SERVER_ERROR;
 			}
 
-			ret = program->run();
+			ret = program->run(io);
 		}
 		catch (const wpl_parser_exception &e) {
 			ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-					"P* Parse error: %s: %s", e.what().c_str(), r->filename);
+					"P* Parse error in file '%s': %s", r->filename, e.what().c_str());
 			return HTTP_INTERNAL_SERVER_ERROR;
 		}
 	}

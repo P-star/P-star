@@ -209,4 +209,7 @@ void wpl_parser::parse_file (wpl_namespace *parent_namespace, const char *filena
 	}
 	
 	first_level(parent_namespace);
+
+	// Don't ever use this pointer again
+	io = NULL;
 }
