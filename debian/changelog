@@ -1,3 +1,12 @@
+pstar (1.1-alpha6) unstable; urgency=low
+
+  * Thread safety issues with Apache module fixed, it now works with both mpm-worker and mpm-prefork
+  * Improved error messages with file position information also at run-time
+  * Improved performance in text output in the Apache module 
+  * Fix some issues with the MySQL-implementationi 
+
+ -- Atle Solbakken <atle@goliathdns.no>  Wed, 18 Dec 2013 12:18:38 +0100
+
 pstar (1.1-alpha5) unstable; urgency=low
 
   * Fix memory issues with Apache module
