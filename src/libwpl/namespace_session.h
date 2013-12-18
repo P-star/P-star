@@ -56,6 +56,7 @@ class wpl_namespace_session {
 
 	const wpl_namespace *template_namespace;
 	int parent_nss_context;
+	bool this_and_parent;
 
 	vector<unique_ptr<wpl_variable>> variables_ptr;
 
@@ -83,6 +84,14 @@ class wpl_namespace_session {
 	wpl_namespace_session(const wpl_namespace *template_namespace);
 	wpl_namespace_session();
 	~wpl_namespace_session();
+
+	void use_this_and_parent() {
+		this_and_parent = true;
+	}
+
+	wpl_namespace_session *get_parent() {
+		return parent;
+	}
 
 	bool set_variables_from_expression (wpl_expression_state *exp_state, int discard_pos);
 	void replace_variables (wpl_namespace_session *source);

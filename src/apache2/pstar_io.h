@@ -29,12 +29,14 @@ class pstar_io : public wpl_io {
 	string input;
 	int rpos;
 	bool headers_sent;
+	int waiting_buckets;
 
 	map<string,string> http_headers;
 
 	request_rec *r;
 	apr_bucket_brigade *bb;
-
+	apr_bucket_alloc_t *ba;
+	
 	public:
 	pstar_io (request_rec *r);
 	~pstar_io ();

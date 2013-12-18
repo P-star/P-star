@@ -41,7 +41,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 	if (op == &_op) { return func(); }
 
 #define PRIMITIVE_CONSTRUCTOR(type,shortname)							\
-	wpl_value_##shortname () {}								\
+	wpl_value_##shortname () {								\
+		zero();										\
+	}											\
 	wpl_value_##shortname (const type &new_value) {						\
 		value = new_value;								\
        	}											\

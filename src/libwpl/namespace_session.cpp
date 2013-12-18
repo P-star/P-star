@@ -109,6 +109,7 @@ wpl_namespace_session &wpl_namespace_session::operator= (const wpl_namespace_ses
 	template_namespace = rhs.template_namespace;
 	parent = rhs.parent;
 	nss_this = rhs.nss_this;
+	this_and_parent = rhs.this_and_parent;
 
 	return *this;
 }
@@ -126,6 +127,7 @@ wpl_namespace_session::wpl_namespace_session(
 	this->parent = parent;
 	this->nss_this = NULL;
 	this->parent_nss_context = WPL_NSS_CTX_CHILD;
+	this->this_and_parent = false;
 }
 
 wpl_namespace_session::wpl_namespace_session(
@@ -135,6 +137,7 @@ wpl_namespace_session::wpl_namespace_session(
 	this->parent = NULL;
 	this->nss_this = NULL;
 	this->parent_nss_context = WPL_NSS_CTX_CHILD;
+	this->this_and_parent = false;
 
 	template_namespace->copy_variables_to_namespace_session(this);
 }
@@ -147,6 +150,7 @@ wpl_namespace_session::wpl_namespace_session(
 	this->nss_this = NULL;
 	this->template_namespace = template_namespace;
 	this->parent_nss_context = WPL_NSS_CTX_CHILD;
+	this->this_and_parent = false;
 
 	template_namespace->copy_variables_to_namespace_session(this);
 }
@@ -160,6 +164,7 @@ wpl_namespace_session::wpl_namespace_session (
 	this->nss_this = NULL;
 	this->template_namespace = template_namespace;
 	this->parent_nss_context = parent_access_context;
+	this->this_and_parent = false;
 
 	template_namespace->copy_variables_to_namespace_session(this);
 }
@@ -174,6 +179,7 @@ wpl_namespace_session::wpl_namespace_session (
 	this->nss_this = nss_this;
 	this->template_namespace = template_namespace;
 	this->parent_nss_context = parent_access_context;
+	this->this_and_parent = false;
 
 	template_namespace->copy_variables_to_namespace_session(this);
 }
@@ -183,6 +189,7 @@ wpl_namespace_session::wpl_namespace_session() {
 	this->parent = NULL;
 	this->nss_this = NULL;
 	this->parent_nss_context = WPL_NSS_CTX_CHILD;
+	this->this_and_parent = false;
 }
 
 wpl_namespace_session::~wpl_namespace_session() {
@@ -264,9 +271,11 @@ wpl_variable *wpl_namespace_session::find_variable(const char *name, int ctx){
 	if (nss_this && (tmp = nss_this->find_variable(name, WPL_NSS_CTX_FRIEND))) {
 		return tmp;
 	}
-
-	// Search in parent namespace session
-	if (parent && (tmp = parent->find_variable(name, parent_nss_context))) {
+	else if (	((!nss_this) ||
+			(nss_this && this_and_parent)) &&
+			parent &&
+			(tmp = parent->find_variable(name, parent_nss_context))
+	) {
 		return tmp;
 	}
 

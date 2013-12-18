@@ -23,20 +23,23 @@
 #include "http_protocol.h"
 #include "util_script.h"
 #include "apr_lib.h"
+#include "apr_strings.h"
 
 pstar_io::pstar_io(request_rec *r) : wpl_io() {
 	this->r = r;
 	this->rpos = 0;
 	this->headers_sent = false;
+	this->waiting_buckets = 0;
 
-	this->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+	this->ba = apr_bucket_alloc_create(r->pool);
+	this->bb = apr_brigade_create(r->pool, this->ba);
 }
 
 pstar_io::~pstar_io() {
 	apr_status_t rv;
 	apr_bucket *b;
 
-	b = apr_bucket_eos_create(r->connection->bucket_alloc);
+	b = apr_bucket_eos_create(ba);
 	APR_BRIGADE_INSERT_TAIL(bb, b);
 
 	rv = ap_pass_brigade(r->output_filters, bb);
@@ -81,21 +84,27 @@ void pstar_io::read (char *str, int len) {
 }
 
 void pstar_io::write(const char *str, int len) {
-	if (!headers_sent) {
+	write_immortal(apr_pstrmemdup(r->pool, str, len), len);
+/*	if (!headers_sent) {
 		output_headers();
 	}
 	apr_status_t rv;
 	apr_bucket *b;
 
-	b = apr_bucket_transient_create (str, len, r->connection->bucket_alloc);
-	APR_BRIGADE_INSERT_TAIL(bb, b);
+	ostringstream msg;
+	msg << "BT " << len << " - " << str;
+	debug(msg.str().c_str());
 
-	rv = ap_pass_brigade(r->output_filters, bb);
-	if (rv != APR_SUCCESS) {
-		throw runtime_error("pstar_io::write(); Could not write to client");
-	}
-
-	apr_brigade_cleanup(bb);
+	b = apr_bucket_transient_create (str, len, ba);
+	APR_BRIGADE_INSERT_TAIL(bb, b);*/
+/*
+	if (waiting_buckets++ % 100 == 0) {
+		rv = ap_pass_brigade(r->output_filters, bb);
+		if (rv != APR_SUCCESS) {
+			throw runtime_error("pstar_io::write(); Could not write to client");
+		}
+		apr_brigade_cleanup(bb);
+	}*/
 }
 
 void pstar_io::write_immortal(const char *str, int len) {
@@ -105,15 +114,16 @@ void pstar_io::write_immortal(const char *str, int len) {
 	apr_status_t rv;
 	apr_bucket *b;
 
-	b = apr_bucket_immortal_create (str, len, r->connection->bucket_alloc);
+	b = apr_bucket_immortal_create (str, len, ba);
 	APR_BRIGADE_INSERT_TAIL(bb, b);
 
-	rv = ap_pass_brigade(r->output_filters, bb);
-	if (rv != APR_SUCCESS) {
-		throw runtime_error("pstar_io::write(); Could not write to client");
+	if (waiting_buckets++ % 100 == 0) {
+		rv = ap_pass_brigade(r->output_filters, bb);
+		if (rv != APR_SUCCESS) {
+			throw runtime_error("pstar_io::write(); Could not write to client");
+		}
+		apr_brigade_cleanup(bb);
 	}
-
-	apr_brigade_cleanup(bb);
 }
 
 void pstar_io::output_headers () {

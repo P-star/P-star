@@ -56,6 +56,19 @@ class wpl_type_complete;
 class wpl_value_bool;
 class wpl_value;
 
+class wpl_value_no_strong_set : public runtime_error {
+	public:
+	wpl_value_no_strong_set() :
+		runtime_error("Strong set not possible for type")
+	{}
+};
+class wpl_value_no_weak_set : public runtime_error {
+	public:
+	wpl_value_no_weak_set() :
+		runtime_error("Weak set not possible for type")
+	{}
+};
+
 /**
  * @brief This class should be allocated on the stack before running runables. Set the result from the runable with set(), and the value will be automatically deleted on destruction of this class if WPL_OP_RETURN_REFERENCE is set.
  */
@@ -236,13 +249,11 @@ class wpl_value : public wpl_suicidal {
 	}
 
 	virtual void set_weak (wpl_value *value) {
-		cerr << "In value set_weak() of type '" << get_type_name() << "'\n";
-		cerr << "while trying to set with type '" << value->get_type_name() << "'\n";
-		throw runtime_error("Weak set not supported by this type");
+		throw wpl_value_no_weak_set();
 	}
 
 	virtual bool set_strong (wpl_value *value) {
-		throw runtime_error("Strong set not supported by this type");
+		throw wpl_value_no_strong_set();
 	}
 };
 

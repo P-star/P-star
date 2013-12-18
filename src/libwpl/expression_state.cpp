@@ -41,6 +41,10 @@ void wpl_expression_state::optimize() {
 		if (run_stack[0].op == &OP_FUNCTION_CALL) {
 			return;
 		}
+		// no fastop implemented for return operator
+		if (run_stack[0].op == &OP_RETURN_OP) {
+			return;
+		}
 		shunting_yard_carrier ca(run_stack[1].value, run_stack[0].op);
 		run_stack.clear();
 		run_stack.push(ca);
@@ -61,7 +65,7 @@ int wpl_expression_state::run_function (
 	}
 
 	if (child_states[index].get() == nullptr) {
-		child_states[index].reset(function->new_state(nss_this, io));
+		child_states[index].reset(function->new_state(get_nss(), nss_this, io));
 	}
 
 	wpl_function_state *function_state =

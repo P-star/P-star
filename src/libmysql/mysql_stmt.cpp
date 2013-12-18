@@ -133,7 +133,7 @@ int wpl_mysql_stmt_prepare::run (
 		ret = false;
 	}
 
-	wpl_mysql_bind (function_state, this_stmt->get_stmt(), sql);
+	wpl_mysql_bind (function_state->get_parent(), this_stmt->get_stmt(), sql);
 
 	((wpl_value_bool*) final_result)->set(ret);
 

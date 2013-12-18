@@ -48,6 +48,10 @@ template<typename A> class wpl_value_strings : public wpl_value_holder<A> {
 	int errcho() {cerr << RHS; return WPL_OP_OK; }
 	int is_empty() {RESULT_LOGIC = (RHS).empty() ? true : false; return WPL_OP_LOGIC_OK; }
 
+	void zero() {
+		wpl_value_holder<A>::value = "";
+	}
+
 	virtual int __do_operator (const struct wpl_operator_struct *op) {
 		CALL_OP(OP_CONCAT, concat)
 		CALL_OP(OP_EQ, eq)

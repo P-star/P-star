@@ -121,8 +121,12 @@ int wpl_value::do_operator_recursive (
 		} catch (exception &e) {}*/
 
 		if (final_result) {
+
 //			cout << "- setting final result\n";
-			return final_result->finalize_expression(exp_state, this);
+			try {
+				return final_result->finalize_expression(exp_state, this);
+			}
+			catch (const wpl_value_no_weak_set &e) {}
 		}
 		return WPL_OP_OK;
 	}
@@ -146,7 +150,21 @@ int wpl_value::do_operator_recursive (
 		if (!final_result) {
 			throw runtime_error("wpl_value::do_operator_recursive(): return OP requested with NULL final_result");
 		}
-		final_result->set_weak(this);
+
+		try {
+			if (!(final_result->set_strong (this))) {
+				ostringstream msg;
+				msg << "Strong set failed in return statement, possible type mismatch. " << 
+					"Attemted to set return value of type '" <<
+					final_result->get_type_name() << "' " <<
+					"to value of type '" <<
+					get_type_name() << "'\n";
+				throw runtime_error(msg.str());
+			}
+		}
+		catch (const wpl_value_no_strong_set &e) {
+			final_result->set_weak(this);
+		}
 		return (WPL_OP_OK|WPL_OP_RETURN);
 	}
 

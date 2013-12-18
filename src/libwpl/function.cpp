@@ -45,3 +45,11 @@ void wpl_function::generate_signature() {
 wpl_state *wpl_function::new_state(wpl_namespace_session *nss_this, wpl_io *io) {
 	return new wpl_function_state (nss_this, io, this, return_type);
 }
+
+wpl_state *wpl_function::new_state(
+		wpl_namespace_session *nss_call_ctx,
+		wpl_namespace_session *nss_this,
+		wpl_io *io
+) {
+	return new wpl_function_state (nss_call_ctx, nss_this, io, this, return_type);
+}

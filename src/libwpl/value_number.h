@@ -125,6 +125,9 @@ template<typename A> class wpl_value_number : public wpl_value_holder<A> {
 		io << wpl_value_holder<A>::value;
 	}
 
+	void zero() {
+		wpl_value_holder<A>::value = 0;
+	}
 	char *toVoid() {
 		return (char*) &(wpl_value_holder<A>::value);
 	}
