@@ -149,11 +149,10 @@ void wpl_pragma_template::parse_value(wpl_namespace *parent_namespace) {
 	ignore_whitespace();
 	if (ignore_letter('@')) {
 		// Find HTML template at run time (dynamic)
-		exp.reset(new wpl_expression_loose_end());
+		exp.reset(new wpl_expression());
 		exp->load_position(get_position());
 		exp->parse_value(parent_namespace);
 		load_position(exp->get_position());
-		parse_default_end();
 	}
 	else {
 		// Find HTML template at parse time (static)

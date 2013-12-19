@@ -1,0 +1,19 @@
+HTML_TEMPLATE test_template {
+	Test output
+}
+
+HTML_TEMPLATE test_template_again {
+	Test output again
+}
+
+SCENE main {
+	array<string> names;
+	names[0] = "test_template";
+	names[1] = "test_template_again";
+
+	int i = 0;
+	while (i < @names) {
+		#HTML_TEMPLATE @names[i];
+		i++;
+	}
+}
