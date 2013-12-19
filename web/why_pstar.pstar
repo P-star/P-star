@@ -3,13 +3,11 @@
 #INCLUDE layout.pstar;
 
 HTML_TEMPLATE page_top {
-
 	<h1>Why P*?</h1>
 	<p>Many different programming languages are used for web development. This article's target is to show the difference between P* and other languages widely used for this purpose.</p>
 
 	<h2>Contents:</h2>
 	<ul>
-
 }
 
 HTML_TEMPLATE paragraph_bullet {
@@ -21,11 +19,9 @@ HTML_TEMPLATE page_top_end {
 }
 
 HTML_TEMPLATE paragraph_header {
-
-	<h2><a href="#{@paragraph->name}" name="{@paragraph->name}" id="{@paragraph->name}">
-		{@paragraph->title}
+	<h2><a href="#{@name}" name="{@name}" id="{@name}">
+		{@title}
 	</a></h2>
-
 }
 
 HTML_TEMPLATE designers_vs_geeks {
@@ -70,30 +66,34 @@ SCENE paragraphs {
 		};
 		public int print_bullet() {
 			#HTML_TEMPLATE paragraph_bullet;
+			return 0;
 		};
 		public int print() {
 			#HTML_TEMPLATE paragraph_header;
 			#HTML_TEMPLATE @name;
+			return 0;
 		};
 	};
 
 	array<paragraph> page_paragraphs;
-	page_paragrahs[0]->init("designers_vs_geeks", "Designers VS Geeks");
-	page_paragrahs[1]->init("what_template_engine", "What template engine should I use?");
-	page_paragrahs[2]->init("languages", "Human Languages and Computer Languages");
-	page_paragrahs[3]->init("source_code_organizing", "Source Code Organizing");
+	page_paragraphs[0]->init("designers_vs_geeks", "Designers VS Geeks");
+	page_paragraphs[1]->init("what_template_engine", "What template engine should I use?");
+	page_paragraphs[2]->init("languages", "Human Languages and Computer Languages");
+	page_paragraphs[3]->init("source_code_organizing", "Source Code Organizing");
 
 	protected int print_paragraphs() {
 		int i = 0;
-		while ((i++) < @page_paragrahs) {
+		while (i < @page_paragraphs) {
 			page_paragraphs[i]->print();
+			i++;
 		}
 	}
 
 	protected int print_bullets() {
 		int i = 0;
-		while ((i++) < @page_paragrahs) {
+		while (i < @page_paragraphs) {
 			page_paragraphs[i]->print_bullet();
+			i++;
 		}
 	}
 }
