@@ -3,5 +3,6 @@ RewriteRule documentation documentation.pstar [L]
 RewriteRule how_to_get how_to_get.pstar [L]
 RewriteRule how_to_run how_to_run.pstar [L]
 RewriteRule what_is what_is.pstar [L]
+RewriteRule why_pstar why_pstar.pstar [L]
 RewriteRule ^$ /what_is [R]
 

@@ -338,6 +338,13 @@ wpl_function *wpl_namespace_session::find_function_no_parent(const char *name, i
 	return NULL;
 }
 
+wpl_template *wpl_namespace_session::find_template(const char *name) {
+	if (!template_namespace) {
+		return NULL;
+	}
+	return template_namespace->find_template(name);
+}
+
 int wpl_namespace_session::do_operator_on_unresolved (
 	wpl_value_unresolved_identifier *unresolved,
 	wpl_expression_state *exp_state,

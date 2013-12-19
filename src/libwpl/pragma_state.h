@@ -36,6 +36,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 class wpl_value;
 class wpl_runable;
+class wpl_template;
 
 class wpl_pragma_state : public wpl_state {
 	protected:
@@ -48,6 +49,9 @@ class wpl_pragma_state : public wpl_state {
 		child_state.resize(2);
 	}
 
+	wpl_template *find_template(const char *name) {
+		return nss->find_template(name);
+	}
 	void set_children_count(int count) {
 		child_state.resize(count);
 	}

@@ -35,6 +35,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "pragma_names.h"
 #include "namespace_session.h"
 #include "pragma_state.h"
+#include "expression.h"
 
 #include <cstring>
 
@@ -113,28 +114,34 @@ public:
 class wpl_pragma_template : public wpl_pragma {
 	protected:
 	wpl_template *my_template;
+	unique_ptr<wpl_expression> exp;
+
+	wpl_template *get_template(wpl_pragma_state *pragma_state);
 
 	public:
-	wpl_pragma_template() : wpl_pragma (wpl_pragma_name_template) {
+	wpl_pragma_template() :
+		wpl_pragma (wpl_pragma_name_template),
+		exp()
+	{
+		my_template = NULL;
 	}
-	wpl_pragma_template(const char *name) : wpl_pragma (name) {
+	wpl_pragma_template(const char *name) :
+		wpl_pragma (name),
+		exp()
+	{
+		my_template = NULL;
+	}
+	wpl_pragma_template (const wpl_pragma_template &copy) :
+		wpl_pragma (copy),
+		exp()
+	{
+		my_template = NULL;
 	}
 	virtual wpl_pragma_template *clone() const {
 		return new wpl_pragma_template(*this);
 	}
-	virtual int run(wpl_state *state, wpl_value *final_result) override {
-		wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
-		return pragma_state->run_child(my_template, 0, final_result);
-	}
-	void parse_value(wpl_namespace *parent_namespace) {
-		char value[WPL_VARNAME_SIZE];
-		get_word(value);
-		if (!(my_template = parent_namespace->find_template(value))) {
-			revert_string(strlen(value));
-			THROW_ELEMENT_EXCEPTION("Could not find template");
-		}
-		parse_default_end();
-	}
+	virtual int run(wpl_state *state, wpl_value *final_result) override;
+	void parse_value(wpl_namespace *parent_namespace);
 };
 
 class wpl_pragma_template_as_var : public wpl_pragma_template {
@@ -144,12 +151,7 @@ class wpl_pragma_template_as_var : public wpl_pragma_template {
 	wpl_pragma_template_as_var *clone() const {
 		return new wpl_pragma_template_as_var(*this);
 	}
-	int run(wpl_state *state, wpl_value *final_result) override {
-		wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
-
-		wpl_text_var_io_method run_wrapper(my_template);
-		return pragma_state->run_child(&run_wrapper, 0, final_result);
-	}
+	int run(wpl_state *state, wpl_value *final_result) override;
 };
 
 class wpl_pragma_scene : public wpl_pragma {

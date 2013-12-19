@@ -26,7 +26,7 @@ HTML_TEMPLATE layout_head {
 }
 
 SCENE layout_head_scene {
-	string url_prefix = "/cgi-bin/";
+	string url_prefix = "/";
 
 	string title = "-";
 	struct button {
@@ -49,7 +49,7 @@ SCENE layout_head_scene {
 	int i = "-1";
 
 	while (++i < @buttons) {
-		if ((url_prefix . buttons[i]->name) == env->SCRIPT_NAME) {
+		if ((url_prefix . buttons[i]->name . ".pstar") == env->SCRIPT_NAME) {
 			buttons[i]->classname = "checked";
 			title = buttons[i]->text;
 		}

@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "namespace.h"
 #include "variable.h"
 #include "value_unsafe_pointer.h"
+#include "value_string.h"
 #include "io.h"
 
 #include <set>
@@ -109,6 +110,72 @@ void wpl_pragma_template_var::parse_value(wpl_namespace *parent_namespace) {
 	exp->load_position(get_position());
 	exp->parse_value(parent_namespace);
 	load_position(exp->get_position());
+}
+
+wpl_template *wpl_pragma_template::get_template(wpl_pragma_state *pragma_state) {
+	if (exp.get()) {
+		wpl_value_string template_name;
+		int ret = pragma_state->run_child(exp.get(), 1, &template_name);
+
+		if (!(ret & WPL_OP_OK)) {
+			throw runtime_error("wpl_pragma_template::get_template(): Not OK return from expression");
+		}
+
+		wpl_template *my_template;
+		if (!(my_template = pragma_state->find_template(template_name.toString().c_str()))) {
+			ostringstream msg;
+			msg << "Could not find template with name '" <<
+				template_name.toString() << "'\n";
+			throw runtime_error(msg.str());
+		}
+		return my_template;
+	}
+	else {
+		return my_template;
+	}
+}
+
+int wpl_pragma_template::run(wpl_state *state, wpl_value *final_result) {
+	wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
+	wpl_template *my_template = get_template(pragma_state);
+	if (!my_template) {
+		throw runtime_error("wpl_pragma_template::run(): No template set");
+	}
+	return pragma_state->run_child(my_template, 0, final_result);
+}
+
+void wpl_pragma_template::parse_value(wpl_namespace *parent_namespace) {
+	char value[WPL_VARNAME_SIZE];
+	ignore_whitespace();
+	if (ignore_letter('@')) {
+		// Find HTML template at run time (dynamic)
+		exp.reset(new wpl_expression_loose_end());
+		exp->load_position(get_position());
+		exp->parse_value(parent_namespace);
+		load_position(exp->get_position());
+		parse_default_end();
+	}
+	else {
+		// Find HTML template at parse time (static)
+		get_word(value);
+		if (!(my_template = parent_namespace->find_template(value))) {
+			revert_string(strlen(value));
+			THROW_ELEMENT_EXCEPTION("Could not find template");
+		}
+		parse_default_end();
+	}
+}
+
+int wpl_pragma_template_as_var::run(wpl_state *state, wpl_value *final_result) {
+	wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
+
+	wpl_template *my_template = get_template(pragma_state);
+	if (!my_template) {
+		throw runtime_error("wpl_pragma_template_as_var::run(): No template set");
+	}
+
+	wpl_text_var_io_method run_wrapper(my_template);
+	return pragma_state->run_child(&run_wrapper, 0, final_result);
 }
 
 int wpl_pragma_text_content_type::run (wpl_state *state, wpl_value *final_result) {

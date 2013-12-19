@@ -134,7 +134,7 @@ wpl_scene *wpl_namespace::find_scene (const char *name) {
  *
  * @return Return the template on success or NULL on failure.
  */
-wpl_template *wpl_namespace::find_template (const char *name) {
+wpl_template *wpl_namespace::find_template (const char *name) const {
 	for (wpl_template *my_template : templates) {
 		if (strcmp (name, my_template->get_name()) == 0) {
 			return my_template;

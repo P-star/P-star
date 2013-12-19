@@ -145,7 +145,7 @@ class wpl_namespace {
 
 	wpl_pragma *find_pragma (const char *name);
 	wpl_scene *find_scene (const char *name);
-	wpl_template *find_template (const char *name);
+	wpl_template *find_template (const char *name) const;
 
 	wpl_variable *find_variable (const char *name) const;
 	wpl_variable *find_static_variable (const char *name) const;
