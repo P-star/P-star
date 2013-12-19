@@ -1,0 +1,115 @@
+#!/usr/bin/wpl -f
+
+#INCLUDE layout.pstar;
+
+HTML_TEMPLATE page_top {
+
+	<h1>Why P*?</h1>
+	<p>Many different programming languages are used for web development. This article's target is to show the difference between P* and other languages widely used for this purpose.</p>
+
+	<h2>Contents:</h2>
+	<ul>
+
+}
+
+HTML_TEMPLATE paragraph_bullet {
+		<li><a href="#{@name}">{@title}</a></li>
+}
+
+HTML_TEMPLATE page_top_end {
+	</ul>
+}
+
+HTML_TEMPLATE paragraph_header {
+
+	<h2><a href="#{@paragraph->name}" name="{@paragraph->name}" id="{@paragraph->name}">
+		{@paragraph->title}
+	</a></h2>
+
+}
+
+HTML_TEMPLATE designers_vs_geeks {
+	<p>Essentially, web development all about is to generate HTML-markup dynamically based on data stored somewhere and on user input. The program code contains both program code and HTML-markup.</p>
+	<p>A web page can therefore be divided into two parts: The code part, which takes care of database and user input, and the HTML-part which takes care of the design.</p>
+	<p>Sometimes a single person might do both the coding and the HTML, and this person will be comfortable with having these two mixed. However for larger and more complicated web pages, we need proper geeks to to the coding and artistic people to do the design.</p>
+	<p>Since designers doesn't understand much programming, they tend to mess up complicated code written by the geeks. This problem forces us to separate the HTML from the program code, and this is solved by only having very simple code (loops, conditions and variables) in between the HTML code which the designers can understand without much effort. Database handling and user input processing is kept by itself out of reach of the designers, and variables are prepared here for the designers to use later. This technique is called <b>templating</b>, and different languages have different ways of handling this.</p>
+	<p>Read more about P* templates in <a href="/manual/ch03s11.html">reference manual</a></p>
+}
+
+HTML_TEMPLATE what_template_engine {
+	<p>On Wikipedia, there's a <a href="http://en.wikipedia.org/wiki/Comparison_of_web_template_engines">list of template engines</a> with almost a hundred different engines listed for many different languages. This might indicate that there's a real need for this out there. It also tells us that the languages themselves does not implement templating natively; the template engine is usually an external module.</p>
+	<p>Languages used for web development typically don't have any special functionality to handle this important part of web design, the developers are left on their own to sort it out. The well-known names of Java, Perl and C# are general purpose languages which by chance also is used to generate dynamic HTML-markup.</p>
+	<p>The widely used language PHP also have to be mentioned. It differs from the other languages in the way that it almost exclusively is used for web design while having no in-language support for anything related to web design apart from the ability to be interleaved in HTML code. PHP only provides tons of built-in functions which there is no exact count for. Some estimates lies around 4500 functions.</p>
+	<p>The lack of in-language template handling is the reason why P* was created in the first place, P* has native support for templating. It is part of the language's syntax. The text you're reading now is placed inside a P* template block, separated from the program code.</p>
+	<p>Read more about P* templates in <a href="/manual/ch03s11.html">reference manual</a></p>
+}
+
+HTML_TEMPLATE languages {
+	<p>Different programming languages are basically different ways of talking with a computer, telling it what to do. Human languages are different methods humans use to talk to each other. Human- and computer languages do of course differ in many ways.</p>
+	<p>One notable difference is that human languages are much more dynamic than computer languages. It's probably a fact that no human being knows all the words of any language, which are usually tens of thousands in numbers. The humans know the words they need in their daily lives. A physician probably knows more words in medicine than an avarage person. When a physician could have used a single word to describe a condition, an average person might have needed to use many words to do the same. The physician's language is due to this much more efficient to use when talking about medicine.</p>
+	<p>The same applies to programming. You typically want the programming language you use to have special words to help you speed up your coding and make your programs easier to read and maintain. A language used for web development should provide special words and tools specialized for this. P* tries to address the problem by providing special syntax for SQL-queries and HTML-templates, doing the dirty work behind the scenes.</p>
+	<p>Read more about the P* SQL syntax in <a href="http://www.p-star.org/manual/ch03s12.html">reference manual</a></p>
+}
+
+HTML_TEMPLATE source_code_organizing {
+	<p>When you start a new project you need to organize your code somewhere, that is the different files containing the program code. For application projects, some tools used are CMake, Autotools and Visual Studio.</p>
+	<p>In a web project, the files are usually placed inside the root of the web server. The web server finds them there and calls an appropriate compiler to execute the code.</p>
+	<p>Some implementations have more complicated solutions, like JSP (Java Server Pages). Here, you often need to precompile classes and put them in special directories for the Java engine to find. The code of a JSP file is put inside another class before compiling, so you can't define any classes here.</p>
+	<p>P* cannot be precompiled, and you just use the <i>#INCLUDE</i>-pragma to load other files. Everything is compiled automatically at first run or when the files are modified. This makes development and debugging very easy.</p>
+
+	<h2></h2>
+}
+
+SCENE paragraphs {
+	struct paragraph {
+		string name;
+		string title;
+		public int init(string name_, string title_) {
+			name = name_;
+			title = title_;
+		};
+		public int print_bullet() {
+			#HTML_TEMPLATE paragraph_bullet;
+		};
+		public int print() {
+			#HTML_TEMPLATE paragraph_header;
+			#HTML_TEMPLATE @name;
+		};
+	};
+
+	array<paragraph> page_paragraphs;
+	page_paragrahs[0]->init("designers_vs_geeks", "Designers VS Geeks");
+	page_paragrahs[1]->init("what_template_engine", "What template engine should I use?");
+	page_paragrahs[2]->init("languages", "Human Languages and Computer Languages");
+	page_paragrahs[3]->init("source_code_organizing", "Source Code Organizing");
+
+	protected int print_paragraphs() {
+		int i = 0;
+		while ((i++) < @page_paragrahs) {
+			page_paragraphs[i]->print();
+		}
+	}
+
+	protected int print_bullets() {
+		int i = 0;
+		while ((i++) < @page_paragrahs) {
+			page_paragraphs[i]->print_bullet();
+		}
+	}
+}
+
+SCENE main : paragraphs {
+	#CONTENT_TYPE text/html;
+
+	#SCENE layout_head_scene;
+
+	#HTML_TEMPLATE page_top;
+	print_bullets();
+	#HTML_TEMPLATE page_top_end;
+	print_paragraphs();
+
+	#HTML_TEMPLATE layout_foot;
+
+	return 0;
+}
+
