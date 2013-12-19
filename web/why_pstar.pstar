@@ -78,10 +78,10 @@ SCENE paragraphs {
 	};
 
 	array<paragraph> page_paragraphs;
-	page_paragrahs[0]->init("designers_vs_geeks", "Designers VS Geeks");
-	page_paragrahs[1]->init("what_template_engine", "What template engine should I use?");
-	page_paragrahs[2]->init("languages", "Human Languages and Computer Languages");
-	page_paragrahs[3]->init("source_code_organizing", "Source Code Organizing");
+	page_paragraphs[0]->init("designers_vs_geeks", "Designers VS Geeks");
+	page_paragraphs[1]->init("what_template_engine", "What template engine should I use?");
+	page_paragraphs[2]->init("languages", "Human Languages and Computer Languages");
+	page_paragraphs[3]->init("source_code_organizing", "Source Code Organizing");
 
 	protected int print_paragraphs() {
 		int i = 0;

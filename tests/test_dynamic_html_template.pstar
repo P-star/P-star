@@ -16,4 +16,5 @@ SCENE main {
 		#HTML_TEMPLATE @names[i];
 		i++;
 	}
+	return 0;
 }
