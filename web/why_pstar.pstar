@@ -52,8 +52,6 @@ HTML_TEMPLATE source_code_organizing {
 	<p>In a web project, the files are usually placed inside the root of the web server. The web server finds them there and calls an appropriate compiler to execute the code.</p>
 	<p>Some implementations have more complicated solutions, like JSP (Java Server Pages). Here, you often need to precompile classes and put them in special directories for the Java engine to find. The code of a JSP file is put inside another class before compiling, so you can't define any classes here.</p>
 	<p>P* cannot be precompiled, and you just use the <i>#INCLUDE</i>-pragma to load other files. Everything is compiled automatically at first run or when the files are modified. This makes development and debugging very easy.</p>
-
-	<h2></h2>
 }
 
 SCENE paragraphs {

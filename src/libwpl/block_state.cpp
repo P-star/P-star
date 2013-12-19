@@ -38,6 +38,15 @@ void wpl_block_state::register_child (wpl_runable *runable, int index) {
 }
 */
 
+void wpl_block_state::clear_child_states() {
+	for (int i = 0; i < WPL_BLOCK_MAX_CHILDREN; i++) {
+		if (child_states[i].get() == nullptr) {
+			break;
+		}
+		child_states[i].reset(nullptr);
+	}
+}
+
 int wpl_block_state::run_child (wpl_runable *child, int index, wpl_value *final_result) {
 	if (index >= WPL_BLOCK_MAX_CHILDREN) {
 		throw runtime_error("Child index out of range in wpl_block_state");

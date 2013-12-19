@@ -76,6 +76,7 @@ class wpl_block_state : public wpl_namespace_session, public wpl_state {
 		wpl_namespace_session(parent, template_namespace, WPL_NSS_CTX_SELF),
 		wpl_state(parent, io)
 	{}
+	void clear_child_states();
 	int run_child (wpl_runable *child, int index, wpl_value *final_result);
 	int run_run_condition (wpl_runable *runable, wpl_value *final_result);
 	int run_next_else_if (wpl_runable *runable, wpl_value *final_result);

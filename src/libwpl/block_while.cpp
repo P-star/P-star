@@ -31,9 +31,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 int wpl_block_while::run(wpl_state *state, wpl_value *final_result) {
 	int ret = WPL_OP_NO_RETURN;
+	wpl_block_state *block_state = (wpl_block_state*) state;
 
-	while (check_run((wpl_block_state*) state)) {
-		ret = wpl_block::run(state, final_result);
+	while (check_run(block_state)) {
+		ret = wpl_block::run(block_state, final_result);
+		block_state->clear_child_states();
+
 		if (ret & (WPL_OP_BREAK|WPL_OP_RETURN)) {
 			ret &= ~(WPL_OP_BREAK);
 			break;
