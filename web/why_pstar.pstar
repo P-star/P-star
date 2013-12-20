@@ -60,9 +60,9 @@ HTML_TEMPLATE source_code_organizing {
 }
 
 HTML_TEMPLATE performance {
-	<p>If speed is your only consern, you should write your web page in C and compile it as a web server module. However, speed is not only about running, it's also about writing.</p>
+	<p>If speed is your only consern, you should write your web page in C and compile it as a web server module. However, speed is not only about makeing a program run fast, it's also about writing fast. The focus of P* is on the latter.</p>
 	<p>P* internals are written in C++ which is a bit slower than it's daddy, C. Only critical sections are optimized, like text output to the web server. P* also caches programs internally so that the scripts only are parsed once.</p>
-	<p>Arithmetics, like plus and minus, is slower in P* than in other lanugages. However, you will notice this if you try to make a loop run a billion times, in which P* will be a couple of seconds slower than PHP and Perl.</p>
+	<p>Arithmetics, like plus and minus, is slower in P* than in other lanugages. However, you will only notice this if you make a loop run a billion times, in which P* will be a couple of seconds slower than PHP and Perl.</p>
 	<p>The P* engine is not based on anything else out there, it's completely written from scratch. The only thing P* has in common with other languages is the C-like syntax.</p>
 }
 
