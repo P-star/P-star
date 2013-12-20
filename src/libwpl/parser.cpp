@@ -180,17 +180,16 @@ void wpl_parser::parse_file (wpl_namespace *parent_namespace, const char *filena
 			throw ferror(file);
 		}
 
+		unique_ptr<char[]> buf(new char[filesize+1]);
 
-		char *buf = new char [filesize+1];
-		int read_bytes = fread(buf, 1, filesize, file);
+		int read_bytes = fread(buf.get(), 1, filesize, file);
 		if ((read_bytes <= 0 ) ||
 			(fclose (file) != 0)
 		) {
-			delete buf;
 			throw ferror(file);
 		}
 
-		buf[read_bytes] = '\0';
+		buf.get()[read_bytes] = '\0';
 		/*
 		filesizes are funny on windows, can't do this check
 		if (strlen (buf) != filesize) {
@@ -198,7 +197,7 @@ void wpl_parser::parse_file (wpl_namespace *parent_namespace, const char *filena
 			throw wpl_parser_exception("Source file contains NULL characters");
 		}*/
 
-		file_content = buf;
+		file_content.append(buf.get());
 		set_text (file_content.c_str(), filesize, filename);
 	}
 	catch (int e) {
