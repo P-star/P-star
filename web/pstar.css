@@ -12,6 +12,10 @@ h1, h2, h3 {
 	margin: 0;
 }
 
+h2 > a:link, h2 > a:visited {
+	text-decoration: none;
+}
+
 a, a:hover, a:active, a:link, a:visited {
 	color: #000;
 }
