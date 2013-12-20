@@ -1099,13 +1099,37 @@ HTML_TEMPLATE document {
 }
 
 SCENE main {
-	string title = "P* Web Programmin Language test page";
+	string title = "P* Web Programming Language test page";
 
 	#CONTENT_TYPE text/html;
 	#HTML_TEMPLATE document;
 }
 			</programlisting>
-			<para>Here is an example of a simple web application constisting of the files <code>test_tmpl.pstar</code> and <code>test.pstar</code>, which you can run with CGI on your favorite web/database-server:</para>
+			<para>In the above example, the template <code>document</code> is called statically, the name is resolved and validated at parse-time. You can also store the name of the template in a variable an call it dynamically using the expression-starter <code>@</code> at run-time like this:
+			<programlisting language="c">
+HTML_TEMPLATE test_template {
+	Test output
+}
+
+HTML_TEMPLATE test_template_again {
+	Test output again
+}
+
+SCENE main {
+	array&lt;string&gt; names;
+	names[0] = "test_template";
+	names[1] = "test_template_again";
+
+	/* Loop the array with the two template names */
+	int i = 0;
+	while (i &lt; @names) {
+		#HTML_TEMPLATE @names[i];
+		i++;
+	}
+	return 0;
+}
+			</programlisting>
+			</para>
 			<para>
 			P* supports common AJAX-operations like replacing text inside a &lt;div&gt;. If you want to output a variable interpolated into the template, the id-tag of the previous element in you HTML is used as variable name when the JSON is generated. In the example below, a jQuery scripts does this job. 
 			</para>
