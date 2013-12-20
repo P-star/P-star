@@ -25,33 +25,56 @@ HTML_TEMPLATE paragraph_header {
 }
 
 HTML_TEMPLATE designers_vs_geeks {
-	<p>Essentially, web development all about is to generate HTML-markup dynamically based on data stored somewhere and on user input. The program code contains both program code and HTML-markup.</p>
-	<p>A web page can therefore be divided into two parts: The code part, which takes care of database and user input, and the HTML-part which takes care of the design.</p>
+	<p>Essentially, what web development all about is to generate HTML-markup dynamically based on data stored somewhere and on user input.</p>
+	<p>A web page can be divided into two parts: The code part, which takes care of database and user input, and the HTML-part which takes care of the design.</p>
 	<p>Sometimes a single person might do both the coding and the HTML, and this person will be comfortable with having these two mixed. However for larger and more complicated web pages, we need proper geeks to to the coding and artistic people to do the design.</p>
-	<p>Since designers doesn't understand much programming, they tend to mess up complicated code written by the geeks. This problem forces us to separate the HTML from the program code, and this is solved by only having very simple code (loops, conditions and variables) in between the HTML code which the designers can understand without much effort. Database handling and user input processing is kept by itself out of reach of the designers, and variables are prepared here for the designers to use later. This technique is called <b>templating</b>, and different languages have different ways of handling this.</p>
-	<p>Read more about P* templates in <a href="/manual/ch03s11.html">reference manual</a></p>
+	<p>Since designers don't understand much programming, they tend to mess up complicated code written by the geeks. This problem forces us to separate the HTML from the program code, and this is solved by only having very simple code (loops, conditions and variables) in between the HTML code which the designers can understand without much effort. Database handling and user input processing is kept by itself out of reach of the designers, and variables are prepared here for the designers to use later.</p>
+	<p>This technique is called <b><a target="_blank" href="http://en.wikipedia.org/wiki/Web_template_system">templating</a></b>, and different languages have different ways of handling this.</p>
 }
 
 HTML_TEMPLATE what_template_engine {
-	<p>On Wikipedia, there's a <a href="http://en.wikipedia.org/wiki/Comparison_of_web_template_engines">list of template engines</a> with almost a hundred different engines listed for many different languages. This might indicate that there's a real need for this out there. It also tells us that the languages themselves does not implement templating natively; the template engine is usually an external module.</p>
+	<p>On Wikipedia, there's a <a target="_blank" href="http://en.wikipedia.org/wiki/Comparison_of_web_template_engines">list of almost a hundred template engines</a> for many different languages. This indicates that there's a real need for templating out there. It also tells us that the languages themselves do not implement templating natively; the template engine is usually an external module.</p>
 	<p>Languages used for web development typically don't have any special functionality to handle this important part of web design, the developers are left on their own to sort it out. The well-known names of Java, Perl and C# are general purpose languages which by chance also is used to generate dynamic HTML-markup.</p>
-	<p>The widely used language PHP also have to be mentioned. It differs from the other languages in the way that it almost exclusively is used for web design while having no in-language support for anything related to web design apart from the ability to be interleaved in HTML code. PHP only provides tons of built-in functions which there is no exact count for. Some estimates lies around 4500 functions.</p>
-	<p>The lack of in-language template handling is the reason why P* was created in the first place, P* has native support for templating. It is part of the language's syntax. The text you're reading now is placed inside a P* template block, separated from the program code.</p>
-	<p>Read more about P* templates in <a href="/manual/ch03s11.html">reference manual</a></p>
+	<p>The widely used language PHP also has to be mentioned. It differs from the other languages in the way that it almost exclusively is used for web design while having no in-language support for anything related to web design apart from the ability to be interleaved in HTML code. PHP only provides tons of built-in functions which there is no exact count for. Some estimates <a target="_blank" href="http://forums.devshed.com/php-development-5/how-many-functions-does-php-have-398731.html">say around 4500 functions</a>.</p>
+	<p>The lack of in-language template handling is the reason why P* was created in the first place, P* has native support for templating, it is part of the language's syntax. The text you're reading now is placed inside a P* template block, separated from the program code.</p>
+	<p>Read more about P* templates in <a target="_blank" href="/manual/ch03s11.html">reference manual</a></p>
+	<p>Also, you should take a look at <a target="_blank" href="https://github.com/atlesn/P-star/blob/master/web/why_pstar.pstar">the source code of this page on Github</a>.</p>
 }
 
 HTML_TEMPLATE languages {
-	<p>Different programming languages are basically different ways of talking with a computer, telling it what to do. Human languages are different methods humans use to talk to each other. Human- and computer languages do of course differ in many ways.</p>
-	<p>One notable difference is that human languages are much more dynamic than computer languages. It's probably a fact that no human being knows all the words of any language, which are usually tens of thousands in numbers. The humans know the words they need in their daily lives. A physician probably knows more words in medicine than an avarage person. When a physician could have used a single word to describe a condition, an average person might have needed to use many words to do the same. The physician's language is due to this much more efficient to use when talking about medicine.</p>
-	<p>The same applies to programming. You typically want the programming language you use to have special words to help you speed up your coding and make your programs easier to read and maintain. A language used for web development should provide special words and tools specialized for this. P* tries to address the problem by providing special syntax for SQL-queries and HTML-templates, doing the dirty work behind the scenes.</p>
-	<p>Read more about the P* SQL syntax in <a href="http://www.p-star.org/manual/ch03s12.html">reference manual</a></p>
+	<p>Different programming languages are basically different ways for us to talk to computers, telling them what to do. Human languages are different methods for humans to talk to each other. Human- and computer languages do of course differ in many ways.</p>
+	<p>One notable difference is that human languages are much more dynamic than computer languages. It's probably a fact that no human being knows all the words of any language, which are usually tens of thousands in numbers. The humans know the words they need in their daily lives.</p>
+	<p>A physician probably knows more words in medicine than an avarage person. When a physician could have used a single word to describe a condition, an average person might have needed to use many words to do the same. The physician's language is therefore efficient to use when talking about medicine.</p>
+	<p>The same applies to programming languages. You typically want the programming language you use to have special words to help you speed up your coding and make your programs easier to read and maintain. A language used for web development should provide words and tools specialized for the task you're solving.</p>
+	<p>P* tries to make it easy to talk web design to your computer by providing special syntax for SQL-queries and HTML-templates, doing the dirty work behind the scenes.</p>
+	<p>Read more about the P* SQL syntax in <a target="_blank" href="http://www.p-star.org/manual/ch03s12.html">reference manual</a></p>
 }
 
 HTML_TEMPLATE source_code_organizing {
 	<p>When you start a new project you need to organize your code somewhere, that is the different files containing the program code. For application projects, some tools used are CMake, Autotools and Visual Studio.</p>
 	<p>In a web project, the files are usually placed inside the root of the web server. The web server finds them there and calls an appropriate compiler to execute the code.</p>
-	<p>Some implementations have more complicated solutions, like JSP (Java Server Pages). Here, you often need to precompile classes and put them in special directories for the Java engine to find. The code of a JSP file is put inside another class before compiling, so you can't define any classes here.</p>
-	<p>P* cannot be precompiled, and you just use the <i>#INCLUDE</i>-pragma to load other files. Everything is compiled automatically at first run or when the files are modified. This makes development and debugging very easy.</p>
+	<p>Some implementations have more complicated solutions, like JSP (Java Server Pages). Here, you often need to precompile classes and put them in special directories for the Java engine to find. The configuration of a JSP environment is somehow complicated, whith lot's of new terminology to learn besides the actual language.</p>
+	<p>P* cannot be precompiled, and you just use the <i>#INCLUDE</i>-pragma to load other files. Everything is compiled automatically at first run or when the files are modified. This makes development very easy.</p>
+	<p>It is also easy to learn P* if you already know other languages like Java, C, C++, PHP or Perl. To configure a web server to execute P* is very easy, as P* does not require any configuration itself.</p>
+	<p>P* programs can usually be run both inside the web server and outside of it using the command line version. This is useful to check for syntax errors while writing your code. You can also fake user input by setting <a target="_blank" href="http://www.cgi101.com/book/ch3/text.html">CGI environment variables</a>.</p>
+}
+
+HTML_TEMPLATE performance {
+	<p>If speed is your only consern, you should write your web page in C and compile it as a web server module. However, speed is not only about makeing a program run fast, it's also about writing fast. The focus of P* is on the latter.</p>
+	<p>P* internals are written in C++ which is a bit slower than it's daddy, C. Only critical sections are optimized, like text output to the web server. P* also caches programs internally so that the scripts only are parsed once.</p>
+	<p>Arithmetics, like plus and minus, is slower in P* than in other lanugages. However, you will only notice this if you make a loop run a billion times, in which P* will be a couple of seconds slower than PHP and Perl.</p>
+	<p>The P* engine is not based on anything else out there, it's completely written from scratch. The only thing P* has in common with other languages is the C-like syntax.</p>
+}
+
+HTML_TEMPLATE now_what {
+	<p>Here's a few reasons why you should consider using P*:</p>
+	<ul>
+		<li>Easy to learn, similar syntax to other languages</li>
+		<li>Fast development with the built-in template engine</li>
+		<li>Secure and easy SQL handling with prepared statements</li>
+		<li>Easy to implement, very little configuration needed</li>
+	</ul>
+	<p>Go ahead and read some more on the <a href="/documentation">documention pages</a>.</p>
 }
 
 SCENE paragraphs {
@@ -78,6 +101,8 @@ SCENE paragraphs {
 	page_paragraphs[1]->init("what_template_engine", "What template engine should I use?");
 	page_paragraphs[2]->init("languages", "Human Languages and Computer Languages");
 	page_paragraphs[3]->init("source_code_organizing", "Source Code Organizing");
+	page_paragraphs[4]->init("performance", "Is P* fast?");
+	page_paragraphs[5]->init("now_what", "What to do next?");
 
 	protected int print_paragraphs() {
 		int i = 0;

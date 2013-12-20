@@ -40,8 +40,8 @@ SCENE layout_head_scene {
 	buttons[0]->text = "What is P*?";
 	buttons[1]->name = "how_to_get";
 	buttons[1]->text = "How to get P*?";
-	buttons[2]->name = "how_to_run";
-	buttons[2]->text = "How to run P*?";
+	buttons[2]->name = "why_pstar";
+	buttons[2]->text = "Why P*?";
 	buttons[3]->name = "documentation";
 	buttons[3]->text = "Documentation";
 
