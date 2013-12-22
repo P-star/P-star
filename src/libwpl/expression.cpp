@@ -94,8 +94,10 @@ int wpl_expression::run (
 		else if (first_carrier.op == &OP_RETURN_OP) {
 			return (WPL_OP_OK|WPL_OP_RETURN|WPL_OP_NO_RETURN);
 		}
-		cerr << "Found lonely operator '" << first_carrier.op->name << "' in expression\n";
-		throw runtime_error("Single operator in expression was not 'break' or 'return'");
+		ostringstream msg;
+		msg << "Found lonely operator '" << first_carrier.op->name << "' in expression\n";
+		msg << ": Single operator in expression was not 'break' or 'return'";
+		throw runtime_error(msg.str());
 	}
 	else if (first_carrier.value) {
 		return first_carrier.value->do_operator_recursive (
@@ -188,8 +190,22 @@ void wpl_expression::parse_operator(const struct wpl_operator_struct *op) {
 
 	shunt_operator(op);
 
-	expect &= ~(EXPECT_OPERATOR);
-	expect |= EXPECT_NUMBER;
+	if ((op->flags & WPL_OP_F_HAS_BOTH) == WPL_OP_F_HAS_BOTH) {
+		expect &= ~(EXPECT_OPERATOR);
+		expect |= EXPECT_NUMBER;
+	}
+	else if (op->flags & WPL_OP_F_HAS_RHS) {
+		expect &= ~(EXPECT_OPERATOR);
+		expect |= EXPECT_NUMBER;
+	}
+	else if (op->flags & WPL_OP_F_HAS_LHS) {
+		expect |= EXPECT_NUMBER|EXPECT_OPERATOR;
+	}
+	else {
+		ostringstream msg;
+		msg << "wpl_expression::parse_operator(): Unknown flags for operator " << op->name;
+		throw runtime_error(msg.str());
+	}
 }
 
 void wpl_expression::parse_semicolon() {
@@ -200,7 +216,6 @@ void wpl_expression::parse_semicolon() {
 		expect |= EXPECT_DO_BREAK;
 	}
 	else {
-		cerr << "Parantheses level is : " << par_level << endl;
 		THROW_ELEMENT_EXCEPTION("Unexpected ; in expression")
 	}
 }
@@ -359,10 +374,9 @@ void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 
 	par_level = 0;
 	if (expect == 0) {
-		expect |= EXPECT_NUMBER;
+		expect |= EXPECT_NUMBER|EXPECT_OPERATOR;
 	}
 
-	
 	while (!at_end() && !(expect & EXPECT_DO_BREAK)) {
 		int whitespace_length = ignore_string_match (WHITESPACE, 0);
 
@@ -370,9 +384,13 @@ void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 			THROW_ELEMENT_EXCEPTION("Unexpected EOF in expression");
 		}
 
-		int operator_search_flags = (
-			(expect & EXPECT_NUMBER) ? WPL_OP_F_ASSOC_RIGHT : WPL_OP_F_ASSOC_ALL
-		);
+		int operator_search_flags;
+		if (expect & EXPECT_OPERATOR) {
+			operator_search_flags = WPL_OP_F_ASSOC_ALL;
+		}
+		else if (expect & EXPECT_NUMBER) {
+			operator_search_flags = WPL_OP_F_ASSOC_RIGHT;
+		}
 
 		if (ignore_letter ('(')) {
 			parse_par_open();
@@ -389,6 +407,11 @@ void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 		else if (int len = search (NUMBER, 0, false)) {
 			check_varname_length(len);
 			get_string(buf, len);
+			if (!(expect & EXPECT_NUMBER)) {
+				ostringstream msg;
+				msg << "Syntax error in expression, unexpected number at '" << buf << "'";
+				THROW_ELEMENT_EXCEPTION(msg.str());
+			}
 			parse_number(buf);
 		}
 		else if (int len = search (WORD, 0, false)) {
@@ -404,9 +427,6 @@ void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 		else if (search (QUOTE, 0, false)) {
 			parse_string(parent_namespace);
 		}
-/*		else if (ignore_letter ('{')) {
-			parse_block(parent_namespace);
-		}*/
 		else if (ignore_letter ('/')) {
 			parse_regex("");
 		}

@@ -64,26 +64,28 @@ int wpl_expression_state::run_function (
 		throw runtime_error("Index out of range in wpl_expression_state");
 	}
 
-	if (child_states[index].get() == nullptr) {
-		child_states[index].reset(function->new_state(get_nss(), nss_this, io));
+	if (!child_states[index].validate (nss_this)) {
+		child_states[index].set(function->new_state(get_nss(), nss_this, io), nss_this);
 	}
 
 	wpl_function_state *function_state =
 		(wpl_function_state *) child_states[index].get();
 
 	if (!function_state->set_variables_from_expression(this, discard_pos)) {
-		cerr << "While loading arguments from expression into function with signature ";
-		cerr << "\t'" << function->get_function_name() << "' :\n";
-		throw runtime_error("Function argument mismatch");
+		ostringstream msg;
+		msg << "While loading arguments from expression into function with signature ";
+		msg << "\t'" << function->get_function_name() << "' : Function argument mismatch\n";
+		throw runtime_error(msg.str());
 	}
 
 	set_discard_pos(discard_pos);
 
 	int ret = function->run(function_state, function_state->get_return_value());
 	if (!(ret & WPL_OP_OK)) {
-		cerr << "While running function with signature ";
-		cerr << "\t'" << function->get_function_name() << "' :\n";
-		throw runtime_error("No return value from function block");
+		ostringstream msg;
+		msg << "While running function with signature ";
+		msg << "\t'" << function->get_function_name() << "': No return value from function block, try to add 'return 0;'\n";
+		throw runtime_error(msg.str());
 	}
 
 	return function_state->get_return_value()->do_operator_recursive(this, final_result);
@@ -93,8 +95,8 @@ int wpl_expression_state::run_child(wpl_runable *runable, int index, wpl_value *
 	if (index >= WPL_EXPRESSION_MAX) {
 		throw runtime_error("Index out of range in wpl_expression_state");
 	}
-	if (child_states[index].get() == nullptr) {
-		child_states[index].reset(runable->new_state(nss, io));
+	if (child_states[index].validate(NULL)) {
+		child_states[index].set(runable->new_state(nss, io), NULL);
 	}
 
 	return runable->run(child_states[index].get(), final_result);

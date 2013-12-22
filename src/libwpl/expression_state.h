@@ -40,6 +40,26 @@ using namespace std;
 class wpl_namespace_session;
 class wpl_runable;
 
+class wpl_expression_child_state {
+	unique_ptr<wpl_state> state;
+	void *unique;
+
+	public:
+	wpl_expression_child_state() : state() {
+		unique = NULL;
+	}
+	inline bool validate (void *test) {
+		return (state.get() != nullptr && test == unique);
+	}
+	inline void set (wpl_state *state, void *unique) {
+		this->state.reset(state);
+		this->unique = unique;
+	}
+	inline wpl_state *get() {
+		return state.get();
+	}
+};
+
 class wpl_expression_state : public wpl_state {
 	private:
 
@@ -47,7 +67,7 @@ class wpl_expression_state : public wpl_state {
 	wpl_exp_deque<wpl_value*> wait_stack;
 	wpl_exp_deque<wpl_value*> discard_chain;
 
-	unordered_map<int,unique_ptr<wpl_state>> child_states;
+	vector<wpl_expression_child_state> child_states;
 
 	void optimize();
 
@@ -58,7 +78,10 @@ class wpl_expression_state : public wpl_state {
 			const wpl_exp_deque<shunting_yard_carrier> &my_list
 			) :
 		wpl_state(nss, io),
-		run_stack(my_list)
+		run_stack(my_list),
+		wait_stack(),
+		discard_chain(),
+		child_states(run_stack.size())
 	{
 		optimize();
 		run_stack.save_pos();
