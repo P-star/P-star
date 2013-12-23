@@ -1,3 +1,12 @@
+pstar (1.1-alpha7) unstable; urgency=low
+
+  * Added for loop
+  * Added support for multidimensional arrays
+  * Fix for accessing arrays of structs inside loops
+  * Fix for multiplication operator which collided with first element selection operator
+
+ -- Atle Solbakken <atle@goliathdns.no>  Tue, 24 Dec 2013 00:14:07 +0100
+
 pstar (1.1-alpha6) unstable; urgency=low
 
   * Thread safety issues with Apache module fixed, it now works with both mpm-worker and mpm-prefork
