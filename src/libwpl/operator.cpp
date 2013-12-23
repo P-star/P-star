@@ -111,6 +111,7 @@ OP_DEF(OP_BLOCK_RETURN_OP,	"block_return",	20, WPL_OP_F_RIGHT_ONE, 12)
 
 static const struct wpl_operator_struct *operators[] = {
 	&OP_ARRAY_SUBSCRIPTING,
+	&OP_MUL, // Must be above ELEMENT
 	&OP_ELEMENT,
 	&OP_CONCAT,
 	&OP_INC_SUFFIX,
@@ -147,7 +148,6 @@ static const struct wpl_operator_struct *operators[] = {
 	&OP_ASSIGN_DIV,
 	&OP_ASSIGN_MOD,
 	&OP_ASSIGN_CONCAT,
-	&OP_MUL,
 	&OP_DIV,
 	&OP_MOD,
 	&OP_ASSIGN_SH_LEFT,

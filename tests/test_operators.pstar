@@ -1,0 +1,42 @@
+SCENE main {
+	float a = 10;
+	uint b = 2;
+
+	echo "" . (a + b) . "\n";
+	echo "" . (a - b) . "\n";
+	echo "" . (a * b) . "\n";
+	echo "" . (a / b) . "\n";
+	echo "" . (b % a) . "\n";
+	echo "" . (a *= b) . "\n";
+	echo "" . (a += b) . "\n";
+	echo "" . (a -= b) . "\n";
+	echo "" . (a /= b) . "\n";
+	echo "" . (b %= a) . "\n";
+	echo "" . b++ . " " . ++b . " " . b-- . " " . --b . "\n";
+
+	b = 0;
+	echo "" . (b | 4) . "\n";
+	echo "" . (b |= 8|4|2) . "\n";
+	echo "" . (b & 8|2) . "\n";
+	echo "" . ((b & 8|2)^2) . "\n";
+	echo "" . (b |= 2) . "\n";
+	echo "" . (b &= 2) . "\n";
+	echo "" . (b ^= 2) . "\n";
+
+	b = 1;
+	echo "" . (b << 1) . "\n";
+	echo "" . (b >> 1) . "\n";
+	echo "" . (b <<= 1) . "\n";
+	echo "" . (b >>= 1) . "\n";
+
+	echo b, b, "$b" . "\n";
+
+	string c;
+	echo c .= "\nC\n";
+
+	echo "" . (0 && 1 || 1) . "\n";
+	echo "" . (0 && 1 || 0) . "\n";
+	echo "" . (1 && 1 || 0) . "\n";
+	echo "" . (1 == 1) . "\n";
+	echo "" . (1 != 1) . "\n";
+}

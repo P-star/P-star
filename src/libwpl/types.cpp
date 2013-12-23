@@ -153,6 +153,23 @@ void wpl_type_complete::parse_value (wpl_namespace *parent_namespace) {
 	}
 }
 
+wpl_parseable *wpl_type_template::register_unique_parseable (
+		wpl_namespace *parent_namespace,
+		const wpl_type_complete *type
+) {
+	unique_ptr<wpl_type_complete> new_type(new_instance(type));
+
+	// Check if this template type is already defined
+	wpl_parseable *parseable = NULL;
+	if (!(parseable = parent_namespace->new_find_parseable(new_type->get_name()))) {
+		parent_namespace->new_register_parseable(new_type.get());
+		parseable = new_type.release();
+		parent_namespace->add_managed_pointer(parseable);
+	}
+
+	return parseable;
+}
+
 void wpl_type_template::parse_value (wpl_namespace *parent_namespace) {
 	char buf[WPL_VARNAME_SIZE];
 
@@ -180,19 +197,19 @@ void wpl_type_template::parse_value (wpl_namespace *parent_namespace) {
 		parseable->parse_value(parent_namespace);
 	}
 	catch (wpl_type_end_template_declaration &e) {
-		unique_ptr<wpl_type_complete> new_type(new_instance(e.get_type()));
 		load_position(parseable->get_position());
-
-		// Check if this template type is already defined
-		parseable = NULL;
-		if (!(parseable = parent_namespace->new_find_parseable(new_type->get_name()))) {
-			parent_namespace->new_register_parseable(new_type.get());
-			parseable = new_type.release();
-			parent_namespace->add_managed_pointer(parseable);
+		parseable = register_unique_parseable(parent_namespace, e.get_type());
+		try {
+			parseable->load_position(get_position());
+			parseable->parse_value(parent_namespace);
 		}
+		catch (wpl_type_end_template_declaration &e) {
+			load_position(parseable->get_position());
+			parseable = register_unique_parseable(parent_namespace, e.get_type());
 
-		parseable->load_position(get_position());
-		parseable->parse_value(parent_namespace);
+			parseable->load_position(get_position());
+			parseable->parse_value(parent_namespace);
+		}
 	}
 }
 

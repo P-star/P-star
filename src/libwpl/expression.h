@@ -76,13 +76,15 @@ class wpl_expression : public wpl_runable, public shunting_yard, public wpl_matc
 	   */
 //	void parse_block(wpl_namespace *parent_namespace);
 	void parse_string(wpl_namespace *parent_namespace);
+	void parse_array_subscripting(wpl_namespace *parent_namespace, wpl_value_unresolved_identifier *ui);
 	void parse_function_call(wpl_namespace *parent_namespace, wpl_value_unresolved_identifier *ui);
 	void parse_unresolved_identifier(wpl_namespace *parent_namespace, const char *text);
 	void parse_quoted_string(wpl_namespace *parent_namespace);
 	void parse_regex(const char *prefix);
 
-	void parse (wpl_namespace *parent_namespace, uint32_t expect);
+	void parse (wpl_namespace *parent_namespace);
 
+	public:
 	static const uint32_t EXPECT_ALL =		0;
 	static const uint32_t EXPECT_OPERATOR =		1<<0;
 	static const uint32_t EXPECT_NUMBER =		1<<1;
@@ -101,7 +103,14 @@ class wpl_expression : public wpl_runable, public shunting_yard, public wpl_matc
 	static const uint32_t EXPECT_OPEN_PAR =		1<<30;
 	static const uint32_t EXPECT_END_ON_PAR =	1<<31;
 
-	public:
+	wpl_expression() {
+		par_level = 0;
+		this->expect = EXPECT_NUMBER|EXPECT_OPERATOR;
+	}
+	wpl_expression(uint32_t expect) {
+		par_level = 0;
+		this->expect = expect;
+	}
 	virtual ~wpl_expression();
 
 	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) override;
@@ -116,8 +125,11 @@ class wpl_expression_loose_end : public wpl_expression {
 	public:
 
 	virtual ~wpl_expression_loose_end() {}
+	wpl_expression_loose_end() :
+		wpl_expression(EXPECT_LOOSE_END)
+	{}
 	void parse_value(wpl_namespace *parent_namespace) override {
-		parse(parent_namespace, EXPECT_LOOSE_END);
+		parse(parent_namespace);
 		finish();
 	}
 };
@@ -126,8 +138,12 @@ class wpl_expression_par_enclosed : public wpl_expression {
 	public:
 
 	virtual ~wpl_expression_par_enclosed() {}
+	wpl_expression_par_enclosed() :
+		wpl_expression(EXPECT_OPEN_PAR|EXPECT_END_ON_PAR)
+	{}
+	void insert_fake_open_par();
 	void parse_value(wpl_namespace *parent_namespace) override {
-		parse(parent_namespace, EXPECT_OPEN_PAR|EXPECT_END_ON_PAR);
+		parse(parent_namespace);
 		finish();
 	}
 };

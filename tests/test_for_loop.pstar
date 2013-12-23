@@ -1,0 +1,28 @@
+SCENE main {
+	struct person {
+		string name;
+		int age;
+		public int init(string _name, int _age) {
+			name = _name;
+			age = _age;
+		};
+		public int print() {
+			echo "Name: " . name . ", Age: " . age . "\n";
+		};
+	};
+
+	array<person> persons;
+
+	persons[@persons]->init("A", 10);
+	persons[@persons]->init("B", 20);
+	persons[@persons]->init("C", 30);
+	persons[@persons]->init("D", 40);
+	persons[@persons]->init("E", 50);
+
+	int i;
+	for (i = 0; i < @persons; i++) {
+		echo "Entry " . i . " - ";
+		persons[i]->print();
+	}
+	return 0;
+}

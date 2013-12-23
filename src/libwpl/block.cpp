@@ -37,6 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "user_function.h"
 #include "block_if.h"
 #include "block_while.h"
+#include "block_for.h"
 #include "pragma.h"
 #include "text.h"
 #include "value_bool.h"
@@ -116,6 +117,15 @@ void wpl_block::parse_pragma (wpl_namespace *ns) {
 	pragma->load_position(get_position());
 	pragma->parse_value(ns);
 	load_position(pragma->get_position());
+}
+
+void wpl_block::parse_for(wpl_namespace *ns) {
+	wpl_block_for *block = new wpl_block_for();
+	append_child(block);
+
+	block->load_position(get_position());
+	block->parse_value(ns);
+	load_position(block->get_position());
 }
 
 void wpl_block::parse_while(wpl_namespace *ns) {
@@ -291,6 +301,9 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 			}
 			else if (strcmp (buf, wpl_blockname_while) == 0) {
 				parse_while(ns);
+			}
+			else if (strcmp (buf, wpl_blockname_for) == 0) {
+				parse_for(ns);
 			}
 			else if (strcmp (buf, wpl_blockname_text) == 0) {
 				parse_text(ns);

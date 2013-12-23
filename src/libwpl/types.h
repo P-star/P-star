@@ -195,6 +195,8 @@ class wpl_type_complete_template;
 
 class wpl_type_template : public wpl_type {
 	private:
+	wpl_parseable *register_unique_parseable (wpl_namespace *parent_namespace, const wpl_type_complete *type);
+
 	public:
 	wpl_type_template (const char *name) : wpl_type(name) {}
 	virtual ~wpl_type_template() {

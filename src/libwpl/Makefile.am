@@ -12,6 +12,7 @@ libwpl_1_1_la_SOURCES = \
 	expression.cpp matcher.cpp identifier.cpp \
 	variable.cpp namespace.cpp runable.cpp \
 	shunting_yard.cpp block_if.cpp block_while.cpp \
+	block_for.cpp \
 	scene.cpp string.cpp object.cpp types.cpp \
 	function.cpp user_function.cpp internal_function.cpp \
 	value.cpp operator.cpp text.cpp modifier.cpp \

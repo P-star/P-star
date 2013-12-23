@@ -28,13 +28,21 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-static const char *wpl_blockname_scene = 	"SCENE";
-static const char *wpl_blockname_text = 	"TEXT";
-static const char *wpl_blockname_html_template = "HTML_TEMPLATE";
+#include "block.h"
+#include "operator.h"
+#include "expression.h"
 
-static const char *wpl_blockname_if = 		"if";
-static const char *wpl_blockname_else_if = 	"else if";
-static const char *wpl_blockname_else = 	"else";
-static const char *wpl_blockname_while = 	"while";
-static const char *wpl_blockname_for =	 	"for";
+class wpl_namespace;
+class wpl_value;
 
+class wpl_block_for : public wpl_block {
+	private:
+	unique_ptr<wpl_expression> exp_init;
+	unique_ptr<wpl_expression> exp_condition;
+	unique_ptr<wpl_expression_par_enclosed> exp_increment;
+
+	public:
+	wpl_block_for();
+	int run(wpl_state *state, wpl_value *final_result) override;
+	void parse_value(wpl_namespace *ns);
+};

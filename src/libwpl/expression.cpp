@@ -30,7 +30,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "expression_state.h"
 #include "exception.h"
 #include "blocks.h"
-//#include "block.h"
 #include "string.h"
 #include "function.h"
 #include "operator.h"
@@ -41,7 +40,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_int.h"
 #include "value_string.h"
 #include "value_unresolved.h"
-//#include "value_expression.h"
 #include "value_wrapper.h"
 #include "value_list.h"
 #include "value_regex.h"
@@ -58,12 +56,6 @@ wpl_expression::~wpl_expression() {
 
 wpl_state *wpl_expression::new_state(wpl_namespace_session *nss, wpl_io *io) {
 	return new wpl_expression_state(nss, io, get_run_stack());
-//	this->nss = nss;wpl_block_state *parent_block_state;
-/*	if (!(parent_block_state = dynamic_cast<wpl_block_state*>(parent))) {
-		cerr << "Parent pointer was " << parent << " of type " << typeid(parent).name() << endl;
-		throw runtime_error("wpl_expression::new_state(): did not receive block state");
-	}
-	return new wpl_expression_state(parent_block_state, get_run_stack());*/
 }
 
 int wpl_expression::run (
@@ -71,7 +63,7 @@ int wpl_expression::run (
 		wpl_value *final_result
 		)
 {
-	//dump();
+//	dump();
 
 	wpl_expression_state *exp_state = (wpl_expression_state*) state;
 	exp_state->revert();
@@ -300,6 +292,22 @@ void wpl_expression::parse_string(wpl_namespace *parent_namespace) {
 	expect |= EXPECT_OPERATOR;
 }
 
+void wpl_expression::parse_array_subscripting (
+		wpl_namespace *parent_namespace,
+		wpl_value_unresolved_identifier *ui
+		)
+{
+	uint32_t expect_save = expect;
+	int par_level_save = par_level;
+
+/*	par_level = 0;
+	expect = EXPECT_OPEN_PAR|EXPECT_END_ON_PAR|EXPECT_NUMBER;
+	parse (parent_namespace);
+
+	par_level = par_level_save;
+	expect = expect_save;*/
+}
+
 void wpl_expression::parse_function_call (
 		wpl_namespace *parent_namespace,
 		wpl_value_unresolved_identifier *ui
@@ -311,7 +319,11 @@ void wpl_expression::parse_function_call (
 	shunt(ui);
 
 	prepare_operator(&OP_FUNCTION_CALL);
-	parse (parent_namespace, (EXPECT_OPEN_PAR|EXPECT_END_ON_PAR|EXPECT_NUMBER));
+
+	par_level = 0;
+	expect = EXPECT_OPEN_PAR|EXPECT_END_ON_PAR|EXPECT_NUMBER;
+	parse (parent_namespace);
+
 	shunt_operator(&OP_FUNCTION_CALL);
 
 	par_level = par_level_save;
@@ -324,11 +336,20 @@ void wpl_expression::parse_unresolved_identifier(wpl_namespace *parent_namespace
 #endif
 	wpl_value_unresolved_identifier *ui = new wpl_value_unresolved_identifier(text);
 	add_constant(ui);
-	ignore_string_match(WHITESPACE,0);
+
+	int whitespace_length = ignore_string_match(WHITESPACE,0);
 	if (search_letter ('(')) {
 		parse_function_call(parent_namespace, ui);
 	}
+	else if (ignore_letter ('[')) {
+		shunt(ui);
+		parse_par_open();
+		parse_par_open();
+		expect |= EXPECT_OPERATOR|EXPECT_NUMBER;
+		return;
+	}
 	else {
+		revert_string (whitespace_length);
 		shunt(ui);
 	}
 
@@ -369,14 +390,7 @@ void wpl_expression::parse_regex(const char *prefix) {
 	expect |= EXPECT_OPERATOR;
 }
 
-void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
-	expect = _expect;
-
-	par_level = 0;
-	if (expect == 0) {
-		expect |= EXPECT_NUMBER|EXPECT_OPERATOR;
-	}
-
+void wpl_expression::parse(wpl_namespace *parent_namespace) {
 	while (!at_end() && !(expect & EXPECT_DO_BREAK)) {
 		int whitespace_length = ignore_string_match (WHITESPACE, 0);
 
@@ -398,7 +412,19 @@ void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 		else if (ignore_letter (')')) {
 			parse_par_close();
 		}
-		else if (expect & EXPECT_OPEN_PAR) {
+		else if (ignore_letter (']')) {
+			parse_par_close();
+			shunt_operator(&OP_ARRAY_SUBSCRIPTING);
+			parse_par_close();
+
+			// For multidimensional arrays
+			ignore_whitespace();
+			if (ignore_letter ('[')) {
+				parse_par_open();
+				parse_par_open();
+			}
+		}
+		else if ((expect & EXPECT_OPEN_PAR) && par_level == 0) {
 			THROW_ELEMENT_EXCEPTION("Syntax error: Expected '('");
 		}
 		else if (const struct wpl_operator_struct *op = find_operator(operator_search_flags)) {
@@ -433,13 +459,6 @@ void wpl_expression::parse(wpl_namespace *parent_namespace, uint32_t _expect) {
 		else if (ignore_letter (';')) {
 			parse_semicolon();
 		}
-		else if (ignore_letter ('[')) {
-			parse_par_open();
-		}
-		else if (ignore_letter (']')) {
-			shunt_operator(&OP_ARRAY_SUBSCRIPTING);
-			parse_par_close();
-		}
 		else if (expect & EXPECT_LOOSE_END) {
 			revert_string(whitespace_length);
 			break;
@@ -456,6 +475,10 @@ void wpl_expression::parse_value(wpl_namespace *parent_namespace) {
 #ifdef WPL_DEBUG_EXPRESSIONS
 	DBG("EX (" << this << "): Parsing expression\n");
 #endif
-	parse(parent_namespace, 0);
+	parse(parent_namespace);
 	finish();
+}
+
+void wpl_expression_par_enclosed::insert_fake_open_par() {
+	parse_par_open();
 }

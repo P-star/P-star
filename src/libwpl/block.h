@@ -60,6 +60,7 @@ class wpl_block : public wpl_runable, public wpl_namespace, public wpl_matcher {
 	void parse_block (wpl_namespace *ns);
 	void parse_pragma (wpl_namespace *ns);
 
+	void parse_for(wpl_namespace *ns);
 	void parse_while(wpl_namespace *ns);
 	void parse_if_else_sequenze(wpl_namespace *ns);
 
