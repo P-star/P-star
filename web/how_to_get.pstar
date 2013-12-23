@@ -20,9 +20,9 @@ HTML_TEMPLATE body {
 # apt-get install p-star</pre>
 
 	<h2>Get the latest P* tarball</h2>
-	<p>First, <a href="http://apt.p-star.org/pool/main/p/pstar/pstar_1.1-alpha6.tar.gz">download the latest tar.gz-archive</a>.</p>
+	<p>First, <a href="http://apt.p-star.org/pool/main/p/pstar/pstar_1.1-alpha7.tar.gz">download the latest tar.gz-archive</a>.</p>
 	<p>The source of P* will be put into a directory called "P-star". To complile the program, you will need to have <i>autotools</i> and a C++11 compliant compiler installed. You also need the development packages for <i>MySQL client</i>, <i>Boost regex</i> and <i>Mimetic</i>.</p>
-	<pre>$ tar -zxvf p-star_1.1-alpha6.tar.gz
+	<pre>$ tar -zxvf p-star_1.1-alpha7.tar.gz
 $ cd P-star
 $ autoreconf -i 
 $ ./configure
