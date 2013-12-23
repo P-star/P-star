@@ -869,6 +869,33 @@ The value of the first array element is 'First element'
 			<para>
 			The array only creates elements you access. If you skip indexes, like if you only use element 0 and 5, the size of the array will be 6, but memory is not allocated for elements 1-4.
 			</para>
+			<para>
+			You may use arrays of multiple dimensions by specifing another array inside the template specifier like this: <code>array&lt;array&lt;int&gt;&gt;</code>.
+			To select elements afterwards, use two array subscription operators after eachother like this <code>my_array[0][0]</code> (selects the first element of the first array).
+			Under follows an example of this usage.
+			<programlisting language="c">
+SCENE main {
+	array&lt;array&lt;int&gt;&gt; my_array;
+
+	my_array[0][0] = 10;
+	my_array[0][1] = 20;
+
+	my_array[1][0] = 30;
+	my_array[1][1] = 40;
+
+	int i;
+	int j;
+	for (i = 0; i &lt; @my_array; i++) {
+		for (j = 0; j &lt; @my_array[i+0]; j++) {
+			echo "Value: " . my_array[i+0][j+0] . "\n";
+		}
+	}
+
+	return 0;
+}
+
+			</programlisting>
+			</para>
 			<para>You can push a list to the end of an array using a combination of the discard operator <code>,</code>(comma) and the discard save operator <code>=></code>. The discard save operator returns the number of elements added to the array. Here is an example program:</para>
 			<programlisting language="c">
 SCENE main {
