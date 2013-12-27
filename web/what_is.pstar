@@ -5,13 +5,20 @@
 HTML_TEMPLATE body {
 	<h1>What is P*?</h1>
 	<p>P* (pronounced P-star) is a programming language specifically designed for web development. P* provides easy in-language support for common tasks in this field.</p>
-	<p>P* programs are scripts, and they are run by the P* interpreter, which you can download under <a href="/cgi-bin/how_to_get">How to get P*?</a></p>
+	<p>P* programs are scripts, and they are run by the P* interpreter, which you can download under <a href="/cgi-bin/how_to_get">How to get P*?</a>.</p>
+	<h2>Run environments</h2>
+	<ul>
+		<li>Command line-based run for debugging and pre-generated pages</li>
+		<li>The P* Apache web server module can run scripts and generate pages dynamically</li>
+		<li>P* can run in a CGI-environment on other web servers</li>
+	</ul>
 	<h2>Important features built into P*</h2>
 	<ul>
 		<li>HTML template engine</li>
 		<li>Special syntax to simplify prepared SQL statements</li>
 		<li>Built-in JSON/AJAX output</li>
 		<li>Perl-like regular expression engine</li>
+		<li>Object orientation-inspired code structure</li>
 	</ul>
 	<h2>Support and discussion</h2>
 	<p>There are two public maling lists available. One is for user questions and opinions, and the other is for more technical discussion about development.</p>
