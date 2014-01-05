@@ -32,4 +32,6 @@ SCENE main {
 	for (i = 0; i < @matches-1; i++) {
 		echo "Match $i: '" . matches[i] . "'\n";
 	}
+
+	return 0;
 }

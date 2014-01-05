@@ -1,2 +1,13 @@
 Does match
 Does not match
+Does match
+Does match
+Match 0: 'aa'
+Match 1: 'a '
+Match 2: '  '
+Match 3: 'bb'
+Match 4: 'bb'
+Match 5: '  '
+Match 6: '\['
+Match 7: 'xx'
+Match 8: 'x'
