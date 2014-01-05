@@ -1,6 +1,6 @@
 SCENE main {
 	/* Create a strange string */
-	string test = "aaa   bbbb";
+	string test = "aaa   bbbb  \\[xxx";
 
 	/* Check if a regular expression matches */
 	if (test =~ /a\s*b/) {
@@ -10,5 +10,26 @@ SCENE main {
 	/* Check if a regular expression does not match */
 	if (test !~ /ffff/) { 
 		echo "Does not match\n";
+	}
+
+	/* Check regular expression with interpolated variable */
+	string var = "b.";
+	if (test =~ /aa\s+$var$var.+$/) {
+		echo "Does match\n";
+	}
+
+	/* Check regular expression with interpolated quoted variable */
+	string var_meta = '\[';
+	if (test =~ /($var_meta)(.*)$/q) {
+		echo "Does match\n";
+	}
+
+	/* Pust the matches in the regular expression into the matches-array */
+	array<string> matches;
+	test =~ /..|./g => matches;
+
+	int i;
+	for (i = 0; i < @matches-1; i++) {
+		echo "Match $i: '" . matches[i] . "'\n";
 	}
 }

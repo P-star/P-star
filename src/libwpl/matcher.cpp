@@ -38,6 +38,10 @@ wpl_matcher::wpl_matcher(const wpl_matcher_position &pos) {
 	load_position(pos);
 }
 
+wpl_matcher::wpl_matcher(const char *text, int length, const char *filename) {
+	set_text (text, length, filename);
+}
+
 wpl_matcher::wpl_matcher () :
 	filename()
 {

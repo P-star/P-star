@@ -251,6 +251,7 @@ class wpl_matcher {
 	static const uint32_t INVALID		= 1 << 31;
 
 	wpl_matcher(const wpl_matcher_position &pos);
+	wpl_matcher(const char *text, int length, const char *filename);
 	wpl_matcher();
 	~wpl_matcher();
 

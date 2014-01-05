@@ -259,8 +259,14 @@ int wpl_value::do_regex (
 		wpl_value *rhs
 		)
 {
+	list<unique_ptr<wpl_value>> matches;
+
 	string tmp = toString();
-	bool match = rhs->do_pattern_match(exp_state, tmp);
+	bool match = rhs->do_pattern_match(exp_state, tmp, matches);
+
+	for (const unique_ptr<wpl_value> &match : matches) {
+		exp_state->push_discard(match.get());
+	}
 
 	if (op == &OP_PATTERN_NOT_EQ) {
 		match = !match;

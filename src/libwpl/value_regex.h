@@ -32,25 +32,93 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_holder.h"
 #include "exception.h"
 
+#include <list>
 #include <boost/regex.hpp>
 
 struct wpl_operator_struct;
+class wpl_matcher;
+
+namespace wpl_value_regex_rope {
+	using namespace std;
+
+	class element {
+		public:
+		virtual void get(wpl_namespace_session *nss, string &target) const = 0;
+	};
+	class element_variable : public element {
+		private:
+		string name;
+		virtual void hook(string &value) const {} // Do nothing
+
+		public:
+		element_variable (const char *_name) :
+			name(_name)
+		{}
+		void get(wpl_namespace_session *nss, string &target) const override;
+	};
+	class element_variable_quoted : public element_variable {
+		private:
+		void hook (string &value) const override;
+
+		public:
+		element_variable_quoted (const char *_name) :
+			element_variable(_name)
+		{}
+	};
+	class element_text : public element {
+		string text;
+
+		public:
+		element_text(const char *_text) :
+			text(_text)
+		{}
+		void get(wpl_namespace_session *nss, string &target) const override {
+			target.append(text);
+		}
+	};
+	class rope {
+		private:
+		list<shared_ptr<element>> elements;
+		string tmp;
+
+		public:
+		void add_var (const char *name);
+		void add_qvar (const char *name);
+		void add_text (const char *text);
+		void get(wpl_namespace_session *nss, string &target);
+	};
+}	
 
 class wpl_value_regex : public wpl_value {
 	private:
-	boost::regex my_regex;
+
+	wpl_value_regex_rope::rope elements;
+
+	bool quote_inline_variables;
+	bool do_global;
+
+	void add_var (const char *name) {
+		if (quote_inline_variables) {
+			elements.add_qvar(name);
+		}
+		else {
+			elements.add_var(name);
+		}
+	}
 
 	public:
 	PRIMITIVE_TYPEINFO(regex)
-	wpl_value_regex(const char *regex_string) :
-		my_regex(regex_string)
-	{}
+	wpl_value_regex(const char *regex_string, const char *prefix, const char *postfix);
 
 	wpl_value *clone() const {
 		return new wpl_value_regex(*this);
 	}
 
-	bool do_pattern_match (wpl_expression_state *exp_state, string &subject) override;
+	bool do_pattern_match (
+			wpl_expression_state *exp_state,
+			string &subject,
+			list<unique_ptr<wpl_value>> &matches
+			) override;
 
 	int do_operator (
 			wpl_expression_state *exp_state,

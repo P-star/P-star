@@ -382,7 +382,19 @@ void wpl_expression::parse_regex(const char *prefix) {
 		THROW_ELEMENT_EXCEPTION("Non-terminated regular expression runs out of file");
 	}
 
-	wpl_value_regex *regex = new wpl_value_regex(regex_string.c_str());
+	int len;
+	char postfix[WPL_VARNAME_SIZE];
+	if (len = search (LOWERCASE_LETTER, 0, false)) {
+		if (len > WPL_VARNAME_SIZE) {
+			THROW_ELEMENT_EXCEPTION("Too many postfix regex modifiers");
+		}
+		get_string(postfix, len);
+	}
+	else {
+		*postfix = '\0';
+	}
+
+	wpl_value_regex *regex = new wpl_value_regex(regex_string.c_str(), prefix, postfix);
 	add_constant(regex);
 	shunt(regex);
 

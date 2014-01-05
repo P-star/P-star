@@ -37,6 +37,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "debug.h"
 #include "io.h"
 
+#include <list>
+#include <memory>
+
 #if defined(_MSC_VER)
 #define strtoll _strtoi64
 #define strtoull _strtoui64
@@ -169,7 +172,11 @@ class wpl_value : public wpl_suicidal {
 			wpl_value *rhs
 	);
 
-	virtual bool do_pattern_match(wpl_expression_state *exp_state, string &subject) {
+	virtual bool do_pattern_match(
+			wpl_expression_state *exp_state,
+			string &subject,
+			list<unique_ptr<wpl_value>> &matches
+	) {
 		cerr << "Attempted to match =~ or !~ with type '" << get_type_name() << 
 		       "' which is not a /regular expression/\n";
 		throw runtime_error("Cannot do pattern match operator");
