@@ -11,3 +11,6 @@ Match 5: '  '
 Match 6: '\['
 Match 7: 'xx'
 Match 8: 'x'
+Before: 1234123412341234
+Replacement succeeded
+After: -1n--3n--1n--3n--1n--3n--1n--3n-
