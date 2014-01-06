@@ -33,10 +33,14 @@ SCENE main {
 		echo "Match $i: '" . matches[i] . "'\n";
 	}
 
+	/* Test regex text replacement */
+	test = "1234123412341234";
 	echo "Before: $test\n";
 
-	string r = "ccc";
-	test =~ s/../$r/g;
+	string r = "n";
+	if (test =~ s/(.)[24]/-$1$r-/g) {
+		echo "Replacement succeeded\n";
+	}
 
 	echo "After: $test\n";
 
