@@ -32,6 +32,7 @@ using namespace std;
 	if (letter == escape) { *target=replace; return true; }
 
 bool wpl_string_parse_double_escape(char *target, char letter) {
+	WPL_PROCESS_ESCAPE_CHAR('/', '/')
 	WPL_PROCESS_ESCAPE_CHAR('\0', 0)
 	WPL_PROCESS_ESCAPE_CHAR('a', 7)
 	WPL_PROCESS_ESCAPE_CHAR('b', 8)

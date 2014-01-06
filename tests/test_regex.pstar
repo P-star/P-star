@@ -33,5 +33,12 @@ SCENE main {
 		echo "Match $i: '" . matches[i] . "'\n";
 	}
 
+	echo "Before: $test\n";
+
+	string r = "ccc";
+	test =~ s/../$r/g;
+
+	echo "After: $test\n";
+
 	return 0;
 }

@@ -357,46 +357,14 @@ void wpl_expression::parse_unresolved_identifier(wpl_namespace *parent_namespace
 	expect |= EXPECT_OPERATOR;
 }
 
-void wpl_expression::parse_regex(const char *prefix) {
-	wpl_matcher_position start = get_position();
-
-	char letter;
-	string regex_string;
-	regex_string.reserve(50);
-
-	while (letter = get_letter()) {
-		if (letter == '\\') {
-			regex_string += letter;
-			regex_string += get_letter();
-		}
-		else if (letter == '/') {
-			break;
-		}
-		else {
-			regex_string += letter;
-		}
-	}
-
-	if (at_end()) {
-		load_position(start);
-		THROW_ELEMENT_EXCEPTION("Non-terminated regular expression runs out of file");
-	}
-
-	int len;
-	char postfix[WPL_VARNAME_SIZE];
-	if (len = search (LOWERCASE_LETTER, 0, false)) {
-		if (len > WPL_VARNAME_SIZE) {
-			THROW_ELEMENT_EXCEPTION("Too many postfix regex modifiers");
-		}
-		get_string(postfix, len);
-	}
-	else {
-		*postfix = '\0';
-	}
-
-	wpl_value_regex *regex = new wpl_value_regex(regex_string.c_str(), prefix, postfix);
+void wpl_expression::parse_regex(wpl_namespace *parent_namespace) {
+	wpl_value_regex *regex = new wpl_value_regex();
 	add_constant(regex);
 	shunt(regex);
+
+	regex->load_position(get_position());
+	regex->parse_value();
+	load_position(regex->get_position());
 
 	expect &= ~(EXPECT_NUMBER);
 	expect |= EXPECT_OPERATOR;
@@ -455,8 +423,10 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 		else if (int len = search (WORD, 0, false)) {
 			check_varname_length(len);
 			get_string(buf, len);
-			if (ignore_letter('/')) {
-				parse_regex(buf);
+
+			if (search_letter('/')) {
+				revert_string(len);
+				parse_regex(parent_namespace);
 			}
 			else {
 				parse_unresolved_identifier(parent_namespace, buf);
@@ -465,8 +435,8 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 		else if (search (QUOTE, 0, false)) {
 			parse_string(parent_namespace);
 		}
-		else if (ignore_letter ('/')) {
-			parse_regex("");
+		else if (search_letter ('/')) {
+			parse_regex(parent_namespace);
 		}
 		else if (ignore_letter (';')) {
 			parse_semicolon();

@@ -31,19 +31,23 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "typenames.h"
 #include "value_holder.h"
 #include "exception.h"
+#include "matcher.h"
 
 #include <list>
 #include <boost/regex.hpp>
 
 struct wpl_operator_struct;
-class wpl_matcher;
 
 namespace wpl_value_regex_rope {
 	using namespace std;
 
 	class element {
 		public:
-		virtual void get(wpl_namespace_session *nss, string &target) const = 0;
+		virtual void get (
+				wpl_namespace_session *nss,
+				boost::match_results<std::string::const_iterator> &what,
+				string &target
+		) const = 0;
 	};
 	class element_variable : public element {
 		private:
@@ -54,7 +58,11 @@ namespace wpl_value_regex_rope {
 		element_variable (const char *_name) :
 			name(_name)
 		{}
-		void get(wpl_namespace_session *nss, string &target) const override;
+		void get (
+				wpl_namespace_session *nss,
+				boost::match_results<std::string::const_iterator> &what,
+				string &target
+		) const override;
 	};
 	class element_variable_quoted : public element_variable {
 		private:
@@ -72,9 +80,24 @@ namespace wpl_value_regex_rope {
 		element_text(const char *_text) :
 			text(_text)
 		{}
-		void get(wpl_namespace_session *nss, string &target) const override {
+		void get (
+				wpl_namespace_session *nss,
+				boost::match_results<std::string::const_iterator> &what,
+				string &target
+		) const override {
 			target.append(text);
 		}
+	};
+	class element_match_index : public element {
+		int index;
+
+		public:
+		element_match_index (int i) : index(i) {}
+		void get (
+				wpl_namespace_session *nss,
+				boost::match_results<std::string::const_iterator> &what,
+				string &target
+		) const override;
 	};
 	class rope {
 		private:
@@ -85,17 +108,24 @@ namespace wpl_value_regex_rope {
 		void add_var (const char *name);
 		void add_qvar (const char *name);
 		void add_text (const char *text);
-		void get(wpl_namespace_session *nss, string &target);
+		void add_mindex (const char *text);
+		void get (
+				wpl_namespace_session *nss,
+				boost::match_results<std::string::const_iterator> &what,
+				string &target
+		);
 	};
 }	
 
-class wpl_value_regex : public wpl_value {
+class wpl_value_regex : public wpl_value, public wpl_matcher {
 	private:
 
 	wpl_value_regex_rope::rope elements;
+	wpl_value_regex_rope::rope replacement_elements;
 
 	bool quote_inline_variables;
 	bool do_global;
+	bool do_replace;
 
 	void add_var (const char *name) {
 		if (quote_inline_variables) {
@@ -106,9 +136,20 @@ class wpl_value_regex : public wpl_value {
 		}
 	}
 
+	void parse_prefix();
+	void parse_postfix();
+	void parse_main();
+	void parse_replacement();
+
 	public:
 	PRIMITIVE_TYPEINFO(regex)
-	wpl_value_regex(const char *regex_string, const char *prefix, const char *postfix);
+	wpl_value_regex() {
+		quote_inline_variables = false;
+		do_global = false;
+		do_replace = false;
+	}
+
+	void parse_value();
 
 	wpl_value *clone() const {
 		return new wpl_value_regex(*this);

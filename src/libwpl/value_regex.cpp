@@ -26,12 +26,18 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "matcher.h"
+#include "string.h"
 #include "value_regex.h"
 #include "value_string.h"
 #include "operator_return_values.h"
+#include "wpl_string.h"
 
-void wpl_value_regex_rope::element_variable::get(wpl_namespace_session *nss, string &target) const {
+void wpl_value_regex_rope::element_variable::get (
+		wpl_namespace_session *nss,
+		boost::match_results<std::string::const_iterator> &what,
+		string &target
+		) const
+{
 	wpl_variable *variable = nss->find_variable(name.c_str(), WPL_NSS_CTX_SELF);
 	if (!variable) {
 		ostringstream msg;
@@ -41,6 +47,20 @@ void wpl_value_regex_rope::element_variable::get(wpl_namespace_session *nss, str
 	string tmp = variable->get_value()->toString();
 	hook (tmp);
 	target += tmp;
+}
+
+void wpl_value_regex_rope::element_match_index::get (
+		wpl_namespace_session *nss,
+		boost::match_results<std::string::const_iterator> &what,
+		string &target
+		) const
+{
+	if (index >= what.size() || index < 0) {
+		ostringstream msg;
+		msg << "Regex match replacement '$" << index << "' out of range\n";
+		throw runtime_error(msg.str());
+	}
+	target.append(string(what[index].first, what[index].second));
 }
 
 void wpl_value_regex_rope::element_variable_quoted::hook(string &value) const {
@@ -69,29 +89,51 @@ void wpl_value_regex_rope::rope::add_text (const char *text) {
 	elements.emplace_back(new element_text(text));
 }
 
-void wpl_value_regex_rope::rope::get (wpl_namespace_session *nss, string &target) {
+void wpl_value_regex_rope::rope::add_mindex(const char *text) {
+	elements.emplace_back(new element_match_index(strtoll(text, NULL, 10)));
+}
+
+void wpl_value_regex_rope::rope::get (
+		wpl_namespace_session *nss,
+		boost::match_results<std::string::const_iterator> &what,
+		string &target
+) {
 	for (const shared_ptr<element> &ptr : elements) {
-		ptr->get(nss, target);
+		ptr->get(nss, what, target);
 	}
 }
 
-wpl_value_regex::wpl_value_regex(const char *regex_string, const char *prefix, const char *postfix) :
-	elements()
-{
-	quote_inline_variables = false;
-	do_global = false;
-
+void wpl_value_regex::parse_prefix() {
 	const char *pos;
 	const char *end;
-	for (pos = prefix, end = prefix + strlen(prefix); pos < end; pos++) {
+
+	int len = search (LOWERCASE_LETTER, 0, false);
+	if (len == 0)
+		return;
+
+	for (pos = get_string_pointer(), end = get_string_pointer() + len; pos < end; pos++) {
 		switch (*pos) {
+			case 's':
+				do_replace = true;
+				break;
 			default:
 				ostringstream msg;
 				msg << "Unknown regex prefix modifier '" << *pos << "'\n";
-				throw runtime_error(msg.str());
+				THROW_ELEMENT_EXCEPTION(msg.str());
 		}
 	}
-	for (pos = postfix, end = postfix + strlen(postfix); pos < end; pos++) {
+	ignore_string (len);
+}
+
+void wpl_value_regex::parse_postfix() {
+	const char *pos;
+	const char *end;
+
+	int len = search (LOWERCASE_LETTER, 0, false);
+	if (len == 0)
+		return;
+
+	for (pos = get_string_pointer(), end = get_string_pointer() + len; pos < end; pos++) {
 		switch (*pos) {
 			case 'q':
 				quote_inline_variables = true;
@@ -102,21 +144,28 @@ wpl_value_regex::wpl_value_regex(const char *regex_string, const char *prefix, c
 			default:
 				ostringstream msg;
 				msg << "Unknown regex postfix modifier '" << *pos << "'\n";
-				throw runtime_error(msg.str());
+				THROW_ELEMENT_EXCEPTION(msg.str());
 		}
 	}
-	
+	ignore_string(len);
+}
 
-	wpl_matcher matcher(regex_string, strlen(regex_string), "{REGEX}");
+void wpl_value_regex::parse_main() {
+	wpl_matcher_position start = get_position();
 
 	string tmp;
 	char letter;
+	bool found_end = false;
 	bool in_escape_seq = false;
 	bool in_variable_name = false;
-	while (!matcher.at_end() && (letter = matcher.get_letter())) {
+	while (!at_end() && (letter = get_letter())) {
 		if (in_escape_seq) {
 			tmp += letter;
 			in_escape_seq = false;
+		}
+		else if (letter == '/') {
+			found_end = true;
+			break;
 		}
 		else if (in_variable_name) {
 			if (M_WORD(letter)) {
@@ -131,7 +180,7 @@ wpl_value_regex::wpl_value_regex(const char *regex_string, const char *prefix, c
 				else {
 					add_var(tmp.c_str());
 					tmp = "";
-					matcher.revert_string(1);
+					revert_string(1);
 				}
 				in_variable_name = false;
 			}
@@ -149,15 +198,97 @@ wpl_value_regex::wpl_value_regex(const char *regex_string, const char *prefix, c
 			tmp += letter;
 		}
 	}
-	if (in_variable_name) {
+
+	if (!found_end) {
+		load_position(start);
+		THROW_ELEMENT_EXCEPTION("Runaway regular expression, missing terminating /");
+	}
+	else if (in_variable_name) {
 		add_var(tmp.c_str());
 	}
 	else if (in_escape_seq) {
-		throw runtime_error("Runaway escape-sequence '\\' at end of regular expression");
+		load_position(start);
+		THROW_ELEMENT_EXCEPTION("Runaway escape-sequence '\\' at end of regular expression");
 	}
 	else {
 		elements.add_text(tmp.c_str());
 	}
+}
+
+void wpl_value_regex::parse_replacement() {
+	wpl_matcher_position start = get_position();
+
+	string tmp;
+	char letter;
+	char word[WPL_VARNAME_SIZE];
+
+	while (!at_end() && (letter = get_letter())) {
+		if (letter == '/') {
+			replacement_elements.add_text(tmp.c_str());
+			return;
+		}
+		else if (letter == '\\') {
+			if (at_end()) {
+				load_position(start);
+				THROW_ELEMENT_EXCEPTION("Runaway escape-sequence '\\'"
+						" at end of regular expression replacement"
+						);
+			}
+
+			if (!wpl_string_parse_double_escape (&letter, get_letter())) {
+				revert_string(1);
+				ostringstream msg;
+				msg << "Unknown escape sequence '\\" << get_letter() <<
+					"' in regex replacement";
+				THROW_ELEMENT_EXCEPTION(msg.str());
+			}
+			tmp += letter;
+		}
+		else if (letter == '$') {
+			replacement_elements.add_text(tmp.c_str());
+			tmp = "";
+
+			if (int len = search (NUMBER, 0, false)) {
+				check_varname_length(len);
+				get_string(word, len);
+				replacement_elements.add_mindex(word);
+			}
+			else if (int len = search (WORD, 0, false)) {
+				check_varname_length(len);
+				get_string(word, len);
+				replacement_elements.add_var(word);
+			}
+			else {
+				THROW_ELEMENT_EXCEPTION("Excepted number or word after '$'"
+						" in regular expression replacement"
+						);
+			}
+		}
+		else {
+			tmp += letter;
+		}
+	}
+
+	load_position(start);
+	THROW_ELEMENT_EXCEPTION("Runaway regular expression replacement, missing terminating /");
+}
+
+void wpl_value_regex::parse_value() {
+	wpl_matcher_position start = get_position();
+
+	parse_prefix();
+
+	if (!ignore_letter('/')) {
+		THROW_ELEMENT_EXCEPTION("Expected regex start / after initial prefix modifiers");
+	}
+
+	parse_main();
+
+	if (do_replace) {
+		parse_replacement();
+	}
+
+	parse_postfix();
 }
 
 bool wpl_value_regex::do_pattern_match (
@@ -165,25 +296,21 @@ bool wpl_value_regex::do_pattern_match (
 		string &subject,
 		list<unique_ptr<wpl_value>> &matches
 ) {
+	boost::match_flag_type flags = boost::match_default;
+	boost::match_results<std::string::const_iterator> what; 
+	string::const_iterator start, end;
 	/*
 	   TODO
 	   Implement wpl_regex_state to cache the regex
 	 */
-	/*
-	   TODO
-	   - add /g-modifier for multiple match
-	   - push matches to discard queue
-	   */
 
 	string regex_string;
-	elements.get(exp_state->get_nss(), regex_string);
+	elements.get(exp_state->get_nss(), what, regex_string);
 	boost::regex my_regex(regex_string);
 
 	bool result = false;
 
-	boost::match_results<std::string::const_iterator> what; 
-	boost::match_flag_type flags = boost::match_default;
-	string::const_iterator start, end;
+	string replacement;
 
 	start = subject.begin();
 	end = subject.end();
@@ -196,13 +323,24 @@ bool wpl_value_regex::do_pattern_match (
 			matches.emplace_back(new wpl_value_string(string(what[i].first, what[i].second)));
 		}
 
+		if (do_replace) {
+			replacement.append(start, what[0].first);
+			replacement_elements.get(exp_state->get_nss(), what, replacement);
+		}
+
+		start = what[0].second;
+
 		if (!do_global) {
 			break;
 		}
 
-		start = what[0].second;
 		flags |= boost::match_prev_avail; 
 		flags |= boost::match_not_bob;
+	}
+
+	if (do_replace) {
+		replacement.append(start, end);
+		subject = replacement;
 	}
 
 	return result;

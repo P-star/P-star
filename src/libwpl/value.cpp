@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "value.h"
 #include "value_bool.h"
+#include "value_string.h"
 #include "type_precedence.h"
 #include "expression_state.h"
 #include "operator.h"
@@ -263,6 +264,9 @@ int wpl_value::do_regex (
 
 	string tmp = toString();
 	bool match = rhs->do_pattern_match(exp_state, tmp, matches);
+	wpl_value_string new_value(tmp);
+
+	set_weak(&new_value);
 
 	for (const unique_ptr<wpl_value> &match : matches) {
 		exp_state->push_discard(match.get());
