@@ -49,7 +49,8 @@ SCENE layout_head_scene {
 	int i = "-1";
 
 	while (++i < @buttons) {
-		if ((url_prefix . buttons[i]->name . ".pstar") == env->SCRIPT_NAME) {
+		string button_name = buttons[i]->name;
+		if (env->SCRIPT_NAME =~ /\/$button_name(\.pstar|)$/) {
 			buttons[i]->classname = "checked";
 			title = buttons[i]->text;
 		}
