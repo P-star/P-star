@@ -1,3 +1,13 @@
+pstar (1.1-alpha8) unstable; urgency=low
+
+  * Added new regular expression features
+    - Perl-like text replacement using s///-prefix
+    - Global match and replace using //g-suffix
+    - Support for inlining of variables using $-prefix
+    - Autoquote inline variables with //q-suffix
+
+ -- Atle Solbakken <atle@goliathdns.no>  Mon, 06 Jan 2014 12:30:13 +0100
+
 pstar (1.1-alpha7) unstable; urgency=low
 
   * Added for loop
