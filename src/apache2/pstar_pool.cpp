@@ -34,6 +34,8 @@
 #include "apr_lib.h"
 #include "apr_strings.h"
 
+#include "apache_24.h"
+
 #include <cstring>
 
 pstar_file::pstar_file (wpl_io &io, const char *filename, int mtime) :

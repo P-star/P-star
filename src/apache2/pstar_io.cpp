@@ -25,6 +25,8 @@
 #include "apr_lib.h"
 #include "apr_strings.h"
 
+#include "apache_24.h"
+
 pstar_io::pstar_io(request_rec *r) : wpl_io() {
 	this->r = r;
 	this->rpos = 0;
