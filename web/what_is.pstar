@@ -3,6 +3,25 @@
 #INCLUDE layout.pstar;
 
 HTML_TEMPLATE body {
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/nb_NO/all.js#xfbml=1";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+	<div style="float: right">
+		<div class="g-follow" data-annotation="bubble" data-height="20" data-href="//plus.google.com/105062947022242379130" data-rel="publisher"></div>
+		<div class="fb-like" data-href="https://www.facebook.com/PStarOrg" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+	</div>
+	<script type="text/javascript">
+	  (function() {
+	    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	    po.src = 'https://apis.google.com/js/platform.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	  })();
+	</script>
 	<h1>What is P*?</h1>
 	<p>P* (pronounced P-star) is a programming language specifically designed for web development. P* provides easy in-language support for common tasks in this field.</p>
 	<p>P* programs are scripts, and they are run by the P* interpreter, which you can download under <a href="/cgi-bin/how_to_get">How to get P*?</a>.</p>
@@ -29,7 +48,7 @@ HTML_TEMPLATE body {
 	<h2>Bugs &amp; issues</h2>
 	<p>Please report bugs and missing features on <a href="https://github.com/atlesn/P-star/issues">the Github page</a> or by writing to the <a href="mailto:p-star-dev@googlegroups.com">development mailing list</a>.</p>
 	<h2>Development</h2>
-	<p>The P* language is still under development, but it already supports many features. <b>Help is needed to develop P* further.</b> If you have experience with C++ and/or web design, don't hesitate to say hello on one of the mailing lists.</p>
+	<p>The P* language is still under development, but it already supports many features. <b>Help is needed to develop P* further.</b> If you have experience with C++ and/or web design, don't hesitate to say hello on one of the mailing lists or contact the author at <a href="mailto:atle@goliathdns.no">atle@goliathdns.no</a></p>
 }
 
 SCENE main {
