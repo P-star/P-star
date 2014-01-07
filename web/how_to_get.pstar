@@ -10,6 +10,7 @@ HTML_TEMPLATE body {
 	<p>Note that the Windows 7-build is highly experimental, and you should report any issues using <a href="https://github.com/atlesn/P-star/issues">the issue tracker system</a>.</p>
 
 	<h2>Use precompiled Debian package</h2>
+	<p><b><i>Ubuntu package and APT-mirror coming soon!</i></b></p>
 	<p>P* provides an APT-mirror which contains a package for Debian Wheezy on the amd64 architecture</p>
 	<p>If you use the APT-mirror, you will always have easy access to the newest version of P*</p>
 	<p>Run the following commands as root to install P* using APT</p>
