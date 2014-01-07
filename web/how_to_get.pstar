@@ -16,17 +16,14 @@ HTML_TEMPLATE body {
 	<pre># wget -q -O - apt.p-star.org/pub.key | apt-key add -</pre>
 	<p>Run this if you are running <b>Debian Wheezy</b></b><pre>
 # echo -e "\n\ndeb [ arch=amd64 ] http://apt.p-star.org/ unstable main\n\n" \
-  &gt;&gt /etc/apt/sources.list
-	</pre>
+  &gt;&gt /etc/apt/sources.list</pre>
 	<p>Run this if you are running <b>Ubuntu 13.10 (Saucy Salamander)</b></b><pre>
 # echo -e "\n\ndeb [ arch=amd64 ] http://ubuntu.p-star.org/ saucy main\n\n" \
-  &gt;&gt /etc/apt/sources.list
-	</pre>
+  &gt;&gt /etc/apt/sources.list</pre>
 	<p>This will download and install the required packages:</p>
 	<pre>
 # apt-get update
 # apt-get install pstar</pre>
-	</pre>
 
 	<h2>Get the latest P* tarball</h2>
 	<p>First, <a href="http://apt.p-star.org/pool/main/p/pstar/pstar_1.1-alpha8.tar.gz">download the latest tar.gz-archive</a>.</p>
