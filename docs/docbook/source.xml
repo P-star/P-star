@@ -104,7 +104,7 @@ wpl -f my_program.pstar
 	</chapter>		
 	<chapter>
 		<title>The P* language</title>
-		<para>All programming languages have advantages and disanvantages. These two creatures are happily married, and they can't be separated. If you try to kill a disadvantage, it's beloved advantage will commit suicide, and you're back where you started. If you overlap a disadvantage with another advantage, a new disadvantage comes along with it.
+		<para>All programming languages have advantages and disadvantages. These two creatures are happily married, and they can't be separated. If you try to kill a disadvantage, it's beloved advantage will commit suicide, and you're back where you started. If you overlap a disadvantage with another advantage, a new disadvantage comes along with it.
 		</para>
 		<para>
 		Does this mean that we will never have a perfect programming lanuage?
@@ -324,6 +324,10 @@ SCENE main {
 						<entry>ASCII code 34, " (double quotes)</entry>
 					</row>
 					<row>
+						<entry>\/</entry>
+						<entry>ASCII code 47, / (forward slash)</entry>
+					</row>
+					<row>
 						<entry>\\</entry>
 						<entry>ASCII code 92, \ (backslash)</entry>
 					</row>
@@ -370,8 +374,101 @@ SCENE main {
 	}
 }
 			</programlisting>
+			<para>You can interpolate variables into the regular expression by using the <code>$</code>-prefix.
+			The content of the variable is considiered a part of the regular expression syntax, so to avoid funny behaviour, you might want to escape special characters like <code>. \ + * ? [ ^ ] $ ( ) { } = ! &lt; &gt; | : -</code>.
+			</para>
+			<para>You can escape a variable by using the <code>\Q \E</code>-method, like this:</para>
+			<programlisting language="c">
+SCENE main {
+	ENV env;
+	string search = "/cgi-bin/test.pstar";
+
+	/* Check if script name ends with $search, while making
+	   sure that the forward slashes are escaped.
+	 */
+	if (env->SCRIPT_NAME =~ /\Q$search\E$/) {
+		echo "This script is placed inside the cgi-bin directory";
+	}
+}
+			</programlisting>
+			<para>Notice that the variable interpolation prefix <code>$</code> is treated as end-of-string if not directly followed by a word character.</para>
+			<bridgehead>Flags</bridgehead>
+			<para>One or more flags may be used by specifing them directly after the last <code>/</code> of the regular expression. These change the way the regular expression works.</para>
+			<table>
+				<title>Regular Expression flags</title>
+				<tgroup cols="2">
+				<colspec colname="c1"/>
+				<colspec colname="c2"/>
+				<thead>
+					<row>
+						<entry>Flag</entry>
+						<entry>Name</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>/q</entry>
+						<entry>Automatic meta-quote</entry>
+						<entry>Automatically escape all inline variables with <code>\Q \E</code></entry>
+					</row>
+					<row>
+						<entry>/g</entry>
+						<entry>Global</entry>
+						<entry>Run the regular expression several times untill the end of the string is reached.</entry>
+					</row>
+				</tbody>
+				</tgroup>
+			</table>
+			<bridgehead>Store matches</bridgehead>
+			<para>When a regular expression has matched, it pushes the full match and sub-matches onto the discard queue. The discard queue is a hidden array in all expressions, and we can push it onto an array later by using the <code>=></code> operator.</para>
+			<programlisting language="c">
+SCENE main {
+	string subject = "aabbc";
+	array&lt;string&gt; matches;
+
+	/* Push the matches in the regular expression into the matches-array */
+	test =~ /..|./g => matches;
+
+	int i;
+	for (i = 0; i &lt; @matches-1; i++) {
+		echo "Match $i: '" . matches[i] . "'\n";
+	}
+
+	/* This will print out:
+Match 0: 'aa'
+Match 1: 'bb'
+Match 2: 'c'
+	*/
+}
+			</programlisting>
+			<para>Note that the <code>=></code> operator also pushes the last value, which is left of it, onto the array.
+			In this case, this value is 'true', since the regular expression matched.
+			We should therefore ignore the last element of the array, hence the <code>-1</code> (minus 1) in the for-loop.</para>
+			<bridgehead>Text replacement</bridgehead>
+			<para>Like in the Perl lanugage, you can use regular expressions to replace text.
+			To use matches from the regular expression in the replacement part, we can use the special variables <code>$0 $1 $2 $3</code>.
+			The full match, everything between <code>/ /</code> is placed into <code>$0</code>. The first sub-expression (inside <code>( )</code> is placed into <code>$1</code>, the second in <code>$2</code> and so on.
+			These variables are only available inside regular expressions.</para>
+			<programlisting language="c">
+SCENE main {
+        string subject = "23 24 25 26 27";
+
+	echo "Before: $subject\n";
+
+	/* Replace all '2's with the character following them */
+	subject =~ s/2(.)/$1$1/g;
+
+	echo " After: $subject\n";
+
+	/* This program will outout:
+Before: 23 24 25 26 27
+ After: 33 44 55 66 77
+	*/
+}
+			</programlisting>
+			<bridgehead>More regex!</bridgehead>
 			<para>Take a look at to the <ulink url="http://perldoc.perl.org/perlre.html">Perl documentation for regular expressions</ulink> for more information.</para>
-			<para>Not that P* by now only supports simple matching like in the example above. Modifiers like <code>/g</code>, replace prefix <code>s/</code> and variable interpolation is not yet supported.</para>
 		</section>
 		<section>
 			<title>Functions</title>
@@ -968,7 +1065,7 @@ The name of my cat is 'Tiger'.
 			<para>A struct is an object which can hold a collection of variables and functions. A function inside a struct can access the other members of the same struct.
 			</para>
 			<para>
-			A definition of a struct can look like this.
+			A simple example of struct usage:
 			</para>
 			<programlisting language="c">
 SCENE main {
@@ -977,26 +1074,30 @@ SCENE main {
 		string name;
 		int age;
 
-		int print() {
+		public int init(string _name, int _age) {
+			name = _name;
+			age = _age;
+		};
+		public int print() {
 			echo "$name is $age years old\n";
-		}
+		};
 	};
 
-	/* Create an instance of the struct */
-	person author;
+	/* Create an instance of the struct and call the init()-function */
+	person author-&gt;init("Atle", 25);
 
-	/* Set the variables in the struct */
-	author->age = 25;
-	author->name = "Atle";
+	/* Print the struct */
 	author->print();
-}
-/* Output of this program:
+
+	/* Output of this program:
 Atle is 25 years old
-*/
+	*/
+}
 			</programlisting>
-			<emphasis>
-			Structs in P* will later be extended with class-functionality to allow object oriented programming. The struct type will continue having all types public by default.
-			</emphasis>
+			<para>To access members of a struct, we use the element selection operator <code>-&gt;</code> .
+			The members we access from the outside must be marked with <code>public</code>.
+			An error will ble issued if you attempt to access a variable or function which is not public.
+			Members can optionally be preceeded with the <code>private</code> keyword.</para>
 		</section>
 		<section>
 			<title>Data types GET, POST and ENV</title>
