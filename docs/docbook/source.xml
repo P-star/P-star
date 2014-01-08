@@ -1561,7 +1561,7 @@ SCENE main {
 		<section>
 			<title>Project status</title>
 			<para>
-			The P*-project currently constist of only one person. For the language to be taken to the next level, help is needed!
+			Help is needed with the P* projects.
 			</para>
 			<table>
 				<title>List of project tasks</title>
@@ -1576,12 +1576,16 @@ SCENE main {
 				</thead>
 				<tbody>
 					<row>
+						<entry>Example CMS</entry>
+						<entry>A sub-project with the goal of creating a content management system in P* have to be started. This project will uncover missing functionallity in P* which the main project should take care of.</entry>
+					</row>
+					<row>
 						<entry>Spread the word</entry>
 						<entry>Currently in progress, but help needed.</entry>
 					</row>
 					<row>
 						<entry>Documentation</entry>
-						<entry>This document is the only documentation apart from the source code. Need more!</entry>
+						<entry>This document is the only documentation apart from the web page and source code. Tutorials and examples are needed.</entry>
 					</row>
 					<row>
 						<entry>Web-page / bug-tracking</entry>
@@ -1602,12 +1606,10 @@ SCENE main {
 		<section>
 			<title>Status Quo</title>
 			<para>The base of the P* interpreter is written in C++ and runs quite well.
-			The development is still in an early phase, and there has been many rewrites of particularry the expression handling and value subsystem.
-			A rewrite takes two days of writing and one or to days fixing compiling errors, so it gives a good feeling that this hasn't been needed for quite a while.
+			The development is in an intermediate phase, and more new functionallity needs to be written.
 			</para>
 			<para>
 			The implementation of loadable modules, with MySQL as the first one out, can be done without any change to the base.
-			This might indicate that things now are implemented in a reasonable way.
 			</para>
 		</section>
 		<section>
@@ -1682,7 +1684,11 @@ SCENE main {
 				<tbody>
 					<row>
 						<entry>Perl-like in-language regular expressions</entry>
-						<entry>Partial implementation available from 1.1-alpha1</entry>
+						<entry>Replacement and matching now possible</entry>
+					</row>
+					<row>
+						<entry>Time &amp; date</entry>
+						<entry>P* needs funcitonality for time and date</entry>
 					</row>
 					<row>
 						<entry>File I/O</entry>
@@ -1702,7 +1708,7 @@ SCENE main {
 					</row>
 					<row>
 						<entry>Apache module</entry>
-						<entry>Not written</entry>
+						<entry>Now working, might need more enhancements.</entry>
 					</row>
 				</tbody>
 				</tgroup>
