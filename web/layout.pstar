@@ -63,7 +63,7 @@ SCENE layout_head_scene {
 
 HTML_TEMPLATE layout_foot {
 	</div>
-	<div id="foot">Copyright &copy; 2013 <a href="mailto:atle@goliathdns.no">Atle Solbakken</a>.</div>
+	<div id="foot">Copyright &copy; 2013-2014 <a href="mailto:atle@goliathdns.no">Atle Solbakken</a>.</div>
 	</div>
 	</body>
 	</html>
