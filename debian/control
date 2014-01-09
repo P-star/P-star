@@ -21,7 +21,7 @@ Architecture: all
 Conflicts: p-star
 Depends: libpstar (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends} 
 Description: P* Web Programming Language Interpreter Command
- This is the command line version of the P* Web Programming Language interpreter.
+ This is the development header files needed to compile new P* modules.
 
 Package: pstar
 Architecture: any
