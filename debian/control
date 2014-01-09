@@ -3,7 +3,7 @@ Section: web
 Priority: extra
 Maintainer: Atle Solbakken <atle@goliathdns.no>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, libmysqlclient-dev, libmimetic-dev, libboost-regex-dev, apache2-threaded-dev, pkg-config, libapr-memcache-dev, chrpath
-Standards-Version: 3.9.3
+Standards-Version: 3.9.5
 Homepage: http://www.p-star.org
 #Vcs-Git: git://git.debian.org/collab-maint/p-star.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/p-star.git;a=summary
