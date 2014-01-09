@@ -16,12 +16,12 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, mysql-client-5.5, libmimetic0, libb
 Description: P* Web Programming Language Interpreter Library
  P* is a progamming language which targets to incorporate common tasks like HTML templates, SQL prepared statements and JSON output into the language.
 
-Package: libpstar-dev
-Architecture: all
-Conflicts: p-star
-Depends: libpstar (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends} 
-Description: P* Web Programming Language Interpreter Command
- This is the development header files needed to compile new P* modules.
+#Package: libpstar-dev
+#Architecture: all
+#Conflicts: p-star
+#Depends: libpstar (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends} 
+#Description: P* Web Programming Language Interpreter Command
+# This is the development header files needed to compile new P* modules.
 
 Package: pstar
 Architecture: any
