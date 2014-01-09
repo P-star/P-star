@@ -1,3 +1,10 @@
+pstar (1.1) experimental; urgency=low
+
+  * Cleanup in .deb control files
+  * New version prepared for upload to Debian
+
+ -- Atle Solbakken <atle@goliathdns.no>  Thu, 09 Jan 2014 22:38:32 +0100
+
 pstar (1.1-alpha8) unstable; urgency=low
 
   * Added new regular expression features
