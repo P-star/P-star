@@ -59,6 +59,7 @@ enum {
 	wpl_type_precedence_get,
 	wpl_type_precedence_post,
 	wpl_type_precedence_stdin,
+	wpl_type_precedence_time,
 
 	wpl_type_precedence_middle,
 	

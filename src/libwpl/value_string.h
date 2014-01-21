@@ -104,6 +104,9 @@ class wpl_value_string : public wpl_value_strings<string> {
 	string toString() {
 		return value;
 	}
+	string &get_internal_string() {
+		return value;
+	}
 	void set (int val) {
 		value = val;
 	}

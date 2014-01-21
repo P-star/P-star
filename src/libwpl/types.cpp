@@ -50,6 +50,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_get.h"
 #include "value_post.h"
 #include "value_stdin.h"
+#include "value_time.h"
 
 #include <string>
 #include <cstring>
@@ -76,6 +77,7 @@ const char *wpl_typename_env = "ENV";
 const char *wpl_typename_get = "GET";
 const char *wpl_typename_post = "POST";
 const char *wpl_typename_stdin = "STDIN";
+const char *wpl_typename_time = "TIME";
 
 const char *wpl_typename_regex = "{regex}";
 const char *wpl_typename_expression = "{expression}";
@@ -111,6 +113,7 @@ DEFINE_TYPE(post);
 #ifndef WIN32
 DEFINE_TYPE(stdin);
 #endif
+DEFINE_TYPE(time);
 
 
 void wpl_type_begin_function_declaration::parse_value (wpl_namespace *parent_namespace) {
@@ -266,6 +269,7 @@ NEW_INSTANCE(post,0)
 #ifndef WIN32
 NEW_INSTANCE(stdin,0)
 #endif
+NEW_INSTANCE(time,0)
 
 wpl_value *wpl_type_void::new_instance() const {
 	return new wpl_value_void();
@@ -294,5 +298,6 @@ void wpl_types_add_all_to_namespace(wpl_namespace *name_space) {
 #ifndef WIN32
 	REGISTER_TYPE(stdin);
 #endif
+	REGISTER_TYPE(time);
 }
 

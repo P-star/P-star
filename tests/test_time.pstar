@@ -1,0 +1,4 @@
+SCENE main {
+	TIME time->set_now;
+	echo "$time\n";
+}
