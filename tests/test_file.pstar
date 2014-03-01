@@ -2,4 +2,5 @@ SCENE main {
 	FILE file;
 	LINE line;
 	echo "OK\n";
+	file->open();
 }
