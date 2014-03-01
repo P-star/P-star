@@ -1,4 +1,10 @@
 SCENE main {
+	/* Function with same name as inside struct, should not be used */
+	int print() {
+		echo "I should not be called!\n";
+	}
+	string name = "I should not be changed\n";
+
 	/* Define a new struct type with two variables and one function */
 	struct person {
 		public string name;
@@ -16,4 +22,6 @@ SCENE main {
 	author->age = 25;
 	author->name = "Atle";
 	author->print();
+
+	echo name;
 }
