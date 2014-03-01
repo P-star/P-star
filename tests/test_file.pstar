@@ -1,6 +1,38 @@
 SCENE main {
+	string filename = "testfile";
 	FILE file;
-	LINE line;
-	echo "OK\n";
-	file->open();
+
+	int close() {
+		echo "Close called\n";
+		return 0;
+	}
+
+	int test_ro() {
+		if (!file->open_ro(filename)) {
+			echo file->error() . "\n";
+			return 1;
+		}
+
+		file->close();
+		echo "File opened successfully for reading\n";
+
+		return 0;
+	}
+
+	int test_rw() {
+		if (!file->open_rw(filename)) {
+			echo file->error() . "\n";
+			return 1;
+		}
+
+		file->close();
+		echo "File opened successfully for read/write\n";
+
+		return 0;
+	}
+
+	close();
+
+	test_ro();
+	test_rw();
 }

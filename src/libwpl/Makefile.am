@@ -21,7 +21,7 @@ libwpl_1_1_la_SOURCES = \
 	value_string.cpp value_vstring.cpp value_regex.cpp \
 	value_env.cpp value_get.cpp value_post.cpp value_stdin.cpp \
 	value_output_trigger.cpp value_time.cpp \
-	value_file.cpp value_line.cpp type_file.cpp type_line.cpp \
+	type_file.cpp type_line.cpp file.cpp \
 	array.cpp hash.cpp struct.cpp template.cpp \
 	namespace_session.cpp exception.cpp \
 	block_state.cpp expression_state.cpp function_state.cpp \

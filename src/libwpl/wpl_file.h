@@ -28,29 +28,29 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "types.h"
-#include "value_holder.h"
 #include "exception.h"
 
-class wpl_operator_struct;
+#include <fstream>
 
-class wpl_value_line : public wpl_value {
-	protected:
+class wpl_file {
+	private:
+	fstream file;
+	ostringstream error;
 
 	public:
-	PRIMITIVE_TYPEINFO(file)
-	wpl_value_line(const char *dummy) {}
-	wpl_value_line *clone() const { return new wpl_value_line(*this); };
-	wpl_value_line *clone_empty() const { return new wpl_value_line(""); };
+	wpl_file() {}
+	~wpl_file();
 
-	void set_weak(wpl_value *value) override;
-	string toString() override;
+	void reset_error() {
+		error.str("");
+		error.clear();
+	}
 
-	int do_operator (
-			wpl_expression_state *exp_state,
-			wpl_value *final_result,
-			const wpl_operator_struct *op,
-			wpl_value *lhs,
-			wpl_value *rhs
-	);
+	string get_error() {
+		return error.str();
+	}
+
+	bool check_error();
+	bool open (const char *filename, ios_base::openmode mode);
+	bool close();
 };

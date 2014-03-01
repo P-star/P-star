@@ -52,11 +52,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_stdin.h"
 #include "value_time.h"
 
-#include "type_file.h"
-#include "type_line.h"
-#include "value_file.h"
-#include "value_line.h"
-
 #include <string>
 #include <cstring>
 #include <iostream>

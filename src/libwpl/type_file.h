@@ -28,7 +28,46 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "wpl_file.h"
+#include "value.h"
 #include "struct.h"
+
+#include <memory>
+
+class wpl_value_file : public wpl_value {
+	private:
+	shared_ptr<wpl_file> file;
+
+	public:
+	wpl_value_file();
+	const char *get_type_name() const override { return wpl_typename_file; };
+	int get_precedence() const override { return wpl_type_precedence_file; };
+
+	wpl_value_file *clone() const override {
+		return new wpl_value_file(*this);
+	};
+
+	wpl_value_file *clone_empty() const override {
+		return new wpl_value_file();
+	};
+
+	shared_ptr<wpl_file> &get_file_shared_ptr() {
+		return file;
+	}
+
+	wpl_file *get_file() {
+		return file.get();
+	}
+
+	bool set_strong (wpl_value *value) override {
+		wpl_value_file *src;
+		if (!(src = dynamic_cast<wpl_value_file*>(value))) {
+			return false;
+		}
+		file = src->get_file_shared_ptr();
+		return true;
+	}
+};
 
 class wpl_type_file : public wpl_struct {
 	public:
