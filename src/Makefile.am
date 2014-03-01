@@ -4,7 +4,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -include $(top_srcdir)/config.h
 AM_CXXFLAGS = -std=c++11
 bin_PROGRAMS = wpl
 
-wpl_LDFLAGS = -ldl -rdynamic
+wpl_LDFLAGS = -Wl,--no-as-needed -ldl -rdynamic
 wpl_LDADD = libwpl/libwpl-1.1.la
 wpl_SOURCES = main.cpp
 
