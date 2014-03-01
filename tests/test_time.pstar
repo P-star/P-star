@@ -1,4 +1,30 @@
 SCENE main {
-	TIME time->set_now;
+	TIME time = "2014*03*01";
+	echo "$time\n";
+	int y = time->year;
+	int m = time->month;
+	int d = time->day;
+	echo "$y $m $d\n";
+	time = "1986-01-20";
+	int sum = time->year + time->month + time->day;
+	echo "$sum\n";
+	time = "651/07/10";
+	y = time->year;
+	m = time->month;
+	d = time->day;
+	echo "$y $m $d\n";
+	time = "1995-may-17";
+	y = time->year; m = time->month; d = time->day;
+	time = "547-december-31";
+	y = time->year; m = time->month; d = time->day;
+	time = "1875-oct-08";
+	y = time->year; m = time->month; d = time->day;
+	echo "$y $m $d\n";
+	time = "68-jun-4";
+	y = time->year; m = time->month; d = time->day;
+	echo "$y $m $d\n";
+	time = "4623-august-24";
+	y = time->year; m = time->month; d = time->day;
+	echo "$y $m $d\n";
 	echo "$time\n";
 }

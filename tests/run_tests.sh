@@ -12,6 +12,8 @@ fi
 
 SOMETHING_WENT_WRONG=0
 
+rm *time*.result
+
 # Generate .result-files if they don't already exist
 for FILE in `ls *.pstar`; do
 	RESULT_FILE="$FILE.result";

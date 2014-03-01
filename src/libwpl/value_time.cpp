@@ -34,6 +34,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <ctime>
 #include <cstring>
 #include <sstream>
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 void wpl_value_time::set_weak (wpl_value *value) {
 	/*
@@ -42,9 +44,14 @@ void wpl_value_time::set_weak (wpl_value *value) {
 	   */
 	wpl_value_time *value_time = dynamic_cast<wpl_value_time*>(value);
 	if (value_time == NULL) {
-		ostringstream tmp;
-		tmp << "Could not set TIME object to value of type " << value->get_type_name();
-		throw runtime_error(tmp.str());
+        wpl_value_string * value_string = dynamic_cast<wpl_value_string*>(value);
+        if (value_string) {
+            try_guess_from_str(value_string->toString());
+        } else {
+            ostringstream tmp;
+            tmp << "Could not set TIME object to value of type " << value->get_type_name();
+            throw runtime_error(tmp.str());
+        }
 	}
 	else {
 		set_time(value_time->get_time());
@@ -168,4 +175,84 @@ int wpl_value_time::do_operator (
 	}
 
 	return WPL_OP_UNKNOWN;
+}
+
+static inline
+string try_guess_sep(const std::string& s){
+    string sep;
+    std::for_each (s.begin(),
+                   s.end(),
+                   [&sep](char c){
+                    if (!isdigit(c)){
+                        if (sep.empty())
+                            sep = c;
+                        else if (sep[0] != c)
+                            throw runtime_error("Invalid date/time format (try with one type of separator)");
+                    }
+                   }
+    );
+    return sep;
+}
+
+static inline
+void replace_month_name(string& fmt){
+    static const std::string long_names[] = {"january", "february", "march", "april",
+                                           "may", "june", "july","august",
+                                           "september","october","november","december"};
+    for (int i=0 ; i<sizeof(long_names)/sizeof(long_names[0]) ; ++i){
+        boost::replace_all(fmt, long_names[i], boost::lexical_cast<string>(i+1));
+        boost::replace_all(fmt, long_names[i].substr(0,3), boost::lexical_cast<string>(i+1));
+    }
+}
+
+void wpl_value_time::try_guess_from_str(const string &fmt_){
+    string fmt = fmt_;
+    replace_month_name(fmt);
+    const string sep = try_guess_sep(fmt);
+    std::vector<std::string> parts;
+    boost::split(parts, fmt, boost::is_any_of(sep.c_str()), boost::token_compress_on);
+    int year=0;
+    int month=0;
+    int day=0;
+    std::string guessed_fmt;
+    std::for_each(parts.begin(),
+                  parts.end(),
+                  [&year,&month,&day,&guessed_fmt,sep](const std::string& str){
+                    try{
+                        if (year == 0){
+                            year = boost::lexical_cast<int>(str);
+                            if (! guessed_fmt.empty())
+                                guessed_fmt += sep;
+                            guessed_fmt += "%Y";
+                        } else if (str.length()==2 || str.length()==1){
+                            if (month==0){
+                                month = boost::lexical_cast<int>(str);
+                                if (! guessed_fmt.empty())
+                                    guessed_fmt += sep;
+                                guessed_fmt += "%m";
+                            } else if (day == 0){
+                                day = boost::lexical_cast<int>(str);
+                                if (! guessed_fmt.empty())
+                                    guessed_fmt += sep;
+                                guessed_fmt += "%d";
+                            } else {
+                                throw runtime_error("Invaild date/time format (too many date tokens)");
+                            }
+                        } else {
+                            throw runtime_error("Invaild date/time format (invalid substring length)");
+                        }
+                    } catch (const boost::bad_lexical_cast& e){
+                        throw runtime_error(e.what());
+                    }
+                  }
+    );
+    if (year==0 || month==0 || day==0)
+        throw runtime_error("Invalid date/time format: year, month and day must be specified");
+    struct tm time_tmp;
+    memset(&time_tmp,0,sizeof(time_tmp));
+    time_tmp.tm_year = year-1900;
+    time_tmp.tm_mon = month-1;
+    time_tmp.tm_mday = day;
+    this->set_format(guessed_fmt);
+    this->set_time(mktime(&time_tmp));
 }
