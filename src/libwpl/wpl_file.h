@@ -31,11 +31,42 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "exception.h"
 
 #include <fstream>
+#include <map>
+
+class wpl_file_chunk{
+	private:
+	int pos;
+	int orig_length;
+	string data;
+
+	public:
+	wpl_file_chunk() : pos(0), orig_length(0) {}
+	wpl_file_chunk(int pos) : pos(pos), orig_length(0) {}
+
+	wpl_file_chunk get_next() const {
+		return wpl_file_chunk(pos+data.size());
+	}
+	int get_pos() const {
+		return pos;
+	}
+	string &get_data() {
+		return data;
+	}
+	void update_orig_length() {
+		orig_length = data.size();
+	}
+	void set_data(const string &data) {
+		this->data = data;
+	}
+};
 
 class wpl_file {
 	private:
 	fstream file;
 	ostringstream error;
+	int size;
+
+	map<int,wpl_file_chunk> updates;
 
 	public:
 	wpl_file() {}
@@ -50,7 +81,21 @@ class wpl_file {
 		return error.str();
 	}
 
+	void queue_update(const wpl_file_chunk &chunk) {
+		updates[chunk.get_pos()] = chunk;
+	}
+
 	bool check_error();
 	bool open (const char *filename, ios_base::openmode mode);
 	bool close();
+
+	bool is_open() {
+		return file.is_open();
+	}
+
+	bool check_pos(int pos) {
+		return (pos < size);
+	}
+
+	void read_line (wpl_file_chunk &chunk);
 };

@@ -62,6 +62,10 @@ bool wpl_file::open(const char *filename, ios_base::openmode mode) {
 		return false;
 	}
 
+	file.seekg(0, file.end);
+	size = file.tellg();
+	file.seekg(0, file.beg);
+
 	return true;
 }
 
@@ -78,5 +82,38 @@ bool wpl_file::close() {
 		return false;
 	}
 
+	size = 0;
+
 	return true;
+}
+
+void wpl_file::read_line (wpl_file_chunk &chunk) {
+	if (!file.is_open()) {
+		throw runtime_error("Can't read lines from non-open FILE objects");
+	}
+
+	int pos = chunk.get_pos();
+	string &data = chunk.get_data();
+
+	file.seekg(chunk.get_pos(), file.beg);
+	if (check_error()) {
+		reset_error();
+		error << "Could not seek to position while reading line: " << strerror(errno);
+		throw runtime_error (error.str());
+	}
+
+	getline(file, data);
+
+	if (check_error()) {
+		reset_error();
+		error << "Could not get line from file: " << strerror(errno);
+		throw runtime_error (error.str());
+	}
+
+	if (!file.eof()) {
+		data += "\n";
+	}
+	else if (file.eof() && size > (pos + data.size())) {
+		data += "\n";
+	}
 }

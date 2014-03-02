@@ -28,18 +28,34 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "type_precedence.h"
-#include "struct.h"
+#include "types.h"
+#include "value_holder.h"
+#include "exception.h"
+#include "wpl_file.h"
 
-class wpl_type_line : public wpl_struct {
+#include <memory>
+
+class wpl_operator_struct;
+
+class wpl_value_line : public wpl_value {
+	protected:
+	shared_ptr<wpl_file> file;
+	wpl_file_chunk current_line;
+
 	public:
-	wpl_type_line();
-	void suicide() override {
-		delete this;
-	}
-	int get_precedence() const {
-		return wpl_type_precedence_time;
-	}
+	PRIMITIVE_TYPEINFO(line)
+	wpl_value_line (int dummy) {}
+	wpl_value_line *clone() const { return new wpl_value_line(*this); };
+	wpl_value_line *clone_empty() const { return new wpl_value_line(0); };
+
+	void set_weak(wpl_value *value) override;
+	string toString() override;
+
+	int do_operator (
+			wpl_expression_state *exp_state,
+			wpl_value *final_result,
+			const wpl_operator_struct *op,
+			wpl_value *lhs,
+			wpl_value *rhs
+	);
 };
-
-

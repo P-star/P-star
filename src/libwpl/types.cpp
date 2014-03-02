@@ -51,6 +51,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_post.h"
 #include "value_stdin.h"
 #include "value_time.h"
+#include "value_line.h"
 
 #include <string>
 #include <cstring>
@@ -116,6 +117,7 @@ DEFINE_TYPE(post);
 DEFINE_TYPE(stdin);
 #endif
 DEFINE_TYPE(time);
+DEFINE_TYPE(line);
 
 void wpl_type_begin_function_declaration::parse_value (wpl_namespace *parent_namespace) {
 	wpl_user_function *function = new wpl_user_function(type, name.c_str(), access_flags);
@@ -271,6 +273,7 @@ NEW_INSTANCE(post,0)
 NEW_INSTANCE(stdin,0)
 #endif
 NEW_INSTANCE(time,0)
+NEW_INSTANCE(line,0)
 
 wpl_value *wpl_type_void::new_instance() const {
 	return new wpl_value_void();
@@ -281,9 +284,6 @@ wpl_value *wpl_type_void::new_instance() const {
 
 // From type_file.cpp
 void wpl_type_file_register(wpl_namespace *target);
-
-// From type_line.cpp
-void wpl_type_line_register(wpl_namespace *target);
 
 void wpl_types_add_all_to_namespace(wpl_namespace *name_space) {
 	REGISTER_TYPE(void);
@@ -306,8 +306,8 @@ void wpl_types_add_all_to_namespace(wpl_namespace *name_space) {
 	REGISTER_TYPE(stdin);
 #endif
 	REGISTER_TYPE(time);
+	REGISTER_TYPE(line);
 
 	wpl_type_file_register(name_space);
-	wpl_type_line_register(name_space);
 }
 
