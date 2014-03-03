@@ -1,39 +1,65 @@
 SCENE main {
-	string filename = "testfile";
-	FILE file;
-	LINE line = file;
+	string filename_in = "testfile";
+	string filename_out = "testfile_out";
 
-	int test_ro() {
-		if (!file->open_ro(filename)) {
-			echo file->error() . "\n";
-			return 1;
-		}
+	FILE file_in;
+	FILE file_out;
 
-		echo "File '$testfile' opened successfully for reading\n";
+	if (!file_in->open_ro(filename_in)) {
+		echo file_in->error() . "\n";
+		return 1;
+	}
+	echo "File '$testfile_in' opened successfully for reading\n";
 
-		echo "Begin of file is nothing: '$line'\n";
+	if (!file_out->open_truncate(filename_out)) {
+		echo file_out->error() . "\n";
+		return 1;
+	}
+	echo "File '$testfile_out' opened successfully for writing\n";
 
-		int i = 0;
-		while (++line && ++i) {
-			echo "Line $i: $line\n";
-		}
+	int i = 0;
+	LINE line_in = file_in;
+	LINE line_out = file_out;
 
-		file->close();
-		return 0;
+	while (line_in++) {
+		echo "Line $i: $line_in";
+
+		line_out = line_in;
+		line_out++;
+
+		i++;
 	}
 
-	int test_rw() {
-		if (!file->open_rw(filename)) {
-			echo file->error() . "\n";
-			return 1;
+	echo "\n";
+
+	file_out->update();
+
+	file_out->close();
+	file_in->close();
+
+	if (!file_out->open_rw(filename_out)) {
+		echo file_out->error() . "\n";
+		return 1;
+	}
+	echo "File '$testfile_out' opened successfully for read and write\n";
+
+	line_out = file_out;
+	while (1) {
+		int inc = line_out++;
+		echo "Line out inc: $inc\n";
+		if (!inc) {
+			break 1;
 		}
-
-		file->close();
-		echo "File opened successfully for read/write\n";
-
-		return 0;
+		echo "Found line $line_out";
+		if (line_out =~ /B/) {
+			echo "...deleting";
+			line_out = "";
+		}
+		echo "\n";
 	}
 
-	test_ro();
-	test_rw();
+	file_out->update();
+	file_out->close();
+
+	return 0;
 }

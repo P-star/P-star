@@ -31,6 +31,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "operator_types.h"
 #include "value_string.h"
 #include "value_struct.h"
+#include "value_int.h"
 
 #include <sstream>
 
@@ -49,12 +50,16 @@ void wpl_value_line::set_weak(wpl_value *value) {
 			goto notfile;
 
 		file = value_file->get_file_shared_ptr();
+		current_line = wpl_file_chunk(0);
 	}
 	goto success;
 
 notfile:
-	if (!file.get() || file->is_open()) {
+	if (!file || !file->is_open()) {
 		throw runtime_error("Cannot set value of LINE when associated FILE object is not open");
+	}
+	if (!file->is_writeable()) {
+		throw runtime_error("Cannot modify LINE object associated with read-only FILE");
 	}
 	try {
 		current_line.set_data(value->toString());
@@ -90,13 +95,13 @@ int wpl_value_line::do_operator (
 	wpl_value *rhs
 ) {
 	if (op == &OP_INC_SUFFIX || op == &OP_INC_PREFIX) {
-		wpl_value_bool res(0);
+		wpl_value_int res(0);
 
 		current_line = current_line.get_next();
 		if (file->check_pos(current_line.get_pos())) {
 			file->read_line(current_line);
-			current_line.update_orig_length();
-			res.set(1);
+			current_line.update_orig_size();
+			res.set(current_line.get_size());
 		}
 
 		return res.do_operator_recursive(exp_state, final_result);

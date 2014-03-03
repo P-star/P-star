@@ -39,7 +39,6 @@ class wpl_value_file : public wpl_value {
 	shared_ptr<wpl_file> file;
 
 	public:
-	wpl_value_file();
 	const char *get_type_name() const override { return wpl_typename_file; };
 	int get_precedence() const override { return wpl_type_precedence_file; };
 
@@ -52,10 +51,16 @@ class wpl_value_file : public wpl_value {
 	};
 
 	shared_ptr<wpl_file> &get_file_shared_ptr() {
+		if (!file) {
+			file.reset(new wpl_file());
+		}
 		return file;
 	}
 
 	wpl_file *get_file() {
+		if (!file) {
+			file.reset(new wpl_file());
+		}
 		return file.get();
 	}
 

@@ -50,6 +50,12 @@ class wpl_value_line : public wpl_value {
 
 	void set_weak(wpl_value *value) override;
 	string toString() override;
+	bool toBool() override {
+		return current_line.get_size();
+	}
+	int toInt() override {
+		return current_line.get_size();
+	}
 
 	int do_operator (
 			wpl_expression_state *exp_state,

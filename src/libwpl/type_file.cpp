@@ -35,10 +35,6 @@ along with P*. If not, see <http://www.gnu.org/licenses/>.
 #include "exception.h"
 #include "function.h"
 
-wpl_value_file::wpl_value_file() :
-	file(new wpl_file())
-{}
-
 class wpl_file_open : public wpl_function {
 	private:
 	ios_base::openmode mode;
@@ -136,6 +132,34 @@ int wpl_file_error::run (
 	return WPL_OP_OK;
 }
 
+class wpl_file_update : public wpl_function {
+	public:
+	wpl_file_update() :
+		wpl_function(wpl_type_global_bool, "update", WPL_VARIABLE_ACCESS_PUBLIC)
+	{}
+	int run (wpl_state *state, wpl_value *final_result);
+};
+
+int wpl_file_update::run (
+	wpl_state *state,
+	wpl_value *final_result
+) {
+	wpl_variable *this_var;
+
+	wpl_function_state *function_state = (wpl_function_state*) state;
+
+	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
+		throw runtime_error("FILE error: open(): Could not find 'this' variable");
+	}
+
+	wpl_value_file *value_file = (wpl_value_file*) this_var->get_value();
+	wpl_file *file = value_file->get_file();
+
+	((wpl_value_bool*) final_result)->set(file->update());
+
+	return WPL_OP_OK;
+}
+
 wpl_type_file::wpl_type_file() :
 	wpl_struct(wpl_typename_file, true)
 {
@@ -145,9 +169,10 @@ wpl_type_file::wpl_type_file() :
 	register_identifier(new wpl_file_open("open", ios_base::in));
 	register_identifier(new wpl_file_open("open_ro", ios_base::in));
 	register_identifier(new wpl_file_open("open_rw", ios_base::in|ios_base::out));
-	register_identifier(new wpl_file_open("open_wo", ios_base::out));
+	register_identifier(new wpl_file_open("open_truncate", ios_base::in|ios_base::out|ios_base::trunc));
 	register_identifier(new wpl_file_close());
 	register_identifier(new wpl_file_error());
+	register_identifier(new wpl_file_update());
 }
 
 wpl_type_file constant_type_file;
