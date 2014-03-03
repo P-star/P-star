@@ -193,6 +193,9 @@ void wpl_expression::parse_operator(const struct wpl_operator_struct *op) {
 	else if (op->flags & WPL_OP_F_HAS_LHS) {
 		expect |= EXPECT_NUMBER|EXPECT_OPERATOR;
 	}
+	else if (op->flags == WPL_OP_F_NONE) {
+		expect = EXPECT_SEMICOLON_END;
+	}
 	else {
 		ostringstream msg;
 		msg << "wpl_expression::parse_operator(): Unknown flags for operator " << op->name;
@@ -386,7 +389,13 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 			operator_search_flags = WPL_OP_F_ASSOC_RIGHT;
 		}
 
-		if (ignore_letter ('(')) {
+		if (ignore_letter (';')) {
+			parse_semicolon();
+		}
+		else if (expect & EXPECT_SEMICOLON_END) {
+			THROW_ELEMENT_EXCEPTION("Operator does not support operands, semicolon expected here.");
+		}
+		else if (ignore_letter ('(')) {
 			parse_par_open();
 		}
 		else if (ignore_letter (')')) {
@@ -437,9 +446,6 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 		}
 		else if (search_letter ('/')) {
 			parse_regex(parent_namespace);
-		}
-		else if (ignore_letter (';')) {
-			parse_semicolon();
 		}
 		else if (expect & EXPECT_LOOSE_END) {
 			revert_string(whitespace_length);

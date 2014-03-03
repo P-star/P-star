@@ -1,0 +1,10 @@
+SCENE main {
+	int i = 0;
+	while (++i) {
+		echo "$i\n";
+		if (i == 10) {
+			break;
+		}
+	}
+	echo "OK\n";
+}

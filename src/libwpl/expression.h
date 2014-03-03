@@ -90,6 +90,7 @@ class wpl_expression : public wpl_runable, public shunting_yard, public wpl_matc
 	static const uint32_t EXPECT_NUMBER =		1<<1;
 
 	static const uint32_t EXPECT_DO_BREAK =		1<<10;
+	static const uint32_t EXPECT_SEMICOLON_END =	1<<11;
 
 	// End softly instead of getting syntax error at unknown chars
 	static const uint32_t EXPECT_LOOSE_END =	1<<29;
