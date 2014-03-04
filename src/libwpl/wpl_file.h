@@ -31,7 +31,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "exception.h"
 
 #include <fstream>
+#include <memory>
 #include <map>
+
+class wpl_value_line;
 
 class wpl_file_chunk {
 	private:
@@ -43,8 +46,11 @@ class wpl_file_chunk {
 	wpl_file_chunk() : pos(0), orig_size(0) {}
 	wpl_file_chunk(int pos) : pos(pos), orig_size(0) {}
 
-	wpl_file_chunk get_next() const {
-		return wpl_file_chunk(pos+data.size());
+	void merge (const wpl_file_chunk &chunk) {
+		data += chunk.get_data();
+	}
+	shared_ptr<wpl_file_chunk> get_next() const {
+		return shared_ptr<wpl_file_chunk>(new wpl_file_chunk(pos+orig_size));
 	}
 	int get_pos() const {
 		return pos;
@@ -79,7 +85,7 @@ class wpl_file {
 	int new_size;
 	std::ios_base::openmode mode;
 
-	typedef map<int,wpl_file_chunk> updates_type;
+	typedef map<int,shared_ptr<wpl_file_chunk>> updates_type;
 	updates_type updates;
 
 	ostringstream error;
@@ -101,16 +107,15 @@ class wpl_file {
 		return error.str();
 	}
 
-	void queue_update(const wpl_file_chunk &chunk) {
-		new_size -= chunk.get_orig_size();
-		new_size += chunk.get_size();
-		updates[chunk.get_pos()] = chunk;
+	shared_ptr<wpl_file_chunk> new_chunk() {
+		return shared_ptr<wpl_file_chunk>(new wpl_file_chunk());
 	}
 
 	bool check_error();
 	bool open (const char *filename, ios_base::openmode mode);
 	bool close();
-	bool update();
+	bool update(wpl_value_line *line);
+	bool flush();
 
 	bool is_writeable() {
 		return (mode & ios_base::out);
@@ -122,5 +127,5 @@ class wpl_file {
 		return (pos < size);
 	}
 
-	void read_line (wpl_file_chunk &chunk);
+	void read_line (wpl_file_chunk *chunk);
 };

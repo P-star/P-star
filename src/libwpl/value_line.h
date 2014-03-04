@@ -40,10 +40,11 @@ class wpl_operator_struct;
 class wpl_value_line : public wpl_value {
 	protected:
 	shared_ptr<wpl_file> file;
-	wpl_file_chunk current_line;
+	shared_ptr<wpl_file_chunk> chunk;
 
 	public:
 	PRIMITIVE_TYPEINFO(line)
+	wpl_value_line () {}
 	wpl_value_line (int dummy) {}
 	wpl_value_line *clone() const { return new wpl_value_line(*this); };
 	wpl_value_line *clone_empty() const { return new wpl_value_line(0); };
@@ -51,10 +52,10 @@ class wpl_value_line : public wpl_value {
 	void set_weak(wpl_value *value) override;
 	string toString() override;
 	bool toBool() override {
-		return current_line.get_size();
+		return (chunk) && chunk->get_size();
 	}
 	int toInt() override {
-		return current_line.get_size();
+		return (chunk ? chunk->get_size() : 0);
 	}
 
 	int do_operator (
@@ -64,4 +65,16 @@ class wpl_value_line : public wpl_value {
 			wpl_value *lhs,
 			wpl_value *rhs
 	);
+
+	shared_ptr<wpl_file_chunk> &get_chunk_shared_ptr() {
+		return chunk;
+	}
+
+	shared_ptr<wpl_file> &get_file_shared_ptr() {
+		return file;
+	}
+
+	bool is_file (const wpl_file *file) const {
+		return (file == this->file.get());
+	}
 };
