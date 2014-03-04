@@ -37,6 +37,14 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 void wpl_value_line::set_weak(wpl_value *value) {
 	{
+		wpl_value_line *value_line = dynamic_cast<wpl_value_line*>(value);
+		if (value_line) {
+			file = value_line->get_file_shared_ptr();
+			chunk = value_line->get_chunk_shared_ptr();
+			return;
+		}
+	}
+	{
 		wpl_value_struct *value_struct = dynamic_cast<wpl_value_struct*>(value);
 		if (!value_struct)
 			goto notfile;
@@ -50,9 +58,9 @@ void wpl_value_line::set_weak(wpl_value *value) {
 			goto notfile;
 
 		file = value_file->get_file_shared_ptr();
-		current_line = wpl_file_chunk(0);
+		chunk.reset();
+		return;
 	}
-	goto success;
 
 notfile:
 	if (!file || !file->is_open()) {
@@ -61,30 +69,29 @@ notfile:
 	if (!file->is_writeable()) {
 		throw runtime_error("Cannot modify LINE object associated with read-only FILE");
 	}
+	if (!chunk) {
+		throw runtime_error("Cannot set value of LINE as it does not yet point to any data. Try line++ first?");
+	}
+
 	try {
-		current_line.set_data(value->toString());
-		file->queue_update(current_line);
+		chunk->set_data(value->toString());
 	}
 	catch (runtime_error &e) {
-		goto err;
-	}
-
-	goto success;
-
-err:
-	{
 		ostringstream msg;
 		msg << "Could not set value of LINE to a value of type " <<
 			value->get_type_name() <<
 			". The value must be of type FILE or be string-compatible.";
 		throw runtime_error(msg.str());
 	}
-success:
+
 	return;
 }
 
 string wpl_value_line::toString() {
-	return current_line.get_data();
+	if (!chunk) {
+		throw runtime_error("Cannot get string value of LINE as it does not yet point to any data. Try line++ first?");
+	}
+	return chunk->get_data();
 }
 
 int wpl_value_line::do_operator (
@@ -94,23 +101,39 @@ int wpl_value_line::do_operator (
 	wpl_value *lhs,
 	wpl_value *rhs
 ) {
+	if (op == &OP_ASSIGN) {
+		set_weak(rhs);
+		wpl_value_bool res(1);
+		return res.do_operator_recursive(exp_state, final_result);
+	}
+
+	if (!file) {
+		throw runtime_error("Only assign operator = is valid for LINE objects"
+			       " not yet associated with any FILE. Try line=file first?");
+	}
+
 	if (op == &OP_INC_SUFFIX || op == &OP_INC_PREFIX) {
 		wpl_value_int res(0);
 
-		current_line = current_line.get_next();
-		if (file->check_pos(current_line.get_pos())) {
-			file->read_line(current_line);
-			current_line.update_orig_size();
-			res.set(current_line.get_size());
+		if (!chunk) {
+			chunk = file->new_chunk();
+		}
+		else {
+			chunk = chunk->get_next();
+		}
+
+		if (file->check_pos(chunk->get_pos())) {
+			file->read_line(chunk.get());
+			chunk->update_orig_size();
+			res.set(chunk->get_size());
 		}
 
 		return res.do_operator_recursive(exp_state, final_result);
 	}
 
-	if (op == &OP_ASSIGN) {
-		set_weak(rhs);
-		wpl_value_bool res(1);
-		return res.do_operator_recursive(exp_state, final_result);
+	if (!chunk) {
+		throw runtime_error("Cannot operate on LINE object because it does"
+			       " not yet point to any data. Try line++ first?");
 	}
 
 	if (op == &OP_CONCAT) {

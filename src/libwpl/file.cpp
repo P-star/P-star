@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "wpl_file.h"
+#include "value_line.h"
 
 #include <cstring>
 #include <memory>
@@ -90,8 +91,6 @@ bool wpl_file::open(const char *filename, ios_base::openmode mode) {
 	size = file.tellg();
 	file.seekg(0, file.beg);
 
-	cerr << "Filesize is " << size << endl;
-
 	new_size = size;
 
 	return true;
@@ -127,7 +126,27 @@ bool wpl_file::close() {
 	return true;
 }
 
-bool wpl_file::update() {
+bool wpl_file::update(wpl_value_line *line) {
+	if (!line->is_file(this)) {
+		throw runtime_error("Attempted to update FILE with a LINE object associated with another FILE object");
+	}
+
+	shared_ptr<wpl_file_chunk> chunk = line->get_chunk_shared_ptr();
+
+	new_size -= chunk->get_orig_size();
+	new_size += chunk->get_size();
+
+	auto it = updates.find(chunk->get_pos());
+	if (it != updates.end()) {
+		new_size -= (*it).second->get_size();
+		new_size += (*it).second->get_orig_size();
+		updates.erase(it);
+	}
+
+	updates[chunk->get_pos()] = chunk;
+}
+
+bool wpl_file::flush() {
 	if (!file.is_open()) {
 		throw runtime_error("update() called before successful open()");
 	}
@@ -140,25 +159,21 @@ bool wpl_file::update() {
 
 	// Insert dummy chunk at the end to copy the end of the file
 	if (updates.find(size) == updates.end()) {
-		updates[size] = wpl_file_chunk(size-1);
+		updates[size] = shared_ptr<wpl_file_chunk>(new wpl_file_chunk(size));
 	}
 
 	unique_ptr<char[]> out_data(new char[new_size+1]);
 
-	int prev_in_pos = -1;
 	int in_pos = 0;
 	char *out_pos = out_data.get();
 
 	for (auto it = updates.begin(); it != updates.end(); ++it) {
 		int chunk_pos = it->first;
-		const wpl_file_chunk &chunk = it->second;
-
-		cerr << "write a chunk\n";
+		shared_ptr<wpl_file_chunk> chunk = it->second;
 
 		// Copy unchanged data from the previous position
-		if (in_pos != chunk_pos && prev_in_pos != in_pos) {
+		if (in_pos != chunk_pos) {
 			int diff = chunk_pos - in_pos;
-			cerr << "Seek to pos " << in_pos << " and read " << diff << " bytes\n";
 			file.seekg(in_pos, file.beg);
 			file.read(out_pos, diff);
 			out_pos += diff;
@@ -169,16 +184,14 @@ bool wpl_file::update() {
 		}
 
 		// Insert new data
-		const string &chunk_data = chunk.get_data();
-		cerr << "copy " << chunk_data.size() << " bytes from chunk\n";
-		cerr << "copy '" << chunk_data << "'\n";
-		fprintf (stderr, "pointer: %p\n", out_pos);
+		const string &chunk_data = chunk->get_data();
 		strncpy(out_pos, chunk_data.c_str(), chunk_data.size());
 
 		out_pos += chunk_data.size();
-		in_pos += chunk.get_orig_size();
+		in_pos += chunk->get_orig_size();
 
-		prev_in_pos = in_pos;
+		// Update the chunk
+		chunk->update_orig_size();
 
 		if ((out_pos-out_data.get()) > new_size) {
 			throw runtime_error("Buffer overflow while copying file to temporary memory location");
@@ -186,7 +199,6 @@ bool wpl_file::update() {
 	}
 
 	*out_pos = '\0';
-	cerr << "Output: " << out_data.get() << endl;
 
 	// Truncate the original file
 #ifdef WIN32
@@ -199,7 +211,6 @@ bool wpl_file::update() {
 	}
 #else
 	{
-		cerr << "Trunc from " << size << " to " << new_size << endl;
 		int fd = fileno(extra_fd);
 		if (ftruncate(fd, new_size)) {
 			goto ftruncate_err;
@@ -208,12 +219,11 @@ bool wpl_file::update() {
 #endif
 
 	file.seekg(0, file.beg);
-	file.write(out_data.get(), (out_pos-out_data.get()));
+	file.write(out_data.get(), new_size);
 	file.flush();
 
 	updates.clear();
-
-	cerr << "update complete\n";
+	size = new_size;
 
 	return true;
 
@@ -229,15 +239,15 @@ ftruncate_err:
 	
 }
 
-void wpl_file::read_line (wpl_file_chunk &chunk) {
+void wpl_file::read_line (wpl_file_chunk *chunk) {
 	if (!file.is_open()) {
 		throw runtime_error("Can't read lines from non-open FILE objects");
 	}
 
-	int pos = chunk.get_pos();
-	string &data = chunk.get_data();
+	int pos = chunk->get_pos();
+	string &data = chunk->get_data();
 
-	file.seekg(chunk.get_pos(), file.beg);
+	file.seekg(pos, file.beg);
 	if (check_error()) {
 		reset_error();
 		error << "Could not seek to position while reading line: " << strerror(errno);

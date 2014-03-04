@@ -9,30 +9,30 @@ SCENE main {
 		echo file_in->error() . "\n";
 		return 1;
 	}
-	echo "File '$testfile_in' opened successfully for reading\n";
 
 	if (!file_out->open_truncate(filename_out)) {
 		echo file_out->error() . "\n";
 		return 1;
 	}
-	echo "File '$testfile_out' opened successfully for writing\n";
 
 	int i = 0;
 	LINE line_in = file_in;
 	LINE line_out = file_out;
 
+	echo "Copying all lines of infile to outfile...\n";
+
 	while (line_in++) {
+		line_out++;
 		echo "Line $i: $line_in";
 
-		line_out = line_in;
-		line_out++;
+		line_out = line_in . "";
+		file_out->update(line_out);
+		file_out->flush();
 
 		i++;
 	}
 
-	echo "\n";
-
-	file_out->update();
+	echo "DONE\n\n";
 
 	file_out->close();
 	file_in->close();
@@ -41,24 +41,35 @@ SCENE main {
 		echo file_out->error() . "\n";
 		return 1;
 	}
-	echo "File '$testfile_out' opened successfully for read and write\n";
 
 	line_out = file_out;
-	while (1) {
-		int inc = line_out++;
-		echo "Line out inc: $inc\n";
-		if (!inc) {
-			break 1;
-		}
+	echo "Deleting lines with B in outfile...\n";
+	while (line_out++) {
 		echo "Found line $line_out";
 		if (line_out =~ /B/) {
-			echo "...deleting";
+			echo "\t...deleting";
 			line_out = "";
+			file_out->update(line_out);
+		}
+		else {
+			echo "\t...keeping";
 		}
 		echo "\n";
 	}
 
-	file_out->update();
+	echo "DONE\n\n";
+
+	file_out->flush();
+
+	line_in = file_out;
+	echo "Final result:\n";
+
+	i = 0;
+	while (line_in++) {
+		echo "Line $i: $line_in";
+		i++;
+	}
+
 	file_out->close();
 
 	return 0;

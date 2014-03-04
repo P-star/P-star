@@ -28,6 +28,7 @@ along with P*. If not, see <http://www.gnu.org/licenses/>.
 
 #include "type_file.h"
 #include "wpl_file.h"
+#include "value_line.h"
 
 #include "value_string.h"
 
@@ -67,7 +68,13 @@ int wpl_file_open::run (
 	}
 
 	wpl_value_file *value_file = (wpl_value_file*) this_var->get_value();
-	wpl_value_string *filename = (wpl_value_string*) filename_var->get_value();
+	wpl_value_string *filename = dynamic_cast<wpl_value_string*>(filename_var->get_value());
+	if (!filename) {
+		ostringstream msg;
+		msg << "Argument to open() was of type " << filename_var->get_value()->get_type_name() <<
+			", but type string was expected\n";
+		throw runtime_error(msg.str());
+	}
 	wpl_file *file = value_file->get_file();
 
 	((wpl_value_bool*) final_result)->set(file->open(filename->toString().c_str(), mode));
@@ -121,7 +128,7 @@ int wpl_file_error::run (
 	wpl_function_state *function_state = (wpl_function_state*) state;
 
 	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("FILE error: open(): Could not find 'this' variable");
+		throw runtime_error("FILE error: error(): Could not find 'this' variable");
 	}
 
 	wpl_value_file *value_file = (wpl_value_file*) this_var->get_value();
@@ -136,7 +143,10 @@ class wpl_file_update : public wpl_function {
 	public:
 	wpl_file_update() :
 		wpl_function(wpl_type_global_bool, "update", WPL_VARIABLE_ACCESS_PUBLIC)
-	{}
+	{
+		wpl_variable_holder line("line", new wpl_value_line(), WPL_VARIABLE_ACCESS_PRIVATE);
+		register_identifier(&line);
+	}
 	int run (wpl_state *state, wpl_value *final_result);
 };
 
@@ -145,17 +155,57 @@ int wpl_file_update::run (
 	wpl_value *final_result
 ) {
 	wpl_variable *this_var;
+	wpl_variable *line_var;
 
 	wpl_function_state *function_state = (wpl_function_state*) state;
 
 	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("FILE error: open(): Could not find 'this' variable");
+		throw runtime_error("FILE error: update(): Could not find 'this' variable");
+	}
+	if (!(line_var = function_state->find_variable("line", WPL_NSS_CTX_SELF))) {
+		throw runtime_error("FILE error: update(): Could not find 'line' variable");
 	}
 
 	wpl_value_file *value_file = (wpl_value_file*) this_var->get_value();
 	wpl_file *file = value_file->get_file();
 
-	((wpl_value_bool*) final_result)->set(file->update());
+	wpl_value_line *line = dynamic_cast<wpl_value_line*>(line_var->get_value());
+	if (!line) {
+		ostringstream msg;
+		msg << "Argument to update() was of type " << line_var->get_value()->get_type_name() <<
+			", but type LINE was expected\n";
+		throw runtime_error(msg.str());
+	}
+
+	((wpl_value_bool*) final_result)->set(file->update(line));
+
+	return WPL_OP_OK;
+}
+
+class wpl_file_flush : public wpl_function {
+	public:
+	wpl_file_flush() :
+		wpl_function(wpl_type_global_bool, "flush", WPL_VARIABLE_ACCESS_PUBLIC)
+	{}
+	int run (wpl_state *state, wpl_value *final_result);
+};
+
+int wpl_file_flush::run (
+	wpl_state *state,
+	wpl_value *final_result
+) {
+	wpl_variable *this_var;
+
+	wpl_function_state *function_state = (wpl_function_state*) state;
+
+	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
+		throw runtime_error("FILE error: flush(): Could not find 'this' variable");
+	}
+
+	wpl_value_file *value_file = (wpl_value_file*) this_var->get_value();
+	wpl_file *file = value_file->get_file();
+
+	((wpl_value_bool*) final_result)->set(file->flush());
 
 	return WPL_OP_OK;
 }
@@ -173,6 +223,7 @@ wpl_type_file::wpl_type_file() :
 	register_identifier(new wpl_file_close());
 	register_identifier(new wpl_file_error());
 	register_identifier(new wpl_file_update());
+	register_identifier(new wpl_file_flush());
 }
 
 wpl_type_file constant_type_file;
