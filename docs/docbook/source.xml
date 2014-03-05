@@ -1781,7 +1781,7 @@ SCENE main {
 		<section>
 			<title>Project status</title>
 			<para>
-			Help is needed with the P* projects.
+			Help is needed with the P* project.
 			</para>
 			<table>
 				<title>List of project tasks</title>
@@ -1818,20 +1818,14 @@ SCENE main {
 				</tbody>
 				</tgroup>
 			</table>
+		<para>
+		You should also take a look at the <ulink url="https://github.com/atlesn/P-star/issues?state=open">issue tracker on Github</ulink>, feel free to create new issues for functionality you think is missing out.
+		</para>
 		</section>
 	</chapter>
 	<chapter>
 		<title>Development</title>
 		<emphasis>Read this if you like to write stuff!</emphasis>
-		<section>
-			<title>Status Quo</title>
-			<para>The base of the P* interpreter is written in C++ and runs quite well.
-			The development is in an intermediate phase, and more new functionallity needs to be written.
-			</para>
-			<para>
-			The implementation of loadable modules, with MySQL as the first one out, can be done without any change to the base.
-			</para>
-		</section>
 		<section>
 			<title>How it's run</title>
 			<para>
@@ -1851,7 +1845,7 @@ SCENE main {
 			<para>
 			Some objects are also <code>namespace sessions</code>, like blocks. These hold variables during run-time.
 			The variables are copied from the original namespace (created on parse-time) the first time the block is called from a specific location.
-			This method allows the same program to run threaded on the same object structure, as no objects created on parsing are in any way changed when the program runs. When run as a web server module, this methos is ideal as most of the work with initializing a program is only done the first time.
+			This method allows the same program to run threaded on the same object structure, as no objects created on parsing are in any way changed when the program runs. When run as a web server module, this method is ideal, as most of the work with initializing a program is only done once.
 			</para>
 			<para>
 			It should also be easy to implement threading in P*.
@@ -1868,20 +1862,10 @@ SCENE main {
 			</para>
 			<para>
 			A small program in P* does ~300 memory allocations, while PHP does 18 000.
-			There is no current measurement of performance when P* is run as module in a web serverm, because no such module currently exists (but there will be one soon !).
+			There is no current measurement of performance with the P* web server module, but the I/O performance is at least average.
 			</para>
 			<para>
 			The expression running in P* is not omptimized very much yet, but on my home computer, it can run a short expression in a loop (like <code>i++</code>) 50 million times in about 3 seconds. This should be fast enough for now.
-			</para>
-		</section>
-		<section>
-			<title>Database handling</title>
-			<para>
-			The P* interpreter has custom C++ wrapper classes for the official MySQL C client API.
-			The good mix of C and C++ coding techniques makes the code taste very good.
-			</para>
-			<para>
-			P* wraps destructor functions of MySQL, like <code>mysql_stmt_close()</code> into destructors of it's own classes and forgets about them.
 			</para>
 		</section>
 		<section>
