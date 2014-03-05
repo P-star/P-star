@@ -1461,6 +1461,125 @@ stmt->execute();
 			</para>
 		</section>
 		<section>
+			<title>File I/O</title>
+			<para>P* provides a unique way of handling reading and writing files.
+			With maximum simplicity you can go through a file line by line and edit, delete or insert new lines.
+			You do not need to worry about joining strings together in the correct order or storing the file temporarily, P* will do that for you.
+			</para>
+			<bridgehead>The FILE type</bridgehead>
+			<para>The FILE type is the main filehandle, used to open and close files. Files may be opened read-only, read/write and may be truncated.
+			Here is the syntax for the different open methods.
+			</para>
+			<programlisting language="c">
+SCENE main {
+	FILE file;
+
+	/* Open a file read-only */
+	if (!file->open_ro("my_file")) {
+		errcho "Could not open my_file: " . file->error() . "\n";
+		return 1;
+	}
+	file->close();
+
+	/* Open a file for reading and writing */
+	if (!file->open_rw("my_file")) {
+		errcho "Could not open my_file: " . file->error() . "\n";
+		return 1;
+	}
+	file->close();
+
+	/* Open a file read-write and truncate it on open */
+	if (!file->open_truncate("my_file")) {
+		errcho "Could not open my_file: " . file->error() . "\n";
+		return 1;
+	}
+	file->close();
+
+	return 0;
+}
+			</programlisting>
+			<bridgehead>The LINE type</bridgehead>
+			<para>The LINE type is used to read a file line by line and to modify it.
+			The LINE does not work on its own, and has to be bound to a FILE object like this:
+			<programlisting language="c">
+LINE line = file;
+			</programlisting>
+			Initially, the line does not point to any particular position in the FILE.
+			To make it point to the first line, use the <code>++</code>-operator like this:
+			<programlisting language="c">
+LINE line = file;
+line++;
+			</programlisting>
+			The LINE object now points to the first line of the file.
+			If the file is empty, it points to the beginning.
+			</para>
+			<para>
+			The <code>++</code> operator returns the number of bytes read into the LINE object.
+			This can be used in a loop to break the loop when it reaches the last line.
+			<programlisting language="c">
+LINE line = file;
+while (line++) {
+	echo "Found a line: $line\n";
+}
+			</programlisting>
+			Trailing newlines (<code>\n</code>) are not removed when lines are read in.
+			</para>
+			<bridgehead>Edit files using the LINE object</bridgehead>
+			<para>
+			It's possible to edit a file using the LINE object by setting it's value to something else.
+			The changes then have to be queued for update in the FILE object using the syntax <code>file->update(line);</code>.
+			After you've added all the changes, they must be written out using <code>file->flush()</code>.
+			</para>
+			<para>
+			Here is an example which adds a <code>#</code> at the beginning of lines which have numbers in them.
+			<programlisting language="c">
+SCENE main {
+	FILE file;
+
+	/* Open a file read-write, we will modify it */
+	if (!file->open_rw("my_file")) {
+		errcho "Could not open my_file: " . file->error() . "\n";
+		return 1;
+	}
+
+	/* Initialize some variables */
+	LINE line = file;
+
+	int lines = 0;
+	int modified = 0;
+
+	/* Loop through all lines of the file */
+	while (line++) {
+		lines++;
+
+		/* Check if the line contains numbers and does not already begin with a # */
+		if (line =~ /\d/ &amp;&amp; line !~ /^#/) {
+			/* Add the # to the line */
+			line = "# $line";
+
+			/* Queue the updated LINE object for writing */
+			file->update(line);
+
+			modified++;
+		}
+	}
+
+	/* Print out some stats */
+	echo "Modified $modified of total $lines lines.\n";
+
+	/* Write the changes out and close the file */
+	file->flush();
+	file->close();
+
+	return 0;
+}
+			</programlisting>
+			</para>
+			<para>If you need to write to an empty file, just write all your data to the LINE object right after the <code>line++</code>-operation.
+			You can insert or append new lines to a file by adding data to the LINE objects at desired locations.
+			</para>
+		</section>
+		<section>
 			<title>Example of web-application</title>
 			<para>Below is an example of a full web application which uses MySQL database, POST variables and HTML templates. The example uses a JavaScript to submit a form to the web server.
 			The web server replies with JSON, and the JavaScript replaces the inner HTML of a DIV with the results.
