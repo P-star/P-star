@@ -1,5 +1,5 @@
 SCENE main {
-	TIME time = "2014*03*01";
+	TIME time = "2014*03*01 23:01:20";
 	echo "$time\n";
 	int y = time->year;
 	int m = time->month;
@@ -20,11 +20,19 @@ SCENE main {
 	time = "1875-oct-08";
 	y = time->year; m = time->month; d = time->day;
 	echo "$y $m $d\n";
-	time = "68-jun-4";
+	time = "68-JUN-4";
 	y = time->year; m = time->month; d = time->day;
 	echo "$y $m $d\n";
 	time = "4623-august-24";
 	y = time->year; m = time->month; d = time->day;
 	echo "$y $m $d\n";
 	echo "$time\n";
+	time = "2008 FEB 29";
+	echo "$time\n";
+	time = "2013-06-30 11:26:33";
+	echo "$time\n";
+	int h = time->hour;
+	m = time->min;
+	int second = time->sec;
+	echo "$h $second $m\n";
 }
