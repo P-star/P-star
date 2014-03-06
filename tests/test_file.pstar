@@ -16,8 +16,8 @@ SCENE main {
 	}
 
 	int i = 0;
-	LINE line_in = file_in;
-	LINE line_out = file_out;
+	LINE line_in = file_in->begin();
+	LINE line_out = file_out->end();
 
 	echo "Copying all lines of infile to outfile...\n";
 
@@ -60,6 +60,15 @@ SCENE main {
 	echo "DONE\n\n";
 
 	file_out->flush();
+
+	echo "Adding extra line to outfile...\n";
+
+	line_out = file_out->end();
+	line_out = "Line D\n";
+	file_out->update(line_out);
+	file_out->flush();
+
+	echo "DONE\n\n";
 
 	line_in = file_out;
 	echo "Final result:\n";

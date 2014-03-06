@@ -168,6 +168,54 @@ int wpl_file_flush::run (
 	return WPL_OP_OK;
 }
 
+class wpl_file_begin : public wpl_function {
+	public:
+	wpl_file_begin() :
+		wpl_function(wpl_type_global_line, "begin", WPL_VARIABLE_ACCESS_PUBLIC)
+	{}
+	int run (wpl_state *state, wpl_value *final_result);
+};
+
+int wpl_file_begin::run (
+	wpl_state *state,
+	wpl_value *final_result
+) {
+	wpl_function_state *function_state = (wpl_function_state*) state;
+
+	wpl_value_file *value_file =
+		function_state->find_variable_value<wpl_value_file>("begin()", "this");
+
+	wpl_file *file = value_file->get_file();
+
+	((wpl_value_line*) final_result)->set(value_file->get_file_shared_ptr(), file->new_chunk_begin());
+
+	return WPL_OP_OK;
+}
+
+class wpl_file_end : public wpl_function {
+	public:
+	wpl_file_end() :
+		wpl_function(wpl_type_global_line, "end", WPL_VARIABLE_ACCESS_PUBLIC)
+	{}
+	int run (wpl_state *state, wpl_value *final_result);
+};
+
+int wpl_file_end::run (
+	wpl_state *state,
+	wpl_value *final_result
+) {
+	wpl_function_state *function_state = (wpl_function_state*) state;
+
+	wpl_value_file *value_file =
+		function_state->find_variable_value<wpl_value_file>("end()", "this");
+
+	wpl_file *file = value_file->get_file();
+
+	((wpl_value_line*) final_result)->set(value_file->get_file_shared_ptr(), file->new_chunk_end());
+
+	return WPL_OP_OK;
+}
+
 wpl_type_file::wpl_type_file() :
 	wpl_struct(wpl_typename_file, true)
 {
@@ -182,6 +230,8 @@ wpl_type_file::wpl_type_file() :
 	register_identifier(new wpl_file_error());
 	register_identifier(new wpl_file_update());
 	register_identifier(new wpl_file_flush());
+	register_identifier(new wpl_file_begin());
+	register_identifier(new wpl_file_end());
 }
 
 wpl_type_file constant_type_file;

@@ -107,8 +107,12 @@ class wpl_file {
 		return error.str();
 	}
 
-	shared_ptr<wpl_file_chunk> new_chunk() {
+	shared_ptr<wpl_file_chunk> new_chunk_begin() {
 		return shared_ptr<wpl_file_chunk>(new wpl_file_chunk());
+	}
+
+	shared_ptr<wpl_file_chunk> new_chunk_end() {
+		return shared_ptr<wpl_file_chunk>(new wpl_file_chunk(size));
 	}
 
 	bool check_error();

@@ -66,6 +66,16 @@ class wpl_value_line : public wpl_value {
 			wpl_value *rhs
 	);
 
+	void set(const shared_ptr<wpl_file> &file, const shared_ptr<wpl_file_chunk> &chunk) {
+		this->file = file;
+		this->chunk = chunk;
+	}
+
+	void set(const shared_ptr<wpl_file> &file) {
+		this->file = file;
+		chunk.reset();
+	}
+
 	shared_ptr<wpl_file_chunk> &get_chunk_shared_ptr() {
 		return chunk;
 	}

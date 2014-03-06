@@ -57,8 +57,7 @@ void wpl_value_line::set_weak(wpl_value *value) {
 		if (!value_file)
 			goto notfile;
 
-		file = value_file->get_file_shared_ptr();
-		chunk.reset();
+		set (value_file->get_file_shared_ptr());
 		return;
 	}
 
@@ -116,7 +115,7 @@ int wpl_value_line::do_operator (
 		wpl_value_int res(0);
 
 		if (!chunk) {
-			chunk = file->new_chunk();
+			chunk = file->new_chunk_begin();
 		}
 		else {
 			chunk = chunk->get_next();
