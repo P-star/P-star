@@ -33,6 +33,7 @@ HTML_TEMPLATE body {
 	</ul>
 	<h2>Important features built into P*</h2>
 	<ul>
+		<li><b>(NEW)</b> File I/O-functionality</li>
 		<li>HTML template engine</li>
 		<li>Special syntax to simplify prepared SQL statements</li>
 		<li>Built-in JSON/AJAX output</li>
