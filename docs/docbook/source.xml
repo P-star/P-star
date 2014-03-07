@@ -1498,7 +1498,7 @@ SCENE main {
 	return 0;
 }
 			</programlisting>
-			<bridgehead>The LINE type</bridgehead>
+	<bridgehead>The LINE type</bridgehead>
 			<para>The LINE type is used to read a file line by line and to modify it.
 			The LINE does not work on its own, and has to be bound to a FILE object like this:
 			<programlisting language="c">
@@ -1524,7 +1524,11 @@ while (line++) {
 			</programlisting>
 			Trailing newlines (<code>\n</code>) are not removed when lines are read in.
 			</para>
-			<bridgehead>Edit files using the LINE object</bridgehead>
+			<para>You can make a LINE object point to the end of a file by using <code>line = file->end()</code>, which is useful for appending to files.
+			</para>
+			<para>The LINE object can also traverse a file line by line in reverse order, using the <code>line--</code>-operator. The LINE object will point to the previous line from the current position.
+			When no more lines can be read, the LINE object will point to the beginning of the file, but it will not contain any data.</para>
+	<bridgehead>Edit files using the LINE object</bridgehead>
 			<para>
 			It's possible to edit a file using the LINE object by setting it's value to something else.
 			The changes then have to be queued for update in the FILE object using the syntax <code>file->update(line);</code>.
@@ -1575,8 +1579,8 @@ SCENE main {
 }
 			</programlisting>
 			</para>
-			<para>If you need to write to an empty file, just write all your data to the LINE object right after the <code>line++</code>-operation.
-			You can insert or append new lines to a file by adding data to the LINE objects at desired locations.
+			<para>If you need to write to an empty file, just write all your data to the LINE object right after the <code>line++</code>-operation. You can also use <code>line = file->begin()</code>, the result will be the same.
+			You can insert or append new lines to a file by adding data to the LINE objects at desired locations. Original data will be overwritten.
 			</para>
 		</section>
 		<section>
