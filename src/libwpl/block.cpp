@@ -182,7 +182,12 @@ void wpl_block::parse_if_else_sequenze(wpl_namespace *ns) {
 		exp = new wpl_expression_par_enclosed();
 		block_else_if->set_run_condition(exp);
 
+		exp->load_position(get_position());
+		exp->parse_value(ns);
+		load_position(exp->get_position());
+
 		ignore_blockstart();
+	
 		block_else_if->set_parent_namespace(ns);
 		block_else_if->load_position(get_position());
 		block_else_if->parse_value(block_else_if);
