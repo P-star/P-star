@@ -33,6 +33,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <memory>
 #include <errno.h>
 #include <cstdio>
+#include <vector>
 
 #ifndef WIN32
 #include <unistd.h>
@@ -162,10 +163,11 @@ bool wpl_file::flush() {
 		updates[size] = shared_ptr<wpl_file_chunk>(new wpl_file_chunk(size));
 	}
 
-	unique_ptr<char[]> out_data(new char[new_size+1]);
+	vector<char> out_data;
+	out_data.reserve(new_size+2);
 
 	int in_pos = 0;
-	char *out_pos = out_data.get();
+	int out_pos = 0;
 
 	for (auto it = updates.begin(); it != updates.end(); ++it) {
 		int chunk_pos = it->first;
@@ -175,7 +177,8 @@ bool wpl_file::flush() {
 		if (in_pos != chunk_pos) {
 			int diff = chunk_pos - in_pos;
 			file.seekg(in_pos, file.beg);
-			file.read(out_pos, diff);
+			file.read(out_data.data() + out_pos, diff);
+
 			out_pos += diff;
 			in_pos += diff;
 			if (check_error()) {
@@ -185,20 +188,21 @@ bool wpl_file::flush() {
 
 		// Insert new data
 		const string &chunk_data = chunk->get_data();
-		strncpy(out_pos, chunk_data.c_str(), chunk_data.size());
+		strncpy(out_data.data() + out_pos, chunk_data.c_str(), chunk_data.size());
 
 		out_pos += chunk_data.size();
 		in_pos += chunk->get_orig_size();
 
 		// Update the chunk
+		chunk->set_pos(out_pos);
 		chunk->update_orig_size();
 
-		if ((out_pos-out_data.get()) > new_size) {
+		if (out_pos > new_size) {
 			throw runtime_error("Buffer overflow while copying file to temporary memory location");
 		}
-	}
 
-	*out_pos = '\0';
+		out_data[out_pos] = '\0';
+	}
 
 	// Truncate the original file
 #ifdef WIN32
@@ -219,7 +223,7 @@ bool wpl_file::flush() {
 #endif
 
 	file.seekg(0, file.beg);
-	file.write(out_data.get(), new_size);
+	file.write(out_data.data(), new_size);
 	file.flush();
 
 	updates.clear();
@@ -254,7 +258,7 @@ void wpl_file::read_line (wpl_file_chunk *chunk) {
 		throw runtime_error (error.str());
 	}
 
-	getline(file, data);
+	std::getline(file, data);
 
 	if (check_error()) {
 		reset_error();
@@ -267,5 +271,52 @@ void wpl_file::read_line (wpl_file_chunk *chunk) {
 	}
 	else if (file.eof() && size > (pos + data.size())) {
 		data += "\n";
+	}
+
+	chunk->update_orig_size();
+}
+
+void wpl_file::read_previous_line (wpl_file_chunk *chunk) {
+	if (!file.is_open()) {
+		throw runtime_error("Can't find previous newline in non-open FILE objects");
+	}
+
+	string &data = chunk->get_data();
+	int pos = chunk->get_pos() - 1;
+
+	if (pos < 0) {
+		data.clear(); 
+		return;
+	}
+
+	vector<char> cache;
+	cache.reserve(128);
+
+	char tmp;
+	bool first_newline_found = false;
+	while (pos >= 0) {
+		file.seekg(pos, file.beg);
+		file.get(tmp);
+
+		if (tmp == '\n' && first_newline_found) {
+			pos++;
+			break;
+		}
+
+		cache.push_back(tmp);
+		first_newline_found = true;
+		pos--;
+	}
+
+	if (first_newline_found) {
+		if (pos < 0)
+			pos = 0;
+		chunk->set_pos(pos);
+		data.assign(cache.rbegin(), cache.rend());
+		chunk->update_orig_size();
+	}
+	else {
+		chunk->set_pos(0);
+		read_line(chunk);
 	}
 }

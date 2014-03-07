@@ -43,8 +43,13 @@ class wpl_file_chunk {
 	string data;
 
 	public:
-	wpl_file_chunk() : pos(0), orig_size(0) {}
-	wpl_file_chunk(int pos) : pos(pos), orig_size(0) {}
+	wpl_file_chunk() :
+		pos(0),
+		orig_size(0) {}
+
+	wpl_file_chunk(int pos) :
+		pos(pos),
+		orig_size(0) {}
 
 	void merge (const wpl_file_chunk &chunk) {
 		data += chunk.get_data();
@@ -72,6 +77,10 @@ class wpl_file_chunk {
 	}
 	void set_data(const string &data) {
 		this->data = data;
+	}
+	void set_pos(int pos) {
+		this->pos = pos;
+		this->data.clear();
 	}
 };
 
@@ -132,4 +141,5 @@ class wpl_file {
 	}
 
 	void read_line (wpl_file_chunk *chunk);
+	void read_previous_line (wpl_file_chunk *chunk);
 };
