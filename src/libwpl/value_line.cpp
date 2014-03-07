@@ -57,8 +57,7 @@ void wpl_value_line::set_weak(wpl_value *value) {
 		if (!value_file)
 			goto notfile;
 
-		file = value_file->get_file_shared_ptr();
-		chunk.reset();
+		set (value_file->get_file_shared_ptr());
 		return;
 	}
 
@@ -116,7 +115,7 @@ int wpl_value_line::do_operator (
 		wpl_value_int res(0);
 
 		if (!chunk) {
-			chunk = file->new_chunk();
+			chunk = file->new_chunk_begin();
 		}
 		else {
 			chunk = chunk->get_next();
@@ -124,9 +123,24 @@ int wpl_value_line::do_operator (
 
 		if (file->check_pos(chunk->get_pos())) {
 			file->read_line(chunk.get());
-			chunk->update_orig_size();
 			res.set(chunk->get_size());
 		}
+
+		return res.do_operator_recursive(exp_state, final_result);
+	}
+
+	if (op == &OP_DEC_SUFFIX || op == &OP_DEC_PREFIX) {
+		wpl_value_int res(0);
+
+		if (!chunk) {
+			chunk = file->new_chunk_end();
+		}
+		else {
+			chunk.reset(new wpl_file_chunk(*chunk));
+		}
+
+		file->read_previous_line(chunk.get());
+		res.set(chunk->get_size());
 
 		return res.do_operator_recursive(exp_state, final_result);
 	}

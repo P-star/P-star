@@ -16,8 +16,8 @@ SCENE main {
 	}
 
 	int i = 0;
-	LINE line_in = file_in;
-	LINE line_out = file_out;
+	LINE line_in = file_in->begin();
+	LINE line_out = file_out->end();
 
 	echo "Copying all lines of infile to outfile...\n";
 
@@ -61,6 +61,26 @@ SCENE main {
 
 	file_out->flush();
 
+	echo "Adding extra line to outfile...\n";
+
+	line_out = file_out->end();
+	line_out = "Line D\n\nLine E\n\n\nLine F\n";
+	file_out->update(line_out);
+	file_out->flush();
+	echo "DONE\n\n";
+
+	echo "Adding stuff to empty lines in reverse order...\n";
+
+	line_out = file_out->end();
+	while (line_out--) {
+		if (line_out =~ /^\n$/) {
+			line_out = "# This line was empty\n";
+			file_out->update(line_out);
+		}
+	}
+	file_out->flush();
+	echo "DONE\n\n";
+
 	line_in = file_out;
 	echo "Final result:\n";
 
@@ -68,6 +88,12 @@ SCENE main {
 	while (line_in++) {
 		echo "Line $i: $line_in";
 		i++;
+	}
+
+	echo "\nFinal result in reverse:\n";
+	while (line_in--) {
+		i--;
+		echo "Line $i: $line_in";
 	}
 
 	file_out->close();
