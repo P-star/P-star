@@ -36,8 +36,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 class wpl_operator_struct;
 
 class wpl_value_time : public wpl_value, public wpl_time {
-	protected:
-
+    private:
+    void try_guess_from_str(const std::string& fmt);
+    void set_from_int(const int value);
+    protected:
 	public:
 	PRIMITIVE_TYPEINFO(time)
 	wpl_value_time(int dummy) : wpl_time() {}

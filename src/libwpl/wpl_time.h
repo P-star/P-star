@@ -62,7 +62,13 @@ class wpl_time {
 
 	time_t get_time(struct tm *dst) {
 		localtime_r(&timestamp, dst);
+        return timestamp;
 	}
+
+    void set_format(const std::string& str){
+        format_string = str;
+        format = format_string.c_str();
+    }
 
 	void set_format(const char *format_) {
 		format_string = format_;

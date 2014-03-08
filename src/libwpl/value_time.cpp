@@ -34,17 +34,26 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <ctime>
 #include <cstring>
 #include <sstream>
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
 void wpl_value_time::set_weak (wpl_value *value) {
-	/*
-	   TODO
-	   Support setting from string and int
-	   */
 	wpl_value_time *value_time = dynamic_cast<wpl_value_time*>(value);
 	if (value_time == NULL) {
-		ostringstream tmp;
-		tmp << "Could not set TIME object to value of type " << value->get_type_name();
-		throw runtime_error(tmp.str());
+        wpl_value_string * value_string = dynamic_cast<wpl_value_string*>(value);
+        if (value_string) {
+            try_guess_from_str(value_string->toString());
+        } else {
+            wpl_value_int * value_int = dynamic_cast<wpl_value_int*>(value);
+            if (value_int) {
+                set_from_int(value_int->toInt());
+            } else {
+                ostringstream tmp;
+                tmp << "Could not set TIME object to value of type " << value->get_type_name();
+                throw runtime_error(tmp.str());
+            }
+        }
 	}
 	else {
 		set_time(value_time->get_time());
@@ -168,4 +177,147 @@ int wpl_value_time::do_operator (
 	}
 
 	return WPL_OP_UNKNOWN;
+}
+
+static inline
+void replace_month_name(string& fmt){
+    static const std::string long_names[] = {"january", "february", "march", "april",
+                                           "may", "june", "july","august",
+                                           "september","october","november","december"};
+    for (int i=0 ; i<sizeof(long_names)/sizeof(long_names[0]) ; ++i){
+        const string num = boost::lexical_cast<string>(i+1);
+        boost::ireplace_all(fmt, long_names[i], num);
+        boost::ireplace_all(fmt, long_names[i].substr(0,3), num);
+    }
+}
+
+static inline
+bool is_leap_year(const int year){
+    if (year%400 == 0)
+        return true;
+    else if (year%100 == 0)
+        return false;
+    else if (year%4 == 0)
+        return true;
+    return false;
+}
+
+static inline
+bool is_valid_date(const int day, const int month, const int year){
+    if (month<1 || month>12 || day<1 || day>31)
+        return false;
+    else if (month == 2)
+        return day<(is_leap_year(year) ? 30 : 29);
+    else if (month<=7)
+        return day<(month%2 ? 32:31);
+    else
+        return day<(month%2 ? 31:32);
+}
+
+static
+std::string try_guess_hour(std::string& input, int * h_out, int * m_out, int * s_out){
+    static const boost::regex rx("(\\d{1,2}):(\\d{1,2})(:(\\d{1,2}))?",boost::regex::extended);
+    boost::smatch match;
+    if (boost::regex_search(input,match,rx)){
+        try {
+            int h = boost::lexical_cast<int>(match[1]);
+            int m = boost::lexical_cast<int>(match[2]);
+            int s = 0;
+            if (match.size()>4 && (match[4].first != match[4].second)){
+                s = boost::lexical_cast<int>(match[4]);
+            }
+            if (h>-1 && h<24 && m>-1 && m<60 && s>-1 && s<60){
+                *h_out = h;
+                *m_out = m;
+                *s_out = s;
+                input = boost::regex_replace(input,rx,string());
+                boost::trim(input);
+                return "%T";
+            }
+        } catch (const boost::bad_lexical_cast& exc){
+            throw runtime_error(exc.what());
+        }
+    }
+    return std::string();
+}
+
+static
+std::string try_guess_date(const std::string& input, int * y_out, int * m_out, int * d_out){
+    static const boost::regex rx("(\\d{1,4})([^\\d]+)(\\d{1,4})([^\\d]+)(\\d{1,4})",boost::regex::extended);
+    boost::smatch match;
+    if (boost::regex_search(input,match,rx)){
+        if (match.size() > 5){
+            if (match[2] != match[4])
+                throw runtime_error("Invalid date/time format: try with one type of separator");
+            const string sep = match[2];
+            try{
+                const int v1 = boost::lexical_cast<int>(match[1]);
+                const int v2 = boost::lexical_cast<int>(match[3]);
+                const int v3 = boost::lexical_cast<int>(match[5]);
+                if (is_valid_date(v3,v2,v1)){
+                    *y_out = v1;
+                    *m_out = v2;
+                    *d_out = v3;
+                    return "%Y"+sep+"%m"+sep+"%d";
+                } else if (is_valid_date(v1,v2,v3)){
+                    *y_out = v3;
+                    *m_out = v2;
+                    *d_out = v1;
+                    return "%d"+sep+"%m"+sep+"%Y";
+                } else {
+                    throw runtime_error("Invalid date/time format");
+                }
+            } catch (const boost::bad_lexical_cast& exc){
+                throw runtime_error(exc.what());
+            }
+        }
+    }
+    return std::string();
+}
+
+void wpl_value_time::try_guess_from_str(const string &fmt_){
+    string fmt = fmt_;
+    int year=1970;
+    int month=1;
+    int day=1;
+    int hour=0;
+    int minute=0;
+    int second = 0;
+    std::string guessed_fmt;
+    std::string guessed_hour_fmt = try_guess_hour(fmt,&hour,&minute,&second);
+    if (fmt.empty() == false) {
+        replace_month_name(fmt);
+        guessed_fmt = try_guess_date(fmt,&year,&month,&day);
+    }
+    if (!guessed_hour_fmt.empty()){
+        if (hour<0 || minute<0 || second<0)
+            throw runtime_error("Invalid date/time format");
+        if (guessed_fmt.empty())
+            guessed_fmt = guessed_hour_fmt;
+        else
+            guessed_fmt += " " + guessed_hour_fmt;
+    }
+    struct tm time_tmp;
+    memset(&time_tmp,0,sizeof(time_tmp));
+    time_tmp.tm_year = year-1900;
+    time_tmp.tm_mon = month-1;
+    time_tmp.tm_mday = day;
+    time_tmp.tm_hour = hour;
+    time_tmp.tm_min = minute;
+    time_tmp.tm_sec = second;
+    this->set_format(guessed_fmt);
+    this->set_time(mktime(&time_tmp));
+}
+
+void wpl_value_time::set_from_int(const int value){
+    struct tm time_tmp;
+    memset(&time_tmp,0,sizeof(time_tmp));
+    time_tmp.tm_year = 70;
+    time_tmp.tm_mon = 0;
+    time_tmp.tm_mday = 1;
+    time_tmp.tm_hour = 0;
+    time_tmp.tm_min = 0;
+    time_tmp.tm_sec = value;
+    this->set_format(format_rfc2822);
+    this->set_time(mktime(&time_tmp));
 }
