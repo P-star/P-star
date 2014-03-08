@@ -1,4 +1,46 @@
 SCENE main {
-	TIME time->set_now;
-	echo "$time\n";
+	void print_time(TIME t){
+		int y = t->year;
+		int m = t->month;
+		int d = t->day;
+		int h = t->hour;
+		int mm = t->min;
+		int s = t->sec;
+		echo "$y $m $d $h $mm $s\n";
+	}
+	TIME time = "2014*03*01 23:01";
+	print_time(time);
+	time = "1986-01-20";
+	int sum = time->year + time->month + time->day;
+	echo "$sum\n";
+	time = "651/07/10";
+	print_time(time);
+	time = "1995-may-17";
+	print_time(time);
+	time = "547-december-31";
+	print_time(time);
+	time = "1875-oct-08";
+	print_time(time);
+	time = "68-JUN-4";
+	print_time(time);
+	time = "4623-august-24";
+	print_time(time);
+	time = "2008 FEB 29";
+	print_time(time);
+	time = "2013-06-30 11:26:33";
+	print_time(time);
+	time = "1413/12/31 13:23";
+	print_time(time);
+	time = "12:11";
+	print_time(time);
+	time = "09<br>12<br>2064 01:19:27";
+	print_time(time);
+	time = "3:18, 4//11//3014";
+	print_time(time);
+	time = 179;
+	print_time(time);
+	time = 60*60*24;
+	print_time(time);
+	time = 60*60*24*31*12+123;
+	print_time(time);
 }
