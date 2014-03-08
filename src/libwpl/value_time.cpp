@@ -41,14 +41,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 void wpl_value_time::set_weak (wpl_value *value) {
 	wpl_value_time *value_time = dynamic_cast<wpl_value_time*>(value);
 	if (value_time == NULL) {
-        wpl_value_string * value_string = dynamic_cast<wpl_value_string*>(value);
-        if (value_string) {
-            try_guess_from_str(value_string->toString());
-        } else {
-            wpl_value_int * value_int = dynamic_cast<wpl_value_int*>(value);
-            if (value_int) {
-                set_from_int(value_int->toInt());
-            } else {
+        wpl_value_int * value_int = dynamic_cast<wpl_value_int*>(value);
+        if (value_int) {
+            set_from_int(value_int->toInt());
+        } else{
+            try {
+                try_guess_from_str(value->toString());
+            } catch (const runtime_error& /*err*/){
                 ostringstream tmp;
                 tmp << "Could not set TIME object to value of type " << value->get_type_name();
                 throw runtime_error(tmp.str());
