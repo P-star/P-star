@@ -1461,6 +1461,129 @@ stmt->execute();
 			</para>
 		</section>
 		<section>
+			<title>File I/O</title>
+			<para>P* provides a unique way of handling reading and writing files.
+			With maximum simplicity you can go through a file line by line and edit, delete or insert new lines.
+			You do not need to worry about joining strings together in the correct order or storing the file temporarily, P* will do that for you.
+			</para>
+			<bridgehead>The FILE type</bridgehead>
+			<para>The FILE type is the main filehandle, used to open and close files. Files may be opened read-only, read/write and may be truncated.
+			Here is the syntax for the different open methods.
+			</para>
+			<programlisting language="c">
+SCENE main {
+	FILE file;
+
+	/* Open a file read-only */
+	if (!file->open_ro("my_file")) {
+		errcho "Could not open my_file: " . file->error() . "\n";
+		return 1;
+	}
+	file->close();
+
+	/* Open a file for reading and writing */
+	if (!file->open_rw("my_file")) {
+		errcho "Could not open my_file: " . file->error() . "\n";
+		return 1;
+	}
+	file->close();
+
+	/* Open a file read-write and truncate it on open */
+	if (!file->open_truncate("my_file")) {
+		errcho "Could not open my_file: " . file->error() . "\n";
+		return 1;
+	}
+	file->close();
+
+	return 0;
+}
+			</programlisting>
+	<bridgehead>The LINE type</bridgehead>
+			<para>The LINE type is used to read a file line by line and to modify it.
+			The LINE does not work on its own, and has to be bound to a FILE object like this:
+			<programlisting language="c">
+LINE line = file;
+			</programlisting>
+			Initially, the line does not point to any particular position in the FILE.
+			To make it point to the first line, use the <code>++</code>-operator like this:
+			<programlisting language="c">
+LINE line = file;
+line++;
+			</programlisting>
+			The LINE object now points to the first line of the file.
+			If the file is empty, it points to the beginning.
+			</para>
+			<para>
+			The <code>++</code> operator returns the number of bytes read into the LINE object.
+			This can be used in a loop to break the loop when it reaches the last line.
+			<programlisting language="c">
+LINE line = file;
+while (line++) {
+	echo "Found a line: $line\n";
+}
+			</programlisting>
+			Trailing newlines (<code>\n</code>) are not removed when lines are read in.
+			</para>
+			<para>You can make a LINE object point to the end of a file by using <code>line = file->end()</code>, which is useful for appending to files.
+			</para>
+			<para>The LINE object can also traverse a file line by line in reverse order, using the <code>line--</code>-operator. The LINE object will point to the previous line from the current position.
+			When no more lines can be read, the LINE object will point to the beginning of the file, but it will not contain any data.</para>
+	<bridgehead>Edit files using the LINE object</bridgehead>
+			<para>
+			It's possible to edit a file using the LINE object by setting it's value to something else.
+			The changes then have to be queued for update in the FILE object using the syntax <code>file->update(line);</code>.
+			After you've added all the changes, they must be written out using <code>file->flush()</code>.
+			</para>
+			<para>
+			Here is an example which adds a <code>#</code> at the beginning of lines which have numbers in them.
+			<programlisting language="c">
+SCENE main {
+	FILE file;
+
+	/* Open a file read-write, we will modify it */
+	if (!file->open_rw("my_file")) {
+		errcho "Could not open my_file: " . file->error() . "\n";
+		return 1;
+	}
+
+	/* Initialize some variables */
+	LINE line = file;
+
+	int lines = 0;
+	int modified = 0;
+
+	/* Loop through all lines of the file */
+	while (line++) {
+		lines++;
+
+		/* Check if the line contains numbers and does not already begin with a # */
+		if (line =~ /\d/ &amp;&amp; line !~ /^#/) {
+			/* Add the # to the line */
+			line = "# $line";
+
+			/* Queue the updated LINE object for writing */
+			file->update(line);
+
+			modified++;
+		}
+	}
+
+	/* Print out some stats */
+	echo "Modified $modified of total $lines lines.\n";
+
+	/* Write the changes out and close the file */
+	file->flush();
+	file->close();
+
+	return 0;
+}
+			</programlisting>
+			</para>
+			<para>If you need to write to an empty file, just write all your data to the LINE object right after the <code>line++</code>-operation. You can also use <code>line = file->begin()</code>, the result will be the same.
+			You can insert or append new lines to a file by adding data to the LINE objects at desired locations. Original data will be overwritten.
+			</para>
+		</section>
+		<section>
 			<title>Example of web-application</title>
 			<para>Below is an example of a full web application which uses MySQL database, POST variables and HTML templates. The example uses a JavaScript to submit a form to the web server.
 			The web server replies with JSON, and the JavaScript replaces the inner HTML of a DIV with the results.
@@ -1662,7 +1785,7 @@ SCENE main {
 		<section>
 			<title>Project status</title>
 			<para>
-			Help is needed with the P* projects.
+			Help is needed with the P* project.
 			</para>
 			<table>
 				<title>List of project tasks</title>
@@ -1699,20 +1822,14 @@ SCENE main {
 				</tbody>
 				</tgroup>
 			</table>
+		<para>
+		You should also take a look at the <ulink url="https://github.com/atlesn/P-star/issues?state=open">issue tracker on Github</ulink>, feel free to create new issues for functionality you think is missing out.
+		</para>
 		</section>
 	</chapter>
 	<chapter>
 		<title>Development</title>
 		<emphasis>Read this if you like to write stuff!</emphasis>
-		<section>
-			<title>Status Quo</title>
-			<para>The base of the P* interpreter is written in C++ and runs quite well.
-			The development is in an intermediate phase, and more new functionallity needs to be written.
-			</para>
-			<para>
-			The implementation of loadable modules, with MySQL as the first one out, can be done without any change to the base.
-			</para>
-		</section>
 		<section>
 			<title>How it's run</title>
 			<para>
@@ -1732,7 +1849,7 @@ SCENE main {
 			<para>
 			Some objects are also <code>namespace sessions</code>, like blocks. These hold variables during run-time.
 			The variables are copied from the original namespace (created on parse-time) the first time the block is called from a specific location.
-			This method allows the same program to run threaded on the same object structure, as no objects created on parsing are in any way changed when the program runs. When run as a web server module, this methos is ideal as most of the work with initializing a program is only done the first time.
+			This method allows the same program to run threaded on the same object structure, as no objects created on parsing are in any way changed when the program runs. When run as a web server module, this method is ideal, as most of the work with initializing a program is only done once.
 			</para>
 			<para>
 			It should also be easy to implement threading in P*.
@@ -1749,20 +1866,10 @@ SCENE main {
 			</para>
 			<para>
 			A small program in P* does ~300 memory allocations, while PHP does 18 000.
-			There is no current measurement of performance when P* is run as module in a web serverm, because no such module currently exists (but there will be one soon !).
+			There is no current measurement of performance with the P* web server module, but the I/O performance is at least average.
 			</para>
 			<para>
 			The expression running in P* is not omptimized very much yet, but on my home computer, it can run a short expression in a loop (like <code>i++</code>) 50 million times in about 3 seconds. This should be fast enough for now.
-			</para>
-		</section>
-		<section>
-			<title>Database handling</title>
-			<para>
-			The P* interpreter has custom C++ wrapper classes for the official MySQL C client API.
-			The good mix of C and C++ coding techniques makes the code taste very good.
-			</para>
-			<para>
-			P* wraps destructor functions of MySQL, like <code>mysql_stmt_close()</code> into destructors of it's own classes and forgets about them.
 			</para>
 		</section>
 		<section>

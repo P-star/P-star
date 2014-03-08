@@ -60,6 +60,8 @@ enum {
 	wpl_type_precedence_post,
 	wpl_type_precedence_stdin,
 	wpl_type_precedence_time,
+	wpl_type_precedence_file,
+	wpl_type_precedence_line,
 
 	wpl_type_precedence_middle,
 	

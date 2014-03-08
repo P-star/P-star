@@ -1,3 +1,9 @@
+pstar (1.2~alpha1) experimental; urgency=low
+
+  * Added new File I/O functionality
+
+ -- Atle Solbakken <atle@goliathdns.no>  Fri, 07 Mar 2014 10:58:57 +0100
+
 pstar (1.1) experimental; urgency=low
 
   * Cleanup in .deb control files

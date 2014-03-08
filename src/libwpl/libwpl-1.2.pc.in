@@ -5,7 +5,7 @@ includedir=@includedir@
 
 Name: P*
 Description: P* interpreter library
-Requires:
+Requires: 
 Version: @PACKAGE_VERSION@
-Libs: -L${libdir} -llibwpl-1.1
-Cflags: -I${includedir}/libwpl-1.1 -I${libdir}/libwpl-1.1/include
+Libs: -L${libdir} -llibwpl-1.2
+Cflags: -I${includedir}/libwpl-1.2

@@ -71,4 +71,21 @@ class wpl_function_state : public wpl_state, public wpl_namespace_session {
 	wpl_value *get_return_value() {
 		return return_value.get();
 	}
+
+	template<class T> T *find_variable_value (const char *function_name, const char *var_name) {
+		wpl_variable *var;
+		if (!(var = find_variable(var_name, WPL_NSS_CTX_SELF))) {
+			throw runtime_error(string(function_name) + " error: Could not find '" + var_name + "' variable");
+		}
+
+		T *out_var = dynamic_cast<T*>(var->get_value());
+		if (!out_var) {
+			T tmp;
+			throw runtime_error(string(function_name) + " error: " +
+					" Argument was of type '" + var->get_value()->get_type_name() + "'" +
+					", but '" + tmp.get_type_name() + "' was expected"
+			);
+		}
+		return out_var;
+	}
 };

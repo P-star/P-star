@@ -1,0 +1,10 @@
+erefxe=@exec_prefx
+libdir=@libdir@
+includedir=@includedir@
+
+Name: P*
+Description: P* MySQL library
+Requires: libwpl-1.2
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -llibwpl_mysql-1.2
+Cflags: -I${includedir}/libwpl-1.2

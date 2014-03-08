@@ -90,6 +90,15 @@ int wpl_value_unresolved_identifier::do_operator_recursive (
 		wpl_value *final_result
 		)
 {
+	/*
+	   Look forward in the run stack and skip name lookup if the next operator
+	   is an element selection operator ->. The struct will handle resolving for
+	   these names.
+	   */
+	if (!exp_state->empty() && exp_state->top().op == &OP_ELEMENT) {
+		return wpl_value::do_operator_recursive(exp_state, final_result);
+	}
+
 	if (wpl_variable *variable = exp_state->find_variable(value.c_str())) {
 		wpl_value *value = variable->get_value();
 

@@ -1,0 +1,102 @@
+SCENE main {
+	string filename_in = "testfile";
+	string filename_out = "testfile_out";
+
+	FILE file_in;
+	FILE file_out;
+
+	if (!file_in->open_ro(filename_in)) {
+		echo file_in->error() . "\n";
+		return 1;
+	}
+
+	if (!file_out->open_truncate(filename_out)) {
+		echo file_out->error() . "\n";
+		return 1;
+	}
+
+	int i = 0;
+	LINE line_in = file_in->begin();
+	LINE line_out = file_out->end();
+
+	echo "Copying all lines of infile to outfile...\n";
+
+	while (line_in++) {
+		line_out++;
+		echo "Line $i: $line_in";
+
+		line_out = line_in . "";
+		file_out->update(line_out);
+		file_out->flush();
+
+		i++;
+	}
+
+	echo "DONE\n\n";
+
+	file_out->close();
+	file_in->close();
+
+	if (!file_out->open_rw(filename_out)) {
+		echo file_out->error() . "\n";
+		return 1;
+	}
+
+	line_out = file_out;
+	echo "Deleting lines with B in outfile...\n";
+	while (line_out++) {
+		echo "Found line $line_out";
+		if (line_out =~ /B/) {
+			echo "\t...deleting";
+			line_out = "";
+			file_out->update(line_out);
+		}
+		else {
+			echo "\t...keeping";
+		}
+		echo "\n";
+	}
+
+	echo "DONE\n\n";
+
+	file_out->flush();
+
+	echo "Adding extra line to outfile...\n";
+
+	line_out = file_out->end();
+	line_out = "Line D\n\nLine E\n\n\nLine F\n";
+	file_out->update(line_out);
+	file_out->flush();
+	echo "DONE\n\n";
+
+	echo "Adding stuff to empty lines in reverse order...\n";
+
+	line_out = file_out->end();
+	while (line_out--) {
+		if (line_out =~ /^\n$/) {
+			line_out = "# This line was empty\n";
+			file_out->update(line_out);
+		}
+	}
+	file_out->flush();
+	echo "DONE\n\n";
+
+	line_in = file_out;
+	echo "Final result:\n";
+
+	i = 0;
+	while (line_in++) {
+		echo "Line $i: $line_in";
+		i++;
+	}
+
+	echo "\nFinal result in reverse:\n";
+	while (line_in--) {
+		i--;
+		echo "Line $i: $line_in";
+	}
+
+	file_out->close();
+
+	return 0;
+}

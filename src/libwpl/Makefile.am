@@ -2,11 +2,11 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -include $(top_srcdir)/config.h
 AM_CXXFLAGS = -std=c++11 -rdynamic
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libwpl-1.1.pc
+pkgconfig_DATA = libwpl-1.2.pc
 
-lib_LTLIBRARIES = libwpl-1.1.la
-libwpl_1_1_la_LDFLAGS = -rpath $(libdir) -lmimetic $(BOOST_REGEX_LDFLAGS) $(BOOST_REGEX_LIBS)
-libwpl_1_1_la_SOURCES = \
+lib_LTLIBRARIES = libwpl-1.2.la
+libwpl_1_2_la_LDFLAGS = -rpath $(libdir) -lmimetic $(BOOST_REGEX_LDFLAGS) $(BOOST_REGEX_LIBS)
+libwpl_1_2_la_SOURCES = \
 	program.cpp parser.cpp block.cpp pragma.cpp \
 	module_loader.cpp io.cpp state.cpp \
 	expression.cpp matcher.cpp identifier.cpp \
@@ -21,6 +21,7 @@ libwpl_1_1_la_SOURCES = \
 	value_string.cpp value_vstring.cpp value_regex.cpp \
 	value_env.cpp value_get.cpp value_post.cpp value_stdin.cpp \
 	value_output_trigger.cpp value_time.cpp \
+	type_file.cpp file.cpp value_line.cpp \
 	array.cpp hash.cpp struct.cpp template.cpp \
 	namespace_session.cpp exception.cpp \
 	block_state.cpp expression_state.cpp function_state.cpp \

@@ -1,0 +1,13 @@
+SCENE main {
+	int a = 2;
+
+	if (a == 1) {
+		echo "A is 1\n";
+	}
+	else if (a == 2) {
+		echo "A is 2\n";
+	}
+	else {
+		echo "A is neither\n";
+	}
+}

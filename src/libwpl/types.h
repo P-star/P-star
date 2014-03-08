@@ -311,4 +311,6 @@ DECLARE_COMPLETE_TYPE(time);
 DECLARE_COMPLETE_TYPE(stdin);
 #endif
 
+DECLARE_COMPLETE_TYPE(line);
+
 void wpl_types_add_all_to_namespace(wpl_namespace *parent_namespace);

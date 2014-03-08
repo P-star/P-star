@@ -1,0 +1,4 @@
+ARTICLE	New functionality for File I/O
+DATE	2014-03-07
+PARA 	The latest version of P* provides a new method of working with file input and output. The new types FILE and LINE make it possible to iterate a file line by line in a loop, while also editing lines directly.
+PARA	Read more in the <a href="/manual/ch03s13.html">documentation</a>

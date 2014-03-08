@@ -57,4 +57,6 @@ extern const char *wpl_typename_get;
 extern const char *wpl_typename_post;
 extern const char *wpl_typename_stdin;
 extern const char *wpl_typename_time;
+extern const char *wpl_typename_file;
+extern const char *wpl_typename_line;
 
