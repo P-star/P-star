@@ -37,4 +37,10 @@ SCENE main {
 	print_time(time);
 	time = "3:18, 4//11//3014";
 	print_time(time);
+	time = 179;
+	print_time(time);
+	time = 60*60*24;
+	print_time(time);
+	time = 60*60*24*31*12+123;
+	print_time(time);
 }

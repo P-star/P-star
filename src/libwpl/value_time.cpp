@@ -39,19 +39,20 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/regex.hpp>
 
 void wpl_value_time::set_weak (wpl_value *value) {
-	/*
-	   TODO
-	   Support setting from string and int
-	   */
 	wpl_value_time *value_time = dynamic_cast<wpl_value_time*>(value);
 	if (value_time == NULL) {
         wpl_value_string * value_string = dynamic_cast<wpl_value_string*>(value);
         if (value_string) {
             try_guess_from_str(value_string->toString());
         } else {
-            ostringstream tmp;
-            tmp << "Could not set TIME object to value of type " << value->get_type_name();
-            throw runtime_error(tmp.str());
+            wpl_value_int * value_int = dynamic_cast<wpl_value_int*>(value);
+            if (value_int) {
+                set_from_int(value_int->toInt());
+            } else {
+                ostringstream tmp;
+                tmp << "Could not set TIME object to value of type " << value->get_type_name();
+                throw runtime_error(tmp.str());
+            }
         }
 	}
 	else {
@@ -179,23 +180,6 @@ int wpl_value_time::do_operator (
 }
 
 static inline
-string try_guess_sep(const std::string& s){
-    string sep;
-    std::for_each (s.begin(),
-                   s.end(),
-                   [&sep,&s](char c){
-                    if (!isdigit(c)){
-                        if (sep.empty())
-                            sep = c;
-                        else if (sep[0] != c)
-                            throw runtime_error(s + ": invalid date/time format (try with one type of separator)");
-                    }
-                   }
-    );
-    return sep;
-}
-
-static inline
 void replace_month_name(string& fmt){
     static const std::string long_names[] = {"january", "february", "march", "april",
                                            "may", "june", "july","august",
@@ -230,7 +214,7 @@ bool is_valid_date(const int day, const int month, const int year){
         return day<(month%2 ? 31:32);
 }
 
-static inline
+static
 std::string try_guess_hour(std::string& input, int * h_out, int * m_out, int * s_out){
     static const boost::regex rx("(\\d{1,2}):(\\d{1,2})(:(\\d{1,2}))?",boost::regex::extended);
     boost::smatch match;
@@ -257,8 +241,8 @@ std::string try_guess_hour(std::string& input, int * h_out, int * m_out, int * s
     return std::string();
 }
 
-static inline
-std::string try_guess_date(std::string& input, int * y_out, int * m_out, int * d_out){
+static
+std::string try_guess_date(const std::string& input, int * y_out, int * m_out, int * d_out){
     static const boost::regex rx("(\\d{1,4})([^\\d]+)(\\d{1,4})([^\\d]+)(\\d{1,4})",boost::regex::extended);
     boost::smatch match;
     if (boost::regex_search(input,match,rx)){
@@ -293,7 +277,7 @@ std::string try_guess_date(std::string& input, int * y_out, int * m_out, int * d
 
 void wpl_value_time::try_guess_from_str(const string &fmt_){
     string fmt = fmt_;
-    int year=1900;
+    int year=1970;
     int month=1;
     int day=1;
     int hour=0;
@@ -322,5 +306,18 @@ void wpl_value_time::try_guess_from_str(const string &fmt_){
     time_tmp.tm_min = minute;
     time_tmp.tm_sec = second;
     this->set_format(guessed_fmt);
+    this->set_time(mktime(&time_tmp));
+}
+
+void wpl_value_time::set_from_int(const int value){
+    struct tm time_tmp;
+    memset(&time_tmp,0,sizeof(time_tmp));
+    time_tmp.tm_year = 70;
+    time_tmp.tm_mon = 0;
+    time_tmp.tm_mday = 1;
+    time_tmp.tm_hour = 0;
+    time_tmp.tm_min = 0;
+    time_tmp.tm_sec = value;
+    this->set_format(format_rfc2822);
     this->set_time(mktime(&time_tmp));
 }
