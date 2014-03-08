@@ -36,20 +36,24 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "wpl_time.h"
 
 class wpl_operator_struct;
+class st_mysql_time;
 
 class wpl_value_time : public wpl_value, public wpl_time {
     private:
+    st_mysql_time * sql_time;
     void try_guess_from_str(const std::string& fmt);
     void set_from_int(const int value);
     protected:
 	public:
 	PRIMITIVE_TYPEINFO(time)
-	wpl_value_time(int dummy) : wpl_time() {}
+    wpl_value_time(int dummy) : wpl_time() {sql_time=nullptr;}
 	wpl_value_time *clone() const { return new wpl_value_time(*this); };
 	wpl_value_time *clone_empty() const { return new wpl_value_time(0); };
+    ~wpl_value_time();
 
 	void set_weak(wpl_value *value) override;
 	string toString() override;
+    char* get_mysql_time_ptr();
 
 	int do_operator (
 			wpl_expression_state *exp_state,

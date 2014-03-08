@@ -4,6 +4,8 @@
 
 Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
+Copyright (c) MMXIV Sebastian Baginski
+sebthestampede@gmail.com
 
 -------------------------------------------------------------
 
@@ -44,7 +46,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 void wpl_sql::get_params(wpl_text_state *text_state, vector<wpl_value*> &params) {
 	wpl_value_constant_pointer retriever;
 
-	int index;
+    int index=0;
 	for (chunk &my_chunk : chunks) {
 		wpl_expression *exp;
 		if (!(exp = my_chunk.get_expression())) {
