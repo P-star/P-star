@@ -1,11 +1,11 @@
 SCENE main {
 	void print_time(TIME t){
-		int y = time->year;
-		int m = time->month;
-		int d = time->day;
-		int h = time->hour;
-		int mm = time->min;
-		int s = time->sec;
+		int y = t->year;
+		int m = t->month;
+		int d = t->day;
+		int h = t->hour;
+		int mm = t->min;
+		int s = t->sec;
 		echo "$y $m $d $h $mm $s\n";
 	}
 	TIME time = "2014*03*01 23:01";
