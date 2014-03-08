@@ -37,6 +37,10 @@ class wpl_value_void : public wpl_value_holder<wpl_void> {
 	public:
 	PRIMITIVE_TYPEINFO(void)
 
+	int toInt() override {
+		throw runtime_error("void::toInt(): Cannot get 'int' value of 'void' type");
+	}
+
 	wpl_value_void *clone() const {
 		return new wpl_value_void(*this);
 	}
