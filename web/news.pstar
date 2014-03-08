@@ -5,7 +5,7 @@ HTML_TEMPLATE news_head {
 HTML_TEMPLATE article {
 	<div class="article">
 		<h3>{@subject}</h3>
-		<i>{@time}</i>
+		<i>{@time->year}-{@time->month}-{@time->day}</i>
 {@LOOP (++i < @paragraphs)
 		<p>{@paragraphs[i]}</p>
 }
@@ -29,13 +29,14 @@ SCENE news {
 		line =~ s/\n$//;
 		if (line =~ s/^ARTICLE\s+//) {
 			string subject = line;
-			string time;
+			TIME time;
 			array<string> paragraphs;
 
 			while (line++) {
 				line =~ s/\n$//;
 				if (line =~ s/^DATE\s+//) {
-					time = line;
+					string tmp = line;
+					time = tmp;
 				}
 				else if (line =~ s/^PARA\s+//) {
 					paragraphs[@paragraphs] = line;
