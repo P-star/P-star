@@ -72,6 +72,15 @@ class wpl_function_state : public wpl_state, public wpl_namespace_session {
 		return return_value.get();
 	}
 
+	wpl_value *find_variable_value (const char *function_name, const char *var_name) {
+		wpl_variable *var;
+		if (!(var = find_variable(var_name, WPL_NSS_CTX_SELF))) {
+			throw runtime_error(string(function_name) + " error: Could not find '" + var_name + "' variable");
+		}
+
+		return var->get_value();
+	}
+
 	template<class T> T *find_variable_value (const char *function_name, const char *var_name) {
 		wpl_variable *var;
 		if (!(var = find_variable(var_name, WPL_NSS_CTX_SELF))) {
