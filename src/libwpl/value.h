@@ -49,7 +49,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 enum {
 	wpl_value_no_flags,
 	wpl_value_is_constant,
-	wpl_value_is_dynamic
+	wpl_value_is_dynamic,
+	wpl_value_do_finalize
 };
 
 struct wpl_operator_struct;
@@ -138,6 +139,9 @@ class wpl_value : public wpl_suicidal {
 	int get_flags() {
 		return flags;
 	}
+	void set_do_finalize() {
+		this->flags |= wpl_value_do_finalize;
+	}
 
 	virtual const char *get_type_name() const = 0;
 	virtual int get_precedence() const = 0;
@@ -212,12 +216,8 @@ class wpl_value : public wpl_suicidal {
 	}*/
 
 	virtual int toInt() {
-		return 0;
-		/*
-		   TODO implement toInt for all types
-		   cerr << "In value toInt() of type '" << get_type_name() << "':\n";
-		   throw runtime_error ("Cannot get int value of this type");
-		 */
+		cerr << "In value toInt() of type '" << get_type_name() << "':\n";
+		throw runtime_error ("Cannot get int value of this type");
 	}
 	virtual bool toBool() {
 		cerr << "In value toBool() of type '" << get_type_name() << "':\n";
@@ -251,7 +251,9 @@ class wpl_value : public wpl_suicidal {
 	}
 
 	virtual int finalize_expression(wpl_expression_state *exp_state, wpl_value *last_value) {
-		set_weak(last_value);
+		if (flags & wpl_value_do_finalize) {
+			set_weak(last_value);
+		}
 		return WPL_OP_OK;
 	}
 

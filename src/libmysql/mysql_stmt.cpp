@@ -37,6 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "../libwpl/value_time.h"
 #include "value_sql.h"
 #include "../libwpl/function.h"
+#include "parasites.h"
 
 #include <cstring>
 

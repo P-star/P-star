@@ -81,12 +81,16 @@ int wpl_expression_state::run_function (
 	set_discard_pos(discard_pos);
 
 	int ret = function->run(function_state, function_state->get_return_value());
+/*	
+	XXX OK to remove this test?
+
 	if (!(ret & WPL_OP_OK)) {
 		ostringstream msg;
 		msg << "While running function with signature ";
 		msg << "\t'" << function->get_function_name() << "': No return value from function block, try to add 'return 0;'\n";
 		throw runtime_error(msg.str());
 	}
+*/
 
 	return function_state->get_return_value()->do_operator_recursive(this, final_result);
 }

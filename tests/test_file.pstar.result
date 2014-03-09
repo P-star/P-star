@@ -1,1 +1,40 @@
-OK
+Copying all lines of infile to outfile...
+Line 0: Line A
+Line 1: Line B
+Line 2: Line C
+DONE
+
+Deleting lines with B in outfile...
+Found line Line A
+	...keeping
+Found line Line B
+	...deleting
+Found line Line C
+	...keeping
+DONE
+
+Adding extra line to outfile...
+DONE
+
+Adding stuff to empty lines in reverse order...
+DONE
+
+Final result:
+Line 0: Line A
+Line 1: Line C
+Line 2: Line D
+Line 3: # This line was empty
+Line 4: Line E
+Line 5: # This line was empty
+Line 6: # This line was empty
+Line 7: Line F
+
+Final result in reverse:
+Line 7: Line F
+Line 6: # This line was empty
+Line 5: # This line was empty
+Line 4: Line E
+Line 3: # This line was empty
+Line 2: Line D
+Line 1: Line C
+Line 0: Line A

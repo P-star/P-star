@@ -34,11 +34,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_holder.h"
 #include "exception.h"
 #include "wpl_time.h"
+#include "parasite.h"
 
 class wpl_operator_struct;
 class st_mysql_time;
 
-class wpl_value_time : public wpl_value, public wpl_time {
+class wpl_value_time : public wpl_value, public wpl_time, public wpl_parasite_host<wpl_value_time> {
     private:
     st_mysql_time * sql_time;
     void try_guess_from_str(const std::string& fmt);
