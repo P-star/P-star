@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,33 +28,41 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "types.h"
-#include "value_holder.h"
-#include "exception.h"
-#include "wpl_time.h"
-#include "parasite.h"
+#include <memory>
+#include <list>
 
-class wpl_operator_struct;
-
-class wpl_value_time : public wpl_value, public wpl_time, public wpl_parasite_host<wpl_value_time> {
-    private:
-    void try_guess_from_str(const std::string& fmt);
-    void set_from_int(const int value);
-    protected:
+class wpl_parasite_deleter {
 	public:
-	PRIMITIVE_TYPEINFO(time)
-	wpl_value_time(int dummy) : wpl_time() {}
-	wpl_value_time *clone() const { return new wpl_value_time(*this); };
-	wpl_value_time *clone_empty() const { return new wpl_value_time(0); };
+	template<class T> void operator() (T *p) {
+		p->suicide();
+	}
+};
 
-	void set_weak(wpl_value *value) override;
-	string toString() override;
+template<class T> class wpl_parasite {
+	protected:
+	T *host;
 
-	int do_operator (
-			wpl_expression_state *exp_state,
-			wpl_value *final_result,
-			const wpl_operator_struct *op,
-			wpl_value *lhs,
-			wpl_value *rhs
-	);
+	public:
+	wpl_parasite (T *host) : host(host) {}
+	virtual ~wpl_parasite() {}
+	virtual void notify() = 0;
+	virtual void suicide() = 0;
+};
+
+template<class T> class wpl_parasite_host {
+	list<unique_ptr<wpl_parasite<T>,wpl_parasite_deleter>> parasites;
+
+	public:
+	wpl_parasite_host(): parasites() {}
+	wpl_parasite_host(const wpl_parasite_host<T> &copy): parasites() {}
+
+	void register_parasite(wpl_parasite<T> *parasite) {
+		parasites.emplace_back(parasite);
+	}
+
+	void notify_parasites() {
+		for (auto parasite : parasites) {
+			parasite->notify();
+		}
+	}
 };
