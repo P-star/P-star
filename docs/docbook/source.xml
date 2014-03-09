@@ -1438,7 +1438,7 @@ SQL sql {
 MYSQL mysql->connect("localhost", "dog", "i_hate_cats");
 mysql->select_db("animal_kingdom");
 
-MYSQL_STATEMENT stmt = mysql->new_statement();
+MYSQL_STMT stmt = mysql->new_statement();
 stmt->prepare(sql);
 stmt->execute();
 			</programlisting>
