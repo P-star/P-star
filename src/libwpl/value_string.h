@@ -4,6 +4,8 @@
 
 Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
+Copyright (c) MMXIV Sebastian Baginski
+sebthestampede@gmail.com
 
 -------------------------------------------------------------
 
@@ -104,6 +106,9 @@ class wpl_value_string : public wpl_value_strings<string> {
 	string toString() {
 		return value;
 	}
+    char* toVoid(){
+        return (char*)value.c_str();
+    }
 	string &get_internal_string() {
 		return value;
 	}

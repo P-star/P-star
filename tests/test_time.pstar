@@ -43,4 +43,7 @@ SCENE main {
 	print_time(time);
 	time = 60*60*24*31*12+123;
 	print_time(time);
+	echo "$time\n";
+	time = "2013-3-7";
+	echo "$time\n";
 }

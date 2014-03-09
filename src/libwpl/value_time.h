@@ -4,6 +4,8 @@
 
 Copyright (c) MMXIII Atle Solbakken
 atle@goliathdns.no
+Copyright (c) MMXIV Sebastian Baginski
+sebthestampede@gmail.com
 
 -------------------------------------------------------------
 
@@ -43,12 +45,13 @@ class wpl_value_time : public wpl_value, public wpl_time, public wpl_parasite_ho
     protected:
 	public:
 	PRIMITIVE_TYPEINFO(time)
-	wpl_value_time(int dummy) : wpl_time() {}
+    wpl_value_time(int dummy) : wpl_time() {}
 	wpl_value_time *clone() const { return new wpl_value_time(*this); };
 	wpl_value_time *clone_empty() const { return new wpl_value_time(0); };
 
 	void set_weak(wpl_value *value) override;
 	string toString() override;
+    char* get_mysql_time_ptr();
 
 	int do_operator (
 			wpl_expression_state *exp_state,

@@ -42,7 +42,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #if defined(_MSC_VER)
 #define strtoll _strtoi64
-define strtoull _strtoui64
+#define strtoull _strtoui64
 #define strtof strtod
 #endif
 
