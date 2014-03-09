@@ -47,6 +47,9 @@ void wpl_mysql_bind (
 ) {
     const int param_count = mysql_stmt_param_count(stmt);
 
+    if (param_count == 0)
+        return;
+
 	if (param_count > WPL_MYSQL_BIND_MAX) {
 		throw runtime_error("MySQL error: Too many bind parameters");
 	}
@@ -66,11 +69,21 @@ void wpl_mysql_bind (
 
 	int i = 0;
 	for (wpl_value *value : values) {
-		switch (value->get_precedence()) {
-			case wpl_type_precedence_int:
+        switch (value->get_precedence()) {
+            case wpl_type_precedence_bool:
+                bind[i].buffer_type = MYSQL_TYPE_SHORT;
+                bind[i].buffer = (char*)value->toVoid();
+                break;
+            case wpl_type_precedence_int:
+            case wpl_type_precedence_uint:
 				bind[i].buffer_type = MYSQL_TYPE_LONG;
 				bind[i].buffer = (char*) value->toVoid();
 				break;
+            case wpl_type_precedence_llint:
+            case wpl_type_precedence_lluint:
+                bind[i].buffer_type = MYSQL_TYPE_LONGLONG;
+                bind[i].buffer = (char*) value->toVoid();
+                break;
             case wpl_type_precedence_string:
                 bind[i].buffer_type = MYSQL_TYPE_STRING;
                 bind[i].buffer = (char*) value->toVoid();
@@ -138,9 +151,9 @@ int wpl_mysql_stmt_prepare::run (
 
 	wpl_value_MYSQL_STMT *this_stmt = (wpl_value_MYSQL_STMT*) this_var->get_value();
 
-	if (this_stmt->get_res()) {
-		throw runtime_error("MySQL error: stmt_prepare() called before last result was freed");
-	}
+    if (this_stmt->get_res()) {
+        throw runtime_error("MySQL error: stmt_prepare() called before last result was freed");
+    }
 
 	wpl_value *value = sql_var->get_value()->dereference();
 	wpl_value_sql *value_sql;
