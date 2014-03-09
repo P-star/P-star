@@ -34,7 +34,7 @@ SCENE main{
 	err = stmt->error(); echo "$err";
 	
 	string name = "Johnny";
-	string surename = "Depp";
+	string surename = "Depp - This is a very long string. It might result in a realloc().";
 	int width = 4;	
 	float pi = "3.14";
 	double pi_more = "3.1415926535";
