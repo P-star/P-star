@@ -37,6 +37,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <memory>
 
+void wpl_mysql_bind (
+		wpl_namespace_session *nss,
+		MYSQL_STMT *stmt,
+		wpl_sql *sql
+);
+
 class wpl_type_MYSQL_STMT : public wpl_struct {
 	public:
 	wpl_type_MYSQL_STMT();
@@ -81,6 +87,10 @@ class wpl_value_MYSQL_STMT : public wpl_value {
 
 	shared_ptr<wpl_mysql_stmt_holder> &get_stmt_shared_ptr() {
 		return mysql_stmt;
+	}
+
+	void free_res() {
+		mysql_res.reset(new wpl_mysql_res_holder());
 	}
 
 	void update_res () {

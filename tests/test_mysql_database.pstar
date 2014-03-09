@@ -34,6 +34,7 @@ SCENE main{
 	err = stmt->error(); echo "$err";
 	
 	string name = "Johnny";
+	string surename = "Depp";
 	int width = 4;	
 	float pi = "3.14";
 	double pi_more = "3.1415926535";
@@ -41,25 +42,72 @@ SCENE main{
 	TIME tfirst = "6:47:21";
 	TIME tsecond = '1567-02-04 00:11';
 	TIME tthird = '1975-04-11 23:45';
-	llint value_ll = "-123442";
 	uint value_uns = 1234;
-	lluint value_llu = 1233432356;
 	
-	SQL insert_a { INSERT INTO test1 VALUES( {@name}, {@width} ) };
-	SQL insert_ab{ INSERT INTO test1 VALUES( {@name}, {@value_ll} ) };
+	/*
+	   Problems with the size of long long in P* and MySQL
+
+	llint value_ll = "-123442";
+	lluint value_llu = 1233432356;
+	SQL insert_ab{ INSERT INTO test1 VALUES( {@surename}, {@value_ll} ) };
 	SQL insert_ac{ INSERT INTO test1 VALUES( {@name}, {@value_llu} ) };
-	SQL insert_ad{ INSERT INTO test1 VALUES( {@name}, {@value_uns} ) };
+	stmt->prepare(insert_ab); stmt->execute(); 
+	stmt->prepare(insert_ac); stmt->execute(); 
+
+	*/
+
+	SQL insert_a { INSERT INTO test1 VALUES( {@name}, {@width} ) };
+	SQL insert_ad{ INSERT INTO test1 VALUES( {@surename}, {@value_uns} ) };
 	SQL insert_b { INSERT INTO test2 VALUES( {@flag} ); };
 	SQL insert_c { INSERT INTO test3 VALUES( {@pi}, {@pi_more} ); };
 	SQL insert_d { INSERT INTO test4 VALUES( {@tfirst}, {@tsecond}, {@tthird} ); };
 
+	echo "PASS 1\n";
 	stmt->prepare(insert_a); stmt->execute();  
-	stmt->prepare(insert_ab); stmt->execute(); 
-	stmt->prepare(insert_ac); stmt->execute(); 
+	echo "PASS 2\n";
 	stmt->prepare(insert_ad); stmt->execute(); 
+	echo "PASS 3\n";
 	stmt->prepare(insert_b); stmt->execute();  
+	echo "PASS 4\n";
 	stmt->prepare(insert_c); stmt->execute();  
+	echo "PASS 5\n";
 	stmt->prepare(insert_d); stmt->execute();  
-	
+
+	string search = name;
+	SQL select_a { SELECT name, id FROM test1 WHERE name={@search} };
+	stmt->prepare(select_a);
+	stmt->execute();
+
+	MYSQL_ROW row = stmt->get_row_iterator();
+	if (!row++) {
+		echo "No rows returned";
+		return 1;
+	}
+	echo "Name: " . row["name"] . " ID: " . row["id"] . "\n";
+
+	search = surename;
+	stmt->execute();
+
+	row = stmt->get_row_iterator();
+	if (!row++) {
+		echo "No rows returned";
+		return 1;
+	}
+	echo "Name: " . row["name"] . " ID: " . row["id"] . "\n";
+
+	SQL select_b { SELECT * FROM test4 };
+	if (!stmt->prepare(select_b)) {
+		echo "Could not prepare SQL: " . stmt->error() . "\n";
+	}
+	if (!stmt->execute()) {
+		echo "Could not execute SQL: " . stmt->error() . "\n";
+	}
+	row = stmt->get_row_iterator();
+	while (row++) {
+		echo "" . row["t"] . "\n";
+		echo "" . row["d"] . "\n";
+	       	echo "" . row["dt"] . "\n";
+	}
+
 	echo "done";
 }

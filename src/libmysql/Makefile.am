@@ -10,4 +10,5 @@ libwpl_mysql_1_2_la_SOURCES = \
 	libwpl_mysql.cpp \
 	sql.cpp value_sql.cpp \
 	mysql.cpp mysql_stmt.cpp mysql_row.cpp \
-	mysql_res_holder.cpp
+	mysql_res_holder.cpp \
+	parasites.cpp

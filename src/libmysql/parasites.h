@@ -33,11 +33,12 @@ class wpl_mysql_time_parasite : public wpl_parasite<wpl_value_time> {
 	st_mysql_time sql_time;
 
 	public:
-	wpl_mysql_time_parasite (wpl_value_time *host) :
-		wpl_parasite<wpl_value_time>(host) {}
+	wpl_mysql_time_parasite (wpl_value_time *host, const void *identifier) :
+		wpl_parasite<wpl_value_time>(host, identifier) {}
 
 	void notify() override {
 		struct tm time_tmp;
+		memset(&sql_time, 0, sizeof(sql_time));
 		host->get_time(&time_tmp);
 		sql_time.hour = time_tmp.tm_hour;
 		sql_time.minute = time_tmp.tm_min;
@@ -50,6 +51,40 @@ class wpl_mysql_time_parasite : public wpl_parasite<wpl_value_time> {
 
 	char *get() {
 		return (char*) &sql_time;
+	}
+
+	void suicide() {
+		delete this;
+	}
+};
+
+class wpl_mysql_string_parasite : public wpl_parasite<wpl_value_string> {
+	private:
+	wpl_namespace_session *nss;
+	MYSQL_STMT *stmt;
+	wpl_sql *sql;
+
+	int previous_size;
+	char *previous_ptr;
+
+	public:
+	wpl_mysql_string_parasite (wpl_value_string *host, wpl_namespace_session *nss, MYSQL_STMT *stmt, wpl_sql *sql) :
+		wpl_parasite<wpl_value_string>(host, (void*) stmt),
+		nss(nss),
+		stmt(stmt),
+		sql(sql),
+		previous_size(-1),
+		previous_ptr(nullptr)
+	{}
+
+	void notify() override;
+
+	char *get() {
+		return (char*) host->toVoid();;
+	}
+
+	int get_size() {
+		return host->get_size();
 	}
 
 	void suicide() {

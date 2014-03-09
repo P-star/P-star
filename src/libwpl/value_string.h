@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 Copyright (c) MMXIV Sebastian Baginski
 sebthestampede@gmail.com
@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "value_bool.h"
 #include "output_json.h"
+#include "parasite.h"
 
 #include <cstdlib>
 #include <string>
@@ -44,8 +45,8 @@ template<typename A> class wpl_value_strings : public wpl_value_holder<A> {
 	int neq() {RESULT_LOGIC = (LHS != RHS); return WPL_OP_LOGIC_OK; };
 	int eq() {RESULT_LOGIC = (LHS == RHS); return WPL_OP_LOGIC_OK; };
 	int concat() {RESULT = LHS + RHS; return WPL_OP_OK; }
-	int assign_concat() {RESULT = LHS + RHS; LHS = RESULT; return WPL_OP_OK; }
-	int assign() {LHS = RHS; RESULT = RHS; return WPL_OP_OK; }
+	int assign_concat() {RESULT = LHS + RHS; LHS = RESULT; return WPL_OP_OK|WPL_OP_DATA_MODIFIED; }
+	int assign() {LHS = RHS; RESULT = RHS; return WPL_OP_OK|WPL_OP_DATA_MODIFIED; }
 	int echo() {cout << RHS; return WPL_OP_OK; }
 	int errcho() {cerr << RHS; return WPL_OP_OK; }
 	int is_empty() {RESULT_LOGIC = (RHS).empty() ? true : false; return WPL_OP_LOGIC_OK; }
@@ -67,12 +68,12 @@ template<typename A> class wpl_value_strings : public wpl_value_holder<A> {
 	}
 };
 
-class wpl_value_string : public wpl_value_strings<string> {
+class wpl_value_string : public wpl_value_strings<string>, public wpl_parasite_host<wpl_value_string> {
 	public:
 	PRIMITIVE_CONSTRUCTOR(string,string)
 	PRIMITIVE_TYPEINFO(string)
-	PRIMITIVE_SET_WEAK(string,string,toString())
-	PRIMITIVE_DO_OPERATOR(string,toString())
+	PRIMITIVE_SET_WEAK_NOTIFY(string,string,toString())
+	PRIMITIVE_DO_OPERATOR_NOTIFY(string,toString())
 
 	wpl_value_string(const char *new_value) {
 		value = new_value;
@@ -106,20 +107,27 @@ class wpl_value_string : public wpl_value_strings<string> {
 	string toString() {
 		return value;
 	}
-    char* toVoid(){
-        return (char*)value.c_str();
-    }
-	string &get_internal_string() {
-		return value;
+	char* toVoid(){
+		return (char*)value.c_str();
+	}
+	int get_size() {
+		return value.size();
 	}
 	void set (int val) {
 		value = val;
+		notify_parasites();
 	}
 	void set (const char *val) {
 		value = val;
+		notify_parasites();
 	}
 	void set (string &new_string) {
 		value = new_string;
+		notify_parasites();
+	}
+	void operator= (const string &rhs) {
+		value = rhs;
+		notify_parasites();
 	}
 
 	virtual void output(wpl_io &io) override;

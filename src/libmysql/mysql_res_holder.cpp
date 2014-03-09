@@ -136,6 +136,9 @@ void wpl_mysql_res_holder::update(MYSQL_STMT *stmt) {
 				bind[i].buffer = my_field.value->toVoid();
 				break;
 			case MYSQL_TYPE_BLOB:
+			case MYSQL_TYPE_TIME:
+			case MYSQL_TYPE_DATE:
+			case MYSQL_TYPE_DATETIME:
 				if (old_precedence != wpl_type_precedence_vstring){
 					my_field.value.reset (new wpl_value_vstring(32));
 				}

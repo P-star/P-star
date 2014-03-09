@@ -83,7 +83,7 @@ int wpl_value_time::do_operator (
 		 */
 		if (strcmp (cmd, "set_now") == 0) {
 			set_now();
-            notify_parasites();
+			notify_parasites();
 			return do_operator_recursive(exp_state, final_result);
 		}
 
@@ -92,19 +92,21 @@ int wpl_value_time::do_operator (
 		 */
 		{
 			wpl_value_string result("");
+			string tmp;
 			bool ok = true;
 
 			if (strcmp (cmd, "rfc2822") == 0) {
-				format_time("%a, %d %b %Y %T %z", result.get_internal_string());
+				format_time("%a, %d %b %Y %T %z", tmp);
 			}
 			else if (strcmp (cmd, "iso8601") == 0) {
-				format_time("%Y-%m-%dT%H:%M:%S%z", result.get_internal_string());
+				format_time("%Y-%m-%dT%H:%M:%S%z", tmp);
 			}
 			else {
 				ok = false;
 			}
 
 			if (ok) {
+				result = tmp;
 				return result.do_operator_recursive(exp_state, final_result);
 			}
 		}
@@ -156,17 +158,21 @@ int wpl_value_time::do_operator (
 	}
 	else if (op == &OP_CONCAT) {
 		wpl_value_string result("");
-		string &tmp = result.get_internal_string();
 
+		string tmp;
 		format_time(NULL, tmp);
+		result = tmp;
+
 		tmp += rhs->toString();
 
 		return result.do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_ARRAY_SUBSCRIPTING) {
 		wpl_value_string result("");
-	
-		format_time(rhs->toString().c_str(), result.get_internal_string());
+
+		string tmp;
+		format_time(rhs->toString().c_str(), tmp);
+		result = tmp;
 	
 		return result.do_operator_recursive(exp_state, final_result);
 	}

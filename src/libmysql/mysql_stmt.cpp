@@ -46,10 +46,10 @@ void wpl_mysql_bind (
 		MYSQL_STMT *stmt,
 		wpl_sql *sql
 ) {
-    const int param_count = mysql_stmt_param_count(stmt);
+	const int param_count = mysql_stmt_param_count(stmt);
 
-    if (param_count == 0)
-        return;
+	if (param_count == 0)
+		return;
 
 	if (param_count > WPL_MYSQL_BIND_MAX) {
 		throw runtime_error("MySQL error: Too many bind parameters");
@@ -65,54 +65,67 @@ void wpl_mysql_bind (
 		throw runtime_error("MySQL error: Bind parameter count mismatch");
 	}
 
-    MYSQL_BIND bind[param_count];
-    memset (&bind, 0, sizeof(bind));
+	MYSQL_BIND bind[param_count];
+	memset (&bind, 0, sizeof(bind));
 
 	int i = 0;
 	for (wpl_value *value : values) {
-        switch (value->get_precedence()) {
-            case wpl_type_precedence_bool:
-                bind[i].buffer_type = MYSQL_TYPE_SHORT;
-                bind[i].buffer = (char*)value->toVoid();
-                break;
-            case wpl_type_precedence_int:
-            case wpl_type_precedence_uint:
+		switch (value->get_precedence()) {
+			case wpl_type_precedence_bool:
+				/* XXX This might not be cross-platform */
+				bind[i].buffer_type = MYSQL_TYPE_TINY;
+				bind[i].buffer = (char*)value->toVoid();
+				break;
+			case wpl_type_precedence_int:
+			case wpl_type_precedence_uint:
 				bind[i].buffer_type = MYSQL_TYPE_LONG;
 				bind[i].buffer = (char*) value->toVoid();
 				break;
-            case wpl_type_precedence_llint:
-            case wpl_type_precedence_lluint:
-                bind[i].buffer_type = MYSQL_TYPE_LONGLONG;
-                bind[i].buffer = (char*) value->toVoid();
-                break;
-            case wpl_type_precedence_string:
-                bind[i].buffer_type = MYSQL_TYPE_STRING;
-                bind[i].buffer = (char*) value->toVoid();
-                bind[i].buffer_length = value->toString().size();
-                break;
-            case wpl_type_precedence_float:
-                bind[i].buffer_type = MYSQL_TYPE_FLOAT;
-                bind[i].buffer = (char*)value->toVoid();
-                break;
-            case wpl_type_precedence_double:
-                bind[i].buffer_type = MYSQL_TYPE_DOUBLE;
-                bind[i].buffer = (char*)value->toVoid();
-                break;
-            case wpl_type_precedence_time:
-            {
-                wpl_value_time * v_time = (wpl_value_time*)value;
-                wpl_mysql_time_parasite * sql_time = new wpl_mysql_time_parasite(v_time);
-                v_time->register_parasite(sql_time);
-                sql_time->notify();
-                bind[i].buffer_type = MYSQL_TYPE_DATETIME;
-                bind[i].buffer = sql_time->get();
-            }
-                break;
+/* XXX Problems here with the size of long long values, differs in P* and MySQL
+			case wpl_type_precedence_llint:
+			case wpl_type_precedence_lluint:
+				bind[i].buffer_type = MYSQL_TYPE_LONGLONG;
+				bind[i].buffer = (char*) value->toVoid();
+				break;*/
+			case wpl_type_precedence_string:
+				{
+					wpl_value_string *v_string = (wpl_value_string*) value;
+					wpl_mysql_string_parasite *parasite = v_string->find_parasite<wpl_mysql_string_parasite>((void*) stmt);
+					if (!parasite) {
+						parasite = new wpl_mysql_string_parasite(v_string, nss, stmt, sql);
+						v_string->register_parasite(parasite);
+					}
+					bind[i].buffer_type = MYSQL_TYPE_STRING;
+					bind[i].buffer = (char*) parasite->get();
+					bind[i].buffer_length = parasite->get_size();
+				}
+				break;
+			case wpl_type_precedence_float:
+				bind[i].buffer_type = MYSQL_TYPE_FLOAT;
+				bind[i].buffer = (char*)value->toVoid();
+				break;
+			case wpl_type_precedence_double:
+				bind[i].buffer_type = MYSQL_TYPE_DOUBLE;
+				bind[i].buffer = (char*)value->toVoid();
+				break;
+			case wpl_type_precedence_time:
+				{
+					wpl_value_time * v_time = (wpl_value_time*)value;
+					wpl_mysql_time_parasite *parasite = v_time->find_parasite<wpl_mysql_time_parasite>((void*) stmt);
+					if (!parasite) {
+						parasite = new wpl_mysql_time_parasite(v_time, (void*) stmt);
+						v_time->register_parasite(parasite);
+						parasite->notify();
+					}
+					bind[i].buffer_type = MYSQL_TYPE_DATETIME;
+					bind[i].buffer = parasite->get();
+				}
+				break;
 			default:
 				cerr << "MySQL error while binding value of type '" << value->get_type_name() << "'\n";
 				throw runtime_error("Unsupported type for MySQL queries");
 		}
-        ++i;
+		++i;
 	}
 
 	if (mysql_stmt_bind_param(stmt, bind) != 0) {
@@ -151,9 +164,9 @@ int wpl_mysql_stmt_prepare::run (
 
 	wpl_value_MYSQL_STMT *this_stmt = (wpl_value_MYSQL_STMT*) this_var->get_value();
 
-    if (this_stmt->get_res()) {
-        throw runtime_error("MySQL error: stmt_prepare() called before last result was freed");
-    }
+	if (this_stmt->get_res()) {
+		this_stmt->free_res();
+	}
 
 	wpl_value *value = sql_var->get_value()->dereference();
 	wpl_value_sql *value_sql;

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -57,11 +57,19 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 		return new wpl_value_##shortname();						\
 	}											\
 
-#define PRIMITIVE_SET_WEAK(type,shortname,translator)						\
+#define PRIMITIVE_SET_WEAK_REAL(type,shortname,translator,notify)				\
 	void set_weak (wpl_value *new_value) {							\
 		value = new_value->translator;							\
+		notify										\
 	}
-#define PRIMITIVE_DO_OPERATOR(shortname,translator)						\
+
+#define PRIMITIVE_SET_WEAK(type,shortname,translator)						\
+	PRIMITIVE_SET_WEAK_REAL(type,shortname,translator,)
+
+#define PRIMITIVE_SET_WEAK_NOTIFY(type,shortname,translator)					\
+	PRIMITIVE_SET_WEAK_REAL(type,shortname,translator,notify_parasites();)
+
+#define PRIMITIVE_DO_OPERATOR_REAL(shortname,translator,notify)					\
 	int do_operator (									\
 			wpl_expression_state *exp_state,					\
 			wpl_value *final_result,						\
@@ -82,6 +90,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 		int ret = __do_operator (							\
 			op									\
 		);										\
+		if (ret & WPL_OP_DATA_MODIFIED) {						\
+			notify									\
+		}										\
 		if ((ret & WPL_OP_LOGIC_OK) == WPL_OP_LOGIC_OK) {				\
 			/*cout << "V(" << this << "): result is boolean logic " << result_logic << endl;*/\
 			wpl_value_bool bool_result(result_logic);				\
@@ -120,6 +131,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 /*		cout << "V(" << this << "): no return from operator\n";				*/\
 		return ret;									\
 	}	
+
+#define PRIMITIVE_DO_OPERATOR(shortname,translator)						\
+	PRIMITIVE_DO_OPERATOR_REAL(shortname,translator,)
+
+#define PRIMITIVE_DO_OPERATOR_NOTIFY(shortname,translator)					\
+	PRIMITIVE_DO_OPERATOR_REAL(shortname,translator,notify_parasites();)
 
 #define PRIMITIVE_TYPEINFO(shortname)								\
 	int get_precedence() const { return wpl_type_precedence_##shortname; }			\

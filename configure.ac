@@ -63,7 +63,7 @@ AP_MODULE_LIBS="${APR_MEMCACHE_LIBS} ${LIBGNUTLS_LIBS}"
 AC_SUBST([AP_MODULE_CFLAGS])
 AC_SUBST([AP_MODULE_LIBS])
 
-AC_DEFINE_UNQUOTED([WPL_BLOCK_MAX_CHILDREN], 64, [Max variable name length])
+AC_DEFINE_UNQUOTED([WPL_BLOCK_MAX_CHILDREN], 128, [Maximum number of block elements])
 AC_DEFINE_UNQUOTED([WPL_VARNAME_SIZE], 64, [Max variable name length])
 AC_DEFINE_UNQUOTED([WPL_EXPRESSION_MAX], 64, [Maximum number of elements in an expression])
 AC_DEFINE_UNQUOTED([WPL_MYSQL_BIND_MAX], 32, [Maximum number of variables which can be used in MySQL prepared statements])

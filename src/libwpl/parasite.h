@@ -44,12 +44,16 @@ class wpl_parasite_deleter {
 template<class T> class wpl_parasite {
 	protected:
 	T *host;
+	const void *identifier;
 
 	public:
-	wpl_parasite (T *host) : host(host) {}
+	wpl_parasite (T *host, const void *identifier) : host(host), identifier(identifier) {}
 	virtual ~wpl_parasite() {}
 	virtual void notify() = 0;
 	virtual void suicide() = 0;
+	bool check_identifier(const void *identifier) const {
+		return (this->identifier == identifier);
+	}
 };
 
 template<class T> class wpl_parasite_host {
@@ -63,10 +67,19 @@ template<class T> class wpl_parasite_host {
 		parasites.emplace_back(parasite);
 	}
 
-    void notify_parasites() {
-        // without the 'const &' it attempts to use deleted unique_ptr copy constructor
-        for (const auto &parasite : parasites) {
+	void notify_parasites() {
+		// without the 'const &' it attempts to use deleted unique_ptr copy constructor
+		for (const auto &parasite : parasites) {
 			parasite->notify();
 		}
+	}
+
+	template<class U> U *find_parasite(const void *identifier) {
+		for (const auto &parasite : parasites) {
+			if (parasite->check_identifier(identifier)) {
+				return (U*) parasite.get();
+			}
+		}
+		return nullptr;
 	}
 };
