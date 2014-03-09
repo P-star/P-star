@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_array.h"
 #include "matcher.h"
 
+#include <vector>
 #include <memory>
 #include <cstring>
 #include <map>
@@ -87,6 +88,9 @@ void wpl_value_post::parse_entity (MimeEntity *me) {
 	}
 }
 
+/* 10MB max upload size */
+#define MAX_REQUEST_SIZE 10*1024*1024
+
 void wpl_value_post::parse(wpl_io &io) {
 	const char *content_type = io.get_env("CONTENT_TYPE");
 	const char *content_length = io.get_env("CONTENT_LENGTH");
@@ -107,8 +111,13 @@ void wpl_value_post::parse(wpl_io &io) {
 		throw runtime_error("Error while parsing CONTENT_LENGTH environment variable in POST object");
 	}
 
-	unique_ptr<char[]> buf_ptr(new char[500+1]);
-	char *buf = buf_ptr.get();
+	if (length > MAX_REQUEST_SIZE) {
+		throw runtime_error("wpl_value_post::parse(): Exceeded maximum upload size, max is 10MB");
+	}
+
+	vector<char> buf_ptr;
+	buf_ptr.resize(length+1);
+	char *buf = buf_ptr.data();
 
 	io.read(buf, length);
 	buf[length] = '\0';
