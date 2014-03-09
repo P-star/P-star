@@ -376,6 +376,7 @@ bool wpl_block::check_run(wpl_block_state *block_state) {
 		DBG("BI (" << (wpl_block*)this << "): Running condition " << run_condition << endl);
 #endif
 		wpl_value_bool return_value;
+		return_value.set_do_finalize();
 		block_state->run_run_condition(run_condition, &return_value);
 		return return_value.get();
 	}

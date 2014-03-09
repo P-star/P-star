@@ -45,6 +45,7 @@ int wpl_block_for::run(wpl_state *state, wpl_value *final_result) {
 	ret = block_state->run_init(exp_init.get(), final_result);
 
 	wpl_value_bool result;
+	result.set_do_finalize();
 	while ((ret = block_state->run_run_condition(exp_condition.get(), &result) & WPL_OP_OK) &&
 		result.get()
 	) {

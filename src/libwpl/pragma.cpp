@@ -55,6 +55,7 @@ int wpl_pragma_template_var::run(wpl_state *state, wpl_value *final_result) {
 	wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
 
 	wpl_value_unsafe_pointer value_pointer;
+	value_pointer.set_do_finalize();
 	pragma_state->run_child (value_expression.get(), 0, &value_pointer);
 	/*
 	   TODO
@@ -115,6 +116,7 @@ void wpl_pragma_template_var::parse_value(wpl_namespace *parent_namespace) {
 wpl_template *wpl_pragma_template::get_template(wpl_pragma_state *pragma_state) {
 	if (exp.get()) {
 		wpl_value_string template_name;
+		template_name.set_do_finalize();
 		int ret = pragma_state->run_child(exp.get(), 1, &template_name);
 
 		if (!(ret & WPL_OP_OK)) {

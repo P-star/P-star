@@ -36,6 +36,7 @@ int wpl_text_state::run_expression(wpl_expression *exp, int index, wpl_value *fi
 	if (expression_states[index].get() == nullptr) {
 		expression_states[index].reset(exp->new_state(nss, io));
 	}
+	final_result->set_do_finalize();
 	return exp->run(expression_states[index].get(), final_result);
 }
 

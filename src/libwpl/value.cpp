@@ -122,7 +122,6 @@ int wpl_value::do_operator_recursive (
 		} catch (exception &e) {}*/
 
 		if (final_result) {
-
 //			cout << "- setting final result\n";
 			try {
 				return final_result->finalize_expression(exp_state, this);

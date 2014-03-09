@@ -1,0 +1,8 @@
+SCENE main {
+	void function() {
+	}
+
+	function();
+
+	echo "OK\n";
+}
