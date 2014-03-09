@@ -37,20 +37,17 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "parasite.h"
 
 class wpl_operator_struct;
-class st_mysql_time;
 
 class wpl_value_time : public wpl_value, public wpl_time, public wpl_parasite_host<wpl_value_time> {
     private:
-    st_mysql_time * sql_time;
     void try_guess_from_str(const std::string& fmt);
     void set_from_int(const int value);
     protected:
 	public:
 	PRIMITIVE_TYPEINFO(time)
-    wpl_value_time(int dummy) : wpl_time() {sql_time=nullptr;}
+    wpl_value_time(int dummy) : wpl_time() {}
 	wpl_value_time *clone() const { return new wpl_value_time(*this); };
 	wpl_value_time *clone_empty() const { return new wpl_value_time(0); };
-    ~wpl_value_time();
 
 	void set_weak(wpl_value *value) override;
 	string toString() override;

@@ -34,18 +34,11 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_string.h"
 
 #include <ctime>
-#include <mysql/mysql.h>
-#include <mysql/mysql_time.h>
 #include <cstring>
 #include <sstream>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
-#include <boost/checked_delete.hpp>
-
-wpl_value_time::~wpl_value_time(){
-    boost::checked_delete(sql_time);
-}
 
 void wpl_value_time::set_weak (wpl_value *value) {
 	wpl_value_time *value_time = dynamic_cast<wpl_value_time*>(value);
@@ -75,21 +68,6 @@ string wpl_value_time::toString() {
 	return tmp;
 }
 
-char* wpl_value_time::get_mysql_time_ptr(){
-    if (!sql_time)
-        sql_time = new MYSQL_TIME;
-    struct tm time_tmp;
-    get_time(&time_tmp);
-    sql_time->hour = time_tmp.tm_hour;
-    sql_time->minute = time_tmp.tm_min;
-    sql_time->second = time_tmp.tm_sec;
-    sql_time->day = time_tmp.tm_mday;
-    sql_time->year = time_tmp.tm_year+1900;
-    sql_time->month = time_tmp.tm_mon+1;
-    sql_time->time_type = MYSQL_TIMESTAMP_DATETIME;
-    return (char*)sql_time;
-}
-
 int wpl_value_time::do_operator (
 		wpl_expression_state *exp_state,
 		wpl_value *final_result,
@@ -105,6 +83,7 @@ int wpl_value_time::do_operator (
 		 */
 		if (strcmp (cmd, "set_now") == 0) {
 			set_now();
+            notify_parasites();
 			return do_operator_recursive(exp_state, final_result);
 		}
 
@@ -193,6 +172,7 @@ int wpl_value_time::do_operator (
 	}
 	else if (op == &OP_ASSIGN) {
 		set_weak(rhs);
+        notify_parasites();
 		return do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_FUNCTION_CALL) {

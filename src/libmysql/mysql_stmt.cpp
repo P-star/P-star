@@ -100,13 +100,12 @@ void wpl_mysql_bind (
                 break;
             case wpl_type_precedence_time:
             {
-                wpl_value_time * v_time = dynamic_cast<wpl_value_time*>(value);
-                if (v_time){
-                    bind[i].buffer_type = MYSQL_TYPE_DATETIME;
-                    bind[i].buffer = v_time->get_mysql_time_ptr();
-                } else {
-                    throw runtime_error("Cannot convert to date/time from type: " + string(value->get_type_name()));
-                }
+                wpl_value_time * v_time = (wpl_value_time*)value;
+                wpl_mysql_time_parasite * sql_time = new wpl_mysql_time_parasite(v_time);
+                v_time->register_parasite(sql_time);
+                sql_time->notify();
+                bind[i].buffer_type = MYSQL_TYPE_DATETIME;
+                bind[i].buffer = sql_time->get();
             }
                 break;
 			default:
