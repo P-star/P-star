@@ -4,6 +4,9 @@
 
 Copyright (c) MMXIV Atle Solbakken
 atle@goliathdns.no
+Copyright (c) MMXIV Sebastian Baginski
+sebthestampede@gmail.com
+
 
 -------------------------------------------------------------
 
@@ -60,8 +63,9 @@ template<class T> class wpl_parasite_host {
 		parasites.emplace_back(parasite);
 	}
 
-	void notify_parasites() {
-		for (auto parasite : parasites) {
+    void notify_parasites() {
+        // without the 'const &' it attempts to use deleted unique_ptr copy constructor
+        for (const auto &parasite : parasites) {
 			parasite->notify();
 		}
 	}

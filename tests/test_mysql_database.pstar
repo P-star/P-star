@@ -1,0 +1,65 @@
+SCENE main{
+
+	MYSQL mysql->connect("localhost", "pstar_test_user", "test");
+	mysql->select_db("pstar_test_db");
+	MYSQL_STMT stmt = mysql->new_statement();
+	string err;
+	
+	SQL create_table_a{ CREATE TABLE IF NOT EXISTS test1(name VARCHAR(128), id INT); };
+	SQL create_table_b{ CREATE TABLE IF NOT EXISTS test2(flag BOOLEAN); };
+	SQL create_table_c{ CREATE TABLE IF NOT EXISTS test3(f FLOAT, d DOUBLE); };
+	SQL create_table_d{ CREATE TABLE IF NOT EXISTS test4(t TIME, d DATE, dt DATETIME); };
+	
+	stmt->prepare(create_table_a); stmt->execute(); 
+	err = stmt->error(); echo "$err";
+	stmt->prepare(create_table_b); stmt->execute(); 
+	err = stmt->error(); echo "$err";
+	stmt->prepare(create_table_c); stmt->execute(); 
+	err = stmt->error(); echo "$err";
+	stmt->prepare(create_table_d); stmt->execute(); 
+	err = stmt->error(); echo "$err";
+	
+	SQL clear_table_a{ DELETE FROM test1; };
+	SQL clear_table_b{ DELETE FROM test2; };
+	SQL clear_table_c{ DELETE FROM test3; };
+	SQL clear_table_d{ DELETE FROM test4; };
+	
+	stmt->prepare(clear_table_a); stmt->execute(); 
+	err = stmt->error(); echo "$err";
+	stmt->prepare(clear_table_b); stmt->execute(); 
+	err = stmt->error(); echo "$err";
+	stmt->prepare(clear_table_c); stmt->execute(); 
+	err = stmt->error(); echo "$err";
+	stmt->prepare(clear_table_d); stmt->execute(); 
+	err = stmt->error(); echo "$err";
+	
+	string name = "Johnny";
+	int width = 4;	
+	float pi = "3.14";
+	double pi_more = "3.1415926535";
+	bool flag = 1;
+	TIME tfirst = "6:47:21";
+	TIME tsecond = '1567-02-04 00:11';
+	TIME tthird = '1975-04-11 23:45';
+	llint value_ll = "-123442";
+	uint value_uns = 1234;
+	lluint value_llu = 1233432356;
+	
+	SQL insert_a { INSERT INTO test1 VALUES( {@name}, {@width} ) };
+	SQL insert_ab{ INSERT INTO test1 VALUES( {@name}, {@value_ll} ) };
+	SQL insert_ac{ INSERT INTO test1 VALUES( {@name}, {@value_llu} ) };
+	SQL insert_ad{ INSERT INTO test1 VALUES( {@name}, {@value_uns} ) };
+	SQL insert_b { INSERT INTO test2 VALUES( {@flag} ); };
+	SQL insert_c { INSERT INTO test3 VALUES( {@pi}, {@pi_more} ); };
+	SQL insert_d { INSERT INTO test4 VALUES( {@tfirst}, {@tsecond}, {@tthird} ); };
+
+	stmt->prepare(insert_a); stmt->execute();  
+	stmt->prepare(insert_ab); stmt->execute(); 
+	stmt->prepare(insert_ac); stmt->execute(); 
+	stmt->prepare(insert_ad); stmt->execute(); 
+	stmt->prepare(insert_b); stmt->execute();  
+	stmt->prepare(insert_c); stmt->execute();  
+	stmt->prepare(insert_d); stmt->execute();  
+	
+	echo "done";
+}
