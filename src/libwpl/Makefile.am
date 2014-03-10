@@ -5,7 +5,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libwpl-1.2.pc
 
 lib_LTLIBRARIES = libwpl-1.2.la
-libwpl_1_2_la_LDFLAGS = -rpath $(libdir) -lmimetic $(BOOST_REGEX_LDFLAGS) $(BOOST_REGEX_LIBS)
+libwpl_1_2_la_LDFLAGS = -lmimetic -lboost_regex -x relro
 libwpl_1_2_la_SOURCES = \
 	program.cpp parser.cpp block.cpp pragma.cpp \
 	module_loader.cpp io.cpp state.cpp \

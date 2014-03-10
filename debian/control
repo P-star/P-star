@@ -1,12 +1,11 @@
 Source: pstar
 Section: web
-Priority: extra
+Priority: optional
 Maintainer: Atle Solbakken <atle@goliathdns.no>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, libmysqlclient-dev, libmimetic-dev, libboost-regex-dev, apache2-threaded-dev, pkg-config, libapr-memcache-dev, chrpath
 Standards-Version: 3.9.5
 Homepage: http://www.p-star.org
-#Vcs-Git: git://git.debian.org/collab-maint/p-star.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/p-star.git;a=summary
+Vcs-Git: git://github.com/P-star/P-star.git
 
 Package: libpstar
 Architecture: any
@@ -14,7 +13,9 @@ Recommends: pstar
 Conflicts: p-star
 Depends: ${shlibs:Depends}, ${misc:Depends}, mysql-client-5.5, libmimetic0, libboost-regex1.49.0
 Description: P* Web Programming Language Interpreter Library
- P* is a progamming language which targets to incorporate common tasks like HTML templates, SQL prepared statements and JSON output into the language.
+ P* is a progamming language which targets to incorporate common 
+ tasks like HTML templates, SQL prepared statements and JSON output
+ into the language.
 
 #Package: libpstar-dev
 #Architecture: all
@@ -31,9 +32,10 @@ Description: P* Web Programming Language Interpreter Command
  This is the command line version of the P* Web Programming Language interpreter.
 
 Package: libapache2-mod-pstar
+Section: httpd
 Architecture: any
 Conflicts: p-star
-Depends: libpstar (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends} 
+Depends: libpstar (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, apache2.2-common
 Description: Apache module for the P* Web Programming Language
  mod_pstar provides support for P* scripts in the Apache web server.
   The performance of this Apache module is better than just using CGI, as the module has

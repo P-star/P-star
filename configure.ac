@@ -47,8 +47,10 @@ AC_LANG_POP([C++])
 AC_CHECK_LIB([dl], [dlopen], LIB_DL="-ldl")
 AC_SUBST([LIB_DL])
 
-BOOST_REQUIRE([1.46.0])
-BOOST_REGEX
+#BOOST_REQUIRE([1.46.0])
+#BOOST_REGEX
+
+AC_CHECK_HEADERS([boost/regex.hpp],, [AC_MSG_ERROR([Boost.Regex (Boost C++ Libraries) is not installed, but is required by pstar])])
 
 # Stolen from https://mod.gnutls.org/browser/mod_gnutls/configure.ac
 AP_VERSION=2.2.22
