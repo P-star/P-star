@@ -125,6 +125,10 @@ int wpl_text_chunks::text::output_json (
 	wpl_value_string json_value;
 	wpl_value_unsafe_pointer unsafe_pointer;
 
+	json_name.set_do_finalize();
+	json_value.set_do_finalize();
+	unsafe_pointer.set_do_finalize();
+
 	/*
 	   If we end with an HTML id tag, use this the text value of the
 	   next chunk as the JSON name.
@@ -136,8 +140,8 @@ int wpl_text_chunks::text::output_json (
 	/*
 	   If no return from the next block, just proceed with output_json
 	   */
-	if (!((*it)->run(state, it->get_pos(), &json_name, io_void) & WPL_OP_OK)) {
-		return (*(++(*it)))->output_json(state, vars, it, final_result);
+	if (!((*(++(*it)))->run(state, it->get_pos(), &json_name, io_void) & WPL_OP_OK)) {
+		return (*it)->output_json(state, vars, it, final_result);
 	}
 
 	/*
@@ -198,14 +202,14 @@ int wpl_text_chunks::expression::output_json (
 		wpl_text_chunk_it *it,
 		wpl_value *final_result
 ) {
-	wpl_io_buffer buf;
+/*	wpl_io_buffer buf;
 	wpl_value_output_trigger output_trigger(buf);
 
 	state->run_expression(exp.get(), it->get_pos(), &output_trigger);
 
 	wpl_output_json output_json;
 	output_json.output_json(state->get_io(), buf.c_str(), buf.size());
-
+*/
 	return (*(++(*it)))->output_json(state, vars, it, final_result);
 }
 
