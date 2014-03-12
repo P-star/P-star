@@ -44,16 +44,14 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <list>
 
 void wpl_sql::get_params(wpl_text_state *text_state, vector<wpl_value*> &params) {
-	wpl_value_constant_pointer retriever;
-	wpl_io_void io_void;
-
 	for (wpl_text_chunk_it it (chunks); it; it.inc()) {
-		if (!(it->run(text_state, it.get_pos(), &retriever, io_void) & WPL_OP_OK)) {
+		wpl_value_constant_pointer retriever;
+		if (!(it->run_raw(text_state, it.get_pos(), &retriever) & WPL_OP_OK)) {
+			wpl_value *value = retriever.dereference();
 			continue;
 		}
 
 		wpl_value *value = retriever.dereference();
-
 		if (!value) {
 			throw runtime_error("SQL error: Only variables and constant values may be used in SQL-queries");
 		}

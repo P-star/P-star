@@ -55,6 +55,8 @@ void wpl_mysql_bind (
 		throw runtime_error("MySQL error: Too many bind parameters");
 	}
 
+	mysql_stmt_reset(stmt);
+
 	vector<wpl_value*> values;
 	unique_ptr<wpl_text_state> text_state((wpl_text_state*) sql->new_state(nss, NULL));
 
@@ -157,10 +159,6 @@ int wpl_mysql_stmt_prepare::run (
 	wpl_value_sql *value_sql =
 		function_state->find_variable_value<wpl_value_sql>("prepare()", "sql");
 
-	if (this_stmt->get_res()) {
-		this_stmt->free_res();
-	}
-
 	wpl_sql *sql = value_sql->get_sql();
 
 	string stmt_string;
@@ -200,6 +198,10 @@ int wpl_mysql_stmt_execute::run (
 	MYSQL_STMT *stmt = this_stmt->get_stmt();
 	if (!stmt) {
 		throw runtime_error("MySQL error: stmt_execute(): Statement object not initialized yet");
+	}
+
+	if (this_stmt->get_res()) {
+		this_stmt->reset_res();
 	}
 
 	bool ret = true;

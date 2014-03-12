@@ -10,10 +10,7 @@ SCENE main{
 	SQL create_table_c{ CREATE TABLE IF NOT EXISTS test3(f FLOAT, d DOUBLE); };
 	SQL create_table_d{ CREATE TABLE IF NOT EXISTS test4(t TIME, d DATE, dt DATETIME); };
 	
-	if (!stmt->prepare(create_table_a)) {
-		echo stmt->error();
-	}
-	stmt->execute();
+	stmt->prepare(create_table_a); stmt->execute();
 	err = stmt->error(); echo "$err";
 	stmt->prepare(create_table_b); stmt->execute(); 
 	err = stmt->error(); echo "$err";
@@ -59,8 +56,8 @@ SCENE main{
 
 	*/
 
-	SQL insert_a { INSERT INTO test1 VALUES( {@name}, {@width} ) };
-	SQL insert_ad{ INSERT INTO test1 VALUES( {@surename}, {@value_uns} ) };
+	SQL insert_a { INSERT INTO test1 (name, id) VALUES( {@name}, {@width} ) };
+	SQL insert_ad{ INSERT INTO test1 (name, id) VALUES( {@surename}, {@value_uns} ) };
 	SQL insert_b { INSERT INTO test2 VALUES( {@flag} ); };
 	SQL insert_c { INSERT INTO test3 VALUES( {@pi}, {@pi_more} ); };
 	SQL insert_d { INSERT INTO test4 VALUES( {@tfirst}, {@tsecond}, {@tthird} ); };
@@ -76,6 +73,7 @@ SCENE main{
 	echo "PASS 5\n";
 	stmt->prepare(insert_d); stmt->execute();  
 
+	echo "test1 result\n";
 	string search = name;
 	SQL select_a { SELECT name, id FROM test1 WHERE name={@search} };
 	stmt->prepare(select_a);
@@ -98,8 +96,36 @@ SCENE main{
 	}
 	echo "Name: " . row["name"] . " ID: " . row["id"] . "\n";
 
-	SQL select_b { SELECT * FROM test4 };
+	echo "test2 result\n";
+	SQL select_b { SELECT * FROM test2 };
 	if (!stmt->prepare(select_b)) {
+		echo "Could not prepare SQL: " . stmt->error() . "\n";
+	}
+	if (!stmt->execute()) {
+		echo "Could not execute SQL: " . stmt->error() . "\n";
+	}
+	row = stmt->get_row_iterator();
+	while (row++) {
+		echo "" . row["flag"] . "\n";
+	}
+
+	echo "test3 result\n";
+	SQL select_c { SELECT * FROM test3 };
+	if (!stmt->prepare(select_c)) {
+		echo "Could not prepare SQL: " . stmt->error() . "\n";
+	}
+	if (!stmt->execute()) {
+		echo "Could not execute SQL: " . stmt->error() . "\n";
+	}
+	row = stmt->get_row_iterator();
+	while (row++) {
+		echo "" . row["f"] . "\n";
+		echo "" . row["d"] . "\n";
+	}
+
+	echo "test4 result\n";
+	SQL select_d { SELECT * FROM test4 };
+	if (!stmt->prepare(select_d)) {
 		echo "Could not prepare SQL: " . stmt->error() . "\n";
 	}
 	if (!stmt->execute()) {

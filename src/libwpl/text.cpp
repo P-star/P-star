@@ -86,6 +86,14 @@ int wpl_text_chunks::expression::run (
 	return state->run_expression (exp.get(), index, &finalizer);
 }
 
+int wpl_text_chunks::expression::run_raw (
+		wpl_text_state *state,
+		int index,
+		wpl_value *final_result
+) {
+	return state->run_expression (exp.get(), index, final_result);
+}
+
 int wpl_text_chunks::loop::run (
 		wpl_text_state *state,
 		int index,

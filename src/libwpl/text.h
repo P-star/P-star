@@ -64,6 +64,13 @@ namespace wpl_text_chunks {
 			wpl_text_chunk_it *it,
 			wpl_value *final_result
 		) = 0;
+		virtual int run_raw (
+			wpl_text_state *state,
+			int index,
+			wpl_value *final_result
+		) {
+			return WPL_OP_NO_RETURN;
+		}
 	};
 
 	class text : public base {
@@ -134,6 +141,7 @@ namespace wpl_text_chunks {
 		virtual ~expression() {}
 
 		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
+		int run_raw (wpl_text_state *state, int index, wpl_value *final_result) override;
 		virtual int output_json (
 			wpl_text_state *state,
 			const set<wpl_value*> &vars,
@@ -200,6 +208,7 @@ class wpl_text_chunk_it {
 	}
 
 	bool inc() {
+		pos++;
 		return (++it != container.end());
 	}
 
