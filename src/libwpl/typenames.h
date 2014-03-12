@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -30,6 +30,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 extern const char *wpl_typename_unsafe_pointer;
 extern const char *wpl_typename_constant_pointer;
+extern const char *wpl_typename_double_finalizer;
 extern const char *wpl_typename_void;
 extern const char *wpl_typename_wrapper;
 extern const char *wpl_typename_output_trigger;

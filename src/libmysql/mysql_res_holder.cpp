@@ -56,8 +56,8 @@ wpl_mysql_res_holder::~wpl_mysql_res_holder() {
    */
 void wpl_mysql_res_holder::update(MYSQL_STMT *stmt) {
 	if (res) {
-		return;
 //		mysql_free_result(res);
+		throw runtime_error("mysql_res_holder::update() not cleaned up");
 	}
 	res = mysql_stmt_result_metadata(stmt);
 	if (!res) {
@@ -80,7 +80,6 @@ void wpl_mysql_res_holder::update(MYSQL_STMT *stmt) {
 		wpl_mysql_field &my_field = fields[i];
 
 		my_field.name = field->name;
-
 		bind[i].length = &my_field.length;
 		bind[i].is_null = &my_field.is_null;
 		bind[i].error = &my_field.error;
@@ -127,6 +126,7 @@ void wpl_mysql_res_holder::update(MYSQL_STMT *stmt) {
 					my_field.value.reset (new wpl_value_float());
 				}
 				bind[i].buffer_type = MYSQL_TYPE_FLOAT;
+				bind[i].buffer = my_field.value->toVoid();
 				break;
 			case MYSQL_TYPE_DOUBLE:
 				if (old_precedence != wpl_type_precedence_double){
@@ -170,7 +170,8 @@ wpl_mysql_field *wpl_mysql_res_holder::get_field (int index) {
 }
 
 wpl_mysql_field *wpl_mysql_res_holder::get_field (const string &name) {
-	for (wpl_mysql_field &field : fields) {
+	for (int i = 0; i < fields_count; i++) {
+		wpl_mysql_field &field = fields[i];
 		if (name == field.name) {
 			return &field;
 		}

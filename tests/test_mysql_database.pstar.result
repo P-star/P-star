@@ -3,8 +3,15 @@ PASS 2
 PASS 3
 PASS 4
 PASS 5
+test1 result
 Name: Johnny ID: 4
-Name: Depp ID: 1234
+Name: Depp - This is a very long string. It might result in a realloc(). ID: 1234
+test2 result
+1
+test3 result
+3.140000
+3.141593
+test4 result
 06:47:21
 1567-02-04
 1975-04-11 23:45:00

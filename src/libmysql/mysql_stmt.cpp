@@ -55,6 +55,8 @@ void wpl_mysql_bind (
 		throw runtime_error("MySQL error: Too many bind parameters");
 	}
 
+	mysql_stmt_reset(stmt);
+
 	vector<wpl_value*> values;
 	unique_ptr<wpl_text_state> text_state((wpl_text_state*) sql->new_state(nss, NULL));
 
@@ -150,30 +152,12 @@ int wpl_mysql_stmt_prepare::run (
 		wpl_value *final_result
 		)
 {
-	wpl_variable *this_var;
-	wpl_variable *sql_var;
-
 	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("MySQL error: stmt_prepare(): Could not find 'this' variable");
-	}
-	if (!(sql_var = function_state->find_variable("sql", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("MySQL error: stmt_prepare(): Could not find 'sql' variable");
-	}
-
-	wpl_value_MYSQL_STMT *this_stmt = (wpl_value_MYSQL_STMT*) this_var->get_value();
-
-	if (this_stmt->get_res()) {
-		this_stmt->free_res();
-	}
-
-	wpl_value *value = sql_var->get_value()->dereference();
-	wpl_value_sql *value_sql;
-	if (!(value_sql = dynamic_cast<wpl_value_sql*>(value))) {
-		cerr << "While processing argument of type " << value_sql->get_type_name() << ":\n";
-		throw runtime_error("MySQL error: Invalid arguments for stmt_prepare()");
-	}
+	wpl_value_MYSQL_STMT *this_stmt =
+		function_state->find_variable_value<wpl_value_MYSQL_STMT>("prepare()", "this");
+	wpl_value_sql *value_sql =
+		function_state->find_variable_value<wpl_value_sql>("prepare()", "sql");
 
 	wpl_sql *sql = value_sql->get_sql();
 
@@ -206,19 +190,18 @@ int wpl_mysql_stmt_execute::run (
 		wpl_value *final_result
 		)
 {
-	wpl_variable *this_var;
-
 	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("MySQL error: stmt_execute(): Could not find 'this' variable");
-	}
-
-	wpl_value_MYSQL_STMT *this_stmt = (wpl_value_MYSQL_STMT*) this_var->get_value();
+	wpl_value_MYSQL_STMT *this_stmt =
+		function_state->find_variable_value<wpl_value_MYSQL_STMT>("execute()", "this");
 
 	MYSQL_STMT *stmt = this_stmt->get_stmt();
 	if (!stmt) {
 		throw runtime_error("MySQL error: stmt_execute(): Statement object not initialized yet");
+	}
+
+	if (this_stmt->get_res()) {
+		this_stmt->reset_res();
 	}
 
 	bool ret = true;
@@ -250,15 +233,10 @@ int wpl_mysql_stmt_error::run (
 		wpl_value *final_result
 		)
 {
-	wpl_variable *this_var;
-
 	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("MySQL error: stmt_execute(): Could not find 'this' variable");
-	}
-
-	wpl_value_MYSQL_STMT *this_stmt = (wpl_value_MYSQL_STMT*) this_var->get_value();
+	wpl_value_MYSQL_STMT *this_stmt =
+		function_state->find_variable_value<wpl_value_MYSQL_STMT>("error()", "this");
 
 	MYSQL_STMT *stmt = this_stmt->get_stmt();
 	if (!stmt) {
@@ -288,15 +266,10 @@ int wpl_mysql_stmt_get_row_iterator::run (
 		wpl_value *final_result
 		)
 {
-	wpl_variable *this_var;
-
 	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("MySQL error: stmt_execute(): Could not find 'this' variable");
-	}
-
-	wpl_value_MYSQL_STMT *this_stmt = (wpl_value_MYSQL_STMT*) this_var->get_value();
+	wpl_value_MYSQL_STMT *this_stmt =
+		function_state->find_variable_value<wpl_value_MYSQL_STMT>("get_row_iterator()", "this");
 
 	MYSQL_STMT *stmt = this_stmt->get_stmt();
 	if (!stmt) {

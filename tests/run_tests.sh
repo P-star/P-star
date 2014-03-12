@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export QUERY_STRING="a&c=1&d=2&d=3"
+export QUERY_STRING="a&c=1&d=2&d=3&do_ajax"
 
 WPL="../src/wpl";
 TMP="tmp_test";

@@ -2,8 +2,8 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
-atle@goliathdns.no
+Copyright (c) MMXIV Sebastian Baginski
+sebthestampede@gmail.com
 
 -------------------------------------------------------------
 
@@ -28,38 +28,25 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "value.h"
-#include "typenames.h"
-#include "type_precedence.h"
+// first undefine offending macros
+// that are present in httpd.h
+// and config.h
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
 
-using namespace std;
+#include "httpd.h"
 
-class wpl_value_constant_pointer : public wpl_value {
-	private:
-	wpl_value *value;
+// now we are using macros from httpd.h
+// so undefine them again and
+// include config.h in order to use
+// 'our' version of macros
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
 
-	public:
-	wpl_value_constant_pointer() {
-		value = NULL;
-	}
-	int get_precedence() const { return wpl_type_precedence_constant_pointer; };
-	const char *get_type_name() const { return wpl_typename_constant_pointer; }
-	wpl_value *clone() const {
-		return new wpl_value_constant_pointer (*this);
-	};
-
-	wpl_value *dereference() {
-		return value;
-	}
-
-	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) override {
-		if (last_value->get_flags() & wpl_value_is_constant) {
-			value = last_value;
-		}
-		else {
-			value = NULL;
-		}
-		return WPL_OP_OK;
-	}
-};
-
+#include "../config.h"

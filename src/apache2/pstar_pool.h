@@ -20,7 +20,7 @@
 #include "../libwpl/program.h"
 #include "../libwpl/exception.h"
 
-#include "httpd.h"
+#include "pstar_httpd.h"
 
 #include <string>
 #include <mutex>

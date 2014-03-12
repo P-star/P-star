@@ -72,10 +72,9 @@ int main (int argc, char *argv[]) {
 	int ret = 1;
 
 	wpl_io_standard output;
+	wpl_program program(output, argc, argv);
 
 	try {
-		wpl_program program(output, argc, argv);
-
 		try {
 			program.parse_file(filename);
 		}

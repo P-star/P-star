@@ -89,7 +89,7 @@ class wpl_value_MYSQL_STMT : public wpl_value {
 		return mysql_stmt;
 	}
 
-	void free_res() {
+	void reset_res () {
 		mysql_res.reset(new wpl_mysql_res_holder());
 	}
 

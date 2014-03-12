@@ -38,11 +38,8 @@ class wpl_value_unsafe_pointer : public wpl_value {
 	private:
 	wpl_value *value;
 
-	wpl_value *lhs;
-	wpl_value *rhs;
-
 	public:
-	wpl_value_unsafe_pointer() {}
+	wpl_value_unsafe_pointer() : value(nullptr) {}
 	wpl_value_unsafe_pointer(wpl_value *value) {
 		this->value = value;
 	}
