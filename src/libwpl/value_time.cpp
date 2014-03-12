@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "operator.h"
 #include "value_int.h"
 #include "value_string.h"
+#include "output_json.h"
 
 #include <ctime>
 #include <cstring>
@@ -66,6 +67,21 @@ string wpl_value_time::toString() {
 	string tmp;
 	format_time(NULL, tmp);
 	return tmp;
+}
+
+void wpl_value_time::output_json(wpl_io &io) {
+	wpl_output_json output_json;
+
+	string tmp;
+	format_time(NULL, tmp);
+
+	output_json.output_json(io, tmp.c_str(), tmp.size());
+}
+
+void wpl_value_time::output(wpl_io &io) {
+	string tmp;
+	format_time(NULL, tmp);
+	io << tmp;
 }
 
 int wpl_value_time::do_operator (
