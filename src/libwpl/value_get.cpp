@@ -119,7 +119,7 @@ void wpl_value_get::parse(const char *query_string) {
 			}
 
 			int num = strtol(tmp, NULL, 16);
-			if (num == 0 || M_INVALID(num)) {
+            if (num == 0 || M_INVALID_CHAR(num)) {
 				cerr << "While parasing character 0x" << hex << num << "\n";
 				throw runtime_error("Invalid character in %-sequence in query string");
 			}

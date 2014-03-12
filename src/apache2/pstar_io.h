@@ -19,7 +19,7 @@
 
 #include "io.h"
 
-#include "httpd.h"
+#include "pstar_httpd.h"
 
 #include <map>
 #include <sstream>

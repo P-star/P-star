@@ -231,7 +231,7 @@ bool wpl_matcher::match_letter (
 		return true;
 	}
 
-	if (M_INVALID(letter)) {
+    if (M_INVALID_CHAR(letter)) {
 		ostringstream msg;
 		char buf[32];
 		sprintf(buf, "%02x", letter);

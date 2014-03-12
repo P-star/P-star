@@ -59,30 +59,12 @@ class wpl_mysql_connect : public wpl_function {
 };
 
 int wpl_mysql_connect::run (wpl_state *state, wpl_value *final_result) {
-	wpl_variable *this_var;
-	wpl_variable *host_var;
-	wpl_variable *user_var;
-	wpl_variable *passwd_var;
-
 	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("wpl_mysql_connect(): Could not find 'this' variable");
-	}
-	if (!(host_var = function_state->find_variable("host", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("wpl_mysql_connect(): Could not find 'host' variable");
-	}
-	if (!(user_var = function_state->find_variable("user", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("wpl_mysql_connect(): Could not find 'user' variable");
-	}
-	if (!(passwd_var = function_state->find_variable("passwd", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("wpl_mysql_connect(): Could not find 'passwd' variable");
-	}
-
-	wpl_value_MYSQL *this_mysql = (wpl_value_MYSQL*) this_var->get_value();
-	const char *host = host_var->get_value()->toString().c_str();
-	const char *user = user_var->get_value()->toString().c_str();
-	const char *passwd = passwd_var->get_value()->toString().c_str();
+	wpl_value_MYSQL *this_mysql = function_state->find_variable_value<wpl_value_MYSQL>("connect()", "this");
+	const char *host = function_state->find_variable_value("connect()", "host")->toString().c_str();
+	const char *user = function_state->find_variable_value("connect()", "user")->toString().c_str();
+	const char *passwd = function_state->find_variable_value("connect()", "passwd")->toString().c_str();
 
 #ifdef WPL_DEBUG_MYSQL
 	DBG("MYSQL (" << this << ") connect (" << host << ", " << user << ", " << passwd << ")\n");
@@ -115,21 +97,10 @@ class wpl_mysql_select_db : public wpl_function {
 };
 
 int wpl_mysql_select_db::run (wpl_state *state, wpl_value *final_result) {
-	wpl_variable *this_var;
-	wpl_variable *db_var;
-
 	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("wpl_mysql_select_db(): Could not find 'this' variable");
-	}
-
-	if (!(db_var = function_state->find_variable("db", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("wpl_mysql_select_db(): Could not find 'db' variable");
-	}
-
-	wpl_value_MYSQL *this_mysql = (wpl_value_MYSQL*) this_var->get_value();
-	const char *db = db_var->get_value()->toString().c_str();
+	wpl_value_MYSQL *this_mysql = function_state->find_variable_value<wpl_value_MYSQL>("connect()", "this");
+	const char *db = function_state->find_variable_value("mysql_select_db()", "db")->toString().c_str();
 
 	if (!this_mysql->get_mysql()) {
 		throw runtime_error("MySQL error: select_db() called with no active connection");
@@ -149,15 +120,9 @@ class wpl_mysql_error : public wpl_function {
 };
 
 int wpl_mysql_error::run (wpl_state *state, wpl_value *final_result) {
-	wpl_variable *this_var;
-
 	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("wpl_mysql_error(): Could not find 'this' variable");
-	}
-
-	wpl_value_MYSQL *this_mysql = (wpl_value_MYSQL*) this_var->get_value();
+	wpl_value_MYSQL *this_mysql = function_state->find_variable_value<wpl_value_MYSQL>("error()", "this");
 
 	((wpl_value_string*) final_result)->set(mysql_error (this_mysql->get_mysql()));
 
@@ -177,14 +142,9 @@ class wpl_mysql_stmt_init : public wpl_function {
 };
 
 int wpl_mysql_stmt_init::run (wpl_state *state, wpl_value *final_result) {
-	wpl_variable *this_var;
-
 	wpl_function_state *function_state = (wpl_function_state*) state;
 
-	if (!(this_var = function_state->find_variable("this", WPL_NSS_CTX_SELF))) {
-		throw runtime_error("wpl_stmt_init(): Could not find 'this' variable");
-	}
-	wpl_value_MYSQL *this_mysql = (wpl_value_MYSQL*) this_var->get_value();
+	wpl_value_MYSQL *this_mysql = function_state->find_variable_value<wpl_value_MYSQL>("nysql_stmt_init()", "this");
 
 	MYSQL *mysql;
 	if (!(mysql = this_mysql->get_mysql())) {
