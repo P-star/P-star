@@ -7,6 +7,20 @@ AC_CONFIG_SRCDIR([src/])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
+# SOVERSION-stuff is from libshishi
+
+# Library code modified:                              REVISION++
+# Interfaces changed/added/removed:   CURRENT++       REVISION=0
+# Interfaces added:                             AGE++
+# Interfaces removed:                           AGE=0
+AC_SUBST(LT_CURRENT, 1)
+AC_SUBST(LT_REVISION, 0)
+AC_SUBST(LT_AGE, 0)
+
+# Used when creating libshishi-XX.def.
+SOVERSION=`expr ${LT_CURRENT} - ${LT_AGE}`
+AC_SUBST(SOVERSION)
+
 AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE()
@@ -47,8 +61,10 @@ AC_LANG_POP([C++])
 AC_CHECK_LIB([dl], [dlopen], LIB_DL="-ldl")
 AC_SUBST([LIB_DL])
 
-BOOST_REQUIRE([1.46.0])
-BOOST_REGEX
+#BOOST_REQUIRE([1.46.0])
+#BOOST_REGEX
+
+AC_CHECK_HEADERS([boost/regex.hpp],, [AC_MSG_ERROR([Boost.Regex (Boost C++ Libraries) is not installed, but is required by pstar])])
 
 # Stolen from https://mod.gnutls.org/browser/mod_gnutls/configure.ac
 AP_VERSION=2.2.22
@@ -68,7 +84,7 @@ AC_DEFINE_UNQUOTED([WPL_VARNAME_SIZE], 64, [Max variable name length])
 AC_DEFINE_UNQUOTED([WPL_EXPRESSION_MAX], 64, [Maximum number of elements in an expression])
 AC_DEFINE_UNQUOTED([WPL_MYSQL_BIND_MAX], 32, [Maximum number of variables which can be used in MySQL prepared statements])
 
-AC_CONFIG_FILES([Makefile src/Makefile bin/Makefile src/libwpl/Makefile src/libwpl/libwpl-1.2.pc src/libmysql/Makefile src/libmysql/libwpl_mysql-1.2.pc] src/apache2/Makefile)
+AC_CONFIG_FILES([Makefile src/Makefile bin/Makefile src/libwpl/Makefile src/libmysql/Makefile src/apache2/Makefile])
 
 #AC_DEFINE_UNQUOTED([WPL_DEBUG_EXPRESSIONS], 1, [Debug expression handling])
 #AC_DEFINE_UNQUOTED([WPL_DEBUG_PARSING], 1, [Debug parsing])

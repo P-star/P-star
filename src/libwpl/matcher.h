@@ -162,14 +162,14 @@ using namespace std;
 #define M_EXPRESSION(v) \
 	(M_OPERATOR(v)||M_WHITESPACE(v)||M_WORD(v)||M_NUMBER(v)||M_NONBLOCK_BRACKET(v)||M_QUOTE(v))
 
-#define M_INVALID(v) \
+#define M_INVALID_CHAR(v) \
 	((v!=0 && v<=8) || v==11 || v==12 || (v>=14 && v<=31) || v==127 || v>253)
 
 #define M_UTF8_BEGIN(v) \
 	(v>127 && v<=253)
 
 #define M_NONCTRL_ASCII(v) \
-	(v<=127 && !(M_INVALID(v)))
+    (v<=127 && !(M_INVALID_CHAR(v)))
 
 #define M_WORD(v) \
 	(M_CAPITAL_LETTER(v) || M_LOWERCASE_LETTER(v) || M_UNDERSCORE(v))

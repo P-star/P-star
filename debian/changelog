@@ -1,3 +1,11 @@
+pstar (1.2~alpha2) experimental; urgency=low
+
+  * Fix Lintian errors
+  * Remove pkg-config
+  * Fix library names, only use libtool version numbers
+
+ -- Atle Solbakken <atle@goliathdns.no>  Mon, 10 Mar 2014 19:38:08 +0100
+
 pstar (1.2~alpha1) experimental; urgency=low
 
   * Added new File I/O functionality
