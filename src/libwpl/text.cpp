@@ -60,7 +60,6 @@ int wpl_text_chunks::text::run (
 		wpl_value *final_result,
 		wpl_io &io
 ) {
-	cerr << "run text\n";
 	io.write_immortal(start, end-start);
 	return WPL_OP_NO_RETURN;
 }
@@ -71,7 +70,6 @@ int wpl_text_chunks::textblock::run (
 		wpl_value *final_result,
 		wpl_io &io
 ) {
-	cerr << "run textblock\n";
 	return state->run_text(text.get(), index, final_result, io);
 }
 
@@ -81,7 +79,6 @@ int wpl_text_chunks::expression::run (
 		wpl_value *final_result,
 		wpl_io &io
 ) {
-	cerr << "run expression\n";
 
    	wpl_value_output_trigger output_trigger(io);
 	wpl_value_double_finalizer finalizer(&output_trigger, final_result);
@@ -95,7 +92,6 @@ int wpl_text_chunks::loop::run (
 		wpl_value *final_result,
 		wpl_io &io
 ) {
-	cerr << "run loop\n";
 	wpl_value_bool result;
 	result.set_do_finalize();
 

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -34,32 +34,29 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-class wpl_value_constant_pointer : public wpl_value {
+class wpl_value_double_finalizer : public wpl_value {
 	private:
-	wpl_value *value;
+	wpl_value *value_a;
+	wpl_value *value_b;
 
 	public:
-	wpl_value_constant_pointer() {
-		value = NULL;
-	}
-	int get_precedence() const { return wpl_type_precedence_constant_pointer; };
-	const char *get_type_name() const { return wpl_typename_constant_pointer; }
+	wpl_value_double_finalizer(wpl_value *value_a, wpl_value *value_b) :
+		value_a(value_a),
+		value_b(value_b)
+	{}
+	int get_precedence() const { return wpl_type_precedence_double_finalizer; };
+	const char *get_type_name() const { return wpl_typename_double_finalizer; }
 	wpl_value *clone() const {
-		return new wpl_value_constant_pointer (*this);
+		return new wpl_value_double_finalizer (*this);
 	};
 
-	wpl_value *dereference() {
-		return value;
-	}
-
 	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) override {
-		if (last_value->get_flags() & wpl_value_is_constant) {
-			value = last_value;
-		}
-		else {
-			value = NULL;
-		}
-		return WPL_OP_OK;
+		int ret = 0;
+
+		ret |= value_a->finalize_expression(exp_state, last_value);
+		ret |= value_b->finalize_expression(exp_state, last_value);
+
+		return ret;
 	}
 };
 
