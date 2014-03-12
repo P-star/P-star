@@ -10,7 +10,10 @@ SCENE main{
 	SQL create_table_c{ CREATE TABLE IF NOT EXISTS test3(f FLOAT, d DOUBLE); };
 	SQL create_table_d{ CREATE TABLE IF NOT EXISTS test4(t TIME, d DATE, dt DATETIME); };
 	
-	stmt->prepare(create_table_a); stmt->execute(); 
+	if (!stmt->prepare(create_table_a)) {
+		echo stmt->error();
+	}
+	stmt->execute();
 	err = stmt->error(); echo "$err";
 	stmt->prepare(create_table_b); stmt->execute(); 
 	err = stmt->error(); echo "$err";

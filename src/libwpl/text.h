@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -38,49 +38,184 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <set>
 #include <deque>
 
-class chunk;
 class wpl_value;
 
-class wpl_text : public wpl_runable, public wpl_parseable {
-	protected:
-	class chunk {
+class wpl_text_chunk_end_reached {};
+class wpl_text_chunk_it;
+
+namespace wpl_text_chunks {
+	class base {
+		private:
+
+		public:
+		virtual ~base() {}
+		virtual bool isText() {
+			return false;
+		}
+		virtual int run (
+			wpl_text_state *state,
+			int index,
+			wpl_value *final_result,
+			wpl_io &io
+		) = 0;
+		virtual int output_json (
+			wpl_text_state *state,
+			const set<wpl_value*> &vars,
+			wpl_text_chunk_it *it,
+			wpl_value *final_result
+		) = 0;
+	};
+
+	class text : public base {
 		private:
 		const char *start;
 		const char *end;
-		unique_ptr<wpl_expression> expression;
-		unique_ptr<wpl_text> loop_text;
 
 		public:
-		chunk (const char *start, const char *end);
-		chunk (wpl_expression *expression);
-		chunk (wpl_text *text, wpl_expression *expression);
-		int run(wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io);
-
-		chunk(const chunk &copy) {
-			throw runtime_error("Cannot clone text chunk");
+		text (const char *start, const char *end) :
+			start(start),
+			end(end)
+		{}
+		virtual ~text() {}
+		bool isText() override {
+			return true;
 		}
 		const char *get_start() const {
 			return start;
 		}
-		const char *get_end()const {
+		const char *get_end() const {
 			return end;
 		}
-		int length() {
+		int length() const {
 			return end-start;
 		}
-		wpl_expression *get_expression() const {
-			return expression.get();
-		}
-		wpl_text *get_loop_text() const {
-			return loop_text.get();
-		}
+
+		int run(wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
+		virtual int output_json (
+			wpl_text_state *state,
+			const set<wpl_value*> &vars,
+			wpl_text_chunk_it *it,
+			wpl_value *final_result
+		);
 	};
 
+	class textblock : public base {
+		private:
+		unique_ptr<wpl_text> text;
+
+		protected:
+		wpl_text *get_text() const {
+			return text.get();
+		}
+
+		public:
+		textblock(wpl_text *text) :
+			text(text)
+		{}
+		virtual ~textblock() {}
+
+		int run(wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
+		virtual int output_json (
+			wpl_text_state *state,
+			const set<wpl_value*> &vars,
+			wpl_text_chunk_it *it,
+			wpl_value *final_result
+		);
+	};
+
+	class expression : public base {
+		private:
+		unique_ptr<wpl_expression> exp;
+
+		public:
+		expression (wpl_expression *exp) :
+			exp(exp)
+		{}
+		virtual ~expression() {}
+
+		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
+		virtual int output_json (
+			wpl_text_state *state,
+			const set<wpl_value*> &vars,
+			wpl_text_chunk_it *it,
+			wpl_value *final_result
+		);
+	};
+
+	class loop : public textblock {
+		private:
+		unique_ptr<wpl_expression> exp;
+
+		public:
+		loop (wpl_text *text, wpl_expression *exp) :
+			textblock(text),
+			exp(exp)
+		{}
+		virtual ~loop() {}
+
+		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
+		virtual int output_json (
+			wpl_text_state *state,
+			const set<wpl_value*> &vars,
+			wpl_text_chunk_it *it,
+			wpl_value *final_result
+		);
+	};
+};
+
+typedef deque<unique_ptr<wpl_text_chunks::base>> wpl_text_chunk_deque_type;
+
+class wpl_text_chunk_it {
 	private:
-	chunk *push_chunk(const char *start, const char *end);
+	wpl_text_chunk_deque_type &container;
+	wpl_text_chunk_deque_type::iterator it;
+	int pos;
+
+	public:
+	wpl_text_chunk_it (wpl_text_chunk_deque_type &container) :
+		container(container),
+		pos(0)
+	{
+		it = container.begin();
+	}
+
+	int get_pos() const {
+		return pos;
+	}
+
+	wpl_text_chunk_deque_type::iterator &operator++() {
+		if (++it == container.end()) {
+			throw wpl_text_chunk_end_reached();
+		}
+		pos++;
+		return it;
+	}
+
+	wpl_text_chunk_deque_type::iterator &operator++(int) {
+		return operator++();
+	}
+
+	wpl_text_chunks::base *operator->() {
+		return (*it).get();
+	}
+
+	bool inc() {
+		return (++it != container.end());
+	}
+
+	operator bool() const {
+		return (it != container.end());
+	}
+};
+
+class wpl_text : public wpl_runable, public wpl_parseable {
+	protected:
+
+	private:
+	wpl_text_chunks::base *push_chunk(const char *start, const char *end);
 
 	protected:
-	deque<chunk> chunks;
+	deque<unique_ptr<wpl_text_chunks::base>> chunks;
 
 	public:
 	wpl_text (const char *name) : wpl_parseable(name) {};

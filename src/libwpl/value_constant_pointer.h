@@ -53,12 +53,14 @@ class wpl_value_constant_pointer : public wpl_value {
 	}
 
 	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) override {
+		cerr << "Finalize to " << last_value << endl;
 		if (last_value->get_flags() & wpl_value_is_constant) {
 			value = last_value;
-			return WPL_OP_OK;
 		}
-		value = NULL;
-		return WPL_OP_NO_RETURN;
+		else {
+			value = NULL;
+		}
+		return WPL_OP_OK;
 	}
 };
 

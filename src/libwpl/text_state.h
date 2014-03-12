@@ -71,7 +71,7 @@ class wpl_text_state : public wpl_state {
 	int run_text_output_json(
 			wpl_text *text,
 			int index,
-			wpl_value *final_result,
-			const set<wpl_value*> &vars
+			const set<wpl_value*> &vars,
+			wpl_value *final_result
 	);
 };

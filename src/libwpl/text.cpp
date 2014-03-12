@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -35,79 +35,204 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_bool.h"
 #include "value_string.h"
 #include "value_unsafe_pointer.h"
+#include "value_double_finalizer.h"
 #include "output_json.h"
 
 #include <cstdio>
 #include <set>
 #include <cstring>
 
-wpl_text::chunk::chunk (const char *start, const char *end) {
-	this->start = start;
-	this->end = end;
-	this->expression = NULL;
+/*
+   TODO
+   - Replace wpl_io_buffer with wpl_io_json_wrapper for better performance
+
+   */
+
+wpl_text_chunks::base *wpl_text::push_chunk(const char *start, const char *end) {
+	wpl_text_chunks::base *chunk = new wpl_text_chunks::text(start, end);
+	chunks.emplace_back(chunk);
+	return chunk;
 }
 
-wpl_text::chunk::chunk (wpl_expression *new_expression) :
-	expression(new_expression)
-{
-	this->start = NULL;
-	this->end = NULL;
-}
-
-wpl_text::chunk::chunk (wpl_text *text, wpl_expression *new_expression) :
-	expression(new_expression),
-	loop_text(text)
-{
-	this->start = NULL;
-	this->end = NULL;
-}
-
-int wpl_text::chunk::run (
+int wpl_text_chunks::text::run (
 		wpl_text_state *state,
 		int index,
 		wpl_value *final_result,
 		wpl_io &io
 ) {
-	wpl_value_output_trigger output_trigger(io);
-	if (expression.get() == nullptr) {
-		io.write_immortal (start, end-start);
-		return WPL_OP_NO_RETURN;
+	cerr << "run text\n";
+	io.write_immortal(start, end-start);
+	return WPL_OP_NO_RETURN;
+}
+
+int wpl_text_chunks::textblock::run (
+		wpl_text_state *state,
+		int index,
+		wpl_value *final_result,
+		wpl_io &io
+) {
+	cerr << "run textblock\n";
+	return state->run_text(text.get(), index, final_result, io);
+}
+
+int wpl_text_chunks::expression::run (
+		wpl_text_state *state,
+		int index,
+		wpl_value *final_result,
+		wpl_io &io
+) {
+	cerr << "run expression\n";
+
+   	wpl_value_output_trigger output_trigger(io);
+	wpl_value_double_finalizer finalizer(&output_trigger, final_result);
+
+	return state->run_expression (exp.get(), index, &finalizer);
+}
+
+int wpl_text_chunks::loop::run (
+		wpl_text_state *state,
+		int index,
+		wpl_value *final_result,
+		wpl_io &io
+) {
+	cerr << "run loop\n";
+	wpl_value_bool result;
+	result.set_do_finalize();
+
+	int ret = WPL_OP_NO_RETURN;
+	while ((state->run_expression (exp.get(), index, &result) & WPL_OP_OK) && result.get()) {
+		ret = state->run_text(get_text(), index, final_result, io);
+	}
+	return ret;
+}
+
+int wpl_text_chunks::text::output_json (
+		wpl_text_state *state,
+		const set<wpl_value*> &vars,
+		wpl_text_chunk_it *it,
+		wpl_value *final_result
+) {
+	const char id_string[] = "id=\"";
+	const int id_string_len = sizeof(id_string)-1;
+
+	wpl_io &io = state->get_io();
+	wpl_io_void io_void;
+	wpl_value_string json_name;
+	wpl_value_string json_value;
+	wpl_value_unsafe_pointer unsafe_pointer;
+
+	/*
+	   If we end with an HTML id tag, use this the text value of the
+	   next chunk as the JSON name.
+	   */
+	if (strncmp (end - id_string_len, id_string, id_string_len) != 0) {
+		return (*(++(*it)))->output_json(state, vars, it, final_result);
 	}
 
-	if (loop_text.get() != nullptr) {
-		int ret;
-		wpl_value_bool result;
-		while (state->run_expression (expression.get(), index, &result) && result.get()) {
-			ret = state->run_text (
-				loop_text.get(),
-				index,
-				final_result,
-				io
-			);
+	/*
+	   If no return from the next block, just proceed with output_json
+	   */
+	if (!((*it)->run(state, it->get_pos(), &json_name, io_void) & WPL_OP_OK)) {
+		return (*(++(*it)))->output_json(state, vars, it, final_result);
+	}
+
+	/*
+	   The next block which returns WPL_OP_OK is the expression
+	   whos pointer is used to match against the list of requested
+	   variables to output.
+
+	 */
+	while (true) {
+	   	// it++ throws wpl_text_chunk_end_reached() when we're done
+		(*it)++;
+
+		/*
+		   Check if the next chuck is an expression with return value
+		   */
+		if (!((*it)->run(state, it->get_pos(), &unsafe_pointer, io_void) & WPL_OP_OK)) {
+			continue;
 		}
-		return ret;
+
+		/*
+		   Check if the value exists in the list
+		   */
+		if (vars.find(unsafe_pointer.dereference()) == vars.end()) {
+			continue;
+		}
+
+		/*
+		   All OK, output this variable
+		   */
+		(*it)->run(state, it->get_pos(), &json_value, io_void);
+		io << "\"";
+		json_name.output_json(io);
+		io << "\": \"";
+		json_value.output_json(io);
+		io << "\",\n";
+
+		(*it)++;
+
+		return (*it)->output_json(state, vars, it, final_result);
 	}
 
-	return state->run_expression(expression.get(), index, &output_trigger);
+	return WPL_OP_NO_RETURN;
 }
 
-wpl_text::chunk *wpl_text::push_chunk(const char *start, const char *end) {
-	chunks.emplace_back(start, end);
-	return &chunks.back();
+int wpl_text_chunks::textblock::output_json (
+		wpl_text_state *state,
+		const set<wpl_value*> &vars,
+		wpl_text_chunk_it *it,
+		wpl_value *final_result
+) {
+	state->run_text_output_json(text.get(), it->get_pos(), vars, final_result);
+	return (*(++(*it)))->output_json(state, vars, it, final_result);
 }
 
-int wpl_text::run(wpl_state *state, wpl_value *final_result, wpl_io &io) {
-	wpl_text_state *text_state = (wpl_text_state*) state;
-	int index = 0;
-	for (chunk &my_chunk : chunks) {
-		my_chunk.run(text_state, index, final_result, io);
-		index++;
+int wpl_text_chunks::expression::output_json (
+		wpl_text_state *state,
+		const set<wpl_value*> &vars,
+		wpl_text_chunk_it *it,
+		wpl_value *final_result
+) {
+	wpl_io_buffer buf;
+	wpl_value_output_trigger output_trigger(buf);
+
+	state->run_expression(exp.get(), it->get_pos(), &output_trigger);
+
+	wpl_output_json output_json;
+	output_json.output_json(state->get_io(), buf.c_str(), buf.size());
+
+	return (*(++(*it)))->output_json(state, vars, it, final_result);
+}
+
+int wpl_text_chunks::loop::output_json (
+		wpl_text_state *state,
+		const set<wpl_value*> &vars,
+		wpl_text_chunk_it *it,
+		wpl_value *final_result
+) {
+	wpl_value_bool result;
+	result.set_do_finalize();
+
+	while ((state->run_expression (exp.get(), it->get_pos(), &result) & WPL_OP_OK) && result.get()) {
+		 state->run_text_output_json(get_text(), it->get_pos(), vars, final_result);
 	}
+
 	return WPL_OP_NO_RETURN;
 }
 
 int wpl_text::run(wpl_state *state, wpl_value *final_result) {
 	return run(state, final_result, state->get_io());
+}
+
+int wpl_text::run(wpl_state *state, wpl_value *final_result, wpl_io &io) {
+	wpl_text_state *text_state = (wpl_text_state*) state;
+	int index = 0;
+	for (auto &my_chunk : chunks) {
+		my_chunk->run(text_state, index, final_result, io);
+		index++;
+	}
+	return WPL_OP_NO_RETURN;
 }
 
 int wpl_text::output_json (
@@ -118,103 +243,13 @@ int wpl_text::output_json (
 	wpl_text_state *text_state = (wpl_text_state*) state;
 
 	wpl_io &io = state->get_io();
+	wpl_text_chunk_it it(chunks);
 
-	const char id_string[] = "id=\"";
-	const int id_string_len = sizeof(id_string)-1;
-
-	wpl_value_unsafe_pointer unsafe_pointer;
-	wpl_value_string tmp_string;
-	wpl_value_bool tmp_bool;
-
-	int index = -1;
-	bool next_is_id = false;
-	int id_exp_index = 0;
-	wpl_expression *id_exp = NULL;
-
-	for (chunk &my_chunk : chunks) {
-		index++;
-
-		wpl_expression *current_exp = my_chunk.get_expression();
-		wpl_text *current_text = my_chunk.get_loop_text();
-
-		if (next_is_id) {
-			if (current_exp) {
-				id_exp = current_exp;
-			}
-			next_is_id = false;
-			id_exp_index = index;
-
-			continue;
-		}
-
-		if (id_exp && current_exp) {
-			int ret;
-			text_state->run_expression(current_exp, index, &unsafe_pointer);
-
-			wpl_value *value = unsafe_pointer.dereference();
-
-			if (value && vars.find(unsafe_pointer.dereference()) != vars.end()) {
-				io << "\"";
-				text_state->run_expression (id_exp, id_exp_index, &tmp_string);
-				tmp_string.output_json(io);
-				io << "\": \"";
-
-				if (current_text) {
-					wpl_io_buffer buf;
-					while (text_state->run_expression (
-								current_exp, index, &tmp_bool
-						) && tmp_bool.get()
-					)
-					{
-						ret = text_state->run_text(current_text, index,
-								final_result, buf);
-					}
-
-					wpl_output_json json_output;
-					json_output.output_json(io, buf.c_str(), buf.size());
-				}
-				else {
-					text_state->run_expression (current_exp, index, &tmp_string);
-					tmp_string.output_json(io);
-				}
-
-				io << "\",\n";
-
-				id_exp = NULL;
-				continue;
-			}
-
-			id_exp = NULL;
-		}
-
-		if (current_text) {
-			while (text_state->run_expression (current_exp, index, &tmp_bool) && tmp_bool.get()) {
-				int ret = text_state->run_text_output_json (
-						current_text,
-						index,
-						final_result,
-						vars
-				);
-			}
-			continue;
-		}
-
-		if (!(my_chunk.get_start())) {
-			continue;
-		}
-
-		const char *start = my_chunk.get_start();
-		const char *end = my_chunk.get_end();
-
-		if ((end - start) < id_string_len) {
-			continue;
-		}
-
-		if (strncmp (end - id_string_len, id_string, id_string_len) != 0) {
-			continue;
-		}
-
-		next_is_id = true;
+	try {
+		it->output_json(text_state, vars, &it, final_result);
+	}
+	catch (wpl_text_chunk_end_reached &e) {
+		/* Iteration complete :-) */
 	}
 
 	return WPL_OP_OK;
@@ -257,7 +292,7 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 				wpl_expression *exp =
 					new wpl_expression_par_enclosed();
 
-				chunks.emplace_back(text, exp);
+				chunks.emplace_back(new wpl_text_chunks::loop(text, exp));
 
 				exp->load_position(get_position());
 				exp->parse_value(parent_namespace);
@@ -276,7 +311,7 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 
 				wpl_expression *exp =
 					new wpl_expression_loose_end();
-				chunks.emplace_back(exp);
+				chunks.emplace_back(new wpl_text_chunks::expression(exp));
 
 				exp->load_position(get_position());
 				exp->parse_value(parent_namespace);

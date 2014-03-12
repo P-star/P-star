@@ -51,8 +51,8 @@ int wpl_text_state::run_text(wpl_text *text, int index, wpl_value *final_result,
 int wpl_text_state::run_text_output_json (
 		wpl_text *text,
 		int index,
-		wpl_value *final_result,
-		const set<wpl_value*> &vars
+		const set<wpl_value*> &vars,
+		wpl_value *final_result
 ) {
 	if (text_states[index].get() == nullptr) {
 		text_states[index].reset(text->new_state(nss, io));
