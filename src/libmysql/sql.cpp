@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 Copyright (c) MMXIV Sebastian Baginski
 sebthestampede@gmail.com
@@ -44,35 +44,29 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <list>
 
 void wpl_sql::get_params(wpl_text_state *text_state, vector<wpl_value*> &params) {
-	wpl_value_constant_pointer retriever;
-
-    int index=0;
-	for (chunk &my_chunk : chunks) {
-		wpl_expression *exp;
-		if (!(exp = my_chunk.get_expression())) {
+	for (wpl_text_chunk_it it (chunks); it; it.inc()) {
+		wpl_value_constant_pointer retriever;
+		if (!(it->run_raw(text_state, it.get_pos(), &retriever) & WPL_OP_OK)) {
+			wpl_value *value = retriever.dereference();
 			continue;
 		}
 
-		int ret = text_state->run_expression(exp, index, &retriever);
 		wpl_value *value = retriever.dereference();
-
 		if (!value) {
-			throw runtime_error("SQL error: Only variables and constant values may be used in prepared statements");
+			throw runtime_error("SQL error: Only variables and constant values may be used in SQL-queries");
 		}
 
 		params.push_back(value);
-		index++;
 	}
 }
 
 void wpl_sql::get_stmt_string(string &result) {
-	/*
-	   TODO might do some optimization here
-	   */
+	wpl_io_string_wrapper io(result);
 	result.reserve(256);
-	for (chunk &my_chunk : chunks) {
-		if (my_chunk.get_start()) {
-			result.append(my_chunk.get_start(), my_chunk.length());
+
+	for (wpl_text_chunk_it it (chunks); it; it.inc()) {
+		if (it->isText()) {
+			it->run(NULL, it.get_pos(), NULL, io);
 		}
 		else {
 			result += '?';

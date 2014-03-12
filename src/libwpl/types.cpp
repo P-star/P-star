@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -90,6 +90,7 @@ const char *wpl_typename_unresolved_identifier = "{unresolved identifier}";
 const char *wpl_typename_function_ptr = "{function pointer}";
 const char *wpl_typename_list = "{list}";
 const char *wpl_typename_constant_pointer = "{constant pointer}";
+const char *wpl_typename_double_finalizer = "{double finalizer}";
 const char *wpl_typename_unsafe_pointer = "{unsafe pointer}";
 
 #define DEFINE_TYPE(name)					\

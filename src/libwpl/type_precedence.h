@@ -33,6 +33,7 @@ enum {
 
 	wpl_type_precedence_unsafe_pointer,
 	wpl_type_precedence_constant_pointer,
+	wpl_type_precedence_double_finalizer,
 	wpl_type_precedence_wrapper,
 	wpl_type_precedence_output_trigger,
 	wpl_type_precedence_unresolved_identifier,

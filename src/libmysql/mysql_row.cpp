@@ -97,7 +97,8 @@ int wpl_value_MYSQL_ROW::do_operator (
 		return get_column(rhs->toInt())->do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_ARRAY_SUBSCRIPTING) {
-		return get_column(rhs->toString())->do_operator_recursive(exp_state, final_result);
+		string column_name = rhs->toString();
+		return get_column(column_name)->do_operator_recursive(exp_state, final_result);
 	}
 
 	return ret;
