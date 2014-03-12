@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 Copyright (c) MMXIV Sebastian Baginski
 sebthestampede@gmail.com
@@ -52,6 +52,9 @@ class wpl_value_time : public wpl_value, public wpl_time, public wpl_parasite_ho
 	void set_weak(wpl_value *value) override;
 	string toString() override;
     char* get_mysql_time_ptr();
+
+    void output_json(wpl_io &io) override;
+    void output(wpl_io &io) override;
 
 	int do_operator (
 			wpl_expression_state *exp_state,
