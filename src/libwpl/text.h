@@ -106,6 +106,25 @@ namespace wpl_text_chunks {
 		);
 	};
 
+	class html_template : public base {
+		private:
+		wpl_template *my_template;
+
+		public:
+		html_template (wpl_template *my_template) :
+			my_template(my_template)
+		{}
+		virtual ~html_template() {}
+
+		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
+		int output_json (
+			wpl_text_state *state,
+			const set<wpl_value*> &vars,
+			wpl_text_chunk_it *it,
+			wpl_value *final_result
+		);
+	};
+
 	class textblock : public base {
 		private:
 		unique_ptr<wpl_text> text;

@@ -37,6 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_unsafe_pointer.h"
 #include "value_double_finalizer.h"
 #include "output_json.h"
+#include "template.h"
 
 #include <cstdio>
 #include <set>
@@ -52,6 +53,15 @@ wpl_text_chunks::base *wpl_text::push_chunk(const char *start, const char *end) 
 	wpl_text_chunks::base *chunk = new wpl_text_chunks::text(start, end);
 	chunks.emplace_back(chunk);
 	return chunk;
+}
+
+int wpl_text_chunks::html_template::run (
+		wpl_text_state *state,
+		int index,
+		wpl_value *final_result,
+		wpl_io &io
+) {
+	return state->run_text(my_template, index, final_result, io);
 }
 
 int wpl_text_chunks::text::run (
@@ -205,6 +215,16 @@ int wpl_text_chunks::text::output_json (
 	}
 
 	return WPL_OP_NO_RETURN;
+}
+
+int wpl_text_chunks::html_template::output_json (
+		wpl_text_state *state,
+		const set<wpl_value*> &vars,
+		wpl_text_chunk_it *it,
+		wpl_value *final_result
+) {
+	state->run_text_output_json(my_template, it->get_pos(), vars, final_result);
+	return (*(++(*it)))->output_json(state, vars, it, final_result);
 }
 
 int wpl_text_chunks::textblock::output_json (
@@ -366,6 +386,30 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 				parse_expression(parent_namespace, exp);
 				ignore_string_match(NEWLINE, NON_NEWLINE_WS);
 				parse_text(parent_namespace, text);
+
+				start = get_string_pointer();
+			}
+			else if (ignore_string("@TEMPLATE")) {
+				push_chunk (start, end);
+
+				wpl_matcher_position pos = get_position();
+
+				char name[WPL_VARNAME_SIZE];
+				ignore_whitespace();
+				get_word(name);
+
+				wpl_template *my_template = parent_namespace->find_template(name);
+				if (!my_template) {
+					load_position(pos);
+					THROW_ELEMENT_EXCEPTION("Unknown template name");
+				}
+
+				chunks.emplace_back(new wpl_text_chunks::html_template(my_template));
+
+				ignore_whitespace();
+				if (!ignore_letter ('}')) {
+					THROW_ELEMENT_EXCEPTION("Expected } after TEMPLATE call definition");
+				}
 
 				start = get_string_pointer();
 			}

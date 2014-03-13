@@ -44,6 +44,7 @@ class wpl_text_state : public wpl_state {
 	protected:
 	unordered_map<int,unique_ptr<wpl_state>> expression_states;
 	unordered_map<int,unique_ptr<wpl_state>> text_states;
+	unordered_map<int,unique_ptr<wpl_state>> template_states;
 
 	public:
 	wpl_text_state(wpl_namespace_session *nss, wpl_io *io, int children) :

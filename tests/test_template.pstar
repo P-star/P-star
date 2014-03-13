@@ -1,3 +1,10 @@
+HTML_TEMPLATE row {
+		<tr>
+			<td>{@rows[row_counter][0]}</td>
+			<td>{@rows[row_counter][1]}</td>
+		</tr>
+}
+
 HTML_TEMPLATE document {
 	<!DOCTYPE HTML>
 	<html>
@@ -12,12 +19,8 @@ HTML_TEMPLATE document {
 			<th>ID</th>
 			<th>Description</th>
 		</tr>
-{@LOOP (++row_counter < @rows)
-		<tr>
-			<td>{@rows[row_counter][0]}</td>
-			<td>{@rows[row_counter][1]}</td>
-		</tr>
-}	</table>
+{@LOOP (++row_counter < @rows) {@TEMPLATE row} }
+	</table>
 }
 	</body>
 	</html>
