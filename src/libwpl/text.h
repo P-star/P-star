@@ -150,19 +150,46 @@ namespace wpl_text_chunks {
 		);
 	};
 
-	class loop : public textblock {
+	class exp_block : public textblock {
 		private:
 		unique_ptr<wpl_expression> exp;
 
 		public:
-		loop (wpl_text *text, wpl_expression *exp) :
+		exp_block (wpl_text *text, wpl_expression *exp) :
 			textblock(text),
 			exp(exp)
+		{}
+		virtual ~exp_block() {}
+
+		bool check_condition (wpl_text_state *state, int index);
+	};
+
+	class loop : public exp_block {
+		public:
+		loop (wpl_text *text, wpl_expression *exp) :
+			exp_block(text, exp)
 		{}
 		virtual ~loop() {}
 
 		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
-		virtual int output_json (
+		int output_json (
+			wpl_text_state *state,
+			const set<wpl_value*> &vars,
+			wpl_text_chunk_it *it,
+			wpl_value *final_result
+		);
+	};
+
+	class condition : public exp_block {
+		private:
+		public:
+		condition (wpl_text *text, wpl_expression *exp) :
+			exp_block(text, exp)
+		{}
+		virtual ~condition() {}
+
+		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
+		int output_json (
 			wpl_text_state *state,
 			const set<wpl_value*> &vars,
 			wpl_text_chunk_it *it,
@@ -238,6 +265,11 @@ class wpl_text : public wpl_runable, public wpl_parseable {
 		return new wpl_text_state(nss, io, chunks.size());
 	}
 
+	private:
+	void parse_text(wpl_namespace *parent_namespace, wpl_text *text);
+	void parse_expression(wpl_namespace *parent_namespace, wpl_expression *exp);
+
+	public:
 	virtual void parse_value(wpl_namespace *parent_namespace);
 	int run(wpl_state *state, wpl_value *final_result, wpl_io &io);
 	virtual int run(wpl_state *state, wpl_value *final_result);

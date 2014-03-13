@@ -94,17 +94,38 @@ int wpl_text_chunks::expression::run_raw (
 	return state->run_expression (exp.get(), index, final_result);
 }
 
+bool wpl_text_chunks::exp_block::check_condition(wpl_text_state *state, int index) {
+	wpl_value_bool result;
+	result.set_do_finalize();
+
+	if ((state->run_expression (exp.get(), index, &result) & WPL_OP_OK) && result.get()) {
+		return true;
+	}
+
+	return false;
+}
+
 int wpl_text_chunks::loop::run (
 		wpl_text_state *state,
 		int index,
 		wpl_value *final_result,
 		wpl_io &io
 ) {
-	wpl_value_bool result;
-	result.set_do_finalize();
-
 	int ret = WPL_OP_NO_RETURN;
-	while ((state->run_expression (exp.get(), index, &result) & WPL_OP_OK) && result.get()) {
+	while (check_condition (state, index)) {
+		ret = state->run_text(get_text(), index, final_result, io);
+	}
+	return ret;
+}
+
+int wpl_text_chunks::condition::run (
+		wpl_text_state *state,
+		int index,
+		wpl_value *final_result,
+		wpl_io &io
+) {
+	int ret = WPL_OP_NO_RETURN;
+	if (check_condition (state, index)) {
 		ret = state->run_text(get_text(), index, final_result, io);
 	}
 	return ret;
@@ -219,10 +240,20 @@ int wpl_text_chunks::loop::output_json (
 		wpl_text_chunk_it *it,
 		wpl_value *final_result
 ) {
-	wpl_value_bool result;
-	result.set_do_finalize();
+	while (check_condition (state, it->get_pos())) {
+		 state->run_text_output_json(get_text(), it->get_pos(), vars, final_result);
+	}
 
-	while ((state->run_expression (exp.get(), it->get_pos(), &result) & WPL_OP_OK) && result.get()) {
+	return WPL_OP_NO_RETURN;
+}
+
+int wpl_text_chunks::condition::output_json (
+		wpl_text_state *state,
+		const set<wpl_value*> &vars,
+		wpl_text_chunk_it *it,
+		wpl_value *final_result
+) {
+	if (check_condition (state, it->get_pos())) {
 		 state->run_text_output_json(get_text(), it->get_pos(), vars, final_result);
 	}
 
@@ -283,6 +314,18 @@ int wpl_text::output_as_json_var(wpl_state *state, wpl_value *final_result) {
 	return WPL_OP_OK;
 }
 
+void wpl_text::parse_text(wpl_namespace *parent_namespace, wpl_text *text) {
+	text->load_position(get_position());
+	text->parse_value(parent_namespace);
+	load_position(text->get_position());
+}
+
+void wpl_text::parse_expression(wpl_namespace *parent_namespace, wpl_expression *exp) {
+	exp->load_position(get_position());
+	exp->parse_value(parent_namespace);
+	load_position(exp->get_position());
+}
+
 void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 	ignore_string_match(NEWLINE, NON_NEWLINE_WS);
 
@@ -302,15 +345,27 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 
 				chunks.emplace_back(new wpl_text_chunks::loop(text, exp));
 
-				exp->load_position(get_position());
-				exp->parse_value(parent_namespace);
-				load_position(exp->get_position());
-
+				parse_expression(parent_namespace, exp);
 				ignore_string_match(NEWLINE, NON_NEWLINE_WS);
+				parse_text(parent_namespace, text);
 
-				text->load_position(get_position());
-				text->parse_value(parent_namespace);
-				load_position(text->get_position());
+				start = get_string_pointer();
+			}
+			else if (ignore_string("@CONDITION")) {
+				push_chunk (start, end);
+
+				wpl_text *text =
+					new wpl_text();
+				wpl_expression *exp =
+					new wpl_expression_par_enclosed();
+				wpl_text *text_else = NULL;
+
+				wpl_text_chunks::condition *condition = new wpl_text_chunks::condition(text, exp);
+				chunks.emplace_back(condition);
+
+				parse_expression(parent_namespace, exp);
+				ignore_string_match(NEWLINE, NON_NEWLINE_WS);
+				parse_text(parent_namespace, text);
 
 				start = get_string_pointer();
 			}

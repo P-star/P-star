@@ -5,6 +5,20 @@ HTML_TEMPLATE document {
 	<title>{@title}</title>
 	</head>
 	<body>
+{@CONDITION (@rows > 0)
+	<p>We have rows to print!</p>
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>Description</th>
+		</tr>
+{@LOOP (++row_counter < @rows)
+		<tr>
+			<td>{@rows[row_counter][0]}</td>
+			<td>{@rows[row_counter][1]}</td>
+		</tr>
+}	</table>
+}
 	</body>
 	</html>
 }
@@ -12,6 +26,17 @@ HTML_TEMPLATE document {
 SCENE main {
 	string title = "P* Web Programmin Language test page";
 
+	array<array<string>> rows;
+
+	rows[0][0] = 1;
+	rows[0][1] = "First row";
+	rows[1][0] = 2;
+	rows[1][1] = "Second row";
+	rows[2][0] = 3;
+	rows[2][1] = "Third row";
+
 	#CONTENT_TYPE text/html;
+
+	int row_counter = "-1";
 	#HTML_TEMPLATE document;
 }
