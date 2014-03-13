@@ -29,14 +29,17 @@ Architecture: any
 Conflicts: p-star
 Depends: libpstar (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends} 
 Description: P* Web Programming Language Interpreter Command
- This is the command line version of the P* Web Programming Language interpreter.
+ This is the command line version of the P* Web
+ Programming Language interpreter.
 
 Package: libapache2-mod-pstar
 Section: httpd
 Architecture: any
 Conflicts: p-star
-Depends: libpstar (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, apache2.2-common
-Description: Apache module for the P* Web Programming Language
- mod_pstar provides support for P* scripts in the Apache web server.
-  The performance of this Apache module is better than just using CGI, as the module has
-  the ability to cache parsed scripts in memory for fast execution.
+Depends: libpstar (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, apache2 (>= 2.4.4), apache2-api-20120211
+Description: Apache module for the P* Web Programming
+ Language mod_pstar provides support for P* scripts
+ in the Apache web server.
+  The performance of this Apache module is better than just
+  using CGI, as the module has the ability to cache parsed
+  scripts in memory for fast execution.
