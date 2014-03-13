@@ -1,3 +1,10 @@
+pstar (1.2~alpha4) experimental; urgency=low
+
+  * Fix lintian errors misc lintian errors
+  * Depends on apache2-api virtual package
+
+ -- Atle Solbakken <atle@goliathdns.no>  Thu, 13 Mar 2014 11:25:59 +0100
+
 pstar (1.2~alpha3) experimental; urgency=low
 
   * Bugfixes in MySQL
