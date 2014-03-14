@@ -1,0 +1,3 @@
+# We don't have a dev package yet, so we include the symlinks
+# Also, libpstar-mysql1 is only used by P* itself, it's totally useless on its own
+libpstar-mysql1 binary: non-dev-pkg-with-shlib-symlink usr/lib/libpstar-mysql.so.1.0.0 usr/lib/libpstar-mysql.so
