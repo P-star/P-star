@@ -1,9 +1,9 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include -include $(top_srcdir)/config.h
 AM_CXXFLAGS = -std=c++11 -rdynamic
 
-lib_LTLIBRARIES = libwpl.la
-libwpl_la_LDFLAGS =  -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -lmimetic -lboost_regex
-libwpl_la_SOURCES = \
+lib_LTLIBRARIES = libpstar.la
+libpstar_la_LDFLAGS =  -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -lmimetic -lboost_regex
+libpstar_la_SOURCES = \
 	program.cpp parser.cpp block.cpp pragma.cpp \
 	module_loader.cpp io.cpp state.cpp \
 	expression.cpp matcher.cpp identifier.cpp \

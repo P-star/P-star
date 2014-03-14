@@ -5,7 +5,7 @@ AM_CXXFLAGS = -std=c++11
 bin_PROGRAMS = wpl
 
 wpl_LDFLAGS = -Wl,--no-as-needed -ldl -rdynamic
-wpl_LDADD = libwpl/libwpl.la
+wpl_LDADD = libwpl/libpstar.la
 wpl_SOURCES = main.cpp
 
 #extension_CPPFLAGS = $(GTKGL_CFLAGS) $(LIBXML_CFLAGS) -std=c++0x
