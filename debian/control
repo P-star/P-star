@@ -7,11 +7,21 @@ Standards-Version: 3.9.5
 Homepage: http://www.p-star.org
 Vcs-Git: git://github.com/P-star/P-star.git
 
-Package: libpstar
+Package: libpstar-mysql1
 Architecture: any
 Recommends: pstar
-Conflicts: p-star
-Depends: ${shlibs:Depends}, ${misc:Depends}, mysql-client-5.5, libmimetic0, libboost-regex1.49.0
+Replaces: libpstar
+Depends: ${shlibs:Depends}, ${misc:Depends}, mysql-client-5.5
+Description: P* Web Programming Language Interpreter MySQL
+ plugin. This package is a wrapper library which uses the 
+ native C API from MySQL.
+
+Package: libpstar1
+Architecture: any
+Recommends: pstar
+Replaces: libpstar
+Suggests: libapache2-mod-pstar
+Depends: ${shlibs:Depends}, ${misc:Depends}, mysql-client-5.5, libmimetic0, libboost-regex1.49.0, libpstar-mysql1 (= ${binary:Version})
 Description: P* Web Programming Language Interpreter Library
  P* is a progamming language which targets to incorporate common 
  tasks like HTML templates, SQL prepared statements and JSON output
@@ -26,8 +36,7 @@ Description: P* Web Programming Language Interpreter Library
 
 Package: pstar
 Architecture: any
-Conflicts: p-star
-Depends: libpstar (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends} 
+Depends: libpstar1 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends} 
 Description: P* Web Programming Language Interpreter Command
  This is the command line version of the P* Web
  Programming Language interpreter.
@@ -35,8 +44,7 @@ Description: P* Web Programming Language Interpreter Command
 Package: libapache2-mod-pstar
 Section: httpd
 Architecture: any
-Conflicts: p-star
-Depends: libpstar (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, apache2 (>= 2.4.4), apache2-api-20120211
+Depends: libpstar1 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, apache2 (>= 2.4.4), apache2-api-20120211
 Description: Apache module for the P* Web Programming
  Language mod_pstar provides support for P* scripts
  in the Apache web server.
