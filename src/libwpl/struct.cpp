@@ -74,6 +74,8 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 		THROW_ELEMENT_EXCEPTION("Expected block with declarations after struct declaration");
 	}
 
+	ignore_whitespace();
+
 	if (ignore_letter ('}')) {
 		goto no_members;
 	}

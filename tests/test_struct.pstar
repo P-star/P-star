@@ -1,4 +1,8 @@
 SCENE main {
+	/* Empty struct */
+	struct empty {
+	};
+
 	/* Function with same name as inside struct, should not be used */
 	int print() {
 		echo "I should not be called!\n";
