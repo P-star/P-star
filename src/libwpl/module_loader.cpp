@@ -38,7 +38,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 wpl_module_loader::wpl_module_loader (int argc, char **argv, const char *name) {
-	string filename = string("libwpl_") + name + ".so";
+	string filename = string("libpstar-") + name + ".so";
 
 	library_handle = dlopen (filename.c_str(), RTLD_LAZY);
 	if (!library_handle) {

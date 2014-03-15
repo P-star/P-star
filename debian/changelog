@@ -1,3 +1,9 @@
+pstar (1.2~alpha6) experimental; urgency=low
+
+  * Fixed library prefix in the module loader 
+
+ -- Atle Solbakken <atle@goliathdns.no>  Fri, 14 Mar 2014 12:51:30 +0100
+
 pstar (1.2~alpha5) experimental; urgency=low
 
   * Replace package 'libpstar' with 'libpstar1' and 'libpstar-mysql1'
