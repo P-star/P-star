@@ -97,7 +97,7 @@ int wpl_value::do_fastop (
 		return do_operator(exp_state, final_result, op, this, NULL);
 	}
 
-	cerr << "While doing fastop '" << op->name << "'" << " on value of type " << get_type_name() << endl;
+	cerr << "While doing fastop '" << op->name << "'" << " on value of type " << get_type_name() << " value " << toString() << endl;
 	throw runtime_error("Too few operands for operator");
 }
 

@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "namespace.h"
 #include "variable.h"
 
+class wpl_function;
 class wpl_type_struct;
 class wpl_runable;
 class wpl_variable;
@@ -41,14 +42,19 @@ class wpl_value;
 class wpl_struct : public wpl_type_user_incomplete {
 	private:
 	bool parse_complete;
+	wpl_function *destructor;
 
 	public:
 	wpl_struct (const char *name, bool no_parsing) : wpl_type_user_incomplete(name) {
 		parse_complete = no_parsing;
+		destructor = NULL;
 	}
 	virtual ~wpl_struct();
 	virtual void suicide() override {
 		delete this;
+	}
+	wpl_function *get_dtor() const {
+		return destructor;
 	}
 	virtual wpl_value *new_instance() const;
 	void parse_value(wpl_namespace *ns);

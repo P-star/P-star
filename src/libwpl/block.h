@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -41,6 +41,7 @@ class wpl_type_complete;
 class wpl_type_incomplete;
 class wpl_type_template;
 class wpl_type;
+class wpl_variable;
 
 using namespace std;
 

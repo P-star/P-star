@@ -44,6 +44,7 @@ class wpl_value_function_ptr : public wpl_value {
 	wpl_namespace_session *nss_this;
 
 	int saved_discard_pos;
+	bool did_run;
 
 	public:
 	PRIMITIVE_TYPEINFO(function_ptr)

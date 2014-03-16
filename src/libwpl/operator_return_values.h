@@ -52,4 +52,5 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #define WPL_OP_BOOL_TRUE	(1<<15)
 #define WPL_OP_BOOL_FALSE	(1<<16)
 #define WPL_OP_DATA_MODIFIED	(1<<17)
+#define WPL_OP_FUNCTION_DID_RUN	(1<<18)
 

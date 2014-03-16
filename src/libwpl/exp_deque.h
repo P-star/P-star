@@ -94,6 +94,9 @@ template<typename T> class wpl_exp_deque {
 		}
 		current_pos--;
 	}
+	void unpop() {
+		current_pos++;
+	}
 	void clear() {
 		current_pos = -1;
 	}
