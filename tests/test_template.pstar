@@ -1,3 +1,10 @@
+HTML_TEMPLATE row {
+		<tr>
+			<td>{@rows[row_counter]->id}</td>
+			<td>{@rows[row_counter]->description}</td>
+		</tr>
+}
+
 HTML_TEMPLATE document {
 	<!DOCTYPE HTML>
 	<html>
@@ -5,6 +12,16 @@ HTML_TEMPLATE document {
 	<title>{@title}</title>
 	</head>
 	<body>
+{@CONDITION (@rows > 0)
+	<p>We have rows to print!</p>
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>Description</th>
+		</tr>
+{@LOOP (++row_counter < @rows) {@TEMPLATE row} }
+	</table>
+}
 	</body>
 	</html>
 }
@@ -12,6 +29,23 @@ HTML_TEMPLATE document {
 SCENE main {
 	string title = "P* Web Programmin Language test page";
 
+	struct row {
+		public int id;
+		public string description;
+		public void init(int _id, string _description) {
+			id = _id;
+			description = _description;
+		};
+	};
+
+	array<row> rows;
+
+	rows[@rows]->init(1, "First row");
+	rows[@rows]->init(2, "Second row");
+	rows[@rows]->init(3, "Third row");
+
 	#CONTENT_TYPE text/html;
+
+	int row_counter = "-1";
 	#HTML_TEMPLATE document;
 }

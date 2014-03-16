@@ -47,7 +47,6 @@ int wpl_text_state::run_text(wpl_text *text, int index, wpl_value *final_result,
 	return text->run(text_states[index].get(), final_result, io);
 }
 
-
 int wpl_text_state::run_text_output_json (
 		wpl_text *text,
 		int index,
