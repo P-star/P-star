@@ -40,6 +40,7 @@ wpl_value_function_ptr::wpl_value_function_ptr (
 	this->function = function;
 	this->nss_this = nss_this;
 	this->saved_discard_pos = exp_state->get_discard_pos();
+	this->did_run = false;
 }
 
 int wpl_value_function_ptr::do_operator (
@@ -74,5 +75,19 @@ int wpl_value_function_ptr::do_operator (
 	}
 	int discard_pos = saved_discard_pos;
 
-	return exp_state->run_function (function, my_exp_pos, discard_pos, final_result, nss_this);
+	// Call to default constructor of struct
+	if (function == NULL) {
+		int discard_length = exp_state->get_discard().size() - discard_pos - 1;
+		if (discard_length > 0) {
+			throw runtime_error("Default constructor of struct expects no arguments");
+		}
+
+		if (!exp_state->empty()) {
+			throw runtime_error("Expression did not end after call to constructor");
+		}
+
+		return (WPL_OP_OK | WPL_OP_FUNCTION_DID_RUN);
+	}
+
+	return (WPL_OP_FUNCTION_DID_RUN | exp_state->run_function (function, my_exp_pos, discard_pos, final_result, nss_this));
 }

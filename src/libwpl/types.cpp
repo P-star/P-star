@@ -129,6 +129,17 @@ void wpl_type_begin_function_declaration::parse_value (wpl_namespace *parent_nam
 	load_position(function->get_position());
 }
 
+wpl_type_begin_variable_declaration::wpl_type_begin_variable_declaration (
+	wpl_type_complete *type,
+	const char *name,
+	const wpl_matcher_position &position_at_name,
+	const wpl_matcher_position &position_after_name
+) :
+	position_at_name(position_at_name),
+	wpl_matcher(position_after_name),
+	wpl_type_begin_declaration (type, name, WPL_VARIABLE_ACCESS_PRIVATE)
+{}
+
 void wpl_type_begin_variable_declaration::create_variable (wpl_namespace *parent_namespace) {
 	wpl_variable_holder new_var (name.c_str(), type->new_instance(), access_flags);
 	parent_namespace->register_identifier(&new_var);
@@ -156,7 +167,7 @@ void wpl_type_complete::parse_value (wpl_namespace *parent_namespace) {
 		throw wpl_type_begin_function_declaration(this, name, get_position());
 	}
 	else {
-		throw wpl_type_begin_variable_declaration(this, name, begin_pos);
+		throw wpl_type_begin_variable_declaration(this, name, begin_pos, get_position());
 	}
 }
 

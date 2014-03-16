@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -85,6 +85,8 @@ class wpl_namespace_session {
 	wpl_namespace_session(const wpl_namespace *template_namespace);
 	wpl_namespace_session();
 	~wpl_namespace_session();
+
+	void notify_destructors(wpl_io &io);
 
 	void use_this_and_parent() {
 		this_and_parent = true;

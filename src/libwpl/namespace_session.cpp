@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -33,6 +33,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_function_ptr.h"
 #include "function.h"
 #include "variable.h"
+
+void wpl_namespace_session::notify_destructors(wpl_io &io) {
+	for (auto it = variables_ptr.rbegin(); it != variables_ptr.rend(); it++) {
+		wpl_variable *var = (*it).get();
+		var->get_value()->notify_destructor(this, io);
+	}
+}
 
 void wpl_namespace_session::replace_variables (wpl_namespace_session *source) {
 	list<wpl_variable*> variables;

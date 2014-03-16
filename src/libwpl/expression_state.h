@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -124,6 +124,10 @@ class wpl_expression_state : public wpl_state {
 
 	void pop() {
 		run_stack.pop();
+	}
+
+	void unpop() {
+		run_stack.unpop();
 	}
 
 	wpl_exp_deque<shunting_yard_carrier> &get_stack() {

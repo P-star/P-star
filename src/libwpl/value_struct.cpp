@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "value_struct.h"
+#include "value_void.h"
 #include "value_function_ptr.h"
 #include "exception.h"
 #include "debug.h"
@@ -59,6 +60,30 @@ bool wpl_value_struct::set_strong (wpl_value *value) {
 	return true;
 }
 
+
+int wpl_value_struct::do_operator_recursive (
+		wpl_expression_state *exp_state,
+		wpl_value *final_result
+) {
+	// Expect call to constructor on first run
+	if (first_run) {
+		first_run = false;
+		wpl_function *function = find_function_no_parent(mother_struct->get_name(), WPL_NSS_CTX_SELF);
+
+		// *function may be NULL
+		wpl_value_function_ptr function_ptr(function, this, exp_state);
+		int ret = function_ptr.do_operator_recursive(exp_state, final_result);
+		if (!(ret & WPL_OP_FUNCTION_DID_RUN) && function) {
+			ostringstream msg;
+			msg << "Could not find default empty constructor () of struct '" << mother_struct->get_name() << "'\n";
+			throw runtime_error(msg.str());
+		}
+		return ret;
+	}
+
+	return wpl_value::do_operator_recursive(exp_state, final_result);
+}
+
 int wpl_value_struct::do_operator (
 		wpl_expression_state *exp_state,
 		wpl_value *final_result, 
@@ -81,15 +106,17 @@ int wpl_value_struct::do_operator (
 			return function_ptr.do_operator_recursive(exp_state, final_result);
 		}
 
-		cerr << "In -> operator for struct type '" << mother_struct->get_name() << 
-			"' while looking for member '" << name << "':\n";
-		throw runtime_error("Could not find struct member");
+		ostringstream msg;
+		msg << "In -> operator for struct type '" << mother_struct->get_name() << 
+			"' while looking for member '" << name << "': Could not find struct member\n";
+		throw runtime_error(msg.str());
 	}
 	else if (op == &OP_ASSIGN) {
 		if (!set_strong(rhs)) {
-			cerr << "In = operator for struct type '" << mother_struct->get_name() << 
-				"' while assigning from value of type '" << rhs->get_type_name() << "':\n";
-			throw runtime_error("Incompatible types");
+			ostringstream msg;
+			msg << "In = operator for struct type '" << mother_struct->get_name() << 
+				"' while assigning from value of type '" << rhs->get_type_name() << "': Incompatible types\n";
+			throw runtime_error(msg.str());
 		}
 		return rhs->do_operator_recursive(exp_state, final_result);
 	}
@@ -97,6 +124,21 @@ int wpl_value_struct::do_operator (
 		exp_state->push_discard(lhs);
 		return (WPL_OP_OK|WPL_OP_DISCARD);
 	}
+	else if (op == &OP_FUNCTION_CALL) {
+		throw runtime_error("Constructor for structs can only be called at first run");
+	}
 
 	return (WPL_OP_UNKNOWN|WPL_OP_NO_RETURN);
+}
+
+void wpl_value_struct::notify_destructor(wpl_namespace_session *nss, wpl_io &io) {
+	wpl_function *function = mother_struct->get_dtor();
+
+	if (!function) {
+		return;
+	}
+
+	wpl_value_void ret;
+	wpl_state *state = function->new_state(this, &io);
+	function->run(state, &ret);
 }

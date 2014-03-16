@@ -115,19 +115,17 @@ class wpl_type_begin_function_declaration : public wpl_type_begin_declaration, p
 /**
  * @brief When a complete type finds a word after itself, this is thrown
  */
-class wpl_type_begin_variable_declaration : public wpl_type_begin_declaration {
+class wpl_type_begin_variable_declaration : public wpl_type_begin_declaration, public wpl_matcher {
 	private:
 	const wpl_matcher_position position_at_name;
 
 	public:
-	wpl_type_begin_variable_declaration(
+	wpl_type_begin_variable_declaration (
 			wpl_type_complete *type,
 			const char *name,
-			const wpl_matcher_position &_position_at_name
-	) :
-		position_at_name(_position_at_name),
-		wpl_type_begin_declaration (type, name, WPL_VARIABLE_ACCESS_PRIVATE)
-	{}
+			const wpl_matcher_position &position_at_name,
+			const wpl_matcher_position &position_after_name
+	);
 	void create_variable(wpl_namespace *parent_namespace);
 	const wpl_matcher_position get_position_at_name() {
 		return position_at_name;

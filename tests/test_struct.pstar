@@ -28,4 +28,25 @@ SCENE main {
 	author->print();
 
 	echo name;
+
+	/* Struct with constructor and destructor */
+	struct ctor_dtor {
+		int value;
+		ctor_dtor (int _value) {
+			value = _value;
+			echo "C-tor called, value was $value\n";
+		};
+		~ctor_dtor () {
+			echo "D-tor called, value was $value\n";
+		};
+	};
+
+	ctor_dtor cd_a(1);
+	ctor_dtor cd_b(2);
+	{
+		ctor_dtor cd_a(3);
+		ctor_dtor cd_b(4);
+		ctor_dtor cd_c(5);
+	}
+	ctor_dtor cd_c(6);
 }
