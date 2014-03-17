@@ -40,7 +40,7 @@ SCENE main {
 
 	array<row> rows;
 
-	rows[@rows]->init(1, "First row");
+	rows[@rows](1, "First row");
 	rows[@rows]->init(2, "Second row");
 	rows[@rows]->init(3, "Third row");
 

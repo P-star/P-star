@@ -1298,6 +1298,70 @@ SCENE main {
 }
 			</programlisting>
 			</para>
+			<bridgehead>TEMPLATE blocks</bridgehead>
+			<para>You can call another template from within another template by using the <code>{@TEMPLATE template_name;}</code> syntax.
+			The template you call inherits all variables from the caller.</para>
+			<bridgehead>CONDITION and LOOP blocks</bridgehead>
+			<para>You can make the template behave in different ways depending on input data by using the <code>LOOP</code> and <code>CONDITION</code> blocks.
+			The <code>CONDITION</code> block works the same way as and <code>if</code>-block, the data inside it is printed out if the specified expression returns <code>TRUE</code>.
+			The <code>LOOP</code> block is the same as a <code>while</code>-block. The data inside it is printed out repeatedly while the specified expression returns <code>TRUE</code>. This is useful for printing out arrays.
+			</para>
+			<para>Here is an example program which loops an array of struct to print out all its data:
+				<programlisting language="c">
+HTML_TEMPLATE row {
+	&lt;tr&gt;
+		&lt;td&gt;{@rows[row_counter]-&gt;id}&lt;/td&gt;
+		&lt;td&gt;{@rows[row_counter]-&gt;description}&lt;/td&gt;
+	&lt;/tr&gt;
+}
+
+HTML_TEMPLATE document {
+	&lt;!DOCTYPE HTML&gt;
+	&lt;html&gt;
+	&lt;head&gt;
+	&lt;title&gt;{@title}&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+{@CONDITION (@rows &gt; 0)
+	&lt;p&gt;We have rows to print!&lt;/p&gt;
+	&lt;table&gt;
+		&lt;tr&gt;
+			&lt;th&gt;ID&lt;/th&gt;
+			&lt;th&gt;Description&lt;/th&gt;
+		&lt;/tr&gt;
+{@LOOP (++row_counter &lt; @rows) {@TEMPLATE row} }
+	&lt;/table&gt;
+}
+	&lt;/body&gt;
+	&lt;/html&gt;
+}
+
+SCENE main {
+	string title = "P* Web Programmin Language test page";
+
+	struct row {
+		public int id;
+		public string description;
+		row (int _id, string _description) {
+			id = _id;
+			description = _description;
+		};
+	};
+
+	array&lt;row&gt; rows;
+
+	rows[@rows](1, "First row");
+	rows[@rows](2, "Second row");
+	rows[@rows](3, "Third row");
+
+	#CONTENT_TYPE text/html;
+
+	int row_counter = "-1";
+	#HTML_TEMPLATE document;
+}
+			</programlisting>
+			</para>
+			<bridgehead>AJAX output</bridgehead>
 			<para>
 			P* supports common AJAX-operations like replacing text inside a &lt;div&gt;. If you want to output a variable interpolated into the template, the id-tag of the previous element in you HTML is used as variable name when the JSON is generated. In the example below, a jQuery scripts does this job. 
 			</para>
@@ -1307,7 +1371,7 @@ SCENE main {
 			The key is taken from the previous expression preceeded by the text "id=" from where in the template the variable was.
 			Under follows an example which outputs a variable using JSON if the GET-variable <code>do_ajax</code> is set.
 			</para>
-			<bridgehead>Example program using templates and JSON output</bridgehead>
+			<para>Here is an example program which uses templates and JSON output:
 			<programlisting language="c">
 HTML_TEMPLATE document {
 	&lt;!DOCTYPE HTML&gt;
@@ -1335,6 +1399,7 @@ SCENE main {
 	}
 }
 			</programlisting> 
+			</para>
 			<bridgehead>Output of program when "do_ajax" is not set</bridgehead>
 			<programlisting language="c">
 Content-type: text/html;
