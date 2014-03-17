@@ -62,6 +62,10 @@ class wpl_value_struct : public wpl_value, public wpl_namespace_session {
 	virtual wpl_value_struct *clone() const { return new wpl_value_struct(*this); };
 	virtual wpl_value_struct *clone_empty() const { return new wpl_value_struct(*this); };
 
+	void set_ctor_called() {
+		first_run = false;
+	}
+
 	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) {
 		if (!set_strong (last_value)){
 			cerr << "While setting final result of type " << get_type_name() <<

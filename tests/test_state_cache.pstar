@@ -2,7 +2,7 @@ SCENE main {
 	struct person {
 		string name;
 		int age;
-		public int init (string _name, int _age) {
+		person(string _name, int _age) {
 			name = _name;
 			age = _age;
 		};
@@ -12,10 +12,10 @@ SCENE main {
 	};
 
 	array<person> persons;
-	persons[0]->init("A A", 30);
-	persons[1]->init("B B", 40);
-	persons[2]->init("C C", 50);
-	persons[3]->init("D D", 60);
+	persons[0]("A A", 30);
+	persons[1]("B B", 40);
+	persons[2]("C C", 50);
+	persons[3]("D D", 60);
 
 	int i = "-1";
 	while (++i < 100) {

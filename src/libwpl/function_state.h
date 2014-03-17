@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -33,6 +33,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "types.h"
 #include "namespace_session.h"
 #include "block_state.h"
+#include "value_struct.h"
 
 #include <memory>
 

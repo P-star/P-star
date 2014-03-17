@@ -1,8 +1,13 @@
 SCENE main{
 
-	MYSQL mysql->connect("localhost", "pstar_test_user", "test");
+	MYSQL mysql;
+	
+	mysql->connect("localhost", "pstar_test_user", "test");
 	mysql->select_db("pstar_test_db");
-	MYSQL_STMT stmt = mysql->new_statement();
+
+	mysql->new_statement();
+
+	MYSQL_STMT stmt(mysql->new_statement());
 	string err;
 	
 	SQL create_table_a{ CREATE TABLE IF NOT EXISTS test1(name VARCHAR(128), id INT); };

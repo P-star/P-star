@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 Copyright (c) MMXIV Sebastian Baginski
 sebthestampede@gmail.com
@@ -35,6 +35,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "../libwpl/type_precedence.h"
 #include "../libwpl/value_bool.h"
 #include "../libwpl/value_time.h"
+#include "../libwpl/value_struct.h"
 #include "value_sql.h"
 #include "../libwpl/function.h"
 #include "parasites.h"
@@ -289,6 +290,40 @@ int wpl_mysql_stmt_get_row_iterator::run (
 	return WPL_OP_OK;
 }
 
+class wpl_mysql_stmt_ctor : public wpl_function {
+	public:
+	wpl_mysql_stmt_ctor() :
+		wpl_function (
+			wpl_type_global_void,
+			"MYSQL_STMT",
+			WPL_VARIABLE_ACCESS_PUBLIC
+		)
+	{
+		wpl_variable_holder arg("arg", new wpl_value_MYSQL_STMT(), WPL_VARIABLE_ACCESS_PRIVATE);
+		register_identifier(&arg);
+		generate_signature();
+	}
+	int run (wpl_state *state, wpl_value *final_result);
+};
+
+
+int wpl_mysql_stmt_ctor::run (
+		wpl_state *state,
+		wpl_value *final_result
+		)
+{
+	wpl_function_state *function_state = (wpl_function_state*) state;
+
+	wpl_value_MYSQL_STMT *this_stmt =
+		function_state->find_variable_value<wpl_value_MYSQL_STMT>("ctor()", "this");
+	wpl_value_MYSQL_STMT *argument =
+		function_state->find_variable_value<wpl_value_MYSQL_STMT>("ctor()", "arg");
+
+	this_stmt->set(argument);
+
+	return (WPL_OP_NO_RETURN|WPL_OP_FUNCTION_DID_RUN);
+}
+
 wpl_type_MYSQL_STMT::wpl_type_MYSQL_STMT() :
 	wpl_struct(wpl_typename_MYSQL_STMT, true)
 {
@@ -299,4 +334,26 @@ wpl_type_MYSQL_STMT::wpl_type_MYSQL_STMT() :
 	register_identifier(new wpl_mysql_stmt_execute());
 	register_identifier(new wpl_mysql_stmt_error());
 	register_identifier(new wpl_mysql_stmt_get_row_iterator());
+	register_identifier(new wpl_mysql_stmt_ctor());
+}
+
+bool wpl_value_MYSQL_STMT::set_strong (wpl_value *value) {
+	wpl_value_MYSQL_STMT *src;
+	wpl_value_struct *s;
+
+	if (src = dynamic_cast<wpl_value_MYSQL_STMT*>(value)) {
+		return true;
+	}
+	else if (s = dynamic_cast<wpl_value_struct*>(value)) {
+		src = dynamic_cast<wpl_value_MYSQL_STMT*>(s->get_this()->get_value());
+	}
+
+	if (!src) {
+		return false;
+	}
+
+	mysql_stmt = src->get_stmt_shared_ptr();
+	mysql_res = src->get_res_shared_ptr();
+
+	return true;
 }

@@ -103,7 +103,8 @@ int wpl_value_struct::do_operator (
 		}
 		else if (wpl_function *function = find_function_no_parent(name, WPL_NSS_CTX_OUTSIDE)) {
 			wpl_value_function_ptr function_ptr(function, this, exp_state);
-			return function_ptr.do_operator_recursive(exp_state, final_result);
+//			cerr << "V (" << this << ") new function ptr (" << &function_ptr << ") to function '" << function->get_name() << "'\n";
+			return function_ptr.do_operator_recursive(exp_state, final_result); 
 		}
 
 		ostringstream msg;

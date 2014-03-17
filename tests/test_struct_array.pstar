@@ -2,7 +2,7 @@ SCENE main {
 	struct test {
 		int a;
 		int b;
-		public int set(int _a, int _b) {
+		test(int _a, int _b) {
 			a = _a;
 			b = _b;
 		};
@@ -12,8 +12,8 @@ SCENE main {
 	};
 
 	array<test> test_array;
-	test_array[0]->set(1, 2);
-	test_array[1]->set(2, 3);
+	test_array[0](1, 2);
+	test_array[1](2, 3);
 	test_array[0]->print();
 	test_array[1]->print();
 }

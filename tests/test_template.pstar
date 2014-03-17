@@ -32,7 +32,7 @@ SCENE main {
 	struct row {
 		public int id;
 		public string description;
-		public void init(int _id, string _description) {
+		row (int _id, string _description) {
 			id = _id;
 			description = _description;
 		};
@@ -41,8 +41,8 @@ SCENE main {
 	array<row> rows;
 
 	rows[@rows](1, "First row");
-	rows[@rows]->init(2, "Second row");
-	rows[@rows]->init(3, "Third row");
+	rows[@rows](2, "Second row");
+	rows[@rows](3, "Third row");
 
 	#CONTENT_TYPE text/html;
 

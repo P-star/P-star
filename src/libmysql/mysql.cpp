@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -155,6 +155,7 @@ int wpl_mysql_stmt_init::run (wpl_state *state, wpl_value *final_result) {
 	wpl_value_MYSQL_STMT *stmt = ((wpl_value_MYSQL_STMT*) stmt_struct->get_this()->get_value());
 
 	stmt->init(mysql);
+	stmt_struct->set_ctor_called();
 
 	return WPL_OP_OK;
 }
