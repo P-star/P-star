@@ -1,3 +1,11 @@
+pstar (1.2~alpha7) experimental; urgency=low
+
+  * Added support for TEMPLATE blocks in HTML templates to call other templates
+  * Added support for CONDITION blocks in HTML templates, works as 'if'-blocks
+  * Added support for constructors and destructors in structs
+
+ -- Atle Solbakken <atle@goliathdns.no>  Mon, 17 Mar 2014 10:48:35 +0100
+
 pstar (1.2~alpha6) experimental; urgency=low
 
   * Fixed library prefix in the module loader 
