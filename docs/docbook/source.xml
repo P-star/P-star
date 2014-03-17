@@ -1064,6 +1064,7 @@ The name of my cat is 'Tiger'.
 			<title>Structs</title>
 			<para>A struct is an object which can hold a collection of variables and functions. A function inside a struct can access the other members of the same struct.
 			</para>
+			<bridgehead>Basic layout</bridgehead>
 			<para>
 			A simple example of struct usage:
 			</para>
@@ -1098,6 +1099,45 @@ Atle is 25 years old
 			The members we access from the outside must be marked with <code>public</code>.
 			An error will ble issued if you attempt to access a variable or function which is not public.
 			Members can optionally be preceeded with the <code>private</code> keyword.</para>
+			<bridgehead>Constructors and destructors</bridgehead>
+			<para>You may specify constructor- and destructor functions for structs.
+			The constructor is always called at the location where an instance of a struct is declared.
+			The destructor is called when the struct goes out of scope (when the block in which it is defined ends).</para>
+			<para>Constructors are typically used to initialize member variables of structs to make sure they always are ready for use.
+			Destructors are used to cleanup or flush data when the object is not going to be used anymore.</para>
+			<para>Constructors can take arguments just like other functions.
+			If you define arguments in a constructor, you have to call the constuctor with the same arguments at declaration.</para>
+			<para>The syntax for constructors and destructors is borrowed from C++.
+			The constructor function is defined without any type, and its name must be the same as the structs name.
+			The destructor is declared the same way, only with a tilde <code>~</code> in front of the name.
+			You cannot return values from constructors and destructors, they are <code>void</code> functions.</para>
+			<para>As of now, you can only have one constructor per struct.</para>
+			<para>A struct with a constructor and destructor can look like this:
+			<programlisting language="c">
+SCENE main {
+	/* Struct with constructor and destructor */
+	struct ctor_dtor {
+		int value;
+
+		/* Constructor with one argument */
+		ctor_dtor (int _value) {
+			value = _value;
+			echo "C-tor called, value was $value\n";
+		};
+
+		/* Destructor for the struct */
+		~ctor_dtor () {
+			echo "D-tor called, value was $value\n";
+		};
+	};
+
+	/* Declare an instance of struct 'ctor_dtor' and call the constructor */
+	ctor_dtor cd_a(1);
+
+	/* The destructor is magically called here, where the block ends */
+}
+			</programlisting>
+			</para>
 		</section>
 		<section>
 			<title>Data types GET, POST and ENV</title>
