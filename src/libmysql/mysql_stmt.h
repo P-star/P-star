@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -111,14 +111,19 @@ class wpl_value_MYSQL_STMT : public wpl_value {
 		return mysql_stmt->get_stmt();
 	}
 
-	bool set_strong (wpl_value *value) override {
-		wpl_value_MYSQL_STMT *src;
-		if (!(src = dynamic_cast<wpl_value_MYSQL_STMT*>(value))) {
-			return false;
-		}
+	void set (wpl_value_MYSQL_STMT *src) {
 		mysql_stmt = src->get_stmt_shared_ptr();
 		mysql_res = src->get_res_shared_ptr();
-		return true;
+	}
+
+	bool set_strong (wpl_value *value) override;
+
+	void set_weak (wpl_value *src) override {
+		if (!set_strong(src)) {
+			ostringstream msg;
+			msg << "Could not set MYSQL_STMT to value of type '" << src->get_type_name() << "'\n";
+			throw runtime_error(msg.str());
+		}
 	}
 
 	string toString() override {

@@ -2,7 +2,7 @@ SCENE main {
 	struct person {
 		string name;
 		int age;
-		public int init(string _name, int _age) {
+		person(string _name, int _age) {
 			name = _name;
 			age = _age;
 		};
@@ -13,11 +13,11 @@ SCENE main {
 
 	array<person> persons;
 
-	persons[@persons]->init("A", 10);
-	persons[@persons]->init("B", 20);
-	persons[@persons]->init("C", 30);
-	persons[@persons]->init("D", 40);
-	persons[@persons]->init("E", 50);
+	persons[@persons]("A", 10);
+	persons[@persons]("B", 20);
+	persons[@persons]("C", 30);
+	persons[@persons]("D", 40);
+	persons[@persons]("E", 50);
 
 	int i;
 	for (i = 0; i < @persons; i++) {

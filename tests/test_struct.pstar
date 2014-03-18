@@ -48,5 +48,11 @@ SCENE main {
 		ctor_dtor cd_b(4);
 		ctor_dtor cd_c(5);
 	}
-	ctor_dtor cd_c(6);
+
+	int argument(int arg) {
+		return arg;
+	}
+
+	/* Test for ctor with function call as argument*/
+	ctor_dtor cd_c(argument(6));
 }

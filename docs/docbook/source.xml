@@ -1064,6 +1064,7 @@ The name of my cat is 'Tiger'.
 			<title>Structs</title>
 			<para>A struct is an object which can hold a collection of variables and functions. A function inside a struct can access the other members of the same struct.
 			</para>
+			<bridgehead>Basic layout</bridgehead>
 			<para>
 			A simple example of struct usage:
 			</para>
@@ -1098,6 +1099,45 @@ Atle is 25 years old
 			The members we access from the outside must be marked with <code>public</code>.
 			An error will ble issued if you attempt to access a variable or function which is not public.
 			Members can optionally be preceeded with the <code>private</code> keyword.</para>
+			<bridgehead>Constructors and destructors</bridgehead>
+			<para>You may specify constructor- and destructor functions for structs.
+			The constructor is always called at the location where an instance of a struct is declared.
+			The destructor is called when the struct goes out of scope (when the block in which it is defined ends).</para>
+			<para>Constructors are typically used to initialize member variables of structs to make sure they always are ready for use.
+			Destructors are used to cleanup or flush data when the object is not going to be used anymore.</para>
+			<para>Constructors can take arguments just like other functions.
+			If you define arguments in a constructor, you have to call the constuctor with the same arguments at declaration.</para>
+			<para>The syntax for constructors and destructors is borrowed from C++.
+			The constructor function is defined without any type, and its name must be the same as the structs name.
+			The destructor is declared the same way, only with a tilde <code>~</code> in front of the name.
+			You cannot return values from constructors and destructors, they are <code>void</code> functions.</para>
+			<para>As of now, you can only have one constructor per struct.</para>
+			<para>A struct with a constructor and destructor can look like this:
+			<programlisting language="c">
+SCENE main {
+	/* Struct with constructor and destructor */
+	struct ctor_dtor {
+		int value;
+
+		/* Constructor with one argument */
+		ctor_dtor (int _value) {
+			value = _value;
+			echo "C-tor called, value was $value\n";
+		};
+
+		/* Destructor for the struct */
+		~ctor_dtor () {
+			echo "D-tor called, value was $value\n";
+		};
+	};
+
+	/* Declare an instance of struct 'ctor_dtor' and call the constructor */
+	ctor_dtor cd_a(1);
+
+	/* The destructor is magically called here, where the block ends */
+}
+			</programlisting>
+			</para>
 		</section>
 		<section>
 			<title>Data types GET, POST and ENV</title>
@@ -1258,6 +1298,70 @@ SCENE main {
 }
 			</programlisting>
 			</para>
+			<bridgehead>TEMPLATE blocks</bridgehead>
+			<para>You can call another template from within another template by using the <code>{@TEMPLATE template_name;}</code> syntax.
+			The template you call inherits all variables from the caller.</para>
+			<bridgehead>CONDITION and LOOP blocks</bridgehead>
+			<para>You can make the template behave in different ways depending on input data by using the <code>LOOP</code> and <code>CONDITION</code> blocks.
+			The <code>CONDITION</code> block works the same way as and <code>if</code>-block, the data inside it is printed out if the specified expression returns <code>TRUE</code>.
+			The <code>LOOP</code> block is the same as a <code>while</code>-block. The data inside it is printed out repeatedly while the specified expression returns <code>TRUE</code>. This is useful for printing out arrays.
+			</para>
+			<para>Here is an example program which loops an array of struct to print out all its data:
+				<programlisting language="c">
+HTML_TEMPLATE row {
+	&lt;tr&gt;
+		&lt;td&gt;{@rows[row_counter]-&gt;id}&lt;/td&gt;
+		&lt;td&gt;{@rows[row_counter]-&gt;description}&lt;/td&gt;
+	&lt;/tr&gt;
+}
+
+HTML_TEMPLATE document {
+	&lt;!DOCTYPE HTML&gt;
+	&lt;html&gt;
+	&lt;head&gt;
+	&lt;title&gt;{@title}&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+{@CONDITION (@rows &gt; 0)
+	&lt;p&gt;We have rows to print!&lt;/p&gt;
+	&lt;table&gt;
+		&lt;tr&gt;
+			&lt;th&gt;ID&lt;/th&gt;
+			&lt;th&gt;Description&lt;/th&gt;
+		&lt;/tr&gt;
+{@LOOP (++row_counter &lt; @rows) {@TEMPLATE row} }
+	&lt;/table&gt;
+}
+	&lt;/body&gt;
+	&lt;/html&gt;
+}
+
+SCENE main {
+	string title = "P* Web Programmin Language test page";
+
+	struct row {
+		public int id;
+		public string description;
+		row (int _id, string _description) {
+			id = _id;
+			description = _description;
+		};
+	};
+
+	array&lt;row&gt; rows;
+
+	rows[@rows](1, "First row");
+	rows[@rows](2, "Second row");
+	rows[@rows](3, "Third row");
+
+	#CONTENT_TYPE text/html;
+
+	int row_counter = "-1";
+	#HTML_TEMPLATE document;
+}
+			</programlisting>
+			</para>
+			<bridgehead>AJAX output</bridgehead>
 			<para>
 			P* supports common AJAX-operations like replacing text inside a &lt;div&gt;. If you want to output a variable interpolated into the template, the id-tag of the previous element in you HTML is used as variable name when the JSON is generated. In the example below, a jQuery scripts does this job. 
 			</para>
@@ -1267,7 +1371,7 @@ SCENE main {
 			The key is taken from the previous expression preceeded by the text "id=" from where in the template the variable was.
 			Under follows an example which outputs a variable using JSON if the GET-variable <code>do_ajax</code> is set.
 			</para>
-			<bridgehead>Example program using templates and JSON output</bridgehead>
+			<para>Here is an example program which uses templates and JSON output:
 			<programlisting language="c">
 HTML_TEMPLATE document {
 	&lt;!DOCTYPE HTML&gt;
@@ -1295,6 +1399,7 @@ SCENE main {
 	}
 }
 			</programlisting> 
+			</para>
 			<bridgehead>Output of program when "do_ajax" is not set</bridgehead>
 			<programlisting language="c">
 Content-type: text/html;

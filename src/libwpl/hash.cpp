@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -42,6 +42,13 @@ wpl_hash::wpl_hash (const wpl_hash &copy) {
 
 void wpl_hash::set(string &key, wpl_value *value) {
 	hash[key] = unique_ptr<wpl_value>(value);
+}
+
+void wpl_hash::notify_destructor (wpl_namespace_session *nss, wpl_io &io) {
+	for (auto &my_pair : hash) {
+		wpl_value *value = my_pair.second.get();
+		value->notify_destructor(nss, io);
+	}
 }
 
 wpl_hash::~wpl_hash() {

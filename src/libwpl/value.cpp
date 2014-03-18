@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -139,7 +139,7 @@ int wpl_value::do_operator_recursive (
 
 	if (value) {
 		exp_state->push_waiting(this);
-//		cout << "- next is value of type " << first_carrier.value->get_type_name() << "\n";
+		//cout << "- next is value of type " << first_carrier.value->get_type_name() << "\n";
 		return first_carrier.value->do_operator_recursive (exp_state, final_result);
 	}
 
@@ -171,7 +171,7 @@ int wpl_value::do_operator_recursive (
 	wpl_value *lhs = NULL;
 	wpl_value *rhs = NULL;
 
-//	cout << "- found op " << op->name << endl;
+	//cout << "- found op " << op->name << endl;
 
 	if ((op->flags & WPL_OP_F_HAS_BOTH) == WPL_OP_F_HAS_BOTH) {
 		wpl_value *prevprev = NULL;
@@ -197,7 +197,15 @@ int wpl_value::do_operator_recursive (
 	wpl_value *preferred;
 
 	if (op == &OP_FUNCTION_CALL) {
-		if (lhs && (lhs->get_precedence() == wpl_type_precedence_function_ptr)) {
+		if (get_precedence() == wpl_type_precedence_function_ptr) {
+			if (lhs == this) {
+				preferred = lhs;
+			}
+			else {
+				preferred = rhs;
+			}
+		}
+		else if (lhs && (lhs->get_precedence() == wpl_type_precedence_function_ptr)) {
 			preferred = lhs;
 		}
 		else {

@@ -1,2 +1,14 @@
 Atle is 25 years old
 I should not be changed
+C-tor called, value was 1
+C-tor called, value was 2
+C-tor called, value was 3
+C-tor called, value was 4
+C-tor called, value was 5
+D-tor called, value was 5
+D-tor called, value was 4
+D-tor called, value was 3
+C-tor called, value was 6
+D-tor called, value was 6
+D-tor called, value was 2
+D-tor called, value was 1

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -319,7 +319,9 @@ void wpl_expression::parse_function_call (
 	uint32_t expect_save = expect;
 	int par_level_save = par_level;
 
-	shunt(ui);
+	if (ui) {
+		shunt(ui);
+	}
 
 	prepare_operator(&OP_FUNCTION_CALL);
 
@@ -405,6 +407,12 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 			parse_par_close();
 			shunt_operator(&OP_ARRAY_SUBSCRIPTING);
 			parse_par_close();
+	
+			// Check for constructor
+			ignore_whitespace();
+			if (search_letter ('(')) {
+				parse_function_call(parent_namespace, NULL);
+			}
 
 			// For multidimensional arrays
 			ignore_whitespace();

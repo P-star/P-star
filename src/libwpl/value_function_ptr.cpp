@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -54,6 +54,11 @@ int wpl_value_function_ptr::do_operator (
 		return WPL_OP_UNKNOWN;
 	}
 
+/*	cerr << "V (" << this << ") function ptr of " << function->get_name() << "\n";
+	cerr << "V (" << this << ") lhs is " << lhs << "\n";
+	cerr << "V (" << this << ") rhs is " << rhs << "\n";
+	cerr << "V (" << this << ") discard length:  " << exp_state->get_discard().size() << "\n";*/
+
 	if (rhs == (wpl_value*) this) {
 		// We have no arguments
 		if (lhs) {
@@ -61,6 +66,7 @@ int wpl_value_function_ptr::do_operator (
 		}
 	}
 	else if (lhs == (wpl_value*) this) {
+//		cerr << "V (" << this << ") push to discard " << rhs->get_type_name() << "\n";
 		exp_state->push_discard(rhs);
 	}
 	else {
