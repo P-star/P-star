@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -51,6 +51,9 @@ class wpl_value_hash : public wpl_value_template, public wpl_hash {
 	wpl_value_hash *clone() const {return new wpl_value_hash(*this); };
 	wpl_value_hash *clone_empty() const {return new wpl_value_hash(template_type); }
 
+	void notify_destructor (wpl_namespace_session *nss, wpl_io &io) override {
+		wpl_hash::notify_destructor (nss, io);
+	}
 	/*
 	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) override {
 		if (!set_strong (last_value)) {

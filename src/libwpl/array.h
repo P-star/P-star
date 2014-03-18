@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -59,6 +59,7 @@ class wpl_array {
 	void reserve(int i) {
 		array.reserve(i);
 	}
+	void notify_destructor(wpl_namespace_session *nss, wpl_io &io);
 };
 
 /**

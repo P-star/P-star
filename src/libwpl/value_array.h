@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -45,6 +45,10 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 	PRIMITIVE_TYPEINFO(array)
 	wpl_value_array *clone() const {return new wpl_value_array(*this); };
 	wpl_value_array *clone_empty() const {return new wpl_value_array(template_type); }
+
+	void notify_destructor(wpl_namespace_session *nss, wpl_io &io) override {
+		wpl_array::notify_destructor(nss, io);
+	}
 
 	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) override {
 		/*

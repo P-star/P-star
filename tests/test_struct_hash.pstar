@@ -15,9 +15,9 @@ SCENE main {
 		};
 	};
 
-	array<test> test_array;
-	test_array[0](1, 2);
-	test_array[1](2, 3);
-	test_array[0]->print();
-	test_array[1]->print();
+	hash<test> test_array;
+	test_array["a"](1, 2);
+	test_array["b"](2, 3);
+	test_array["a"]->print();
+	test_array["b"]->print();
 }

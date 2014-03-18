@@ -140,6 +140,6 @@ void wpl_value_struct::notify_destructor(wpl_namespace_session *nss, wpl_io &io)
 	}
 
 	wpl_value_void ret;
-	wpl_state *state = function->new_state(this, &io);
-	function->run(state, &ret);
+	unique_ptr<wpl_state> state(function->new_state(this, &io));
+	function->run(state.get(), &ret);
 }
