@@ -81,7 +81,7 @@ SCENE paragraphs {
 	struct paragraph {
 		string name;
 		string title;
-		public int init(string name_, string title_) {
+		paragraph (string name_, string title_) {
 			name = name_;
 			title = title_;
 		};
@@ -97,12 +97,12 @@ SCENE paragraphs {
 	};
 
 	array<paragraph> page_paragraphs;
-	page_paragraphs[0]->init("designers_vs_geeks", "Designers VS Geeks");
-	page_paragraphs[1]->init("what_template_engine", "What template engine should I use?");
-	page_paragraphs[2]->init("languages", "Human Languages and Computer Languages");
-	page_paragraphs[3]->init("source_code_organizing", "Source Code Organizing");
-	page_paragraphs[4]->init("performance", "Is P* fast?");
-	page_paragraphs[5]->init("now_what", "What to do next?");
+	page_paragraphs[0]("designers_vs_geeks", "Designers VS Geeks");
+	page_paragraphs[1]("what_template_engine", "What template engine should I use?");
+	page_paragraphs[2]("languages", "Human Languages and Computer Languages");
+	page_paragraphs[3]("source_code_organizing", "Source Code Organizing");
+	page_paragraphs[4]("performance", "Is P* fast?");
+	page_paragraphs[5]("now_what", "What to do next?");
 
 	protected int print_paragraphs() {
 		int i = 0;
