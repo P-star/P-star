@@ -1,27 +1,26 @@
 P*
 ==
 
-P* (P-star) is a web programming language whith in language-support for
+P* (P-star) is a web programming language with in language-support for
 things like HTML templates and database handling.
 
 **P* is currently under development and help is needed!**
 
 Things to-be-made:
-*   Real Windows-port (.msi-package, fix MySQL-build)
+*   Real Windows port (.msi-package, fix MySQL-build)
 *   OS X port
 *   Port to Ubuntu, Fedora
-*   Charset compatibilty
+*   Charset compatibility
 *   Testing (make som web sites!!!)
 
 
 Building and running P*
 -----------------------
 
-To build and run P*, you need to have the libraries and development
-packages of mysql-client and mimetic.  P* uses C++11 features, so GCC
-version 4.7 is required.  If you use Clang, version 3.2 or higher is
-needed.  You also need autotools installed.  This is how you download
-and build P* using your favourite shell:
+To build and run P*, you need the libraries and development packages of
+mysql-client and mimetic.  P* uses C++11 features, so GCC version 4.7 is
+required.  If you use Clang, version 3.2 or higher is needed.  You also
+need autotools installed.  Download and build P* using your favourite shell:
 
     git clone https://github.com/atlesn/P-star.git
     cd P-star
@@ -63,13 +62,13 @@ configuration (usually in <Directory>, <Location> or <File> sections).
 Examples
 --------
 
-Take a look in directory "tests" for some examples.
+Examples are found in directory "tests".
 
 
 Contacts
 --------
 
-*   For information about P*, visit its official page: http://www.p-star.org/.
+*   For information about P*, visit the official page: http://www.p-star.org/.
 
 *   If you need support, ask on users' mailing list:
     p-star-users@googlegroups.com.

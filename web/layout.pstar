@@ -30,20 +30,20 @@ SCENE layout_head_scene {
 
 	string title = "-";
 	struct button {
+		button(string _name, string _text) {
+			name = _name;
+			text = _text;
+		};
 		public string name;
 		public string text;
 		public string classname;
 	};
 
 	array<button> buttons;
-	buttons[0]->name = "what_is";
-	buttons[0]->text = "What is P*?";
-	buttons[1]->name = "how_to_get";
-	buttons[1]->text = "How to get P*?";
-	buttons[2]->name = "why_pstar";
-	buttons[2]->text = "Why P*?";
-	buttons[3]->name = "documentation";
-	buttons[3]->text = "Documentation";
+	buttons[@buttons]("what_is", "What is P*?");
+	buttons[@buttons]("how_to_get", "How to get P*?");
+	buttons[@buttons]("why_pstar", "Why P*?");
+	buttons[@buttons]("documentation", "How to write P*?");
 
 	ENV env;
 	int i = "-1";

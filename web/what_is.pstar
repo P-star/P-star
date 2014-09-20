@@ -54,13 +54,13 @@ HTML_TEMPLATE important_features {
 
 HTML_TEMPLATE support {
 	<h2>Support and discussion</h2>
-	<p>There are two public maling lists available. One is for user questions and opinions, and the other is for more technical discussion about development.</p>
+	<p>There are two public mailing lists available. One is for user questions and opinions, and the other is for more technical discussion about development.</p>
 	<ul>
 		<li><a href="https://groups.google.com/forum/#!forum/p-star-users">Signup for the user list</a></li>
 		<li><a href="https://groups.google.com/forum/#!forum/p-star-dev">Signup for the development list</a></li>
 	</ul>
 	<h2>Bugs &amp; issues</h2>
-	<p>Please report bugs and missing features on <a href="https://github.com/atlesn/P-star/issues">the Github page</a> or by writing to the <a href="mailto:p-star-dev@googlegroups.com">development mailing list</a>.</p>
+	<p>Please report bugs and missing features on <a href="https://github.com/P-star/P-star/issues">the Github page</a> or by writing to the <a href="mailto:p-star-dev@googlegroups.com">development mailing list</a>.</p>
 	<h2>Development</h2>
 	<p>The P* language is still under development, but it already supports many features. <b>Help is needed to develop P* further.</b> If you have experience with C++ and/or web design, don't hesitate to say hello on one of the mailing lists or contact the author at <a href="mailto:atle@goliathdns.no">atle@goliathdns.no</a></p>
 }

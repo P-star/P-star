@@ -25,29 +25,29 @@ HTML_TEMPLATE paragraph_header {
 }
 
 HTML_TEMPLATE designers_vs_geeks {
-	<p>Essentially, what web development all about is to generate HTML-markup dynamically based on data stored somewhere and on user input.</p>
+	<p>Essentially, what web development is all about, is to generate HTML-markup dynamically based on data stored somewhere and on user input.</p>
 	<p>A web page can be divided into two parts: The code part, which takes care of database and user input, and the HTML-part which takes care of the design.</p>
-	<p>Sometimes a single person might do both the coding and the HTML, and this person will be comfortable with having these two mixed. However for larger and more complicated web pages, we need proper geeks to to the coding and artistic people to do the design.</p>
+	<p>Sometimes a single person might do both the coding and the HTML, and this person will be comfortable with having these two mixed. However for larger and more complicated web pages, we need proper geeks to do the coding and artistic people to do the design.</p>
 	<p>Since designers don't understand much programming, they tend to mess up complicated code written by the geeks. This problem forces us to separate the HTML from the program code, and this is solved by only having very simple code (loops, conditions and variables) in between the HTML code which the designers can understand without much effort. Database handling and user input processing is kept by itself out of reach of the designers, and variables are prepared here for the designers to use later.</p>
 	<p>This technique is called <b><a target="_blank" href="http://en.wikipedia.org/wiki/Web_template_system">templating</a></b>, and different languages have different ways of handling this.</p>
 }
 
 HTML_TEMPLATE what_template_engine {
 	<p>On Wikipedia, there's a <a target="_blank" href="http://en.wikipedia.org/wiki/Comparison_of_web_template_engines">list of almost a hundred template engines</a> for many different languages. This indicates that there's a real need for templating out there. It also tells us that the languages themselves do not implement templating natively; the template engine is usually an external module.</p>
-	<p>Languages used for web development typically don't have any special functionality to handle this important part of web design, the developers are left on their own to sort it out. The well-known names of Java, Perl and C# are general purpose languages which by chance also is used to generate dynamic HTML-markup.</p>
-	<p>The widely used language PHP also has to be mentioned. It differs from the other languages in the way that it almost exclusively is used for web design while having no in-language support for anything related to web design apart from the ability to be interleaved in HTML code. PHP only provides tons of built-in functions which there is no exact count for. Some estimates <a target="_blank" href="http://forums.devshed.com/php-development-5/how-many-functions-does-php-have-398731.html">say around 4500 functions</a>.</p>
+	<p>Languages used for web development typically don't have any special functionality to handle this important part of web design, the developers are left on their own to sort it out. Java, Perl and C# are well known general purpose languages who also are used to generate dynamic HTML-markup.</p>
+	<p>The widely used language PHP also has to be mentioned. It differs from the other languages in the way that it almost exclusively is used for web design while having no in-language support for anything related to web design apart from the ability to be interleaved in HTML code. PHP provides nothing more than a huge, messy pile of built-in functions which there is no exact count for. Some estimates <a target="_blank" href="http://forums.devshed.com/php-development-5/how-many-functions-does-php-have-398731.html">say around 4500 functions</a>.</p>
 	<p>The lack of in-language template handling is the reason why P* was created in the first place, P* has native support for templating, it is part of the language's syntax. The text you're reading now is placed inside a P* template block, separated from the program code.</p>
-	<p>Read more about P* templates in <a target="_blank" href="/manual/ch03s11.html">reference manual</a></p>
-	<p>Also, you should take a look at <a target="_blank" href="https://github.com/atlesn/P-star/blob/master/web/why_pstar.pstar">the source code of this page on Github</a>.</p>
+	<p>Read more about P* templates in <a target="_blank" href="/manual/ch03s11.html">the reference manual</a></p>
+	<p>Also, take a look at <a target="_blank" href="https://github.com/atlesn/P-star/blob/master/web/why_pstar.pstar">the source code of this page on Github</a>.</p>
 }
 
 HTML_TEMPLATE languages {
 	<p>Different programming languages are basically different ways for us to talk to computers, telling them what to do. Human languages are different methods for humans to talk to each other. Human- and computer languages do of course differ in many ways.</p>
-	<p>One notable difference is that human languages are much more dynamic than computer languages. It's probably a fact that no human being knows all the words of any language, which are usually tens of thousands in numbers. The humans know the words they need in their daily lives.</p>
-	<p>A physician probably knows more words in medicine than an avarage person. When a physician could have used a single word to describe a condition, an average person might have needed to use many words to do the same. The physician's language is therefore efficient to use when talking about medicine.</p>
+	<p>One notable difference is that human languages are much more dynamic than computer languages. It's probably a fact that no human being knows all the words of any language, which are usually tens of thousands in numbers. Humans know the words they need in their daily lives.</p>
+	<p>A physician probably knows more words in medicine than an average person. When a physician could have used a single word to describe a condition, an average person might have needed to use many words to do the same. The physician's language is therefore efficient to use when talking about medicine.</p>
 	<p>The same applies to programming languages. You typically want the programming language you use to have special words to help you speed up your coding and make your programs easier to read and maintain. A language used for web development should provide words and tools specialized for the task you're solving.</p>
 	<p>P* tries to make it easy to talk web design to your computer by providing special syntax for SQL-queries and HTML-templates, doing the dirty work behind the scenes.</p>
-	<p>Read more about the P* SQL syntax in <a target="_blank" href="http://www.p-star.org/manual/ch03s12.html">reference manual</a></p>
+	<p>Read more about the P* SQL syntax in <a target="_blank" href="http://www.p-star.org/manual/ch03s12.html">the reference manual</a></p>
 }
 
 HTML_TEMPLATE source_code_organizing {
@@ -60,7 +60,7 @@ HTML_TEMPLATE source_code_organizing {
 }
 
 HTML_TEMPLATE performance {
-	<p>If speed is your only consern, you should write your web page in C and compile it as a web server module. However, speed is not only about makeing a program run fast, it's also about writing fast. The focus of P* is on the latter.</p>
+	<p>If speed is your only concern, you should write your web page in C and compile it as a web server module. However, speed is not only about making a program run fast, it's also about writing fast. The focus of P* is on the latter.</p>
 	<p>P* internals are written in C++ which is a bit slower than it's daddy, C. Only critical sections are optimized, like text output to the web server. P* also caches programs internally so that the scripts only are parsed once.</p>
 	<p>Arithmetics, like plus and minus, is slower in P* than in other lanugages. However, you will only notice this if you make a loop run a billion times, in which P* will be a couple of seconds slower than PHP and Perl.</p>
 	<p>The P* engine is not based on anything else out there, it's completely written from scratch. The only thing P* has in common with other languages is the C-like syntax.</p>
@@ -81,7 +81,7 @@ SCENE paragraphs {
 	struct paragraph {
 		string name;
 		string title;
-		public int init(string name_, string title_) {
+		paragraph (string name_, string title_) {
 			name = name_;
 			title = title_;
 		};
@@ -97,12 +97,12 @@ SCENE paragraphs {
 	};
 
 	array<paragraph> page_paragraphs;
-	page_paragraphs[0]->init("designers_vs_geeks", "Designers VS Geeks");
-	page_paragraphs[1]->init("what_template_engine", "What template engine should I use?");
-	page_paragraphs[2]->init("languages", "Human Languages and Computer Languages");
-	page_paragraphs[3]->init("source_code_organizing", "Source Code Organizing");
-	page_paragraphs[4]->init("performance", "Is P* fast?");
-	page_paragraphs[5]->init("now_what", "What to do next?");
+	page_paragraphs[0]("designers_vs_geeks", "Designers VS Geeks");
+	page_paragraphs[1]("what_template_engine", "What template engine should I use?");
+	page_paragraphs[2]("languages", "Human Languages and Computer Languages");
+	page_paragraphs[3]("source_code_organizing", "Source Code Organizing");
+	page_paragraphs[4]("performance", "Is P* fast?");
+	page_paragraphs[5]("now_what", "What to do next?");
 
 	protected int print_paragraphs() {
 		int i = 0;
