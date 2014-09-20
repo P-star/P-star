@@ -4,7 +4,7 @@ P*
 P* (P-star) is a web programming language with in language-support for
 things like HTML templates and database handling.
 
-**P* is currently under development and help is needed!**
+**P* is currently under development and help is needed to make it even better!**
 
 Things to-be-made:
 *   Real Windows port (.msi-package, fix MySQL-build)
