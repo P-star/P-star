@@ -63,6 +63,7 @@ template<typename A> class wpl_value_strings : public wpl_value_holder<A> {
 		CALL_OP(OP_ASSIGN, assign)
 		CALL_OP(OP_ECHO, echo)
 		CALL_OP(OP_ERRCHO, errcho)
+		CALL_OP(OP_LOGIC_NOT, is_empty)
 		CALL_OP(OP_IS_EMPTY, is_empty)
 		return wpl_value_holder<A>::__do_operator(op);
 	}
