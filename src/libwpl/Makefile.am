@@ -18,6 +18,7 @@ libpstar_la_SOURCES = \
 	value_string.cpp value_vstring.cpp value_regex.cpp \
 	value_env.cpp value_get.cpp value_post.cpp value_stdin.cpp \
 	value_output_trigger.cpp value_time.cpp \
+	value_range.cpp \
 	type_file.cpp file.cpp value_line.cpp \
 	array.cpp hash.cpp struct.cpp template.cpp \
 	namespace_session.cpp exception.cpp \
