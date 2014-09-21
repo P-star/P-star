@@ -3,4 +3,17 @@ SCENE main {
 
 	echo "The number is $num\n";
 	echo 'The number is $num\n';
+
+	echo "\n";
+
+	string empty = "";
+	string nonempty = "not empty";
+
+	if (!empty) {
+		echo "Empty is empty\n";
+	}
+
+	if (!!nonempty) {
+		echo "Nonempty is not empty\n";
+	}
 }
