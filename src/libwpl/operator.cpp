@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -100,6 +100,9 @@ OP_DEF(OP_ASSIGN_SH_LEFT,	"<<=", 16, WPL_OP_F_RIGHT_BOTH, 3)
 OP_DEF(OP_ASSIGN_SH_RIGHT,	">>=", 16, WPL_OP_F_RIGHT_BOTH, 3)
 OP_DEF(OP_ASSIGN_CONCAT,	".=",  16, WPL_OP_F_RIGHT_BOTH, 2)
 
+OP_DEF(OP_RANGE_INCLUSIVE,      "..",   17, WPL_OP_F_LEFT_BOTH, 2)
+OP_DEF(OP_RANGE_EXCLUSIVE,      "...",  17, WPL_OP_F_LEFT_BOTH, 3)
+
 OP_DEF(OP_DISCARD, ",", 18, WPL_OP_F_LEFT_ONE, 1)
 
 OP_DEF(OP_ECHO, "echo", 19, WPL_OP_F_RIGHT_ONE, 4)
@@ -113,7 +116,12 @@ static const struct wpl_operator_struct *operators[] = {
 	&OP_ARRAY_SUBSCRIPTING,
 	&OP_MUL, // Must be above ELEMENT
 	&OP_ELEMENT,
+
+	// These three are all have dots, most dots at the top
+	&OP_RANGE_EXCLUSIVE,
+	&OP_RANGE_INCLUSIVE,
 	&OP_CONCAT,
+
 	&OP_INC_SUFFIX,
 	&OP_ASSIGN,
 	&OP_LTEQ,
