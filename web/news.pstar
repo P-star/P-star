@@ -5,7 +5,7 @@ HTML_TEMPLATE news_head {
 HTML_TEMPLATE article {
 	<div class="article">
 		<h3>{@subject}</h3>
-		<i>{@time->year}-{@time->month}-{@time->day}</i>
+		<i>{@"$time"}</i>
 {@LOOP (++i < @paragraphs)
 		<p>{@paragraphs[i]}</p>
 }
@@ -24,8 +24,10 @@ SCENE news {
 
 	#HTML_TEMPLATE news_head;
 
+	int line_counter = 0;
 	LINE line = file;
 	while (line++) {
+		line_counter++;
 		line =~ s/\n$//;
 		if (line =~ s/^ARTICLE\s+//) {
 			string subject = line;
@@ -33,6 +35,7 @@ SCENE news {
 			array<string> paragraphs;
 
 			while (line++) {
+				line_counter++;
 				line =~ s/\n$//;
 				if (line =~ s/^DATE\s+//) {
 					string tmp = line;
@@ -42,7 +45,7 @@ SCENE news {
 					paragraphs[@paragraphs] = line;
 				}
 				else {
-					if (!subject) {
+					if (subject == "") {
 						errcho "No subject set for article\n";
 						return 1;
 					}
@@ -50,6 +53,8 @@ SCENE news {
 						errcho "No time set for article\n";
 						return 1;
 					}
+
+					line--;
 
 					break;
 				}
@@ -59,7 +64,7 @@ SCENE news {
 			#HTML_TEMPLATE article;
 		}
 		else {
-			errcho "Expected ARTICLE at this line\n";
+			errcho "Line $line_counter: Expected ARTICLE at this line\n";
 			return 1;
 		}
 	}
