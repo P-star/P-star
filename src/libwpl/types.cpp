@@ -85,6 +85,7 @@ const char *wpl_typename_line = "LINE";
 const char *wpl_typename_regex = "{regex}";
 const char *wpl_typename_expression = "{expression}";
 const char *wpl_typename_wrapper = "{value wrapper}";
+const char *wpl_typename_range = "{range}";
 const char *wpl_typename_output_trigger = "{output trigger}";
 const char *wpl_typename_unresolved_identifier = "{unresolved identifier}";
 const char *wpl_typename_function_ptr = "{function pointer}";

@@ -243,6 +243,9 @@ int wpl_value::do_operator_recursive (
 	if (op == &OP_PATTERN_EQ || op == &OP_PATTERN_NOT_EQ) {
 		ret_op = preferred->do_regex(exp_state, final_result, op, lhs, rhs);
 	}
+	else if (op == &OP_RANGE_EXCLUSIVE || op == &OP_RANGE_INCLUSIVE) {
+		ret_op = final_result->do_range_operator(exp_state, op, lhs, rhs);
+	}
 	else {
 		ret_op = preferred->do_operator(exp_state, final_result, op, lhs, rhs);
 	}

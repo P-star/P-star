@@ -50,7 +50,8 @@ enum {
 	wpl_value_no_flags,
 	wpl_value_is_constant,
 	wpl_value_is_dynamic,
-	wpl_value_do_finalize
+	wpl_value_do_finalize,
+	wpl_value_range_op_initialized
 };
 
 struct wpl_operator_struct;
@@ -175,6 +176,15 @@ class wpl_value : public wpl_suicidal {
 			wpl_value *lhs,
 			wpl_value *rhs
 	);
+
+	virtual int do_range_operator(
+			wpl_expression_state *exp_state,
+			const struct wpl_operator_struct *op,
+			wpl_value *lhs,
+			wpl_value *rhs
+	) {
+		throw runtime_error("Range operator .. and ... not supported here");
+	}
 
 	virtual bool do_pattern_match(
 			wpl_expression_state *exp_state,

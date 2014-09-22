@@ -1,0 +1,41 @@
+SCENE main {
+	int i;
+
+	echo "Range increment inclusive\n";
+	foreach (i; 0..4) {
+		echo "$i ";
+	}
+	echo "\n";
+
+	echo "Range increment exclusive\n";
+	foreach (i; 0...4) {
+		echo "$i ";
+	}
+	echo "\n";
+
+	echo "Range decrement inclusive\n";
+	foreach (i; 4..0) {
+		echo "$i ";
+	}
+	echo "\n";
+
+	echo "Range decrement exclusive\n";
+	foreach (i; 4...0) {
+		echo "$i ";
+	}
+	echo "\n";
+
+	echo "Range equal inclusive\n";
+	foreach (i; 4..4) {
+		echo "$i ";
+	}
+	echo "\n";
+
+	echo "Range equal exclusive (no output)\n";
+	foreach (i; 4...4) {
+		echo "$i ";
+	}
+	echo "\n";
+
+	return 0;
+}
