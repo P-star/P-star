@@ -24,5 +24,6 @@ SCENE main {
 		echo "Entry " . i . " - ";
 		persons[i]->print();
 	}
+
 	return 0;
 }

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,14 +28,20 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-static const char *wpl_blockname_scene = 	"SCENE";
-static const char *wpl_blockname_text = 	"TEXT";
-static const char *wpl_blockname_html_template = "HTML_TEMPLATE";
+#include "block.h"
+#include "operator.h"
+#include "expression.h"
 
-static const char *wpl_blockname_if = 		"if";
-static const char *wpl_blockname_else_if = 	"else if";
-static const char *wpl_blockname_else = 	"else";
-static const char *wpl_blockname_while = 	"while";
-static const char *wpl_blockname_for =	 	"for";
-static const char *wpl_blockname_foreach = 	"foreach";
+class wpl_namespace;
+class wpl_value;
 
+class wpl_block_foreach : public wpl_block {
+	private:
+	unique_ptr<wpl_expression> exp_var;
+	unique_ptr<wpl_expression_par_enclosed> exp_condition;
+
+	public:
+	wpl_block_foreach();
+	int run(wpl_state *state, wpl_value *final_result) override;
+	void parse_value(wpl_namespace *ns);
+};

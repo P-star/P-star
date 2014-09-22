@@ -1,0 +1,12 @@
+Range increment inclusive
+0 1 2 3 4 
+Range increment exclusive
+1 2 3 
+Range decrement inclusive
+4 3 2 1 0 
+Range decrement exclusive
+3 2 1 
+Range equal inclusive
+4 
+Range equal exclusive (no output)
+
