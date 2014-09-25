@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,19 +28,34 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "value.h"
-#include "namespace_session.h"
 #include "operator_return_values.h"
-#include "operator_types.h"
+
+class wpl_value;
+class wpl_runable_operator;
+class wpl_expression_state;
 
 struct wpl_operator_struct {
 	union {
 		const char *op;
 		const char *name;
 	};
+
 	const int precedence;
 	const int flags;
 	const int length;
+
+	virtual wpl_runable_operator *new_runable (
+			wpl_expression_state *exp_state,
+			wpl_value *lhs,
+			wpl_value *rhs
+	) const;
+
+	wpl_operator_struct(const char *op, int precedence, int flags, int length) :
+		op(op),
+		precedence(precedence),
+		flags(flags),
+		length(length)
+	{}
 };
 
 #define WPL_OP_F_NONE		0
@@ -52,6 +67,7 @@ struct wpl_operator_struct {
 #define WPL_OP_F_HAS_RHS	(1<<3)
 #define WPL_OP_F_OPTIONAL_LHS	(1<<4)
 #define WPL_OP_F_OPTIONAL_RHS	(1<<5)
+#define WPL_OP_F_HAS_RUNABLE	(1<<6)
 
 #define WPL_OP_F_ASSOC_ALL	(WPL_OP_F_ASSOC_LEFT|WPL_OP_F_ASSOC_RIGHT)
 

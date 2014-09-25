@@ -27,7 +27,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "value_bool.h"
-#include "value_range.h"
 #include "value_constant_pointer.h"
 #include "block_foreach.h"
 #include "expression.h"
@@ -55,21 +54,22 @@ int wpl_block_foreach::run(wpl_state *state, wpl_value *final_result) {
 		throw runtime_error("No constant found in foreach loop variable section");
 	}
 
-	wpl_value_range range(var);
-	while ((ret = block_state->run_run_condition(exp_condition.get(), &range)) & WPL_OP_OK) {
-		if (!(ret & WPL_OP_RANGE)) {
-			break;
-		}
-		if (ret & (WPL_OP_RANGE_COMPLETE)) {
-			ret &= ~(WPL_OP_RANGE_COMPLETE);
-			break;
+	int condition_ret;
+	while ((condition_ret = block_state->run_run_condition(exp_condition.get(), var)) & WPL_OP_OK) {
+		if (condition_ret & WPL_OP_BREAK) {
+			return condition_ret & ~WPL_OP_BREAK | ret;
 		}
 
 		ret = wpl_block::run(block_state, final_result);
-
 		if (ret & (WPL_OP_BREAK|WPL_OP_RETURN)) {
-			ret &= ~(WPL_OP_BREAK);
-			break;
+			return ret & ~WPL_OP_BREAK;
+		}
+
+		if (!(condition_ret & WPL_OP_RANGE)) {
+			return ret;
+		}
+		if (condition_ret & WPL_OP_RANGE_COMPLETE) {
+			return ret;
 		}
 	}
 

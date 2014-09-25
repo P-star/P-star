@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -46,6 +46,10 @@ class wpl_state {
 	wpl_state(wpl_namespace_session *nss, wpl_io *io) {
 		this->nss = nss;
 		this->io = io;
+	}
+	wpl_state (const wpl_state &copy) {
+		this->nss = copy.nss;
+		this->io = copy.io;
 	}
 	wpl_io &get_io() {
 		return *io;

@@ -50,8 +50,7 @@ enum {
 	wpl_value_no_flags,
 	wpl_value_is_constant,
 	wpl_value_is_dynamic,
-	wpl_value_do_finalize,
-	wpl_value_range_op_initialized
+	wpl_value_do_finalize
 };
 
 struct wpl_operator_struct;

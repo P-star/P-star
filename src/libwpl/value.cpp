@@ -87,18 +87,29 @@ int wpl_value::do_fastop (
 		)
 {
 //	cout << "V (" << this << "): do_fastop with " << exp_state->get_stack().size() << " on stack (type is " << get_type_name() << ") value is " << toString() << " op is " << op->name << "\n" ;
+	int ret;
+
 	if ((op->flags & WPL_OP_F_HAS_BOTH) != WPL_OP_F_HAS_BOTH) {
-		return do_operator(exp_state, final_result, op, this, this);
+		ret = do_operator(exp_state, final_result, op, this, this);
 	}
-	if (op->flags & WPL_OP_F_OPTIONAL_LHS) {
-		return do_operator(exp_state, final_result, op, NULL, this);
+	else if (op->flags & WPL_OP_F_OPTIONAL_LHS) {
+		ret = do_operator(exp_state, final_result, op, NULL, this);
 	}
-	if (op->flags & WPL_OP_F_OPTIONAL_RHS) {
-		return do_operator(exp_state, final_result, op, this, NULL);
+	else if (op->flags & WPL_OP_F_OPTIONAL_RHS) {
+		ret = do_operator(exp_state, final_result, op, this, NULL);
+	}
+	else {
+		cerr << "While doing fastop '" << op->name << "'" << " on value of type " << get_type_name() << " value " << toString() << endl;
+		throw runtime_error("Too few operands for operator");
 	}
 
-	cerr << "While doing fastop '" << op->name << "'" << " on value of type " << get_type_name() << " value " << toString() << endl;
-	throw runtime_error("Too few operands for operator");
+	if (ret & WPL_OP_UNKNOWN) {
+		cerr << "While running fastop '" << op->name << "' on type '" <<
+			get_type_name() << "' in expression:\n";
+		throw runtime_error("Unknown operator for type");
+	}
+
+	return ret;
 }
 
 int wpl_value::do_operator_recursive (
@@ -131,7 +142,7 @@ int wpl_value::do_operator_recursive (
 		return WPL_OP_OK;
 	}
 
-	shunting_yard_carrier first_carrier = exp_state->top();
+	shunting_yard_carrier &first_carrier = exp_state->top();
 	exp_state->pop();
 
 	const wpl_operator_struct *op = first_carrier.op;
@@ -240,11 +251,21 @@ int wpl_value::do_operator_recursive (
 	cout << "- calling operator " << op->name << "\n";*/
 
 	int ret_op;
-	if (op == &OP_PATTERN_EQ || op == &OP_PATTERN_NOT_EQ) {
-		ret_op = preferred->do_regex(exp_state, final_result, op, lhs, rhs);
+	if (op->flags & WPL_OP_F_HAS_RUNABLE) {
+		if (first_carrier.runable.get() == nullptr) {
+			wpl_runable_operator *runable = op->new_runable(exp_state, lhs, rhs);
+			first_carrier.runable.reset(runable);
+		}
+		ret_op = exp_state->run_runable_operator(
+				first_carrier.runable.get(),
+				exp_state->pos()+1,
+				lhs,
+				rhs,
+				final_result
+		);
 	}
-	else if (op == &OP_RANGE_EXCLUSIVE || op == &OP_RANGE_INCLUSIVE) {
-		ret_op = final_result->do_range_operator(exp_state, op, lhs, rhs);
+	else if (op == &OP_PATTERN_EQ || op == &OP_PATTERN_NOT_EQ) {
+		ret_op = preferred->do_regex(exp_state, final_result, op, lhs, rhs);
 	}
 	else {
 		ret_op = preferred->do_operator(exp_state, final_result, op, lhs, rhs);

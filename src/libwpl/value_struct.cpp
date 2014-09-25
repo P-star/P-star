@@ -60,7 +60,6 @@ bool wpl_value_struct::set_strong (wpl_value *value) {
 	return true;
 }
 
-
 int wpl_value_struct::do_operator_recursive (
 		wpl_expression_state *exp_state,
 		wpl_value *final_result
@@ -68,17 +67,25 @@ int wpl_value_struct::do_operator_recursive (
 	// Expect call to constructor on first run
 	if (first_run) {
 		first_run = false;
-		wpl_function *function = find_function_no_parent(mother_struct->get_name(), WPL_NSS_CTX_SELF);
 
-		// *function may be NULL
-		wpl_value_function_ptr function_ptr(function, this, exp_state);
-		int ret = function_ptr.do_operator_recursive(exp_state, final_result);
-		if (!(ret & WPL_OP_FUNCTION_DID_RUN) && function) {
-			ostringstream msg;
-			msg << "Could not find default empty constructor () of struct '" << mother_struct->get_name() << "'\n";
-			throw runtime_error(msg.str());
+		// Check if we should drop the construction part
+		if (!exp_state->empty() && (exp_state->top().op == &OP_INDIRECTION)) {
+			exp_state->pop();
 		}
-		return ret;
+		else {
+			wpl_function *function = find_function_no_parent(mother_struct->get_name(), WPL_NSS_CTX_SELF);
+
+			// *function may be NULL
+			wpl_value_function_ptr function_ptr(function, this, exp_state);
+			int ret = function_ptr.do_operator_recursive(exp_state, final_result);
+			if (!(ret & WPL_OP_FUNCTION_DID_RUN) && function) {
+				ostringstream msg;
+				msg << "Could not find default empty constructor () of struct '" <<
+					mother_struct->get_name() << "'\n";
+				throw runtime_error(msg.str());
+			}
+			return ret;
+		}
 	}
 
 	return wpl_value::do_operator_recursive(exp_state, final_result);
@@ -95,7 +102,26 @@ int wpl_value_struct::do_operator (
 		throw runtime_error("Left side of '->' was not this struct instance");
 	}
 
-	if (op == &OP_ELEMENT) {
+	if (first_run) {
+		/*
+		   If we en up here, the only possibility is that we came through fastop
+		   and the operator is the indirection operator * which tells us not to
+		   construct. Check if this is true.
+		   */
+		if (!exp_state->empty() || op != &OP_INDIRECTION) {
+			throw runtime_error("Struct construction problem (BUG)");
+		}
+
+		first_run = false;
+
+		return WPL_OP_OK;
+	}
+
+	if (op == &OP_INDIRECTION) {
+		// Do thing, the indirection only matters when we construct
+		return WPL_OP_OK;
+	}
+	else if (op == &OP_ELEMENT) {
 		const char *name = rhs->toString().c_str();
 
 		if (wpl_variable *variable = find_variable(name, WPL_NSS_CTX_OUTSIDE)) {

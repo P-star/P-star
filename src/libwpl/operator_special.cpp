@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII-MMXIV Atle Solbakken
+Copyright (c) MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -26,37 +26,30 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#pragma once
+#include "operator_special.h"
+#include "range.h"
 
-#include "runable_operator.h"
+wpl_operator_range_inclusive::wpl_operator_range_inclusive (const char *op, int precedence, int flags, int length) :
+	wpl_operator_struct (op, precedence, flags, length)
+{}
 
-#include <memory>
-#include <cstddef>
+wpl_runable_operator *wpl_operator_range_inclusive::new_runable (
+		wpl_expression_state *exp_state,
+		wpl_value *lhs,
+		wpl_value *rhs
+) const {
+	return new wpl_range(exp_state, this, lhs, rhs);
+}
 
-using namespace std;
+wpl_operator_range_exclusive::wpl_operator_range_exclusive (const char *op, int precedence, int flags, int length) :
+	wpl_operator_struct (op, precedence, flags, length)
+{}
 
-struct wpl_operator_struct;
-class wpl_value;
+wpl_runable_operator *wpl_operator_range_exclusive::new_runable(
+		wpl_expression_state *exp_state,
+		wpl_value *lhs,
+		wpl_value *rhs
+) const {
+	return new wpl_range(exp_state, this, lhs, rhs);
+}
 
-struct shunting_yard_carrier {
-	wpl_value *value;
-	const wpl_operator_struct *op;
-	shared_ptr<wpl_runable_operator> runable;
-
-	shunting_yard_carrier() {
-		this->value = NULL;
-		this->op = NULL;
-	}
-	shunting_yard_carrier(wpl_value *value) {
-		this->value = value;
-		this->op = NULL;
-	}
-	shunting_yard_carrier(const wpl_operator_struct *op) {
-		this->op = op;
-		this->value = NULL;
-	}
-	shunting_yard_carrier(wpl_value *value, const wpl_operator_struct *op) {
-		this->value = value;
-		this->op = op;
-	}
-};
