@@ -73,7 +73,7 @@ int wpl_value_function_ptr::do_operator (
 		throw runtime_error("wpl_function_ptr::do_operator(): I am not myself (confused)");
 	}
 
-	int my_exp_pos = exp_state->pos() +1; // +1 because we were just popped of
+	int my_exp_pos = exp_state->pos() + 1; // +1 because we were just popped of
 	if (my_exp_pos < 0) {
 		ostringstream msg;
 		msg << "wpl_value_function_ptr::do_operator(): my_exp_pos was < 0 (" << my_exp_pos << ")";

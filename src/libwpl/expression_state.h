@@ -43,7 +43,6 @@ class wpl_runable;
 class wpl_expression_child_state {
 	unique_ptr<wpl_state> state;
 	void *unique;
-
 	public:
 	wpl_expression_child_state() : state() {
 		unique = NULL;
@@ -84,6 +83,17 @@ class wpl_expression_state : public wpl_state {
 		child_states(run_stack.size())
 	{
 		optimize();
+		run_stack.save_pos();
+	}
+
+	// Used for internal dummy states where we have no real expression in the program
+	wpl_expression_state (const wpl_state *state) :
+		wpl_state(*state),
+                run_stack(),
+                wait_stack(),
+                discard_chain(),
+                child_states()
+	{
 		run_stack.save_pos();
 	}
 
@@ -177,7 +187,12 @@ class wpl_expression_state : public wpl_state {
 	}
 
 	// RUNNING
-	int run_child (wpl_runable *runable, int index, wpl_value *final_result);
+	int run_runable_operator (
+			wpl_runable_operator *runable,
+			int index,
+			wpl_value *lhs,
+			wpl_value *rhs,
+			wpl_value *final_result);
 	int run_function (
 		wpl_function *function,
 		int index,

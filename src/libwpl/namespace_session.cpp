@@ -42,14 +42,24 @@ void wpl_namespace_session::notify_destructors(wpl_io &io) {
 }
 
 void wpl_namespace_session::replace_variables (wpl_namespace_session *source) {
-	list<wpl_variable*> variables;
+	vector<wpl_variable*> variables;
 	source->variable_list(variables);
 
-	variables_ptr.clear();
-	variables_ptr.reserve(variables.size());
+	if (variables.size() != variables_ptr.size()) {
+		throw runtime_error("Size mismatch in wpl_namespace_session::replace_variables (BUG)");
+	}
 
-	for (wpl_variable *variable : variables) {
-		push (variable->clone());
+	for (int i = 0; i < variables.size(); i++) {
+		wpl_value *source = variables[0]->get_value();
+
+		if (source->isArray() || source->isStruct()) {
+			if (!variables_ptr[i]->set_strong(source)) {
+				throw runtime_error("Strong set failed in wpl_namespace_session::replace_variables (BUG)");
+			}
+		}
+		else {
+			variables_ptr[i]->set_weak(source);
+		}
 	}
 }
 
@@ -203,11 +213,13 @@ wpl_namespace_session::~wpl_namespace_session() {
 	vector<unique_ptr<wpl_variable>>::reverse_iterator it =
 		variables_ptr.rbegin();
 	for (; it != variables_ptr.rend(); it++) {
+//		cerr << "NS(" << (void*)this << ") destroy variable " << (void*) (*it).get() << " " << (*it)->get_name() << endl;
 		(*it).reset(NULL);
 	}
 }
 
 void wpl_namespace_session::push (wpl_variable *variable) {
+//	cerr << "NS(" << (void*)this << ") push variable " << (void*) variable << " " << variable->get_name() << endl;
 	this->variables_ptr.emplace_back(variable);
 }
 

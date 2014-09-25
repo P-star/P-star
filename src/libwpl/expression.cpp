@@ -384,11 +384,11 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 		}
 
 		int operator_search_flags;
-		if (expect & EXPECT_OPERATOR) {
-			operator_search_flags = WPL_OP_F_ASSOC_ALL;
-		}
-		else if (expect & EXPECT_NUMBER) {
+		if (expect & EXPECT_NUMBER) {
 			operator_search_flags = WPL_OP_F_ASSOC_RIGHT;
+		}
+		else if (expect & EXPECT_OPERATOR) {
+			operator_search_flags = WPL_OP_F_ASSOC_ALL;
 		}
 
 		if (ignore_letter (';')) {

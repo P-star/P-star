@@ -61,6 +61,13 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 			throw wpl_type_end_template_declaration(this);
 		}
 
+		// Check for constructor disabler. When the definition
+		// laster is parsed again as an expression, this * is used,
+		// but not here.
+		if (ignore_letter ('*')) {
+			ignore_whitespace();
+		}
+
 		// Check for variable name
 		try {
 			get_word(buf);

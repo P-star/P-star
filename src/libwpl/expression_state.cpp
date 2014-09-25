@@ -60,7 +60,8 @@ int wpl_expression_state::run_function (
 		wpl_namespace_session *nss_this
 		)
 {
-	if (index >= WPL_EXPRESSION_MAX) {
+	if (index >= child_states.size()) {
+		cerr << "index: " << index << " child states size " << child_states.size() << endl;
 		throw runtime_error("Index out of range in wpl_expression_state");
 	}
 
@@ -95,13 +96,23 @@ int wpl_expression_state::run_function (
 	return function_state->get_return_value()->do_operator_recursive(this, final_result);
 }
 
-int wpl_expression_state::run_child(wpl_runable *runable, int index, wpl_value *final_result) {
-	if (index >= WPL_EXPRESSION_MAX) {
+int wpl_expression_state::run_runable_operator(
+		wpl_runable_operator *runable,
+		int index,
+		wpl_value *lhs,
+		wpl_value *rhs,
+		wpl_value *final_result
+) {
+	/*
+	   Remember, if you get the index from exp_state->pos(), to +1 it because it might be -1
+	   */
+	if (index >= child_states.size()) {
 		throw runtime_error("Index out of range in wpl_expression_state");
 	}
-	if (child_states[index].validate(NULL)) {
-		child_states[index].set(runable->new_state(nss, io), NULL);
+	if (!child_states[index].validate(runable)) {
+		wpl_state *new_state = runable->new_state(nss, io);
+		child_states[index].set(new_state, runable);
 	}
 
-	return runable->run(child_states[index].get(), final_result);
+	return runable->run(child_states[index].get(), this, lhs, rhs, final_result);
 }

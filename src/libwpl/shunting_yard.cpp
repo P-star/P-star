@@ -26,7 +26,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "operator.h"
+#include "operator_types.h"
 #include "shunting_yard.h"
 #include "exception.h"
 #include "expression.h"

@@ -33,7 +33,6 @@ extern const char *wpl_typename_constant_pointer;
 extern const char *wpl_typename_double_finalizer;
 extern const char *wpl_typename_void;
 extern const char *wpl_typename_wrapper;
-extern const char *wpl_typename_range;
 extern const char *wpl_typename_output_trigger;
 extern const char *wpl_typename_bool;
 extern const char *wpl_typename_int;

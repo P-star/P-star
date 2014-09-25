@@ -28,86 +28,85 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#define OP_DEC(name) \
-	extern const struct wpl_operator_struct name;
+#include "operator_special.h"
 
-OP_DEC(OP_PAR_OPEN)
-OP_DEC(OP_PAR_CLOSE)
+extern const wpl_operator_struct OP_PAR_OPEN;
+extern const wpl_operator_struct OP_PAR_CLOSE;
 
-OP_DEC(OP_BRACK_OPEN)
-OP_DEC(OP_BRACK_CLOSE)
+extern const wpl_operator_struct OP_BRACK_OPEN;
+extern const wpl_operator_struct OP_BRACK_CLOSE;
 
-OP_DEC(OP_FUNCTION_CALL)
-OP_DEC(OP_ARRAY_SUBSCRIPTING)
-OP_DEC(OP_ELEMENT)
-OP_DEC(OP_INDIRECTION)
-OP_DEC(OP_COUNT)
+extern const wpl_operator_struct OP_FUNCTION_CALL;
+extern const wpl_operator_struct OP_ARRAY_SUBSCRIPTING;
+extern const wpl_operator_struct OP_ELEMENT;
+extern const wpl_operator_struct OP_INDIRECTION;
+extern const wpl_operator_struct OP_COUNT;
 
-OP_DEC(OP_IS_EMPTY)
+extern const wpl_operator_struct OP_IS_EMPTY;
 
-OP_DEC(OP_INC_SUFFIX)
-OP_DEC(OP_DEC_SUFFIX)
-OP_DEC(OP_INC_PREFIX)
-OP_DEC(OP_DEC_PREFIX)
+extern const wpl_operator_struct OP_INC_SUFFIX;
+extern const wpl_operator_struct OP_DEC_SUFFIX;
+extern const wpl_operator_struct OP_INC_PREFIX;
+extern const wpl_operator_struct OP_DEC_PREFIX;
 
-OP_DEC(OP_SAVE_DISCARD)
+extern const wpl_operator_struct OP_SAVE_DISCARD;
 
-OP_DEC(OP_ASSIGN_SUM)
-OP_DEC(OP_ASSIGN_SUB)
-OP_DEC(OP_ASSIGN_MUL)
-OP_DEC(OP_ASSIGN_DIV)
-OP_DEC(OP_ASSIGN_MOD)
-OP_DEC(OP_ASSIGN_CONCAT)
+extern const wpl_operator_struct OP_ASSIGN_SUM;
+extern const wpl_operator_struct OP_ASSIGN_SUB;
+extern const wpl_operator_struct OP_ASSIGN_MUL;
+extern const wpl_operator_struct OP_ASSIGN_DIV;
+extern const wpl_operator_struct OP_ASSIGN_MOD;
+extern const wpl_operator_struct OP_ASSIGN_CONCAT;
 
-OP_DEC(OP_SUM)
-OP_DEC(OP_SUB)
-OP_DEC(OP_MUL)
-OP_DEC(OP_DIV)
-OP_DEC(OP_MOD)
-OP_DEC(OP_CONCAT)
+extern const wpl_operator_range_inclusive OP_RANGE_INCLUSIVE;
+extern const wpl_operator_range_exclusive OP_RANGE_EXCLUSIVE;
 
-OP_DEC(OP_ASSIGN_SH_LEFT)
-OP_DEC(OP_ASSIGN_SH_RIGHT)
+extern const wpl_operator_struct OP_SUM;
+extern const wpl_operator_struct OP_SUB;
+extern const wpl_operator_struct OP_MUL;
+extern const wpl_operator_struct OP_DIV;
+extern const wpl_operator_struct OP_MOD;
+extern const wpl_operator_struct OP_CONCAT;
 
-OP_DEC(OP_SH_LEFT)
-OP_DEC(OP_SH_RIGHT)
+extern const wpl_operator_struct OP_ASSIGN_SH_LEFT;
+extern const wpl_operator_struct OP_ASSIGN_SH_RIGHT;
 
-OP_DEC(OP_LTEQ)
-OP_DEC(OP_GTEQ)
-OP_DEC(OP_LT)
-OP_DEC(OP_GT)
+extern const wpl_operator_struct OP_SH_LEFT;
+extern const wpl_operator_struct OP_SH_RIGHT;
 
-OP_DEC(OP_BITWISE_NOT)
+extern const wpl_operator_struct OP_LTEQ;
+extern const wpl_operator_struct OP_GTEQ;
+extern const wpl_operator_struct OP_LT;
+extern const wpl_operator_struct OP_GT;
 
-OP_DEC(OP_LOGIC_AND)
-OP_DEC(OP_LOGIC_OR)
+extern const wpl_operator_struct OP_BITWISE_NOT;
 
-OP_DEC(OP_ASSIGN_AND)
-OP_DEC(OP_ASSIGN_XOR)
-OP_DEC(OP_ASSIGN_OR)
+extern const wpl_operator_struct OP_LOGIC_AND;
+extern const wpl_operator_struct OP_LOGIC_OR;
 
-OP_DEC(OP_BITWISE_AND)
-OP_DEC(OP_BITWISE_XOR)
-OP_DEC(OP_BITWISE_OR)
+extern const wpl_operator_struct OP_ASSIGN_AND;
+extern const wpl_operator_struct OP_ASSIGN_XOR;
+extern const wpl_operator_struct OP_ASSIGN_OR;
 
-OP_DEC(OP_EQ)
-OP_DEC(OP_NOT_EQ)
+extern const wpl_operator_struct OP_BITWISE_AND;
+extern const wpl_operator_struct OP_BITWISE_XOR;
+extern const wpl_operator_struct OP_BITWISE_OR;
 
-OP_DEC(OP_PATTERN_EQ)
-OP_DEC(OP_PATTERN_NOT_EQ)
+extern const wpl_operator_struct OP_EQ;
+extern const wpl_operator_struct OP_NOT_EQ;
 
-OP_DEC(OP_ASSIGN)
-OP_DEC(OP_LOGIC_NOT)
+extern const wpl_operator_struct OP_PATTERN_EQ;
+extern const wpl_operator_struct OP_PATTERN_NOT_EQ;
 
-OP_DEC(OP_RANGE_INCLUSIVE)
-OP_DEC(OP_RANGE_EXCLUSIVE)
+extern const wpl_operator_struct OP_ASSIGN;
+extern const wpl_operator_struct OP_LOGIC_NOT;
 
-OP_DEC(OP_DISCARD)
+extern const wpl_operator_struct OP_DISCARD;
 
-OP_DEC(OP_BREAK_OP)
-OP_DEC(OP_RETURN_OP)
-OP_DEC(OP_BLOCK_RETURN_OP)
+extern const wpl_operator_struct OP_BREAK_OP;
+extern const wpl_operator_struct OP_RETURN_OP;
+extern const wpl_operator_struct OP_BLOCK_RETURN_OP;
 
-OP_DEC(OP_ECHO)
-OP_DEC(OP_ERRCHO)
+extern const wpl_operator_struct OP_ECHO;
+extern const wpl_operator_struct OP_ERRCHO;
 

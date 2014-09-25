@@ -116,7 +116,7 @@ class wpl_namespace_session {
 	wpl_variable *get_variable(int i);
 	int variable_index(const char *name);
 
-	void variable_list(list<wpl_variable*> &target) {
+	void variable_list(vector<wpl_variable*> &target) {
 		for (unique_ptr<wpl_variable> &variable : variables_ptr) {
 			target.push_back(variable.get());
 		}

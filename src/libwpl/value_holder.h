@@ -29,7 +29,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "expression_state.h"
-#include "operator.h"
+#include "operator_types.h"
 #include "value.h"
 
 #define RESULT_LOGIC wpl_value_holder<A>::result_logic

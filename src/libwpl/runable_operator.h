@@ -28,45 +28,31 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "value.h"
+#include <iostream>
 
-#include <memory>
+#include "matcher.h"
+#include "namespace_session.h"
+#include "operator_return_values.h"
+#include "debug.h"
 
-class wpl_value_range : public wpl_value {
-	private:
-	wpl_value *notify;
-	unique_ptr<wpl_value> counter;
-	wpl_value *counter_target;
-	int flags;
-	const struct wpl_operator_struct *boolean_test;
+using namespace std;
 
-	static const int INCLUSIVE = 1;
-	static const int EXCLUSIVE = 2;
-	static const int INCREMENT = 4;
-	static const int DECREMENT = 8;
-	static const int INITIALIZED = 16;
+class wpl_state;
+class wpl_value;
+class wpl_expression_state;
+struct wpl_operator;
+class wpl_namespace;
+class wpl_io;
 
+class wpl_runable_operator {
+	protected:
 	public:
-	wpl_value_range (wpl_value *notify) :
-		notify(notify),
-		flags(0),
-		boolean_test(NULL)
-	{}
-
-	int get_precedence() const { return wpl_type_precedence_range; };
-	const char *get_type_name() const { return wpl_typename_range; }
-
-	wpl_value *clone() const {
-		throw runtime_error("Cannot clone range value");
-	};
-
-	int do_range_operator (
+	virtual ~wpl_runable_operator() {};
+	virtual int run (
+		wpl_state *state,
 		wpl_expression_state *exp_state,
-		const struct wpl_operator_struct *op,
 		wpl_value *lhs,
-		wpl_value *rhs
-	) override;
-
-	private:
-	bool counter_operate(wpl_expression_state *exp_state, const struct wpl_operator_struct *op);
+		wpl_value *rhs,
+		wpl_value *final_result) = 0;
+	virtual wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io);
 };

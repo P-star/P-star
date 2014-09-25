@@ -50,7 +50,7 @@ int wpl_value_unresolved_identifier::do_fastop (
 {
 	if (((op->flags & WPL_OP_F_HAS_BOTH) == WPL_OP_F_HAS_BOTH) && !(op->flags & (WPL_OP_F_OPTIONAL_LHS|WPL_OP_F_OPTIONAL_RHS))) {
 		cerr << "While doing operator '" << op->name <<
-			"' on unresolved identifier '" << value << "':" << endl;
+			"'(" << op->precedence << ") on unresolved identifier '" << value << "':" << endl;
 		throw runtime_error("Too few operands for operator");
 	}
 

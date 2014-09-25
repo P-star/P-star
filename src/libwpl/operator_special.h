@@ -28,35 +28,16 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "runable_operator.h"
+#include "operator.h"
 
-#include <memory>
-#include <cstddef>
+class wpl_operator_range_inclusive : public wpl_operator_struct {
+	public:
+	wpl_operator_range_inclusive (const char *op, int precedence, int flags, int length);
+	wpl_runable_operator *new_runable(wpl_expression_state *exp_state, wpl_value *lhs, wpl_value *rhs) const override;
+};
 
-using namespace std;
-
-struct wpl_operator_struct;
-class wpl_value;
-
-struct shunting_yard_carrier {
-	wpl_value *value;
-	const wpl_operator_struct *op;
-	shared_ptr<wpl_runable_operator> runable;
-
-	shunting_yard_carrier() {
-		this->value = NULL;
-		this->op = NULL;
-	}
-	shunting_yard_carrier(wpl_value *value) {
-		this->value = value;
-		this->op = NULL;
-	}
-	shunting_yard_carrier(const wpl_operator_struct *op) {
-		this->op = op;
-		this->value = NULL;
-	}
-	shunting_yard_carrier(wpl_value *value, const wpl_operator_struct *op) {
-		this->value = value;
-		this->op = op;
-	}
+class wpl_operator_range_exclusive : public wpl_operator_struct {
+	public:
+	wpl_operator_range_exclusive (const char *op, int precedence, int flags, int length);
+	wpl_runable_operator *new_runable(wpl_expression_state *exp_state, wpl_value *lhs, wpl_value *rhs) const override;
 };
