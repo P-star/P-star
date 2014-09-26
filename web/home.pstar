@@ -25,10 +25,17 @@ HTML_TEMPLATE body {
 	</script>
 }
 
-HTML_TEMPLATE what_is {
-	<h1>What is P*?</h1>
+HTML_TEMPLATE home {
 	<p>P* (pronounced P-star) is a programming language specifically designed for web development. P* provides easy in-language support for common tasks in this field.</p>
 	<p>P* programs are scripts, and they are run by the P* interpreter, which you can download under <a href="/cgi-bin/how_to_get">How to get P*?</a>.</p>
+}
+
+HTML_TEMPLATE pstar_pages {
+	<h2>Sites running P*</h2>
+	<p>Currently the known only site running P* is this page. Have you created something? <a href="mailto:atle@goliathdns.no>Contact me</a> and have it listed here!</p>
+	<ul>
+		<li><a href="http://www.p-star.org">P* Home Page</a></li>
+	</ul>
 }
 
 HTML_TEMPLATE run_environments {
@@ -72,8 +79,9 @@ SCENE main {
 	#CONTENT_TYPE text/html;
 	#SCENE layout_head_scene;
 	#HTML_TEMPLATE body;
-	#HTML_TEMPLATE what_is;
+	#HTML_TEMPLATE home;
 	#HTML_TEMPLATE development;
+	#HTML_TEMPLATE pstar_pages;
 	#HTML_TEMPLATE important_features;
 	#SCENE news;
 	#HTML_TEMPLATE support;
