@@ -32,7 +32,7 @@ HTML_TEMPLATE home {
 
 HTML_TEMPLATE pstar_pages {
 	<h2>Sites running P*</h2>
-	<p>Currently the known only site running P* is this page. Have you created something? <a href="mailto:atle@goliathdns.no>Contact me</a> and have it listed here!</p>
+	<p>Currently the known only site running P* is this page. Have you created something? <a href="mailto:atle@goliathdns.no">Contact me</a> and have it listed here!</p>
 	<ul>
 		<li><a href="http://www.p-star.org">P* Home Page</a></li>
 	</ul>
