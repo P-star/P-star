@@ -1,3 +1,7 @@
+ARTICLE	Range operator and foreach loop
+DATE	2014-09-26
+PARA	The range operators <b>..</b> and <b>...</b> is now available. They are useful with the <b>foreach</b> loop.
+PARA	Read more in the <a href="/manual/index.html">documentation</a>
 ARTICLE Constructors and destructors for structs
 DATE	2014-03-18
 PARA	You can now define constructors and destructors for structs, with syntax much like C++. The constructors are called where the variables are defined, and the destructors are called when the object falls out of scope (when the block ends).
