@@ -1,0 +1,17 @@
+#!/usr/bin/wpl -f
+
+#INCLUDE layout.pstar;
+
+HTML_TEMPLATE body {
+	<h1>Code snippets</h1>
+	<p>This section is <b>coming soon</b>. If you just can't wait, <b>feel free to create this page on <a href="https://github.com/P-star/P-star/issues/32">GitHub</a></b>!</p>
+}
+
+SCENE main {
+	#CONTENT_TYPE text/html;
+	#SCENE layout_head_scene;
+	#HTML_TEMPLATE body;
+	#HTML_TEMPLATE layout_foot;
+	return 0;
+}
+

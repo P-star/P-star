@@ -32,7 +32,7 @@ HTML_TEMPLATE home {
 
 HTML_TEMPLATE pstar_pages {
 	<h2>Sites running P*</h2>
-	<p>Currently the known only site running P* is this page. Have you created something? <a href="mailto:atle@goliathdns.no">Contact me</a> and have it listed here!</p>
+	<p>Currently the only known site running P* is this page. Have you created something? <a href="mailto:atle@goliathdns.no">Contact me</a> and have it listed here to show off!</p>
 	<ul>
 		<li><a href="http://www.p-star.org">P* Home Page</a></li>
 	</ul>
@@ -73,6 +73,7 @@ HTML_TEMPLATE support {
 HTML_TEMPLATE development {
 	<h2>Help needed!</h2>
 	<p>The P* language is still under development, but it already supports many features. <b>Help is needed to develop P* further.</b> If you have experience with C++ and/or web design, don't hesitate to say hello on one of the mailing lists or contact the author at <a href="mailto:atle@goliathdns.no">atle@goliathdns.no</a></p>
+	<p>Checkout the latest source code on the <a href="https://github.com/P-star/P-star">P* GitHub repository</a>. Maybe you can find an <a href="https://github.com/P-star/P-star/issues">issue</a> there to work on?</p>
 }
 
 SCENE main {
