@@ -26,6 +26,7 @@ HTML_TEMPLATE body {
 }
 
 HTML_TEMPLATE home {
+	<h2>What is P*?</h2>
 	<p>P* (pronounced P-star) is a programming language specifically designed for web development. P* provides easy in-language support for common tasks in this field.</p>
 	<p>P* programs are scripts, and they are run by the P* interpreter, which you can download under <a href="/cgi-bin/how_to_get">How to get P*?</a>.</p>
 }
