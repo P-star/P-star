@@ -43,10 +43,7 @@ struct shunting_yard_carrier {
 	const wpl_operator_struct *op;
 	shared_ptr<wpl_runable_operator> runable;
 
-	shunting_yard_carrier() {
-		this->value = NULL;
-		this->op = NULL;
-	}
+	shunting_yard_carrier() {}
 	shunting_yard_carrier(wpl_value *value) {
 		this->value = value;
 		this->op = NULL;
