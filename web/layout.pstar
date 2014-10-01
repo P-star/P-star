@@ -40,7 +40,7 @@ SCENE layout_head_scene {
 	};
 
 	array<button> buttons;
-	buttons[@buttons]("what_is", "What is P*?");
+	buttons[@buttons]("home", "Home");
 	buttons[@buttons]("how_to_get", "How to get P*?");
 	buttons[@buttons]("why_pstar", "Why P*?");
 	buttons[@buttons]("documentation", "How to write P*?");
