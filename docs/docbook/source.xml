@@ -355,9 +355,135 @@ The number is $num\n
 */
 			</programlisting>
 		</section>
-			<section>
+		<section>
+			<title>Loops and blocks: if, while, for and foreach</title>
+			<para>An important part of a programming language is to be able to control the program flow. For simplicity, P* has been inspired by other languages and supports the common loop- and conditional blocks.</para>
+			<bridgehead>If block</bridgehead>
+			<para>The <code>if</code>, <code>else if</code> and <code>else</code> blocks is probably the most widely used flow control blocks of all time.
+			The code in an <code>if</code> block is only run if the condition you specify is true.
+			If it is false, the condtition of the next <code>else if</code> is checked, and that block's code is run if the condition was true.</para>
+			<para>You can specify as many <code>else if</code> blocks as you want.
+			When the first true condition is found, that block is run, and none of the remaining conditions below are checked. Never is more than one block in an <code>if</code>-<code>else if</code>-<code>else</code> construct run.</para>
+			<para>In the end, you can specify an <code>else</code> block.
+			This block doesn't have any condition, and is run if all the other conditions was false.</para>
+			<para>Try to run this program and replace <code>Banana</code> on the third line with different values:</para>
+			<programlisting language="c">
+SCENE main {
+	/* Set the string my_fruit to contain Banana */
+	string my_fruit = "Banana";
+
+	/* This string will contain the color of the fruit, but it's empty for now */
+	string color;
+
+	if (my_fruit == "Banana") {
+		/* The fruit was a Banana, set color to "yellow" */
+		color = "yellow";
+	}
+	else if (my_fruit == "Orange") {
+		/* The fruit was an Orange, set color to "orange" */
+		color = "orange";
+	}
+	else {
+		/* The fruit is neither a Banana or an Orange, we don't know it's color */
+		color = "unknown";
+	}
+
+	echo "The color of the fruit $my_fruit is $color\n";
+}
+			</programlisting>
+			<bridgehead>While loop</bridgehead>
+			<para>A <code>while</code> loop is run many times while the specified condition is true.
+			You can use anything as a condition, but in this example, we use only the number <code>1</code> as condition, which makes it run indefinitly.
+			Inside the loop below, we have put a <code>break</code> statement which makes the program immediately jump out of the loop and continue below.</para>
+			<para>This kind of construct is useful to make the code more readable if we hav many different conditions to check for.
+			In this loop we increment the variable <code>counter</code> by <code>1</code> at the end of every run.
+			If the counter is less than 5, we print one message, and if it's more than five but below ten we print another message.
+			When the counter reaches 10, we break out of the loop. Try to run it!
+			</para>
+			<programlisting language="c">
+SCENE main {
+	/* Set our counter to zero */
+	int counter = 0;
+
+	/* This loop runs indefinitly untill we end it with a break */
+	while (1) {
+		if (counter &lt; 5) {
+			/* Check if counter is less than five */
+			echo "The counter is currently less than five\n";
+		}
+		else if (counter &lt; 10) {
+			/* Check if counter is less than ten */
+			echo "The counter is currently less than ten\n";
+		}
+		else {
+			/* Counter is not less than ten if we end up here */
+			echo "The counter is now 10, end the loop now\n";
+			break;
+		}
+
+		/* Increment the counter */
+		counter++;
+	}
+}
+			</programlisting>
+
+			<bridgehead>For loop</bridgehead>
+			<para>The <code>for</code> loop is mostly used to keep a counter which increments each run and then end when it reaches a certain value.
+			In addition to the condition the <code>while</code> loop has, it provides two extra fields: One which is run before the loop starts the first time and one which is run at the end of each iteration.</para>
+			<para>The example below gives the same output as the program with the <code>while</code> loop.
+			Note that we have put the <code>counter = 0</code> and <code>counter++</code> expressions in a different location, but they are still run at the same time as in the <code>while</code> loop.</para>
+			<programlisting language="c">
+SCENE main {
+	/* Create the counter variable */
+	int counter;
+
+	/* Set counter to zero and loop while the counter is less than five */
+	for (counter = 0; counter &lt; 5; counter++) {
+		echo "The counter is currently less than five\n";
+	}
+
+	/* Do nothing the first run (counter is still the same as when we
+	ended the first loop), and run while the counter is less than 10. */
+	for (0; counter &lt; 10; counter++) {
+		echo "The counter is currently less than ten\n";
+	}
+
+	echo "The counter is now 10, end the loop now\n";
+}
+			</programlisting>
+			<para>A <code>while</code> can always be replaced by a <code>for</code> loop and vice versa, choose the one which makes the code easier to read.</para>
+			<bridgehead>Foreach loop</bridgehead>
+			<para>The foreach loop is meant to further simplify how we control a loop.
+The condition of a foreach loop may contain a list or range operation.
+			A variable is specified used to store the value we get from the condition, and the loop runs untill all values in the list have been used once.
+			</para>
+			<para>Go ahead and check if the program below produces the same output as the two previous programs!</para>
+			<programlisting language="c">
+SCENE main {
+	/* Create the counter variable */
+	int counter;
+
+	/* Loop values 0 through 4 and put the value into the counter for each run */
+	foreach (counter; 0..4) {
+		echo "The counter is currently less than five\n";
+	}
+
+	/* The counter is now four, but since we've already done that number,
+	we use the exclusive range operator ... (three dots) which keeps out
+	the lowest and highest number of the range. This loop will run from 5
+	to 9. */
+	foreach (counter; counter...10) {
+		echo "The counter is currently less than ten\n";
+	}
+
+	/* The counter never actually becomes 10, but we just keep this message anyway */
+	echo "The counter is now 10, end the loop now\n";
+}
+			</programlisting>
+		</section>
+		<section>
 			<title>Regular expressions</title>
-			<para>P* have adopted the neat and simple regular expression syntax from the Perl language. Regular expression are delimeted with slashes. Here is an example of a program which uses regular expressions:</para>
+			<para>P* has adopted the neat and simple regular expression syntax from the Perl language. Regular expression are delimeted with slashes. Here is an example of a program which uses regular expressions:</para>
 			<programlisting language="c">
 SCENE main {
 	/* Create a strange string */
@@ -873,6 +999,18 @@ Float result: 11.500000
 						<entry>.=</entry>
 						<entry>Append to string</entry>
 						<entry>a .= b</entry>
+					</row>
+					<row>
+						<entry morerows="1">17</entry>
+						<entry>..</entry>
+						<entry>Range operator inclusive</entry>
+						<entry morerows="1">Left</entry>
+						<entry>foreach (i; 0..10) { /* Loops 0 through 10 */ }</entry>
+					</row>
+					<row>
+						<entry>...</entry>
+						<entry>Range operator exclusive</entry>
+						<entry>foreach (i; 0..10) { /* Loops 1 through 9 */ }</entry>
 					</row>
 					<row>
 						<entry>18</entry>
