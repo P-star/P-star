@@ -71,10 +71,13 @@ HTML_TEMPLATE support {
 }
 	
 HTML_TEMPLATE development {
+	<div>
 	<h2>Help needed!</h2>
-	<img style="float: left" src="patch.svg" />
+	<img style="float: right" width="120px" src="patch.svg" />
 	<p>The P* language is still under development, but it already supports many features. <b>Help is needed to develop P* further.</b> If you have experience with C++ and/or web design, don't hesitate to say hello on one of the mailing lists or contact the author at <a href="mailto:atle@goliathdns.no">atle@goliathdns.no</a></p>
 	<p>Checkout the latest source code on the <a href="https://github.com/P-star/P-star">P* GitHub repository</a>. Maybe you can find an <a href="https://github.com/P-star/P-star/issues">issue</a> there to work on?</p>
+	<div style="clear: both"></div>
+	</div>
 }
 
 SCENE main {
