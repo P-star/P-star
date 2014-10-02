@@ -22,6 +22,9 @@ HTML_TEMPLATE layout_head {
 			<li style="clear:left"></li>
 		</ul>
 	</div>
+}
+
+HTML_TEMPLATE layout_nocolumns_body_begin {
 	<div id="body">
 }
 
@@ -62,10 +65,22 @@ SCENE layout_head_scene {
 	#HTML_TEMPLATE layout_head;
 }
 
-HTML_TEMPLATE layout_foot {
+HTML_TEMPLATE layout_nocolumns_body_end {
 	</div>
+}
+
+HTML_TEMPLATE layout_foot {
 	<div id="foot">Copyright &copy; 2013-2014 <a href="mailto:atle@goliathdns.no">Atle Solbakken</a>.</div>
 	</div>
 	</body>
 	</html>
+}
+
+SCENE layout_nocolumns {
+	#CONTENT_TYPE text/html;
+	#SCENE layout_head_scene;
+	#HTML_TEMPLATE layout_nocolumns_body_begin;
+	#SCENE page;
+	#HTML_TEMPLATE layout_nocolumns_body_end;
+	#HTML_TEMPLATE layout_foot;
 }

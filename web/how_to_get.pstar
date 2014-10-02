@@ -1,7 +1,5 @@
 #!/usr/bin/wpl -f
 
-#INCLUDE layout.pstar;
-
 HTML_TEMPLATE body {
 	<h1>How to get P*?</h1>
 	<p>P* currently runs on Linux-based operating systems and Windows 7, but might also work on similar platforms.</p>
@@ -50,11 +48,14 @@ $ make</pre>
 	<p>Note that the github version of the source is even newer than the tarball, and that the online documentation only is updated for each new tarball version.</p>
 }
 
-SCENE main {
-	#CONTENT_TYPE text/html;
-	#SCENE layout_head_scene;
+SCENE page {
 	#HTML_TEMPLATE body;
-	#HTML_TEMPLATE layout_foot;
+}
+
+#INCLUDE layout.pstar;
+
+SCENE main {
+	#SCENE layout_nocolumns;
 	return 0;
 }
 

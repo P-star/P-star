@@ -1,7 +1,5 @@
 #!/usr/bin/wpl -f
 
-#INCLUDE layout.pstar;
-
 HTML_TEMPLATE page_top {
 	<h1>Why P*?</h1>
 	<p>Many different programming languages are used for web development. This article's target is to show the difference between P* and other languages widely used for this purpose.</p>
@@ -121,18 +119,17 @@ SCENE paragraphs {
 	}
 }
 
-SCENE main : paragraphs {
-	#CONTENT_TYPE text/html;
-
-	#SCENE layout_head_scene;
-
+SCENE page : paragraphs {
 	#HTML_TEMPLATE page_top;
 	print_bullets();
 	#HTML_TEMPLATE page_top_end;
 	print_paragraphs();
+}
 
-	#HTML_TEMPLATE layout_foot;
+#INCLUDE layout.pstar;
 
+SCENE main {
+	#SCENE layout_nocolumns;
 	return 0;
 }
 
