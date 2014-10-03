@@ -743,7 +743,7 @@ Float result: 11.500000
 				</thead>
 				<tbody>
 					<row>
-						<entry morerows="7">2</entry>
+						<entry morerows="8">2</entry>
 						<entry>()</entry>
 						<entry>Function call</entry>
 						<entry>Left or none</entry>
@@ -773,7 +773,7 @@ Float result: 11.500000
 					<row>
 						<entry>*</entry>
 						<entry>First element selector (arrays)</entry>
-						<entry morerows="2">Right</entry>
+						<entry morerows="3">Right</entry>
 						<entry>*my_array</entry>
 					</row>
 					<row>
@@ -785,6 +785,11 @@ Float result: 11.500000
 						<entry>isempty</entry>
 						<entry>Empty check logic (strings)</entry>
 						<entry>isempty my_string</entry>
+					</row>
+					<row>
+						<entry>defined</entry>
+						<entry>Check if array element is defined</entry>
+						<entry>defined my_array[2]</entry>
 					</row>
 					<row>
 						<entry morerows="3">3</entry>
@@ -931,11 +936,16 @@ Float result: 11.500000
 						<entry>a || b</entry>
 					</row>
 					<row>
-						<entry>15</entry>
+						<entry morerows="1">15</entry>
 						<entry>=></entry>
 						<entry>Push discard chain to array</entry>
-						<entry>Right</entry>
+						<entry morerows="1">Right</entry>
 						<entry>10, 20, 30 => my_array</entry>
+					</row>
+					<row>
+						<entry>==></entry>
+						<entry>Same as =>, but clear array first</entry>
+						<entry>10, 20, 30 ==> my_array</entry>
 					</row>
 					<row>
 						<entry morerows="11">16</entry>
