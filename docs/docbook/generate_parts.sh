@@ -1,9 +1,7 @@
 #!/bin/sh
 
-OUTDIR="manual"
-XSLT="/usr/share/xml/docbook/stylesheet/docbook-xsl/xhtml/profile-chunk.xsl"
-
-if [ "$1" ]; then OUTDIR=$1; fi
+OUTDIR="./parts_tmp"
+XSLT="template.xsl"
 
 mkdir -p "$OUTDIR"
 mkdir -p "$OUTDIR/images"

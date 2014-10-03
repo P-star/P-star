@@ -1,0 +1,114 @@
+#!/usr/bin/wpl -f
+
+
+SCENE main {
+	struct chunk {
+		string title;
+		string filename;
+
+		FILE input;
+
+		chunk (string path) {
+			filename = path;
+			filename =~ s/^.+\/([^\/]+)$/$1/;
+
+			input();
+			if (!input->open_rw (path)) {
+				errcho "Could not open file: " . input->error() . "\n";
+			}
+			else {
+				parse_file(input);
+
+				input->flush();
+				input->close();
+			}
+		};
+
+		public string dump() {
+			return "$filename - $title";
+		};
+
+		int parse_file(LINE line) {
+			int header_done = 0;
+			while (line++) {
+				string tmp = line;
+
+				if ((header_done & 3) != 3) {
+					if (!(header_done & 1) && tmp =~ s/^.+<title>(.+)<\/title>.+$/$1/) {
+						title = tmp;
+
+						header_done |= 1;
+						tmp = line;
+					}
+					if (!(header_done & 2) && tmp =~ s/^.+<body>(.+)$/$1/) {
+						header_done |= 2;
+						line = tmp;
+						input->update(line);
+					}
+					if (header_done == 0) {
+						line = "";
+						input->update(line);
+					}
+				}
+				if ((header_done & 3) == 3) {
+					if (tmp =~ s/^(.+)<\/body>.+$/$1/) {
+						line = tmp;
+						input->update(line);
+						break;
+					}
+				}
+			}
+		};
+	};
+
+	array<array<chunk>> chunk_tree;
+
+	STDIN stdin;
+	string path;
+	while ((path = stdin) != "") {
+		array<string> matches;
+		int chapter;
+		int section;
+
+		echo "Fixing chunk $path\n";
+
+		path =~ /[1-9]\d*/g => matches;
+
+		if (@matches == 2) {
+			chapter = matches[0];
+			section = 0;
+		}
+		else if (@matches == 3) {
+			chapter = matches[0];
+			section = matches[1];
+		}
+
+		if (chapter) {
+			chunk_tree[chapter][section](path);
+		}
+	}
+
+	/* Chapter 3 is what we want */
+
+	FILE index_file;
+	if (!index_file->open_truncate("ch3_index")) {
+		errcho "Could not open index file for writing: " . index_file->error() . "\n";
+		return 1;
+	}
+
+	LINE line = index_file;
+	line++;
+
+	int j;
+	for (j = 1; j < @chunk_tree[3]; j++) {
+		if (defined chunk_tree[3][j]) {
+			line = line . chunk_tree[3][j]->dump() . "\n";
+		}
+	}
+
+	index_file->update(line);
+	index_file->flush();
+	index_file->close();
+
+	return 0;
+}
