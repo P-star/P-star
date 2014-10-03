@@ -60,6 +60,7 @@ const wpl_operator_struct OP_ELEMENT("->", 2, WPL_OP_F_LEFT_BOTH, 2);
 const wpl_operator_struct OP_COUNT("@", 2, WPL_OP_F_RIGHT_ONE, 1);
 const wpl_operator_struct OP_INDIRECTION("*", 2, WPL_OP_F_RIGHT_ONE, 1);
 const wpl_operator_struct OP_IS_EMPTY("isempty", 2, WPL_OP_F_RIGHT_ONE, 7);
+const wpl_operator_struct OP_DEFINED("defined", 2, WPL_OP_F_RIGHT_ONE, 7);
 
 const wpl_operator_struct OP_INC_SUFFIX("++", 2, WPL_OP_F_LEFT_ONE, 2);
 const wpl_operator_struct OP_DEC_SUFFIX("--", 2, WPL_OP_F_LEFT_ONE, 2);
@@ -163,6 +164,7 @@ static const struct wpl_operator_struct *operators[] = {
 	&OP_ERRCHO,
 	&OP_INDIRECTION,
 	&OP_COUNT,
+	&OP_DEFINED,
 
 	&OP_DEC_SUFFIX,
 	&OP_DEC_PREFIX,

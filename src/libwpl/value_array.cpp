@@ -111,6 +111,22 @@ int wpl_value_array::do_operator (
 		if (ret & WPL_OP_DISCARD) {
 			exp_state->push_discard(result);
 		}
+
+		/*
+		   Check if result is NULL, in which some value is not defined yet. If next
+		   operator is defined-operator we run it, and if not, we create the value.
+		   */
+		if (result == NULL) {
+			if (!exp_state->empty()) {
+				shunting_yard_carrier next_carrier = exp_state->top();
+				if (next_carrier.op == &OP_DEFINED) {
+					wpl_value_bool result(false);
+					exp_state->pop();
+					return result.do_operator_recursive(exp_state, final_result);
+				}
+			}
+		}
+
 		return result->do_operator_recursive(exp_state, final_result);
 	}
 

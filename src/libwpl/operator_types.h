@@ -41,6 +41,7 @@ extern const wpl_operator_struct OP_ARRAY_SUBSCRIPTING;
 extern const wpl_operator_struct OP_ELEMENT;
 extern const wpl_operator_struct OP_INDIRECTION;
 extern const wpl_operator_struct OP_COUNT;
+extern const wpl_operator_struct OP_DEFINED;
 
 extern const wpl_operator_struct OP_IS_EMPTY;
 
