@@ -51,6 +51,13 @@ void wpl_array::push(wpl_value *value) {
 	set(array.size(), value);
 }
 
+void wpl_array::clear() {
+	for (wpl_value *value : array) {
+		delete value;
+	}
+	array.clear();
+}
+
 wpl_array::~wpl_array() {
 	for (wpl_value *value : array) {
 		delete value;

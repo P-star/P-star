@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -66,6 +66,12 @@ int wpl_value_array::do_operator (
 	this->rhs = rhs;
 
 	int ret = WPL_OP_UNKNOWN;
+
+	if (op == &OP_REPLACE_DISCARD) {
+		/* Empty the array and then run save discard */
+		clear();
+		op = &OP_SAVE_DISCARD;
+	}
 
 	if (op == &OP_ARRAY_SUBSCRIPTING) {
 		ret = array_subscripting();

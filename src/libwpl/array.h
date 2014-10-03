@@ -45,6 +45,7 @@ class wpl_array {
 	public:
 	void set(int index, wpl_value *value);
 	void push(wpl_value *value);
+	void clear();
 
 	protected:
 	wpl_array () {};

@@ -49,6 +49,7 @@ extern const wpl_operator_struct OP_DEC_SUFFIX;
 extern const wpl_operator_struct OP_INC_PREFIX;
 extern const wpl_operator_struct OP_DEC_PREFIX;
 
+extern const wpl_operator_struct OP_REPLACE_DISCARD;
 extern const wpl_operator_struct OP_SAVE_DISCARD;
 
 extern const wpl_operator_struct OP_ASSIGN_SUM;
