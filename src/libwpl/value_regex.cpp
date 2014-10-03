@@ -319,7 +319,6 @@ bool wpl_value_regex::do_pattern_match (
 		result = true;
 
 		for (int i = 0; i < what.size(); i++) {
-			string match(what[i].first, what[i].second);
 			matches.emplace_back(new wpl_value_string(string(what[i].first, what[i].second)));
 		}
 
