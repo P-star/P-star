@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -49,6 +49,8 @@ class wpl_block_state : public wpl_namespace_session, public wpl_state {
 	unique_ptr<wpl_state> next_else_if_state;
 //	void register_child (wpl_runable *runable, int index);
 
+	int run_count = 0;
+
 	public:
 	/**
 	 * @brief This constructor is used by function blocks
@@ -87,6 +89,8 @@ class wpl_block_state : public wpl_namespace_session, public wpl_state {
 	int run_init (wpl_runable *runable, wpl_value *final_result);
 	int run_run_condition (wpl_runable *runable, wpl_value *final_result);
 	int run_increment (wpl_runable *runable, wpl_value *final_result);
+
+	void reset() override;
 
 	int run_next_else_if (wpl_runable *runable, wpl_value *final_result);
 };

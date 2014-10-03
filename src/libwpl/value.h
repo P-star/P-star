@@ -157,6 +157,10 @@ class wpl_value : public wpl_suicidal {
 		throw runtime_error ("Cannot resize value of this type");
 	}
 
+	virtual void reset() {
+		// Do nothing as default. Structs and arrays override this.
+	}
+
 	virtual int do_fastop (
 			wpl_expression_state *exp_state,
 			wpl_value *final_result,

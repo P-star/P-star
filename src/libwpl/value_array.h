@@ -38,7 +38,6 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 	wpl_value *result;
 
 	wpl_value *define_if_needed(int index);
-	int array_subscripting();
 	int discard() {result = lhs; return (WPL_OP_OK|WPL_OP_DISCARD|WPL_OP_RETURN_REFERENCE); }
 
 	public:
@@ -64,6 +63,10 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 
 		return WPL_OP_OK;
 	}
+
+	void reset() override {
+		clear();
+	};
 
 	bool set_strong (wpl_value *value);
 	int do_operator (

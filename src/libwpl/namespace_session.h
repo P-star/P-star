@@ -98,6 +98,7 @@ class wpl_namespace_session {
 
 	bool set_variables_from_expression (wpl_expression_state *exp_state, int discard_pos);
 	void replace_variables (wpl_namespace_session *source);
+	void reset_variables();
 
 	void push(wpl_variable *variable);
 
