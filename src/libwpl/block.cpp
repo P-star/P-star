@@ -403,6 +403,7 @@ bool wpl_block::check_run(wpl_block_state *block_state) {
 
 int wpl_block::run(wpl_state *state, wpl_value *final_result) {
 	wpl_block_state *block_state = (wpl_block_state*) state;
+	block_state->reset();
 
 #ifdef WPL_DEBUG_BLOCKS
 	DBG("B: (" << this << "): Run" << endl);

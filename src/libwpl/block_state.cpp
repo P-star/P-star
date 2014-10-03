@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -37,6 +37,15 @@ void wpl_block_state::register_child (wpl_runable *runable, int index) {
 	child_states[index].reset(runable->new_state());
 }
 */
+
+/**
+ * @brief Reset all variables
+ */
+void wpl_block_state::reset() {
+	if (++run_count > 1) {
+		wpl_namespace_session::reset_variables();
+	}
+}
 
 void wpl_block_state::clear_child_states() {
 	for (int i = 0; i < WPL_BLOCK_MAX_CHILDREN; i++) {

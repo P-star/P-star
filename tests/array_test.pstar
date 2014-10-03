@@ -12,5 +12,22 @@ SCENE main {
 		echo "The value of element $i is " . my_first_array[i] . "\n";
 		i++;
 	}
+	echo "The first value of the array is " . *my_first_array . "\n";
+
+
+	/* Create array with holes and test the defined operator */
+	array<int> my_second_array;
+	my_second_array[2] = 20;
+	my_second_array[10] = 100;
+
+	for (i = 0; i < @my_second_array; i++) {
+		if (defined my_second_array[i]) {
+			echo "Array index $i has value " . my_second_array[i] . "\n";
+		}
+		else {
+			echo "Array index $i is not defined\n";
+		}
+	}
+
 	return 0;
 }

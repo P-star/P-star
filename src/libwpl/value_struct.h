@@ -62,6 +62,11 @@ class wpl_value_struct : public wpl_value, public wpl_namespace_session {
 	virtual wpl_value_struct *clone() const { return new wpl_value_struct(*this); };
 	virtual wpl_value_struct *clone_empty() const { return new wpl_value_struct(*this); };
 
+	void reset() override {
+		wpl_namespace_session::reset_variables();
+		first_run = true;
+	}
+
 	void set_ctor_called() {
 		first_run = false;
 	}

@@ -54,6 +54,7 @@ class wpl_state {
 	wpl_io &get_io() {
 		return *io;
 	}
+	virtual void reset() {};
 	virtual ~wpl_state() {}
 };
 

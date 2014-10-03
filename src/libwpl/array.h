@@ -40,16 +40,21 @@ class wpl_value;
  * @brief Array implementation
  */
 class wpl_array {
+	friend class wpl_program;
+	friend class wpl_value_get;
+	friend class wpl_value_post;
+
 	vector<wpl_value*> array;
 
 	public:
-	void set(int index, wpl_value *value);
-	void push(wpl_value *value);
+	void clear();
 
 	protected:
 	wpl_array () {};
 	wpl_array (const wpl_array &copy);
 	wpl_value *get(int index);
+	void set(int index, wpl_value *value);
+	void push(wpl_value *value);
 	void replace (wpl_array &new_array);
 	void output_json(wpl_io &io);
 	~wpl_array();
