@@ -39,22 +39,6 @@ wpl_value *wpl_value_array::define_if_needed(int index) {
 	return value;
 }
 
-int wpl_value_array::array_subscripting() {
-	if (!(lhs == this)) {
-		throw runtime_error ("Left side of [] was not this array");
-	}
-	int index = rhs->toInt();
-	if (index < 0) {
-		throw runtime_error ("Negative index received in array subscription []");
-	}
-
-	wpl_value *value = define_if_needed(index);
-
-	result = value;
-
-	return (WPL_OP_OK|WPL_OP_NAME_RESOLVED);
-}
-
 int wpl_value_array::do_operator (
 		wpl_expression_state *exp_state,
 		wpl_value *final_result,
@@ -74,7 +58,29 @@ int wpl_value_array::do_operator (
 	}
 
 	if (op == &OP_ARRAY_SUBSCRIPTING) {
-		ret = array_subscripting();
+		int index = rhs->toInt();
+		if (index < 0) {
+			throw runtime_error ("Negative index received in array subscription []");
+		}
+
+		wpl_value *value = get(index);
+
+		if (!exp_state->empty()) {
+			shunting_yard_carrier &next_carrier = exp_state->top();
+			if (next_carrier.op == &OP_DEFINED) {
+				exp_state->pop();
+
+				wpl_value_bool result(value != NULL);
+				return result.do_operator_recursive(exp_state, final_result);
+			}
+		}
+
+		if (value == NULL) {
+			value = template_type->new_instance();
+			set (index, value);
+		}
+
+		return value->do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_INDIRECTION) {
 		wpl_value *value = define_if_needed(0);
@@ -110,21 +116,6 @@ int wpl_value_array::do_operator (
 	if (ret & WPL_OP_OK) {
 		if (ret & WPL_OP_DISCARD) {
 			exp_state->push_discard(result);
-		}
-
-		/*
-		   Check if result is NULL, in which some value is not defined yet. If next
-		   operator is defined-operator we run it, and if not, we create the value.
-		   */
-		if (result == NULL) {
-			if (!exp_state->empty()) {
-				shunting_yard_carrier next_carrier = exp_state->top();
-				if (next_carrier.op == &OP_DEFINED) {
-					wpl_value_bool result(false);
-					exp_state->pop();
-					return result.do_operator_recursive(exp_state, final_result);
-				}
-			}
 		}
 
 		return result->do_operator_recursive(exp_state, final_result);

@@ -1,3 +1,15 @@
 The value of element 0 is 10
 The value of element 1 is 20
 The value of element 2 is 30
+The first value of the array is 10
+Array index 0 is not defined
+Array index 1 is not defined
+Array index 2 has value 20
+Array index 3 is not defined
+Array index 4 is not defined
+Array index 5 is not defined
+Array index 6 is not defined
+Array index 7 is not defined
+Array index 8 is not defined
+Array index 9 is not defined
+Array index 10 has value 100
