@@ -63,6 +63,14 @@ void wpl_namespace_session::replace_variables (wpl_namespace_session *source) {
 	}
 }
 
+void wpl_namespace_session::reset_variables() {
+	for (int i = 0; i < variables_ptr.size(); i++) {
+		wpl_value *value = variables_ptr[0]->get_value();
+
+		value->reset();
+	}
+}
+
 bool wpl_namespace_session::set_variables_from_expression (wpl_expression_state *exp_state, int discard_pos) {
 
 	discard_pos++;
