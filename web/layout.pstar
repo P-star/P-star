@@ -44,6 +44,7 @@ SCENE layout_head_scene {
 	buttons[@buttons]("how_to_get", "How to get P*?");
 	buttons[@buttons]("why_pstar", "Why P*?");
 	buttons[@buttons]("documentation", "How to write P*?");
+	buttons[@buttons]("code_snippets", "Code snippets");
 
 	ENV env;
 	int i = "-1";
