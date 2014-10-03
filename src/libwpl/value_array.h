@@ -65,6 +65,10 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 		return WPL_OP_OK;
 	}
 
+	void reset() override {
+		clear();
+	};
+
 	bool set_strong (wpl_value *value);
 	int do_operator (
 			wpl_expression_state *exp_state,
