@@ -191,9 +191,8 @@ div#columns_sidebar ul {
 }
 div#columns_sidebar ul > li {
 	margin: 0;
-	padding: 0.5em;
-	height: 1.2em;
-	line-height: 1.2em;
+	height: 2em;
+	line-height: 2em;
 }
 div#columns_sidebar ul > li span {
 	position: absolute;
