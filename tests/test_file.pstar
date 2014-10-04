@@ -64,7 +64,8 @@ SCENE main {
 	echo "Adding extra line to outfile...\n";
 
 	line_out = file_out->end();
-	line_out = "Line D\n\nLine E\n\n\nLine F\n";
+	line_out = "Line D\n\nLine E\n\n\n";
+	echo "Append line: " . (line_out .= "Line F\n") . "\n";
 	file_out->update(line_out);
 	file_out->flush();
 	echo "DONE\n\n";

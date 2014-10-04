@@ -56,6 +56,10 @@ class wpl_value_time : public wpl_value, public wpl_time, public wpl_parasite_ho
     void output_json(wpl_io &io) override;
     void output(wpl_io &io) override;
 
+    	bool toBool() override {
+		return get_is_set();
+	}
+
 	int do_operator (
 			wpl_expression_state *exp_state,
 			wpl_value *final_result,

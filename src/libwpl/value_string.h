@@ -108,6 +108,9 @@ class wpl_value_string : public wpl_value_strings<string>, public wpl_parasite_h
 	string toString() {
 		return value;
 	}
+	string &rawToString() {
+		return value;
+	}
 	char* toVoid(){
 		return (char*)value.c_str();
 	}

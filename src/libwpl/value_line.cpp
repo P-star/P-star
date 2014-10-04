@@ -35,6 +35,18 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <sstream>
 
+void wpl_value_line::check_modify() {
+	if (!file || !file->is_open()) {
+		throw runtime_error("Cannot set value of LINE when associated FILE object is not open");
+	}
+	if (!file->is_writeable()) {
+		throw runtime_error("Cannot modify LINE object associated with read-only FILE");
+	}
+	if (!chunk) {
+		throw runtime_error("Cannot set value of LINE as it does not yet point to any data. Try line++ first?");
+	}
+}
+
 void wpl_value_line::set_weak(wpl_value *value) {
 	{
 		wpl_value_line *value_line = dynamic_cast<wpl_value_line*>(value);
@@ -62,28 +74,8 @@ void wpl_value_line::set_weak(wpl_value *value) {
 	}
 
 notfile:
-	if (!file || !file->is_open()) {
-		throw runtime_error("Cannot set value of LINE when associated FILE object is not open");
-	}
-	if (!file->is_writeable()) {
-		throw runtime_error("Cannot modify LINE object associated with read-only FILE");
-	}
-	if (!chunk) {
-		throw runtime_error("Cannot set value of LINE as it does not yet point to any data. Try line++ first?");
-	}
-
-	try {
-		chunk->set_data(value->toString());
-	}
-	catch (runtime_error &e) {
-		ostringstream msg;
-		msg << "Could not set value of LINE to a value of type " <<
-			value->get_type_name() <<
-			". The value must be of type FILE or be string-compatible.";
-		throw runtime_error(msg.str());
-	}
-
-	return;
+	check_modify();
+	chunk->set_data(value->toString());
 }
 
 string wpl_value_line::toString() {
@@ -109,6 +101,14 @@ int wpl_value_line::do_operator (
 	if (!file) {
 		throw runtime_error("Only assign operator = is valid for LINE objects"
 			       " not yet associated with any FILE. Try line=file first?");
+	}
+
+	if (op == &OP_ASSIGN_CONCAT) {
+		check_modify();
+		chunk->append_data (rhs->toString());
+
+		wpl_value_string result (chunk->get_data());
+		return result.do_operator_recursive(exp_state, final_result);
 	}
 
 	if (op == &OP_INC_SUFFIX || op == &OP_INC_PREFIX) {

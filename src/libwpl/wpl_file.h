@@ -78,6 +78,9 @@ class wpl_file_chunk {
 	void set_data(const string &data) {
 		this->data = data;
 	}
+	void append_data(const string &data) {
+		this->data += data;
+	}
 	void set_pos(int pos) {
 		this->pos = pos;
 		this->data.clear();

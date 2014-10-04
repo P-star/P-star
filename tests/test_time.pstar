@@ -8,7 +8,20 @@ SCENE main {
 		int s = t->sec;
 		echo "$y $m $d $h $mm $s\n";
 	}
+
+	TIME set_test;
+	if (!set_test) {
+		echo "Time is not set\n";
+	}
+
 	TIME time = "2014*03*01 23:01";
+	if (time) {
+		echo "Time is set\n";
+	}
+	if (!!time) {
+		echo "Time is set\n";
+	}
+
 	print_time(time);
 	time = "1986-01-20";
 	int sum = time->year + time->month + time->day;

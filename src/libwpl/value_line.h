@@ -38,6 +38,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 class wpl_operator_struct;
 
 class wpl_value_line : public wpl_value {
+	private:
+	void check_modify();
+
 	protected:
 	shared_ptr<wpl_file> file;
 	shared_ptr<wpl_file_chunk> chunk;
