@@ -1,5 +1,8 @@
 #!/bin/sh
 
+mkdir -p parts_tmp
+rm parts_tmp/* 
+
 ./generate_web_docs.sh
 
 mkdir -p /var/www/pstar/docs

@@ -35,7 +35,7 @@ HTML_TEMPLATE layout_columns_body_begin {
 
 HTML_TEMPLATE layout_columns_body_intermediate {
 	</div>
-	<div id="columns_body">
+	<div id="columns_body"><div>
 }
 
 SCENE layout_head_scene {
@@ -58,6 +58,7 @@ SCENE layout_head_scene {
 	buttons[@buttons]("why_pstar", "Why P*?");
 	buttons[@buttons]("quickstart", "Quick Start Guide");
 	buttons[@buttons]("code_snippets", "Code snippets");
+	buttons[@buttons]("documentation", "Documentation");
 
 	ENV env;
 	int i = "-1";
@@ -80,6 +81,7 @@ HTML_TEMPLATE layout_nocolumns_body_end {
 }
 
 HTML_TEMPLATE layout_columns_body_end {
+	</div>
 	</div>
 	</div>
 }

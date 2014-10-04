@@ -1,0 +1,87 @@
+#!/usr/bin/wpl -f
+
+HTML_TEMPLATE body {
+	{@tmp}
+}
+
+HTML_TEMPLATE buttons {
+	<div>
+		<div class="title"><h1>Articles</h1></div>
+		<ul>
+		{@LOOP (++i < @buttons)
+			<li class="{@buttons[i]->class}"><a href="?page={@buttons[i]->filename}"><span style="width:100%">{@buttons[i]->title}</span></a></li>
+		}
+		</ul>
+	</div>
+}
+
+SCENE sidebar {
+	int i = "-1";
+	#HTML_TEMPLATE buttons;
+}
+
+SCENE page {
+	FILE page;
+	if (!page->open_ro ("/var/www/pstar/docs/" . buttons[chosen_button]->filename)) {
+		errcho "Could not open index file: " . page->error() . "\n";
+		return 1;
+	}
+	LINE line = page;
+
+	string tmp;
+	while (line++) {
+		tmp .= line;
+	}
+	page->close();
+
+	#HTML_TEMPLATE body;
+}
+
+#INCLUDE layout_columns.pstar;
+
+SCENE main {
+	struct button {
+		public string filename;
+		public string title;
+		public string class;
+
+		button (string in) {
+			array<string> matches;
+			in =~ /^(.+) - (.+)\n$/ => matches;
+
+			filename = matches[1];
+			title = matches[2];
+		};
+	};
+
+	array<button> buttons;
+
+	FILE index;
+	if (!index->open_ro ("/var/www/pstar/docs/ch3_index")) {
+		errcho "Could not open index file: " . index->error() . "\n";
+		return 1;
+	}
+
+	LINE line = index;
+	int i = 0;
+	int chosen_button = 0;
+
+	GET get;
+	while (line++) {
+		buttons[i](line);
+
+		if (*get["page"] == buttons[i]->filename) {
+			chosen_button = i;
+		}
+
+		i++;
+	}
+
+	buttons[chosen_button]->class = "selected";
+
+	index->close();
+
+	#SCENE layout_columns;
+	return 0;
+}
+
