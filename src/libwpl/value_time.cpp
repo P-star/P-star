@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 Copyright (c) MMXIV Sebastian Baginski
 sebthestampede@gmail.com
@@ -196,6 +196,11 @@ int wpl_value_time::do_operator (
 		set_weak(rhs);
         notify_parasites();
 		return do_operator_recursive(exp_state, final_result);
+	}
+	else if (op == &OP_LOGIC_NOT) {
+		wpl_value_bool result (!get_is_set());
+
+		return result.do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_FUNCTION_CALL) {
 		throw runtime_error("Unexpected function call () after TIME object");

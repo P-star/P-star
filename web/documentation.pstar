@@ -1,7 +1,5 @@
 #!/usr/bin/wpl -f
 
-#INCLUDE layout.pstar;
-
 HTML_TEMPLATE body {
 <h1>Documentation</h1>
 <h2>Quick start guide</h2>
@@ -162,20 +160,16 @@ SCENE main {
 <p>You can also find example programs in the source directory under <i>/tests/</i></p>
 }
 
-SCENE main {
-	GET get;
+SCENE page {
+	#HTML_TEMPLATE body;
+}
 
-	if (*get["do_ajax"]) {
-		#JSON_BEGIN;
-		#HTML_TEMPLATE_AS_VAR body;
-		#JSON_END;
-	}
-	else {
-		#CONTENT_TYPE text/html;
-		#SCENE layout_head_scene;
-		#HTML_TEMPLATE body;
-		#HTML_TEMPLATE layout_foot;
-	}
+#INCLUDE layout.pstar;
+
+SCENE main {
+/*	GET get;*/
+
+	#SCENE layout_nocolumns;
 	return 0;
 }
 

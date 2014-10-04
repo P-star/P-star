@@ -1,8 +1,5 @@
 #!/usr/bin/wpl -f
 
-#INCLUDE layout.pstar;
-#INCLUDE news.pstar;
-
 HTML_TEMPLATE body {
 	<div id="fb-root"></div>
 	<script>(function(d, s, id) {
@@ -81,9 +78,9 @@ HTML_TEMPLATE development {
 	</div>
 }
 
-SCENE main {
-	#CONTENT_TYPE text/html;
-	#SCENE layout_head_scene;
+#INCLUDE news.pstar;
+
+SCENE page {
 	#HTML_TEMPLATE body;
 	#HTML_TEMPLATE home;
 	#HTML_TEMPLATE development;
@@ -91,7 +88,12 @@ SCENE main {
 	#HTML_TEMPLATE important_features;
 	#SCENE news;
 	#HTML_TEMPLATE support;
-	#HTML_TEMPLATE layout_foot;
+}
+
+#INCLUDE layout.pstar;
+
+SCENE main {
+	#SCENE layout_nocolumns;
 	return 0;
 }
 
