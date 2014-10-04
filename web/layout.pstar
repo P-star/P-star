@@ -46,7 +46,7 @@ SCENE layout_head_scene {
 	buttons[@buttons]("home", "Home");
 	buttons[@buttons]("how_to_get", "How to get P*?");
 	buttons[@buttons]("why_pstar", "Why P*?");
-	buttons[@buttons]("documentation", "How to write P*?");
+	buttons[@buttons]("quickstart", "Quick Start Guide");
 	buttons[@buttons]("code_snippets", "Code snippets");
 
 	ENV env;

@@ -1,13 +1,11 @@
 #!/usr/bin/wpl -f
 
 HTML_TEMPLATE body {
-<h1>Documentation</h1>
-<h2>Quick start guide</h2>
+<h1>Quick start guide</h1>
 
 <p><i>This guide uses simple HTML code in the examples, and requires some basic knowledge of it.</i></p>
 
 <p><i>Before you read any further, you should obtain and install a copy of the P* interpreter <a href="/cgi-bin/how_to_get">from the download page</a></i>.</p>
-<p><i>More documentation is available in <a href="/manual">the reference manual</a></i></p>
 
 <p>P* programs are run as scripts. This means that you can simply write a program into a text file, and tell the P* interpreter to run it. </p>
 
