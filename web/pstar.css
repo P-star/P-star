@@ -4,7 +4,7 @@ body {
 	margin: 10px;
 	font-family: sans-serif;
 	color: #fff;
-	font-size: 16px;
+	font-size: 0.8em;
 }
 
 h1, h2, h3 {
@@ -41,7 +41,7 @@ div.article p {
 }
 
 div#parent {
-	width: 900px;
+	width: 944px;
 	margin: 0 auto;
 }
 
@@ -66,33 +66,32 @@ div#logo > span {
 
 div#menu > ul {
 	margin: 0;
+	margin-bottom: 0.5em;
 	padding: 0;
+	height: 13.5em;
+	 -webkit-column-count: 2;
+	 -moz-column-count: 2;
+	 column-count: 2;
 }
 
 div#menu > ul > li {
 	list-style-type: none;
 	padding: 0;
-	float: left;
-	width: 50%;
-}
-
-div#menu > ul > li:nth-child(odd) > div {
-	margin-right: 5px;
-}
-
-div#menu > ul > li:nth-child(even) > div {
-	margin-left: 5px;
+	margin: 0;
+	width: 100%;
+	padding-top: 0.5em;
 }
 
 div#menu > ul > li > div {
 	position: relative;
-	margin-top: 10px;
 	background-image: url("/star_small.png");
 	background-position: 10px center;
 	background-repeat: no-repeat;
 	background-color: #666;
 	border-radius: 20px;
-	height: 3em;
+	height: 4em;
+	line-height: 4em;
+	width: 100%;
 }
 div#menu > ul > li > div:hover, div#menu > ul > li.checked > div {
 	background-color: #f9b000;
@@ -100,13 +99,10 @@ div#menu > ul > li > div:hover, div#menu > ul > li.checked > div {
 
 div#menu > ul > li > div > a > span {
 	position: absolute;
-	left: 0;
-	top: 0;
+	left: 70px;
+	right: 0px;
 	height: 100%;
-	padding-top: 5px;
-	padding-left: 70px;
-	width: 100%;
-	font-size: 2em;
+	font-size: 2.2em;
 	font-weight: bold;
 }
 
@@ -120,6 +116,53 @@ div#menu > ul > li > div > a:visited
 	text-decoration: none;
 }
 
+div#columns_master {
+}
+
+div#columns_sidebar {
+	float: left;
+	width: 25%;
+	min-height: 300px;
+}
+
+div#columns_sidebar > div {
+	background-color: #eee;
+	border: 1px solid #000;
+	border-radius: 20px;
+	position: relative;
+}
+
+div#columns_sidebar > div > div.title {
+	background-color: #666;
+	width: 100%;
+	height: 3em;
+	line-height: 3em;
+	border-radius: 20px;
+}
+
+div#columns_sidebar > div > div.title > h1 {
+	margin: 0px;
+	font-size: 1.5em;
+	text-align: center;
+}
+
+div#columns_body {
+	position: relative;
+	margin-left: 26%;
+	padding: 20px;
+	width: auto;
+	color: #000;
+	min-height: 300px;
+	background-color: #eee;
+	border: 1px solid #000;
+	border-radius: 20px;
+}
+
+div#columns_body > div {
+	width: 100%;
+	display: inline-block;
+}
+
 div#body {
 	min-height: 300px;
 	color: #000;
@@ -127,7 +170,6 @@ div#body {
 	background-image: url("/star_white.png");
 	background-repeat: no-repeat;
 	background-position: right top;
-	margin-top: 12em;
 	background-color: #eee;
 	border: 1px solid #000;
 	border-radius: 20px;
@@ -140,4 +182,59 @@ div#foot {
 	padding: 20px;
 	border-radius: 20px;
 	color: #000;
+	clear: left;
+}
+
+div#columns_sidebar ul {
+	list-style-type: none;
+	padding: 0;
+}
+div#columns_sidebar ul > li {
+	margin: 0;
+	height: 2em;
+	line-height: 2em;
+}
+div#columns_sidebar ul > li span {
+	position: absolute;
+	right: 0px;
+	left: 0px;
+	padding-left: 10px;
+}
+div#columns_sidebar ul > li:nth-child(odd) {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+div#columns_sidebar ul > li:hover {
+	background-color: #f9b000;
+}
+div#columns_sidebar ul > li.selected {
+	background-color: #f9b000;
+}
+
+/* tables */
+table {
+	border: 0;
+	border-spacing: 0;
+}
+
+table > thead > tr {
+	background-color: rgba(0,0,0,0.2);
+}
+
+table > tbody > tr:nth-child(even) {
+	background-color: rgba(255,255,255,0.6);
+}
+
+td, th {
+	border: 0;
+	margin: 0;
+}
+
+/* docbook styles */
+div.section {
+	overflow: none;
+	width: 100%;
+}
+
+pre.programlisting {
+	overflow: hidden;
 }

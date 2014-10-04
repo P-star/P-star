@@ -28,6 +28,16 @@ HTML_TEMPLATE layout_nocolumns_body_begin {
 	<div id="body">
 }
 
+HTML_TEMPLATE layout_columns_body_begin {
+	<div id="columns_master">
+	<div id="columns_sidebar">
+}
+
+HTML_TEMPLATE layout_columns_body_intermediate {
+	</div>
+	<div id="columns_body"><div>
+}
+
 SCENE layout_head_scene {
 	string url_prefix = "/";
 
@@ -46,8 +56,9 @@ SCENE layout_head_scene {
 	buttons[@buttons]("home", "Home");
 	buttons[@buttons]("how_to_get", "How to get P*?");
 	buttons[@buttons]("why_pstar", "Why P*?");
-	buttons[@buttons]("documentation", "How to write P*?");
+	buttons[@buttons]("quickstart", "Quick Start Guide");
 	buttons[@buttons]("code_snippets", "Code snippets");
+	buttons[@buttons]("documentation", "Documentation");
 
 	ENV env;
 	int i = "-1";
@@ -66,6 +77,12 @@ SCENE layout_head_scene {
 }
 
 HTML_TEMPLATE layout_nocolumns_body_end {
+	</div>
+}
+
+HTML_TEMPLATE layout_columns_body_end {
+	</div>
+	</div>
 	</div>
 }
 
