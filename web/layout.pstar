@@ -54,7 +54,7 @@ SCENE layout_head_scene {
 
 	array<button> buttons;
 	buttons[@buttons]("home", "Home");
-	buttons[@buttons]("how_to_get", "How to get P*?");
+	buttons[@buttons]("download", "Download");
 	buttons[@buttons]("why_pstar", "Why P*?");
 	buttons[@buttons]("quickstart", "Quick Start Guide");
 	buttons[@buttons]("code_snippets", "Code snippets");
