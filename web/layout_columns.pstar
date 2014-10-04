@@ -1,0 +1,12 @@
+#INCLUDE layout.pstar;
+
+SCENE layout_columns {
+	#CONTENT_TYPE text/html;
+	#SCENE layout_head_scene;
+	#HTML_TEMPLATE layout_columns_body_begin;
+	#SCENE sidebar;
+	#HTML_TEMPLATE layout_columns_body_intermediate;
+	#SCENE page;
+	#HTML_TEMPLATE layout_columns_body_end;
+	#HTML_TEMPLATE layout_foot;
+}

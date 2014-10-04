@@ -5,14 +5,21 @@ HTML_TEMPLATE body {
 	<p>This section is <b>coming soon</b>. If you just can't wait, <b>feel free to create this page on <a href="https://github.com/P-star/P-star/issues/32">GitHub</a></b>!</p>
 }
 
+HTML_TEMPLATE snippets {
+}
+
+SCENE sidebar {
+	#HTML_TEMPLATE snippets;
+}
+
 SCENE page {
 	#HTML_TEMPLATE body;
 }
 
-#INCLUDE layout.pstar;
+#INCLUDE layout_columns.pstar;
 
 SCENE main {
-	#SCENE layout_nocolumns;
+	#SCENE layout_columns;
 	return 0;
 }
 

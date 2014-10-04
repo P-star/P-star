@@ -120,6 +120,31 @@ div#menu > ul > li > div > a:visited
 	text-decoration: none;
 }
 
+div#columns_master {
+	margin-top: 12em;
+}
+
+div#columns_sidebar {
+	float: left;
+	width: 25%;
+	min-height: 300px;
+	background-color: #eee;
+	border: 1px solid #000;
+	border-radius: 20px;
+}
+
+div#columns_body {
+	position: relative;
+	margin-left: 26%;
+	padding: 20px;
+	width: auto;
+	color: #000;
+	min-height: 300px;
+	background-color: #eee;
+	border: 1px solid #000;
+	border-radius: 20px;
+}
+
 div#body {
 	min-height: 300px;
 	color: #000;
@@ -140,4 +165,5 @@ div#foot {
 	padding: 20px;
 	border-radius: 20px;
 	color: #000;
+	clear: left;
 }
