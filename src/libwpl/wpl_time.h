@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -40,6 +40,7 @@ class wpl_time {
 	time_t timestamp;
 	const char *format;
 	string format_string;
+	bool is_set = false;
 
 	public:
 	wpl_time() : timestamp(0), format(format_rfc2822) {}
@@ -50,9 +51,15 @@ class wpl_time {
 		// sure that we keep the memory valid
 		format_string = copy.format;
 		format = format_string.c_str();
+		is_set = copy.is_set;
+	}
+
+	bool get_is_set() {
+		return is_set;
 	}
 
 	void set_time (time_t src) {
+		is_set = true;
 		timestamp = src;
 	}
 
@@ -97,6 +104,7 @@ class wpl_time {
 	}
 
 	void set_now() {
+		is_set = true;
 		time(&timestamp);
 	}
 };
