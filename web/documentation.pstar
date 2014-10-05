@@ -1,10 +1,6 @@
 #!/usr/bin/wpl -f
 
-HTML_TEMPLATE body {
-	{@tmp}
-}
-
-HTML_TEMPLATE buttons {
+HTML_TEMPLATE sidebar_buttons {
 	<div>
 		<div class="title"><h1>Articles</h1></div>
 		<ul>
@@ -17,24 +13,11 @@ HTML_TEMPLATE buttons {
 
 SCENE sidebar {
 	int i = "-1";
-	#HTML_TEMPLATE buttons;
+	#HTML_TEMPLATE sidebar_buttons;
 }
 
 SCENE page {
-	FILE page;
-	if (!page->open_ro ("/var/www/pstar/docs/" . buttons[chosen_button]->filename)) {
-		errcho "Could not open index file: " . page->error() . "\n";
-		return 1;
-	}
-	LINE line = page;
-
-	string tmp;
-	while (line++) {
-		tmp .= line;
-	}
-	page->close();
-
-	#HTML_TEMPLATE body;
+	#DUMP_FILE @"/var/www/pstar/docs/" . buttons[chosen_button]->filename;
 }
 
 #INCLUDE layout_columns.pstar;
@@ -45,7 +28,6 @@ SCENE main : buttons {
 	int chosen_button = 0;
 
 	GET get;
-	int i = 0;
 	for (i < 0; i < @buttons; i++) {
 		if (*get["page"] == buttons[i]->filename) {
 			chosen_button = i;
