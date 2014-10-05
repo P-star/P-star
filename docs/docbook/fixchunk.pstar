@@ -25,7 +25,9 @@ SCENE main {
 		};
 
 		public string dump() {
-			return "$filename - $title";
+			if (filename != "" && title != "") {
+				return "buttons[@buttons](\"$filename\", \"$title\");";
+			}
 		};
 
 		int parse_file(LINE line) {
@@ -91,7 +93,7 @@ SCENE main {
 	/* Chapter 3 is what we want */
 
 	FILE index_file;
-	if (!index_file->open_truncate("ch3_index")) {
+	if (!index_file->open_truncate("ch3_index.pstar")) {
 		errcho "Could not open index file for writing: " . index_file->error() . "\n";
 		return 1;
 	}
@@ -99,12 +101,30 @@ SCENE main {
 	LINE line = index_file;
 	line++;
 
+	line .= "SCENE buttons {\n";
+	line .= "
+	struct button {
+		public string filename;
+		public string title;
+		public string class;
+
+		button (string a, string b) {
+			filename = a;
+			title = b;
+		};
+	};
+
+	array<button> buttons;
+";
+
 	int j;
 	for (j = 1; j < @chunk_tree[3]; j++) {
 		if (defined chunk_tree[3][j]) {
-			line = line . chunk_tree[3][j]->dump() . "\n";
+			line .= "\t" . chunk_tree[3][j]->dump() . "\n";
 		}
 	}
+
+	line .= "}\n";
 
 	index_file->update(line);
 	index_file->flush();

@@ -2,5 +2,96 @@ test C-tor (1, 2)
 test C-tor (2, 3)
 Sum is 3
 Sum is 5
+C-tor called, value was 0
+These two should be equal:
+Dump: 0 - 1
+Dump: 0 - 1
+D-tor called, value was 0
+C-tor called, value was 1
+These two should be equal:
+Dump: 1 - 2
+Dump: 1 - 2
+D-tor called, value was 1
+C-tor called, value was 2
+These two should be equal:
+Dump: 2 - 3
+Dump: 2 - 3
+D-tor called, value was 2
+C-tor called, value was 3
+These two should be equal:
+Dump: 3 - 4
+Dump: 3 - 4
+D-tor called, value was 3
+C-tor called, value was 4
+These two should be equal:
+Dump: 4 - 5
+Dump: 4 - 5
+D-tor called, value was 4
+C-tor called, value was 5
+These two should be equal:
+Dump: 5 - 6
+Dump: 5 - 6
+D-tor called, value was 5
+C-tor called, value was 6
+These two should be equal:
+Dump: 6 - 7
+Dump: 6 - 7
+D-tor called, value was 6
+C-tor called, value was 7
+These two should be equal:
+Dump: 7 - 8
+Dump: 7 - 8
+D-tor called, value was 7
+C-tor called, value was 8
+These two should be equal:
+Dump: 8 - 9
+Dump: 8 - 9
+D-tor called, value was 8
+C-tor called, value was 9
+These two should be equal:
+Dump: 9 - 10
+Dump: 9 - 10
+D-tor called, value was 9
+Dump: 0 - 1
+Dump: 0 - 1
+D-tor called, value was 0
+Dump: 1 - 2
+Dump: 1 - 2
+D-tor called, value was 1
+Dump: 2 - 3
+Dump: 2 - 3
+D-tor called, value was 2
+Dump: 3 - 4
+Dump: 3 - 4
+D-tor called, value was 3
+Dump: 4 - 5
+Dump: 4 - 5
+D-tor called, value was 4
+Dump: 5 - 6
+Dump: 5 - 6
+D-tor called, value was 5
+Dump: 6 - 7
+Dump: 6 - 7
+D-tor called, value was 6
+Dump: 7 - 8
+Dump: 7 - 8
+D-tor called, value was 7
+Dump: 8 - 9
+Dump: 8 - 9
+D-tor called, value was 8
+Dump: 9 - 10
+Dump: 9 - 10
+D-tor called, value was 9
+D-tor called, value was 0
+D-tor called, value was 1
+D-tor called, value was 2
+D-tor called, value was 3
+D-tor called, value was 4
+D-tor called, value was 5
+D-tor called, value was 6
+D-tor called, value was 7
+D-tor called, value was 8
+D-tor called, value was 9
+D-tor called, value was 9
 test D-tor (1, 2)
 test D-tor (2, 3)
