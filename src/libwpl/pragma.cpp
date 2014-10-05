@@ -185,9 +185,23 @@ int wpl_pragma_template_as_var::run(wpl_state *state, wpl_value *final_result) {
 
 
 int wpl_pragma_dump_file::run (wpl_state *state, wpl_value *final_result) {
-	wpl_io &io = state->get_io();
+	wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
+
 	string filename;
-	add_to_string(filename);
+	wpl_expression *expression = value_expression.get();
+
+	if (expression) {
+		wpl_value_string result;
+		result.set_do_finalize();
+		pragma_state->run_child(expression, 0, &result);
+
+		filename = result.toString();
+	}
+	else {
+		filename = static_filename;
+	}
+
+	wpl_io &io = state->get_io();
 
 	try {
 		file_mapping fm(filename.c_str(), read_only);
@@ -205,6 +219,29 @@ int wpl_pragma_dump_file::run (wpl_state *state, wpl_value *final_result) {
 	}
 
 	return WPL_OP_NO_RETURN;
+}
+
+void wpl_pragma_dump_file::parse_value(wpl_namespace *parent_namespace) {
+	ignore_whitespace();
+	if (ignore_letter('@')) {
+		// Find filename template at run time (dynamic)
+		value_expression.reset(new wpl_expression());
+		value_expression->load_position(get_position());
+		value_expression->parse_value(parent_namespace);
+		load_position(value_expression->get_position());
+	}
+	else {
+		// Find filename at parse time (static)
+		const char *start = get_string_pointer();
+		if (!ignore_string_match(NON_SEMICOLON, 0)) {
+			THROW_ELEMENT_EXCEPTION("Expected value after pragma definition");
+		}
+		const char *end = get_string_pointer();
+
+		parse_default_end();
+
+		static_filename.append(start, (end-start));
+	}
 }
 
 int wpl_pragma_text_content_type::run (wpl_state *state, wpl_value *final_result) {

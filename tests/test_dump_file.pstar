@@ -1,5 +1,9 @@
 SCENE main {
 	#DUMP_FILE ./testfile;
 
+	string filename = "./test";
+
+	#DUMP_FILE @filename . "file";
+
 	return 0;
 }
