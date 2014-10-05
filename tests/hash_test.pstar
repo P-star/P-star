@@ -5,18 +5,35 @@ SCENE main {
 	my_pets["dog"] = "Max";
 	my_pets["cat"] = "Tiger";
 
+	/* Test defind operator */
+	if (defined my_pets["dog"]) {
+		echo "Dog is set, value is " . my_pets["dog"] . "\n";
+	}
+
+	if (!defined my_pets["horse"]) {
+		echo "Horse is not set\n";
+	}
+
+	if (!defined my_pets["cow"]) {
+		echo "Cow is not set\n";
+	}
+
 	/* Create an array of the keys */
 	array<string> pet_keys;
 	pet_keys[0] = "dog";
 	pet_keys[1] = "cat";
 
 	/* Count the elements of the hash and print to standard output */
-	echo "I have " . @my_pets . " pets.\n";
+	echo "I have " . @my_pets . " pets and we have " . @pet_keys . " keys.\n";
 
 	/* Iterate the array of the keys and print the values of the hash */
 	int i = 0;
 	while (i < @pet_keys) {
-		echo "The name of my " . pet_keys[i] . " is '" . my_pets[pet_keys[i]] . "'.\n";
+		echo "The name of my ";
+		echo pet_keys[i];
+		echo " is '";
+		echo my_pets[pet_keys[i]];
+		echo "'.\n";
 		i++;
 	}
 	return 0;

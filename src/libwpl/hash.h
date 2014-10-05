@@ -45,6 +45,7 @@ class wpl_hash {
 	map<string,unique_ptr<wpl_value>> hash;
 
 	public:
+	void erase(string &key);
 	void set(string &key, wpl_value *value);
 	wpl_value *get(string &key);
 
