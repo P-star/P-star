@@ -3,6 +3,7 @@ HTML_TEMPLATE layout_head {
 	<html>
 	<head>
 	<link type="text/css" rel="stylesheet" href="/pstar.css" />
+	<meta charset="utf-8" />
 	<title>P* Web Programming Language - {@title}</title>
 	</head>
 	<body>
