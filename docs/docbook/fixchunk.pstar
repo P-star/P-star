@@ -114,7 +114,7 @@ SCENE main {
 		};
 	};
 
-	array<button> buttons;
+	protected array<button> buttons;
 ";
 
 	int j;

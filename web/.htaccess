@@ -1,6 +1,6 @@
 RewriteEngine On
 RewriteRule quickstart quickstart.pstar [L]
-RewriteRule how_to_get how_to_get.pstar [L]
+RewriteRule download download.pstar [L]
 RewriteRule how_to_run how_to_run.pstar [L]
 RewriteRule home home.pstar [L]
 RewriteRule why_pstar why_pstar.pstar [L]

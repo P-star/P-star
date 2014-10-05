@@ -5,7 +5,7 @@ HTML_TEMPLATE body {
 
 <p><i>This guide uses simple HTML code in the examples, and requires some basic knowledge of it.</i></p>
 
-<p><i>Before you read any further, you should obtain and install a copy of the P* interpreter <a href="/cgi-bin/how_to_get">from the download page</a></i>.</p>
+<p><i>Before you read any further, you should obtain and install a copy of the P* interpreter <a href="/download">from the download page</a></i>.</p>
 
 <p>P* programs are run as scripts. This means that you can simply write a program into a text file, and tell the P* interpreter to run it. </p>
 
@@ -29,7 +29,7 @@ $ </pre>
 <p>In P*, we say that values, like strings and integer, are alive. In an expression, you tell values to do stuff. In the example above, we tell the string to echo its value to standard output.</p>
 
 <h3>Variables</h3>
-<p>P* can store values in named variables. A variable can hold a value of a specific type, for instance an <i>int</i> or a <i>string</i>. Please check the <a href="/manual/ch03s02.html">reference manual</a> for a complete list of all types.</p>
+<p>P* can store values in named variables. A variable can hold a value of a specific type, for instance an <i>int</i> or a <i>string</i>. Please check the <a href="/documentation">reference manual</a> for a complete list of all types.</p>
 
 <p>Some types are special and do stuff under the hood. One example is the <i>ENV</i> type, which reads environment variables.</p>
 <p>We can make P* retrieve an environment variable from the shell, store it in a variable and print it out. Example:</p>
