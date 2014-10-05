@@ -32,8 +32,6 @@ SCENE main : buttons {
 		if (*get["page"] == buttons[i]->filename) {
 			chosen_button = i;
 		}
-
-		i++;
 	}
 
 	buttons[chosen_button]->class = "selected";
