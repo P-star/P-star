@@ -204,13 +204,19 @@ class wpl_pragma_text : public wpl_pragma {
 	virtual void parse_value(wpl_namespace *parent_namespace);
 };
 
-class wpl_pragma_dump_file : public wpl_pragma_text {
+class wpl_pragma_dump_file : wpl_pragma {
+	private:
+	unique_ptr<wpl_expression> value_expression;
+	string static_filename;
+
 	public:
-	wpl_pragma_dump_file() : wpl_pragma_text("DUMP_FILE") {}
+	wpl_pragma_dump_file() : wpl_pragma("DUMP_FILE") {}
 	wpl_pragma_dump_file *clone() const {
 		return new wpl_pragma_dump_file(*this);
 	}
+	wpl_pragma_dump_file (const wpl_pragma_dump_file &copy) : wpl_pragma(copy) {}
 	int run(wpl_state *state, wpl_value *final_result) override;
+	void parse_value(wpl_namespace *parent_namespace) override;
 };
 
 class wpl_pragma_text_content_type : public wpl_pragma_text {
