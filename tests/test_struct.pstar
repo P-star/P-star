@@ -32,12 +32,18 @@ SCENE main {
 	/* Struct with constructor and destructor */
 	struct ctor_dtor {
 		int value;
+		int second_value;
+
 		ctor_dtor (int _value) {
 			value = _value;
+			second_value = _value + 1;
 			echo "C-tor called, value was $value\n";
 		};
 		~ctor_dtor () {
 			echo "D-tor called, value was $value\n";
+		};
+		public int dump() {
+			echo "Dump: $value - $second_value\n";
 		};
 	};
 
@@ -55,4 +61,6 @@ SCENE main {
 
 	/* Test for ctor with function call as argument*/
 	ctor_dtor cd_c(argument(6));
+
+	return 0;
 }

@@ -15,9 +15,54 @@ SCENE main {
 		};
 	};
 
+	/* Struct with constructor and destructor */
+	struct ctor_dtor {
+		int value;
+		int second_value;
+
+		ctor_dtor (int _value) {
+			value = _value;
+			second_value = _value + 1;
+			echo "C-tor called, value was $value\n";
+		};
+		~ctor_dtor () {
+			echo "D-tor called, value was $value\n";
+		};
+		public int dump() {
+			echo "Dump: $value - $second_value\n";
+		};
+	};
+
 	array<test> test_array;
 	test_array[0](1, 2);
 	test_array[1](2, 3);
 	test_array[0]->print();
 	test_array[1]->print();
+
+	/* Test for struct variable declaration without call to constructor */
+	ctor_dtor *no_ctor;
+
+	/* Test for array of structs */
+	array<ctor_dtor> ctor_array;
+
+	int i;
+	for (i = 0; i < 10; i++) {
+		ctor_dtor tmp(i);
+		*ctor_array[i] = tmp;
+
+		no_ctor = tmp;
+
+		echo "These two should be equal:\n";
+		tmp->dump();
+		no_ctor->dump();
+	}
+
+	for (i = 0; i < @ctor_array; i++) {
+		ctor_dtor *tmp = ctor_array[i];
+
+		ctor_array[i]->dump();
+		tmp->dump();
+	}
+
+	return 0;
 }

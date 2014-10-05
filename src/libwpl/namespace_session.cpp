@@ -50,7 +50,7 @@ void wpl_namespace_session::replace_variables (wpl_namespace_session *source) {
 	}
 
 	for (int i = 0; i < variables.size(); i++) {
-		wpl_value *source = variables[0]->get_value();
+		wpl_value *source = variables[i]->get_value();
 
 		if (source->isArray() || source->isStruct()) {
 			if (!variables_ptr[i]->set_strong(source)) {
