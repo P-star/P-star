@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -42,6 +42,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstdio>
 #include <stdexcept>
 
+#include <boost/interprocess/file_mapping.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+
+using namespace boost::interprocess;
 using namespace std;
 
 void wpl_pragma::parse_default_end() {
@@ -179,6 +183,30 @@ int wpl_pragma_template_as_var::run(wpl_state *state, wpl_value *final_result) {
 	return pragma_state->run_child(&run_wrapper, 0, final_result);
 }
 
+
+int wpl_pragma_dump_file::run (wpl_state *state, wpl_value *final_result) {
+	wpl_io &io = state->get_io();
+	string filename;
+	add_to_string(filename);
+
+	try {
+		file_mapping fm(filename.c_str(), read_only);
+		mapped_region region(fm, read_only);
+
+		char *memory = (char*) region.get_address();
+		int size = region.get_size();
+
+		io.write(memory, size);
+	}
+	catch (boost::interprocess::interprocess_exception &e) {
+		string msg;
+		msg = "Could not open file '" + filename + "' in FILE_DUMP pragma: " + e.what() + "\n";
+		throw runtime_error(msg);
+	}
+
+	return WPL_OP_NO_RETURN;
+}
+
 int wpl_pragma_text_content_type::run (wpl_state *state, wpl_value *final_result) {
 	wpl_io &io = state->get_io();
 	string buf;
@@ -212,4 +240,5 @@ void wpl_pragma_add_all_to_namespace (wpl_namespace *my_namespace) {
 	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_scene());
 	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_json_begin());
 	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_json_end());
+	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_dump_file());
 }

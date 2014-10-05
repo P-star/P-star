@@ -204,6 +204,15 @@ class wpl_pragma_text : public wpl_pragma {
 	virtual void parse_value(wpl_namespace *parent_namespace);
 };
 
+class wpl_pragma_dump_file : public wpl_pragma_text {
+	public:
+	wpl_pragma_dump_file() : wpl_pragma_text("DUMP_FILE") {}
+	wpl_pragma_dump_file *clone() const {
+		return new wpl_pragma_dump_file(*this);
+	}
+	int run(wpl_state *state, wpl_value *final_result) override;
+};
+
 class wpl_pragma_text_content_type : public wpl_pragma_text {
 	public:
 	wpl_pragma_text_content_type() : wpl_pragma_text ("CONTENT_TYPE") {}
