@@ -1,0 +1,5 @@
+SCENE main {
+	#DUMP_FILE ./testfile;
+
+	return 0;
+}
