@@ -39,7 +39,6 @@ class wpl_value_hash : public wpl_value_template, public wpl_hash {
 	wpl_value *rhs;
 	wpl_value *result;
 
-	int hash_subscripting();
 	int discard() {result = lhs; return (WPL_OP_OK|WPL_OP_DISCARD|WPL_OP_RETURN_REFERENCE); }
 
 	public:
