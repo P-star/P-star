@@ -1,3 +1,18 @@
+pstar (1.2~alpha8) experimental; urgency=low
+
+  * Fix issues with constructors
+  * Add ! operator for string and time object to check for empty values
+  * Add range operators inclusive .. and exclusive ...
+  * Implement foreach loop (no direct array support yet)
+  * Fix some bad memory problems
+  * At first declaration of structs, operator * can be used to skip call to the constructor (useful for loops)
+  * Added defined operator for arrays and hashes to check for unset values
+  * Added ==> operator which clears an array and writes in a list, as opposed to => which only appends
+  * Make the LINE object support .= operator
+  * Added pragma #DUMP_FILE to dump a file from disk directly to output
+
+ -- Atle Solbakken <atle@goliathdns.no>  Tue, 07 Oct 2014 23:45:29 +0200
+
 pstar (1.2~alpha7) experimental; urgency=low
 
   * Added support for TEMPLATE blocks in HTML templates to call other templates
