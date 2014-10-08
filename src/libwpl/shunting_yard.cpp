@@ -79,8 +79,9 @@ void shunting_yard::prepare_operator (const wpl_operator_struct *new_op) {
 			out_add(stack_op);
 		}
 		else if (!WPL_OP_IS_LEFT_PAR(stack_op) &&
-			(stack_op->precedence == new_op->precedence) &&
-			WPL_OP_IS_LEFT_ASSOC(stack_op->flags)
+			(	(WPL_OP_IS_LEFT_ASSOC(new_op->flags) && (new_op->precedence >= stack_op->precedence)) ||
+				(new_op->precedence > stack_op->precedence)
+			)
 		) {
 			out_add(stack_op);
 		}
@@ -128,8 +129,9 @@ void shunting_yard::shunt_operator (const wpl_operator_struct *new_op) {
 				out_add(stack_op);
 			}
 			else if (!WPL_OP_IS_LEFT_PAR(stack_op) &&
-				(stack_op->precedence == new_op->precedence) &&
-				WPL_OP_IS_RIGHT_ASSOC(stack_op->flags)
+				(	(WPL_OP_IS_LEFT_ASSOC(new_op->flags) && (new_op->precedence >= stack_op->precedence)) ||
+					(new_op->precedence > stack_op->precedence)
+				)
 			) {
 				out_add(stack_op);
 			}
