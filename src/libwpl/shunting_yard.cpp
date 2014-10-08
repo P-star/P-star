@@ -129,7 +129,7 @@ void shunting_yard::shunt_operator (const wpl_operator_struct *new_op) {
 			}
 			else if (!WPL_OP_IS_LEFT_PAR(stack_op) &&
 				(stack_op->precedence == new_op->precedence) &&
-				WPL_OP_IS_LEFT_ASSOC(stack_op->flags)
+				WPL_OP_IS_RIGHT_ASSOC(stack_op->flags)
 			) {
 				out_add(stack_op);
 			}
