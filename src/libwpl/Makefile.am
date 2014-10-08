@@ -13,14 +13,14 @@ libpstar_la_SOURCES = \
 	scene.cpp string.cpp object.cpp types.cpp \
 	function.cpp user_function.cpp internal_function.cpp \
 	value.cpp operator.cpp operator_special.cpp text.cpp modifier.cpp \
-	value_array.cpp value_struct.cpp value_hash.cpp \
+	value_array.cpp value_pointer.cpp value_struct.cpp value_hash.cpp \
 	value_unresolved.cpp value_function_ptr.cpp value_list.cpp \
 	value_string.cpp value_vstring.cpp value_regex.cpp \
 	value_env.cpp value_get.cpp value_post.cpp value_stdin.cpp \
 	value_output_trigger.cpp value_time.cpp \
 	range.cpp \
 	type_file.cpp file.cpp value_line.cpp \
-	array.cpp hash.cpp struct.cpp template.cpp \
+	array.cpp pointer.cpp hash.cpp struct.cpp template.cpp \
 	namespace_session.cpp exception.cpp \
 	block_state.cpp expression_state.cpp function_state.cpp \
 	pragma_state.cpp text_state.cpp scene_state.cpp \

@@ -58,6 +58,7 @@ class wpl_namespace_session;
 class wpl_expression_state;
 class wpl_type_complete;
 class wpl_value_bool;
+class wpl_pointer;
 class wpl_value;
 
 class wpl_value_no_strong_set : public runtime_error {
@@ -116,6 +117,8 @@ class wpl_value_return {
  */
 class wpl_value : public wpl_suicidal {
 	private:
+	vector<wpl_pointer*> pointers;
+	void invalidate_pointers();
 
 	protected:
 	wpl_value *create_bool(bool value);
@@ -129,9 +132,10 @@ class wpl_value : public wpl_suicidal {
 		flags = 0;
 	}
 	virtual ~wpl_value();
-	virtual void suicide() override {
-		delete this;
-	}
+	virtual void suicide() override;
+
+	void register_pointer(wpl_pointer *ptr);
+	void remove_pointer(wpl_pointer *ptr); 
 
 	void set_flags(int flags) {
 		this->flags = flags;

@@ -1,0 +1,7 @@
+SCENE main {
+	int a = 10;
+
+	pointer<int> b = a;
+
+	*b++;
+}

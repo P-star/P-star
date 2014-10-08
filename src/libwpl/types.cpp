@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "struct.h"
 #include "class.h"
 #include "array.h"
+#include "pointer.h"
 
 #include "variable.h"
 #include "user_function.h"
@@ -72,6 +73,7 @@ const char *wpl_typename_vstring = "vstring";
 const char *wpl_typename_struct = "struct";
 const char *wpl_typename_class = "class";
 const char *wpl_typename_array = "array";
+const char *wpl_typename_pointer = "pointer";
 const char *wpl_typename_hash = "hash";
 
 const char *wpl_typename_env = "ENV";
@@ -108,6 +110,7 @@ DEFINE_TYPE(double);
 DEFINE_TYPE(bool);
 DEFINE_TYPE(string);
 DEFINE_TYPE(array);
+DEFINE_TYPE(pointer);
 DEFINE_TYPE(hash);
 DEFINE_TYPE(struct);
 DEFINE_TYPE(class);
@@ -308,6 +311,7 @@ void wpl_types_add_all_to_namespace(wpl_namespace *name_space) {
 	REGISTER_TYPE(bool);
 	REGISTER_TYPE(string);
 	REGISTER_TYPE(array);
+	REGISTER_TYPE(pointer);
 	REGISTER_TYPE(hash);
 	REGISTER_TYPE(struct);
 	REGISTER_TYPE(class);

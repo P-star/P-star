@@ -63,7 +63,7 @@ int wpl_expression::run (
 		wpl_value *final_result
 		)
 {
-//	dump();
+	dump();
 
 	wpl_expression_state *exp_state = (wpl_expression_state*) state;
 	exp_state->revert();

@@ -29,6 +29,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value.h"
 #include "value_bool.h"
 #include "value_string.h"
+#include "pointer.h"
 #include "type_precedence.h"
 #include "expression_state.h"
 #include "operator.h"
@@ -70,7 +71,31 @@ int wpl_value_return::run(wpl_value **final_result) {
 	}
 }
 
+void wpl_value::invalidate_pointers() {
+	for (auto ptr : pointers) {
+		ptr->value_dies_now();
+	}
+}
+
+void wpl_value::register_pointer(wpl_pointer *ptr) {
+	pointers.push_back(ptr);
+}
+
+void wpl_value::remove_pointer(wpl_pointer *ptr) {
+	for (auto it = pointers.begin(); it != pointers.end(); ++it) {
+		if (*it == ptr) {
+			pointers.erase(it);
+			break;
+		}
+	}
+}
+
+void wpl_value::suicide() {
+	delete this;
+}
+
 wpl_value::~wpl_value() {
+	invalidate_pointers();
 #ifdef WPL_DEBUG_DESTRUCTION
 	DBG("V (" << this << "): Destructing value\n");
 #endif
