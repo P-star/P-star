@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "mysql_res_holder.h"
 
+#include "../libwpl/value_bool.h"
 #include "../libwpl/value_int.h"
 #include "../libwpl/value_longlongint.h"
 #include "../libwpl/value_uint.h"

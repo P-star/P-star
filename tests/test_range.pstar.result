@@ -9,4 +9,20 @@ Range decrement exclusive
 Range equal inclusive
 4 
 Range equal exclusive (no output)
-
+3 
+Test array foreach loop
+ - Loop start nr 0
+1
+2
+3
+4
+ - Loop start nr 1
+1
+2
+3
+4
+ - Loop start nr 2
+1
+2
+3
+4

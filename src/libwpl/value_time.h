@@ -39,24 +39,25 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 class wpl_operator_struct;
 
 class wpl_value_time : public wpl_value, public wpl_time, public wpl_parasite_host<wpl_value_time> {
-    private:
-    void try_guess_from_str(const std::string& fmt);
-    void set_from_int(const int value);
-    protected:
+	private:
+	void try_guess_from_str(const std::string& fmt);
+	void set_from_int(const int value);
+
+	protected:
 	public:
 	PRIMITIVE_TYPEINFO(time)
-    wpl_value_time(int dummy) : wpl_time() {}
+	wpl_value_time(int dummy) : wpl_time(), wpl_value(), wpl_parasite_host<wpl_value_time>() {}
 	wpl_value_time *clone() const { return new wpl_value_time(*this); };
 	wpl_value_time *clone_empty() const { return new wpl_value_time(0); };
 
 	void set_weak(wpl_value *value) override;
 	string toString() override;
-    char* get_mysql_time_ptr();
+	char* get_mysql_time_ptr();
 
-    void output_json(wpl_io &io) override;
-    void output(wpl_io &io) override;
+	void output_json(wpl_io &io) override;
+	void output(wpl_io &io) override;
 
-    	bool toBool() override {
+	bool toBool() override {
 		return get_is_set();
 	}
 

@@ -125,12 +125,14 @@ class wpl_value : public wpl_suicidal {
 	int flags;
 
 	public:
-	wpl_value() : wpl_suicidal() {
-		flags = 0;
-	}
-	wpl_value(const wpl_value &copy) : wpl_suicidal(copy) {
-		flags = 0;
-	}
+	wpl_value(const wpl_value &copy) :
+		wpl_suicidal(copy),
+		flags(0)
+	{}
+	wpl_value() :
+		wpl_suicidal(),
+		flags(0)
+	{}
 	virtual ~wpl_value();
 	virtual void suicide() override;
 
@@ -149,6 +151,9 @@ class wpl_value : public wpl_suicidal {
 
 	virtual const char *get_type_name() const = 0;
 	virtual int get_precedence() const = 0;
+	virtual const wpl_type_complete *get_type() const {
+		throw runtime_error("No type exists for this value");
+	}
 
 	virtual wpl_value *clone() const = 0;
 	virtual wpl_value *clone_empty() const {  throw runtime_error ("Empty cloning not supported by this type"); }
@@ -169,6 +174,12 @@ class wpl_value : public wpl_suicidal {
 			wpl_expression_state *exp_state,
 			wpl_value *final_result,
 			const wpl_operator_struct *op
+	);
+
+	int do_operator_discard (
+			wpl_expression_state *exp_state,
+			wpl_value *discarded,
+			wpl_value *final_result
 	);
 
 	virtual int do_operator_recursive (
@@ -293,7 +304,7 @@ class wpl_value_template : public wpl_value {
 
 	public:
 	virtual ~wpl_value_template() {};
-	wpl_value_template(const wpl_type_complete *template_type) {
+	wpl_value_template(const wpl_type_complete *template_type) : wpl_value() {
 		this->template_type = template_type;
 	}
 	const wpl_type_complete *get_template() {

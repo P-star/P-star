@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_holder.h"
 #include "exception.h"
 #include "wpl_file.h"
+#include "type_file.h"
 
 #include <memory>
 
@@ -47,7 +48,7 @@ class wpl_value_line : public wpl_value {
 
 	public:
 	PRIMITIVE_TYPEINFO(line)
-	wpl_value_line () {}
+	wpl_value_line () : wpl_value() {}
 	wpl_value_line (int dummy) {}
 	wpl_value_line *clone() const { return new wpl_value_line(*this); };
 	wpl_value_line *clone_empty() const { return new wpl_value_line(0); };

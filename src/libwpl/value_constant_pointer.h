@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -36,12 +36,9 @@ using namespace std;
 
 class wpl_value_constant_pointer : public wpl_value {
 	private:
-	wpl_value *value;
+	wpl_value *value= NULL;
 
 	public:
-	wpl_value_constant_pointer() {
-		value = NULL;
-	}
 	int get_precedence() const { return wpl_type_precedence_constant_pointer; };
 	const char *get_type_name() const { return wpl_typename_constant_pointer; }
 	wpl_value *clone() const {

@@ -4,4 +4,14 @@ SCENE main {
 	pointer<int> b = a;
 
 	*b++;
+
+	echo "A is now: $a and " . *b . "\n";
+
+	int modify_value(pointer<int> a) {
+		*value++;
+	}
+
+	modify_value(a);
+
+	echo "A is now: $a and " . *b . "\n";
 }

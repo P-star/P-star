@@ -288,7 +288,7 @@ class wpl_type_incomplete : public wpl_type {
 		wpl_identifier *clone() const { return new wpl_type_##name(*this); }	\
 		void suicide() { delete this; }						\
 	};										\
-	extern wpl_type_##name *wpl_type_global_##name;
+	extern const wpl_type_##name *wpl_type_global_##name;
 
 DECLARE_COMPLETE_TYPE(void);
 DECLARE_COMPLETE_TYPE(bool);

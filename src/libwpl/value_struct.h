@@ -47,7 +47,8 @@ class wpl_value_struct : public wpl_value, public wpl_namespace_session {
 
 	public:
 	wpl_value_struct (const wpl_struct *mother_struct) :
-		wpl_namespace_session(mother_struct)
+		wpl_namespace_session(mother_struct),
+		wpl_value()
 	{
 		this_ptr = NULL;
 		this->mother_struct = mother_struct;
@@ -61,6 +62,8 @@ class wpl_value_struct : public wpl_value, public wpl_namespace_session {
 	virtual int get_precedence() const { return mother_struct->get_precedence(); };
 	virtual wpl_value_struct *clone() const { return new wpl_value_struct(*this); };
 	virtual wpl_value_struct *clone_empty() const { return new wpl_value_struct(*this); };
+
+	const wpl_type_complete *get_type() const override { return mother_struct; };
 
 	void reset() override {
 		wpl_namespace_session::reset_variables();

@@ -29,16 +29,22 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "pointer.h"
-#include "value_holder.h"
+#include "operator_types.h"
+#include "value_holder_macros.h"
 
-class wpl_value_pointer : public wpl_value_template, public wpl_pointer {
+extern const wpl_type_pointer *wpl_type_global_pointer;
+
+class wpl_value_pointer : public wpl_value, public wpl_pointer {
 	public:
 	PRIMITIVE_TYPEINFO(pointer)
 	wpl_value_pointer *clone() const {return new wpl_value_pointer(*this); };
-	wpl_value_pointer *clone_empty() const {return new wpl_value_pointer(template_type); }
+	wpl_value_pointer *clone_empty() const {return new wpl_value_pointer(get_template_type()); }
 
 	wpl_value_pointer(const wpl_type_complete *type) :
-		wpl_value_template(type), wpl_pointer()
+		wpl_pointer(type), wpl_value()
+	{}
+	wpl_value_pointer(const wpl_type_complete *type, wpl_value *value) :
+		wpl_pointer(type, value), wpl_value()
 	{}
 
 	int do_operator (
@@ -54,8 +60,6 @@ class wpl_value_pointer : public wpl_value_template, public wpl_pointer {
 		return WPL_OP_OK;
 	}
 
-	void set_weak(wpl_value *value) override {
-		set_value(value);
-	}
+	void set_weak(wpl_value *value) override;
 };
 

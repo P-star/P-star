@@ -137,6 +137,27 @@ int wpl_value::do_fastop (
 	return ret;
 }
 
+int wpl_value::do_operator_discard (
+		wpl_expression_state *exp_state,
+		wpl_value *discarded,
+		wpl_value *final_result
+){
+	exp_state->push_discard(discarded);
+	if (exp_state->empty()) {
+		return WPL_OP_OK;
+	}
+
+	shunting_yard_carrier next = exp_state->top();
+	if (!next.value){
+		throw runtime_error("Operator can't follow discard operator");
+	}
+	exp_state->pop();
+
+	return next.value->do_operator_recursive (
+		exp_state, final_result
+	);
+}
+
 int wpl_value::do_operator_recursive (
 		wpl_expression_state *exp_state,
 		wpl_value *final_result

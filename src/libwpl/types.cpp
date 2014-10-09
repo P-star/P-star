@@ -97,7 +97,7 @@ const char *wpl_typename_unsafe_pointer = "{unsafe pointer}";
 
 #define DEFINE_TYPE(name)					\
 	static wpl_type_##name constant_type_##name;		\
-wpl_type_##name *wpl_type_global_##name =			\
+const wpl_type_##name *wpl_type_global_##name =			\
 	&constant_type_##name;
 
 DEFINE_TYPE(void);
@@ -220,6 +220,7 @@ void wpl_type_template::parse_value (wpl_namespace *parent_namespace) {
 	catch (wpl_type_end_template_declaration &e) {
 		load_position(parseable->get_position());
 		parseable = register_unique_parseable(parent_namespace, e.get_type());
+
 		try {
 			parseable->load_position(get_position());
 			parseable->parse_value(parent_namespace);
@@ -227,7 +228,6 @@ void wpl_type_template::parse_value (wpl_namespace *parent_namespace) {
 		catch (wpl_type_end_template_declaration &e) {
 			load_position(parseable->get_position());
 			parseable = register_unique_parseable(parent_namespace, e.get_type());
-
 			parseable->load_position(get_position());
 			parseable->parse_value(parent_namespace);
 		}

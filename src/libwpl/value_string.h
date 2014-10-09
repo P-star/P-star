@@ -30,9 +30,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "value_bool.h"
 #include "output_json.h"
 #include "parasite.h"
+#include "value_holder.h"
 
 #include <cstdlib>
 #include <string>
@@ -71,18 +71,18 @@ template<typename A> class wpl_value_strings : public wpl_value_holder<A> {
 
 class wpl_value_string : public wpl_value_strings<string>, public wpl_parasite_host<wpl_value_string> {
 	public:
-	PRIMITIVE_CONSTRUCTOR(string,string)
+	PRIMITIVE_CONSTRUCTOR(string,string,strings)
 	PRIMITIVE_TYPEINFO(string)
 	PRIMITIVE_SET_WEAK_NOTIFY(string,string,toString())
 	PRIMITIVE_DO_OPERATOR_NOTIFY(string,toString())
 
-	wpl_value_string(const char *new_value) {
+/*	wpl_value_string (const char *new_value) : wpl_value_string() {
 		value = new_value;
 	}
 
-	wpl_value_string(const char *new_value, int len) {
+	wpl_value_string(const char *new_value, int len)  : wpl_value_string() {
 		value = string(new_value, len);
-	}
+	}*/
 
 	bool toBool() {
 		return (!value.empty());

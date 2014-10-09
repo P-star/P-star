@@ -77,7 +77,7 @@ void wpl_user_function::parse_value(wpl_namespace *ns) {
 		}
 		catch (wpl_type_begin_variable_declaration &e) {
 			e.create_variable(this);
-			load_position(parseable->get_position());
+			load_position(e.get_position());
 		}
 
 		ignore_whitespace();

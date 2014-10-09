@@ -37,7 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstring>
 #include <map>
 
-extern wpl_type_array *wpl_type_global_array;
+extern const wpl_type_array *wpl_type_global_array;
 
 wpl_type_array_instance wpl_value_get::type_complete_array(
 		wpl_type_global_array, wpl_type_global_bool

@@ -36,7 +36,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 class wpl_value_void : public wpl_value_holder<wpl_void> {
 	public:
 	PRIMITIVE_TYPEINFO(void)
-
 	wpl_value_void *clone() const {
 		return new wpl_value_void(*this);
 	}

@@ -49,6 +49,11 @@ class wpl_io {
 		write(rhs.c_str(), rhs.size());
 		return *this;
 	}
+	wpl_io &operator<< (const int &rhs) {
+		sprintf(buf, "%ld", rhs);
+		write(buf, strlen(buf));
+		return *this;
+	}
 	wpl_io &operator<< (const long int &rhs) {
 		sprintf(buf, "%ld", rhs);
 		write(buf, strlen(buf));

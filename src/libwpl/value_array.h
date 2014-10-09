@@ -31,6 +31,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "array.h"
 #include "value_holder.h"
 
+extern const wpl_type_array *wpl_type_global_array;
+
 class wpl_value_array : public wpl_value_template, public wpl_array {
 	private:
 	wpl_value *lhs;
@@ -41,6 +43,21 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 	int discard() {result = lhs; return (WPL_OP_OK|WPL_OP_DISCARD|WPL_OP_RETURN_REFERENCE); }
 
 	public:
+	wpl_value_array(const wpl_value_array &copy) :
+		wpl_value_template(copy),
+		wpl_array(copy)
+	{}
+
+	wpl_value_array(const wpl_type_complete *template_type, int length) :
+		wpl_value_template(template_type)
+	{
+		reserve(length);
+	}
+
+	wpl_value_array(const wpl_type_complete *template_type) :
+		wpl_value_template(template_type)
+	{}
+
 	PRIMITIVE_TYPEINFO(array)
 	wpl_value_array *clone() const {return new wpl_value_array(*this); };
 	wpl_value_array *clone_empty() const {return new wpl_value_array(template_type); }
@@ -80,21 +97,6 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 	void output_json(wpl_io &io) override {
 		wpl_array::output_json(io);
 	}
-
-	wpl_value_array(const wpl_value_array &copy) :
-		wpl_value_template(copy),
-		wpl_array(copy)
-	{}
-
-	wpl_value_array(const wpl_type_complete *template_type, int length) :
-		wpl_value_template(template_type)
-	{
-		reserve(length);
-	}
-
-	wpl_value_array(const wpl_type_complete *template_type) :
-		wpl_value_template(template_type)
-	{}
 
 	bool isArray() {
 		return true;
