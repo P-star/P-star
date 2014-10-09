@@ -69,8 +69,13 @@ class wpl_expression_state : public wpl_state {
 	vector<wpl_expression_child_state> child_states;
 
 	void optimize();
+	int loop_number = 0;
+	int flags = 0;
 
 	public:
+	static const int CTX_NONE = 0;
+	static const int CTX_LOOP = 1;
+
 	wpl_expression_state (
 			wpl_namespace_session *nss,
 			wpl_io *io,
@@ -211,5 +216,18 @@ class wpl_expression_state : public wpl_state {
 			final_result,
 			WPL_NSS_CTX_SELF
 		);
+	}
+
+	void set_loop_number(int loop_number) {
+		flags |= CTX_LOOP;
+		this->loop_number = loop_number;
+	}
+
+	int get_loop_number() {
+		return loop_number;
+	}
+
+	int get_flags() {
+		return flags;
 	}
 };

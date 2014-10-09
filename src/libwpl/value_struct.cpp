@@ -98,10 +98,6 @@ int wpl_value_struct::do_operator (
 		wpl_value *lhs,
 		wpl_value *rhs
 ) {
-	if (lhs != this) {
-		throw runtime_error("Left side of '->' was not this struct instance");
-	}
-
 	if (first_run) {
 		/*
 		   If we en up here, the only possibility is that we came through fastop

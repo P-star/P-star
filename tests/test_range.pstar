@@ -47,6 +47,9 @@ SCENE main {
 		public int print() {
 			echo "$i\n";
 		};
+		public int inc() {
+			i++;
+		};
 	};
 
 	echo "Test array foreach loop\n";
@@ -57,11 +60,25 @@ SCENE main {
 	my_array[@my_array](4);
 
 	for (i = 0; i < 3; i++) {
+		/* Use variable without constructor */
 		my_type *var;
+
 		echo " - Loop start nr $i\n";
-		foreach (var; my_array[0..(@my_array-1)]) {
+		foreach (var; my_array) {
 			var->print();
 		}
+	}
+
+	echo "Test array foreach loop with pointer\n";
+	pointer<my_type> var;
+	foreach (var; my_array) {
+		*var->print();
+		*var->inc();
+	}
+
+	echo "Test array foreach loop with pointer, all should be +1 now\n";
+	foreach (var; my_array) {
+		*var->print();
 	}
 
 	return 0;

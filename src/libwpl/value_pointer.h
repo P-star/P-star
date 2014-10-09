@@ -55,10 +55,7 @@ class wpl_value_pointer : public wpl_value, public wpl_pointer {
 			wpl_value *rhs
 	);
 
-	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) override {
-		set_value(last_value);
-		return WPL_OP_OK;
-	}
+	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) override;
 
 	void set_weak(wpl_value *value) override;
 };

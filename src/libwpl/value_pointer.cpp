@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "operator.h"
+#include "expression_state.h"
 #include "value_pointer.h"
 
 int wpl_value_pointer::do_operator (
@@ -51,6 +52,43 @@ int wpl_value_pointer::do_operator (
 		return result.do_operator_recursive(exp_state, final_result);
 	}
 	return WPL_OP_UNKNOWN;
+}
+
+int wpl_value_pointer::finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) {
+	if (exp_state->get_flags() & exp_state->CTX_LOOP) {
+		/*
+		   In loops, like foreach, we allow assignment of our template type
+		   instead of only other pointers
+		   */
+		if (last_value->get_type() == (const wpl_type_complete*) wpl_type_global_pointer) {
+			wpl_value_pointer *ptr = static_cast<wpl_value_pointer*>(last_value);
+			if (!test_type(ptr->get_template_type())) {
+				ostringstream msg;
+				msg << "Tried to assign pointer of type " << 
+					ptr->get_template_type_name() << 
+					" to pointer which expects " <<
+					get_template_type_name() << endl;
+				throw runtime_error(msg.str());
+			}
+
+			set_value(ptr->get_value());
+		}
+		else if (last_value->get_type() != get_template_type()) {
+			ostringstream msg;
+			msg << "Can't assign value of type " <<
+				last_value->get_type_name() <<
+				" to pointer which expects " <<
+				get_template_type_name();
+			throw runtime_error(msg.str());
+		}
+
+		set_value(last_value);
+
+		return WPL_OP_OK;
+	}
+
+	set_weak(last_value);
+	return WPL_OP_OK;
 }
 
 void wpl_value_pointer::set_weak(wpl_value *value) {

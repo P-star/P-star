@@ -1,17 +1,18 @@
 SCENE main {
 	int a = 10;
 
-	pointer<int> b = a;
+	pointer<int> b = &a;
 
 	*b++;
 
 	echo "A is now: $a and " . *b . "\n";
 
 	int modify_value(pointer<int> a) {
-		*value++;
+		*a++;
 	}
 
-	modify_value(a);
+	modify_value(&a);
+	modify_value(b);
 
 	echo "A is now: $a and " . *b . "\n";
 }

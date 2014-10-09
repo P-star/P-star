@@ -66,21 +66,6 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 		wpl_array::notify_destructor(nss, io);
 	}
 
-	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) override {
-		/*
-		   TODO
-		   Set array by discard chain?
-		 */
-
-		if (!set_strong (last_value)) {
-			cerr << "While setting final result of type " << get_type_name() <<
-				" to array of type " << last_value->get_type_name() << ":\n";
-			throw runtime_error("Incompatible types");
-		}
-
-		return WPL_OP_OK;
-	}
-
 	void reset() override {
 		clear();
 	};
@@ -93,6 +78,14 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 			wpl_value *lhs,
 			wpl_value *rhs
 	); 
+
+	int do_operator_recursive (
+			wpl_expression_state *exp_state,
+			wpl_value *final_result
+	) override;
+
+
+	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) override;
 
 	void output_json(wpl_io &io) override {
 		wpl_array::output_json(io);

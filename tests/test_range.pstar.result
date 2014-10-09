@@ -26,3 +26,13 @@ Test array foreach loop
 2
 3
 4
+Test array foreach loop with pointer
+1
+2
+3
+4
+Test array foreach loop with pointer, all should be +1 now
+2
+3
+4
+5
