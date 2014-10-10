@@ -26,37 +26,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "types.h"
-#include "namespace.h"
-
-#include "struct.h"
-#include "class.h"
-#include "array.h"
-#include "pointer.h"
-
-#include "variable.h"
+#include "type.h"
 #include "user_function.h"
-
-#include "value_void.h"
-#include "value_string.h"
-#include "value_bool.h"
-#include "value_int.h"
-#include "value_longlongint.h"
-#include "value_uint.h"
-#include "value_longlonguint.h"
-#include "value_float.h"
-#include "value_double.h"
-
-#include "value_env.h"
-#include "value_get.h"
-#include "value_post.h"
-#include "value_stdin.h"
-#include "value_time.h"
-#include "value_line.h"
-
-#include <string>
-#include <cstring>
-#include <iostream>
 
 using namespace std;
 
