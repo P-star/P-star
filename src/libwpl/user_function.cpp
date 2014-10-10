@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "user_function.h"
+#include "type_parse_signals.h"
 #include "block.h"
 
 wpl_user_function::wpl_user_function(

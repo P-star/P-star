@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "type_template.h"
+#include "type_parse_signals.h"
 
 wpl_type_complete_template::wpl_type_complete_template (
 		const wpl_type_template *mother_type,

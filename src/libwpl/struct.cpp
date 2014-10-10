@@ -34,6 +34,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_struct.h"
 #include "debug.h"
 #include "user_function.h"
+#include "type_parse_signals.h"
 
 #include <memory>
 
