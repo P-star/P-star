@@ -29,10 +29,11 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "hash.h"
-#include "types.h"
 #include "value_holder.h"
 
 #include <string>
+
+class wpl_type_complete;
 
 extern const wpl_type_hash *wpl_type_global_hash;
 

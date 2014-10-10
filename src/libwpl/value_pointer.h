@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "type.h"
 #include "pointer.h"
 #include "operator_types.h"
 #include "value_holder_macros.h"

@@ -26,7 +26,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "types.h"
 #include "value_get.h"
 #include "operator.h"
 #include "value_string.h"

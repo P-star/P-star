@@ -30,7 +30,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "state.h"
 #include "value.h"
-#include "types.h"
+#include "type.h"
 #include "namespace_session.h"
 #include "block_state.h"
 #include "value_struct.h"

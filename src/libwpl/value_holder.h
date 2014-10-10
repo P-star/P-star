@@ -32,7 +32,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "operator_types.h"
 #include "value_holder_macros.h"
 #include "value.h"
-#include "types.h"
 
 template<typename A> class wpl_value_holder : public wpl_value {
 	private:
