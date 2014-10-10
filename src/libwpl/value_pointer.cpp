@@ -63,7 +63,7 @@ int wpl_value_pointer::finalize_expression (wpl_expression_state *exp_state, wpl
 		   instead of only other pointers
 		   */
 		if (last_value->get_type() == template_type) {
-			set_value(get_value());
+			set_value(last_value);
 			return WPL_OP_OK;
 		}
 		else if (last_value->get_type() == container_type) {
