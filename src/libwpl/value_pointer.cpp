@@ -42,13 +42,15 @@ int wpl_value_pointer::do_operator (
 	}
 	else if (op == &OP_ASSIGN) {
 		set_weak(rhs);
-		return WPL_OP_OK;
+
+		wpl_value_pointer result(*this);
+		return result.do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_DISCARD) {
 		return wpl_value::do_operator_discard (exp_state, this, final_result);
 	}
 	else if (op == &OP_POINTERTO) {
-		wpl_value_pointer result(get_type(), this);
+		wpl_value_pointer result(exp_state->get_nss(), get_type(), this);
 		return result.do_operator_recursive(exp_state, final_result);
 	}
 	return WPL_OP_UNKNOWN;
@@ -60,55 +62,48 @@ int wpl_value_pointer::finalize_expression (wpl_expression_state *exp_state, wpl
 		   In loops, like foreach, we allow assignment of our template type
 		   instead of only other pointers
 		   */
-		if (last_value->get_type() == (const wpl_type_complete*) wpl_type_global_pointer) {
+		if (last_value->get_type() == template_type) {
+			set_value(get_value());
+			return WPL_OP_OK;
+		}
+		else if (last_value->get_type() == container_type) {
 			wpl_value_pointer *ptr = static_cast<wpl_value_pointer*>(last_value);
-			if (!test_type(ptr->get_template_type())) {
-				ostringstream msg;
-				msg << "Tried to assign pointer of type " << 
-					ptr->get_template_type_name() << 
-					" to pointer which expects " <<
-					get_template_type_name() << endl;
-				throw runtime_error(msg.str());
-			}
-
 			set_value(ptr->get_value());
-		}
-		else if (last_value->get_type() != get_template_type()) {
-			ostringstream msg;
-			msg << "Can't assign value of type " <<
-				last_value->get_type_name() <<
-				" to pointer which expects " <<
-				get_template_type_name();
-			throw runtime_error(msg.str());
+			return WPL_OP_OK;
 		}
 
-		set_value(last_value);
-
-		return WPL_OP_OK;
+		ostringstream msg;
+		msg << "Can't assign value of type " <<
+			last_value->get_type()->get_name() <<
+			" to pointer which expects " <<
+			container_type->get_name();
+		throw runtime_error(msg.str());
+	}
+	else {
+		set_weak(last_value);
 	}
 
-	set_weak(last_value);
 	return WPL_OP_OK;
 }
 
 void wpl_value_pointer::set_weak(wpl_value *value) {
-	if (value->get_type() != (const wpl_type_complete*) wpl_type_global_pointer) {
+	wpl_value_pointer *ptr_value = dynamic_cast<wpl_value_pointer*>(value);
+	if (!ptr_value) {
 		ostringstream msg;
 		msg << "Can't assign value of type " <<
 			value->get_type_name() <<
-			" to pointer. Maybe you forgot '&'?\n";
+			" to pointer of type " << get_type_name() << ". Maybe you forgot '&'?\n";
 		throw runtime_error(msg.str());
 	}
 
-	wpl_value_pointer *ptr = static_cast<wpl_value_pointer*>(value);
-	if (!test_type(ptr->get_template_type())) {
+	if (ptr_value->get_type() != container_type) {
 		ostringstream msg;
 		msg << "Tried to assign pointer of type " << 
-			ptr->get_template_type_name() << 
+			ptr_value->get_type_name() << 
 			" to pointer which expects " <<
-			get_template_type_name() << endl;
+			get_type_name() << endl;
 		throw runtime_error(msg.str());
 	}
 
-	set_value(ptr->get_value());
+	set_value(ptr_value->get_value());
 }

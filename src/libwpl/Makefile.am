@@ -10,7 +10,7 @@ libpstar_la_SOURCES = \
 	variable.cpp namespace.cpp runable.cpp runable_operator.cpp \
 	shunting_yard.cpp block_if.cpp block_while.cpp \
 	block_for.cpp block_foreach.cpp \
-	scene.cpp string.cpp object.cpp types.cpp \
+	scene.cpp string.cpp object.cpp types.cpp type.cpp type_template.cpp \
 	function.cpp user_function.cpp internal_function.cpp \
 	value.cpp operator.cpp operator_special.cpp text.cpp modifier.cpp \
 	value_array.cpp value_pointer.cpp value_struct.cpp value_hash.cpp \

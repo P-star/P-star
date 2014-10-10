@@ -30,5 +30,5 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_pointer.h"
 
 wpl_value *wpl_type_pointer_instance::new_instance() const {
-	return new wpl_value_pointer(template_type);
+	return new wpl_value_pointer(this, template_type);
 }

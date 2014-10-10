@@ -78,7 +78,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 		/*cout << " - rhs is " << (rhs) << endl;					*/\
 		/*cout << " - exp state wait top is empty: " << exp_state.empty_waiting() << endl;*/\
 		if (op == &OP_POINTERTO) {							\
-			wpl_value_pointer result(get_type(), this);				\
+			wpl_value_pointer result(exp_state->get_nss(), get_type(), this);	\
 			return result.do_operator_recursive(exp_state, final_result);		\
 		}										\
 		if (lhs) {									\
@@ -124,6 +124,11 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #define PRIMITIVE_DO_OPERATOR_NOTIFY(shortname,translator)					\
 	PRIMITIVE_DO_OPERATOR_REAL(shortname,translator,notify_parasites();)
+
+#define PRIMITIVE_TYPEATTR_TEMPLATE(shortname)							\
+	int get_precedence() const override { return wpl_type_precedence_##shortname; }		\
+	const char *get_type_name() const override { return container_type->get_name(); }	\
+	const wpl_type_complete *get_type() const override { return container_type; }
 
 #define PRIMITIVE_TYPEATTR(shortname)								\
 	int get_precedence() const override { return wpl_type_precedence_##shortname; }		\

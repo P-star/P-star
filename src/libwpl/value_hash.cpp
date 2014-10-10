@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "value_hash.h"
 #include "value_int.h"
+#include "value_pointer.h"	
 #include "operator_types.h"
 
 #include <string>
@@ -82,6 +83,10 @@ int wpl_value_hash::do_operator (
 	else if (op == &OP_COUNT) {
 		wpl_value_int count(size());
 		return count.do_operator_recursive(exp_state, final_result);
+	}
+	else if (op == &OP_POINTERTO) {
+		wpl_value_pointer result(exp_state->get_nss(), container_type, this);
+		return result.do_operator_recursive(exp_state, final_result);
 	}
 
 	if (ret & WPL_OP_OK) {

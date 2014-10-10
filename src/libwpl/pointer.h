@@ -28,7 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "types.h"
+#include "type_template.h"
 #include "exception.h"
 #include "io.h"
 #include "value.h"
@@ -40,7 +40,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 class wpl_pointer {
 	private:
 	wpl_value *value;
-	const wpl_type_complete *template_type;
 
 	void deregister() {
 		if (value) {
@@ -63,14 +62,12 @@ class wpl_pointer {
 		value->register_pointer(this);
 	}
 
-	wpl_pointer(const wpl_type_complete *template_type) :
-		value(NULL),
-		template_type(template_type)
+	wpl_pointer() :
+		value(NULL)
 	{}
 
-	wpl_pointer(const wpl_type_complete *template_type, wpl_value *value) :
-		value(value),
-		template_type(template_type)
+	wpl_pointer(wpl_value *value) :
+		value(value)
 	{
 		if (value) {
 			value->register_pointer(this);
@@ -79,7 +76,6 @@ class wpl_pointer {
 
 	wpl_pointer(const wpl_pointer &copy) {
 		value = copy.value;
-		template_type = copy.template_type;
 
 		if (value) {
 			value->register_pointer(this);
@@ -91,18 +87,6 @@ class wpl_pointer {
 	}
 
 	public:
-	const char *get_template_type_name() const {
-		return template_type->get_name();
-	}
-
-	const wpl_type_complete *get_template_type() const {
-		return template_type;
-	}
-
-	bool test_type (const wpl_type_complete *test) const {
-		return (test == template_type);
-	}
-
 	void value_dies_now() {
 		value = NULL;
 	}

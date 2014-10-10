@@ -48,19 +48,19 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 		wpl_array(copy)
 	{}
 
-	wpl_value_array(const wpl_type_complete *template_type, int length) :
-		wpl_value_template(template_type)
+	wpl_value_array(const wpl_type_complete *array_type, const wpl_type_complete *template_type, int length) :
+		wpl_value_template(array_type, template_type)
 	{
 		reserve(length);
 	}
 
-	wpl_value_array(const wpl_type_complete *template_type) :
-		wpl_value_template(template_type)
+	wpl_value_array(const wpl_type_complete *array_type, const wpl_type_complete *template_type) :
+		wpl_value_template(array_type, template_type)
 	{}
 
-	PRIMITIVE_TYPEINFO(array)
+	PRIMITIVE_TYPEATTR_TEMPLATE(array)
 	wpl_value_array *clone() const {return new wpl_value_array(*this); };
-	wpl_value_array *clone_empty() const {return new wpl_value_array(template_type); }
+	wpl_value_array *clone_empty() const {return new wpl_value_array(container_type, template_type); }
 
 	void notify_destructor(wpl_namespace_session *nss, wpl_io &io) override {
 		wpl_array::notify_destructor(nss, io);

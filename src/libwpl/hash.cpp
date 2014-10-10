@@ -97,5 +97,5 @@ void wpl_hash::output_json (wpl_io &io) {
 }
 
 wpl_value *wpl_type_hash_instance::new_instance() const {
-	return new wpl_value_hash(template_type);
+	return new wpl_value_hash(this, template_type);
 }

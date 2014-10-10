@@ -15,4 +15,14 @@ SCENE main {
 	modify_value(b);
 
 	echo "A is now: $a and " . *b . "\n";
+
+	array<int> my_array;
+	1 ==> my_array;
+	2 ==> my_array;
+	3 ==> my_array;
+
+	pointer<array<int>>> array_ptr;
+	array_ptr = &my_array;
+
+
 }

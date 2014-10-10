@@ -45,13 +45,13 @@ class wpl_value_hash : public wpl_value_template, public wpl_hash {
 	int discard() {result = lhs; return (WPL_OP_OK|WPL_OP_DISCARD|WPL_OP_RETURN_REFERENCE); }
 
 	public:
-	wpl_value_hash(const wpl_type_complete *template_type) :
-		wpl_value_template(template_type)
+	wpl_value_hash(const wpl_type_complete *hash_type, const wpl_type_complete *template_type) :
+		wpl_value_template(hash_type, template_type)
 	{}
 
-	PRIMITIVE_TYPEINFO(hash)
+	PRIMITIVE_TYPEATTR_TEMPLATE(hash)
 	wpl_value_hash *clone() const {return new wpl_value_hash(*this); };
-	wpl_value_hash *clone_empty() const {return new wpl_value_hash(template_type); }
+	wpl_value_hash *clone_empty() const {return new wpl_value_hash(container_type, template_type); }
 
 	void notify_destructor (wpl_namespace_session *nss, wpl_io &io) override {
 		wpl_hash::notify_destructor (nss, io);

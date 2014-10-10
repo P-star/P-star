@@ -32,19 +32,42 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "operator_types.h"
 #include "value_holder_macros.h"
 
+class wpl_namespace_session;
 extern const wpl_type_pointer *wpl_type_global_pointer;
 
-class wpl_value_pointer : public wpl_value, public wpl_pointer {
+class wpl_value_pointer : public wpl_pointer, public wpl_value_template {
 	public:
-	PRIMITIVE_TYPEINFO(pointer)
+	PRIMITIVE_TYPEATTR_TEMPLATE(pointer)
 	wpl_value_pointer *clone() const {return new wpl_value_pointer(*this); };
-	wpl_value_pointer *clone_empty() const {return new wpl_value_pointer(get_template_type()); }
+	wpl_value_pointer *clone_empty() const {return new wpl_value_pointer(get_container(), get_template()); }
 
-	wpl_value_pointer(const wpl_type_complete *type) :
-		wpl_pointer(type), wpl_value()
+	wpl_value_pointer (
+			wpl_namespace_session *nss,
+			const wpl_type_complete *template_type,
+			wpl_value *value
+	) :
+		wpl_pointer(value),
+		wpl_value_template (
+			nss,
+			shared_ptr<const wpl_type_complete>(wpl_type_global_pointer->new_instance(template_type)),
+			template_type
+		)
 	{}
-	wpl_value_pointer(const wpl_type_complete *type, wpl_value *value) :
-		wpl_pointer(type, value), wpl_value()
+
+	wpl_value_pointer(
+			const wpl_type_complete *pointer_type,
+			const wpl_type_complete *template_type
+	) :
+		wpl_pointer(),
+		wpl_value_template(pointer_type, template_type)
+	{}
+	wpl_value_pointer(
+			const wpl_type_complete *pointer_type,
+			const wpl_type_complete *template_type,
+			wpl_value *value
+	) :
+		wpl_pointer(value),
+		wpl_value_template(pointer_type, template_type)
 	{}
 
 	int do_operator (

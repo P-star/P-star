@@ -300,14 +300,31 @@ class wpl_value : public wpl_suicidal {
 
 class wpl_value_template : public wpl_value {
 	protected:
+	const wpl_type_complete *container_type;
 	const wpl_type_complete *template_type;
+
+	shared_ptr<const wpl_type_complete> temporary_type;
 
 	public:
 	virtual ~wpl_value_template() {};
-	wpl_value_template(const wpl_type_complete *template_type) : wpl_value() {
+	wpl_value_template(
+			const wpl_type_complete *container_type,
+			const wpl_type_complete *template_type
+	) : wpl_value() {
+		this->container_type = container_type;
 		this->template_type = template_type;
 	}
-	const wpl_type_complete *get_template() {
+
+	wpl_value_template(
+			wpl_namespace_session *nss,
+			shared_ptr<const wpl_type_complete> mother_type,
+			const wpl_type_complete *template_type
+	);
+
+	const wpl_type_complete *get_container() const {
+		return container_type;
+	}
+	const wpl_type_complete *get_template() const {
 		return template_type;
 	}
 	virtual bool isTemplate() {

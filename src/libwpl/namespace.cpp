@@ -72,6 +72,18 @@ wpl_parseable *wpl_namespace::new_find_parseable_no_parent(const char *name) {
 	return NULL;
 }
 
+wpl_type_complete *wpl_namespace::find_complete_type(const char *name) const {
+	for (auto type : complete_types) {
+		if (type->is_name(name)) {
+			return type;
+		}
+	}
+	if (parent_namespace) {
+		return parent_namespace->find_complete_type(name);
+	}
+	return NULL;
+}
+
 void wpl_namespace::generate_typename_list(ostringstream &target) {
 	bool first = true;
 	for (shared_ptr<wpl_variable> &variable : variables) {

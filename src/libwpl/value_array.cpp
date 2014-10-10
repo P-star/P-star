@@ -29,7 +29,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_array.h"
 #include "value_int.h"
 #include "operator_types.h"
-	
+#include "value_pointer.h"	
+
 wpl_value *wpl_value_array::define_if_needed(int index) {
 	wpl_value *value = get(index);
 	if (value == NULL) {
@@ -111,6 +112,11 @@ int wpl_value_array::do_operator (
 	else if (op == &OP_COUNT) {
 		wpl_value_int count(size());
 		return count.do_operator_recursive(exp_state, final_result);
+	}
+	else if (op == &OP_POINTERTO) {
+		wpl_value_pointer result(exp_state->get_nss(), container_type, this);
+		cerr << "Created pointer to array\n";
+		return result.do_operator_recursive(exp_state, final_result);
 	}
 
 	if (ret & WPL_OP_OK) {
