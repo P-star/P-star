@@ -1,0 +1,53 @@
+SCENE main {
+	struct my_type {
+		private int i;
+		private int j;
+		my_type (int _i) {
+			i = _i;
+			j = _i + 1;
+		};
+		public int print() {
+			echo "$i\n";
+		};
+		public int inc() {
+			i++;
+		};
+	};
+
+	echo "Test array foreach loop\n";
+	array<my_type> my_array;
+	my_array[@my_array](1);
+	my_array[@my_array](2);
+	my_array[@my_array](3);
+	my_array[@my_array](4);
+
+	int i;
+	for (i = 0; i < 3; i++) {
+		/* Use variable without constructor */
+		my_type *var;
+
+		echo " - Loop start nr $i\n";
+		foreach (var; my_array) {
+			var->print();
+		}
+	}
+
+	echo "Test array foreach loop with pointer\n";
+	pointer<my_type> var;
+	foreach (var; my_array) {
+		*var->print();
+		*var->inc();
+	}
+
+	echo "Test foreach loop without pointer\n";
+	my_type *var_; /* The star disables the constructor requirement */
+	foreach (var_; my_array) {
+		var_->print();
+		var_->inc(); /* We only modify the local copy here */
+	}
+
+	echo "Test array foreach loop with pointer, all should be +1 now\n";
+	foreach (var; my_array) {
+		*var->print();
+	}
+}

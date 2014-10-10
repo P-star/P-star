@@ -122,8 +122,6 @@ int wpl_range::run (
 	wpl_value_bool test;
 	test.set_do_finalize();
 
-	bool was_first = false;
-
 	if (!range_state->is_active()) {
 		range_state->reset(counter_begin);
 		range_state->set_active(true);
@@ -134,9 +132,12 @@ int wpl_range::run (
 					(flags & INCREMENT ? &OP_INC_SUFFIX : &OP_DEC_SUFFIX),
 					rhs
 			);
-		}
 
-		was_first = true;
+			/* If the two numbers are equal, we've got nothing to do */
+			if (!range_state->counter_operate (&dummy_exp_state, boolean_test, rhs)) {
+				return WPL_OP_RANGE | WPL_OP_RANGE_ABORT;
+			}
+		}
 	}
 
 	unique_ptr<wpl_value> result(range_state->clone_counter());
