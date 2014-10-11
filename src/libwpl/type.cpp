@@ -69,8 +69,9 @@ void wpl_type_incomplete::parse_value (wpl_namespace *parent_namespace) {
 	}
 
 	wpl_type_user_incomplete *usr_obj = new_instance(buf);
-	parent_namespace->new_register_parseable(usr_obj);
 	parent_namespace->add_managed_pointer (usr_obj);
+	parent_namespace->new_register_parseable(usr_obj);
+	parent_namespace->add_type(usr_obj);
 
 	usr_obj->set_parent_namespace(parent_namespace);
 	usr_obj->load_position(get_position());

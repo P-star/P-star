@@ -21,8 +21,6 @@ SCENE main {
 	2 ==> my_array;
 	3 ==> my_array;
 
-	pointer<array<int>>> array_ptr;
+	pointer<array<int>> array_ptr;
 	array_ptr = &my_array;
-
-
 }
