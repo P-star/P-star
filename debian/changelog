@@ -1,3 +1,14 @@
+pstar (1.2~alpha9) experimental; urgency=low
+
+  * Implement pointers as a template type, like 'pointer<int>'. Values are made to pointers with operator &, and pointers are dereferenced with *.
+  * Arrays can be looped easily in foreach loop, iterating either with values or pointers.
+  * Fix a problem with operator precedence where right assoc operators had too low precedence
+  * Fix problems with template types in the namespace where multiple copies of the same template were created. This made them incompatible
+  * Comments can now be placed inside the struct body
+  * Fix template parsing problem where missing >'s in definition were not detected
+
+ -- Atle Solbakken <atle@goliathdns.no>  Sat, 11 Oct 2014 22:35:18 +0200
+
 pstar (1.2~alpha8) experimental; urgency=low
 
   * Fix issues with constructors
