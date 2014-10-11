@@ -208,8 +208,6 @@ int wpl_value::do_operator_recursive (
 			throw runtime_error("wpl_value::do_operator_recursive(): return OP requested with NULL final_result");
 		}
 
-		cerr << "final result is: " << final_result->get_type_name() << ", and I am " << get_type_name() << endl;
-
 		try {
 			if (!(final_result->set_strong (this))) {
 				ostringstream msg;
