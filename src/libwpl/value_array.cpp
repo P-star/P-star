@@ -117,6 +117,14 @@ int wpl_value_array::do_operator (
 		wpl_value_pointer result(exp_state->get_nss(), container_type, this);
 		return result.do_operator_recursive(exp_state, final_result);
 	}
+	else if (op == &OP_ASSIGN) {
+		if (!set_strong(rhs)) {
+			cerr << "While assigning value of type " << rhs->get_type_name() <<
+				" to array of type " << get_type_name() << " in operator =:\n";
+			throw runtime_error("Incompatible types");
+		}
+		return do_operator_recursive(exp_state, final_result);
+	}
 
 	if (ret & WPL_OP_OK) {
 		if (ret & WPL_OP_DISCARD) {
@@ -167,7 +175,7 @@ int wpl_value_array::finalize_expression (wpl_expression_state *exp_state, wpl_v
 	   Set array by discard chain?
 	 */
 
-	if (!set_strong (last_value)) {
+	if ((get_flags() & wpl_value_do_finalize) &&  !set_strong (last_value)) {
 		cerr << "While setting final result of type " << get_type_name() <<
 			" to array of type " << last_value->get_type_name() << ":\n";
 		throw runtime_error("Incompatible types");
