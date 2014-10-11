@@ -27,6 +27,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "type.h"
+#include "type_user_incomplete.h"
+#include "namespace.h"
 #include "type_parse_signals.h"
 
 using namespace std;

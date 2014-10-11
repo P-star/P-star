@@ -79,6 +79,9 @@ class wpl_type_complete_template : public wpl_type_complete {
 	}
 	virtual void suicide() = 0;
 
+	virtual bool check_type(const wpl_type_complete *) const override;
+	bool check_type(const wpl_type_template *mother_type, const wpl_type_complete *template_type) const;
+
 	int get_precedence() const {
 		return mother_type->get_precedence();
 	}

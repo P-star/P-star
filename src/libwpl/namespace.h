@@ -33,6 +33,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "exception.h"
 #include "variable.h"
 #include "parseable.h"
+#include "type.h"
 
 #include <list>
 #include <sstream>
@@ -50,17 +51,15 @@ class wpl_template;
 class wpl_scene;
 class wpl_pragma;
 
-class wpl_exception_name_exists {};
-class wpl_type_complete;
 class wpl_type_template;
-class wpl_type_incomplete;
+class wpl_exception_name_exists {};
 
 class wpl_namespace {
 	private:
 
 	int id;
 
-	list<unique_ptr<wpl_identifier>> managed_pointers;
+	list<shared_ptr<wpl_identifier>> managed_pointers;
 
 	/*
 	   TODO
@@ -110,22 +109,21 @@ class wpl_namespace {
 		managed_pointers.emplace_back(identifier);
 	}
 
+	void add_managed_pointer (shared_ptr<wpl_identifier> identifier) {
+		managed_pointers.push_back(identifier);
+	}
+
 	/*
 	   Templates, when being parsed, requires these to be at the 
-	   end after added, but we don't need two of them.
+	   end after added, but we don't need two of them. We add it
+	   both here but let namespaces furter up handle the memory
+	   to allow the same type to be used together throughout the
+	   program.
 	   */
-	void add_type (wpl_type_complete *type) {
-		complete_types.remove(type);
-		complete_types.push_back(type);
-	}
-	void add_type (wpl_type_template *type) {
-		template_types.remove(type);
-		template_types.push_back(type);
-	}
-	void add_type (wpl_type_incomplete *type) {
-		incomplete_types.remove(type);
-		incomplete_types.push_back(type);
-	}
+	wpl_type_complete *add_unique_complete_type (shared_ptr<wpl_type_complete> type);
+	void add_type (wpl_type_complete *type);
+	void add_type (wpl_type_template *type);
+	void add_type (wpl_type_incomplete *type);
 
 	/* Used in template parsing */
 	wpl_type_complete *get_last_complete_type() const {
@@ -138,6 +136,7 @@ class wpl_namespace {
 
 	wpl_parseable *new_find_parseable(const char *name);
 	wpl_parseable *new_find_parseable_no_parent(const char *name);
+	wpl_type_complete *find_complete_type(const wpl_type_complete *type_check) const;
 	wpl_type_complete *find_complete_type(const char *name) const;
 	wpl_type_template *find_template_type(const char *name) const;
 

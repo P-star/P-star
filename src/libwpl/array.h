@@ -37,6 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 
 class wpl_value;
+class wpl_namespace_session;
 
 /**
  * @brief Array implementation

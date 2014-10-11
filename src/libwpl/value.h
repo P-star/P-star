@@ -46,12 +46,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #define strtof strtod
 #endif
 
-enum {
-	wpl_value_no_flags,
-	wpl_value_is_constant,
-	wpl_value_is_dynamic,
-	wpl_value_do_finalize
-};
+const int wpl_value_no_flags = 0;
+const int wpl_value_is_constant = 1;
+const int wpl_value_is_dynamic = 2;
+const int wpl_value_do_finalize = 4;
 
 struct wpl_operator_struct;
 class wpl_namespace_session;

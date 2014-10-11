@@ -1,4 +1,20 @@
 SCENE main {
+	string mystring = "aaa";
+
+	array<pointer<string>> sa;
+	*sa =& mystring;
+	pointer<string> sb = *sa;
+
+	/* This is the first time pointer<int> in used, and it should
+	   be registered in the top namespace for statements further down
+	   to find it so that they are equal when we run this later and
+	   call print_pointer from outside the tree. */
+	struct mystruct {
+		public int print_pointer (pointer<int> p) {
+			echo "Pointer is " . *p . "\n";
+		};
+	};
+
 	int a = 10;
 
 	pointer<int> b = &a;
@@ -6,6 +22,9 @@ SCENE main {
 	*b++;
 
 	echo "A is now: $a and " . *b . "\n";
+
+	mystruct mystruct_instance;
+	mystruct_instance->print_pointer(b);
 
 	int modify_value(pointer<int> a) {
 		*a++;

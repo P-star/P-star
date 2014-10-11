@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "type_template.h"
+#include "namespace.h"
 #include "type_parse_signals.h"
 
 wpl_type_complete_template::wpl_type_complete_template (
@@ -112,19 +113,25 @@ wpl_type_complete *wpl_type_template::register_unique_complete_type (
 		wpl_namespace *parent_namespace,
 		const wpl_type_complete *type
 ) {
-	unique_ptr<wpl_type_complete> new_type(new_instance(type));
+	shared_ptr<wpl_type_complete> new_type(new_instance(type));
 
-	// Check if this template type is already defined
-	wpl_type_complete *complete_type = NULL;
-	if (!(complete_type = parent_namespace->find_complete_type(new_type->get_name()))) {
-		parent_namespace->new_register_parseable(new_type.get());
-		complete_type = new_type.release();
-		parent_namespace->add_managed_pointer(complete_type);
+	return parent_namespace->add_unique_complete_type(new_type);
+}
+
+bool wpl_type_complete_template::check_type (const wpl_type_complete *type) const {
+	const wpl_type_complete_template *type_template;
+	if (!(type_template = dynamic_cast<const wpl_type_complete_template*>(type))) {
+		return false;
 	}
+	return type_template->check_type(this->mother_type, this->template_type);
+}
 
-	/* We need to do this even if were already added so that our
-	   caller can find the correct value */
-	parent_namespace->add_type(complete_type);
-
-	return complete_type;
+bool wpl_type_complete_template::check_type(
+		const wpl_type_template *mother_type,
+		const wpl_type_complete *template_type) const
+{
+	if (this->mother_type != mother_type) {
+		return false;
+	}
+	return this->template_type->check_type(template_type);
 }

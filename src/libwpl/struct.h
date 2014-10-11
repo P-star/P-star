@@ -30,7 +30,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "type_precedence.h"
 #include "typenames.h"
-#include "type.h"
+#include "type_user_incomplete.h"
 #include "namespace.h"
 #include "variable.h"
 
