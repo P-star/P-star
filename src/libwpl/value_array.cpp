@@ -115,7 +115,6 @@ int wpl_value_array::do_operator (
 	}
 	else if (op == &OP_POINTERTO) {
 		wpl_value_pointer result(exp_state->get_nss(), container_type, this);
-		cerr << "Created pointer to array\n";
 		return result.do_operator_recursive(exp_state, final_result);
 	}
 
