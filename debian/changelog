@@ -1,3 +1,9 @@
+pstar (1.2~alpha9ubuntu1) saucy; urgency=low
+
+  * Ubuntu version
+
+ -- Atle <atle@atle-VirtualBox>  Sat, 11 Oct 2014 22:53:39 +0200
+
 pstar (1.2~alpha9) experimental; urgency=low
 
   * Implement pointers as a template type, like 'pointer<int>'. Values are made to pointers with operator &, and pointers are dereferenced with *.
