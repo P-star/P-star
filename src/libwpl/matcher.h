@@ -361,4 +361,17 @@ class wpl_matcher {
 	}
 };
 
+class wpl_smart_load_position {
+	wpl_matcher *tgt;
+	wpl_matcher *src;
+
+	public:
+	wpl_smart_load_position(wpl_matcher *tgt, wpl_matcher *src) :
+		tgt(tgt), src(src)
+	{}
+	~wpl_smart_load_position() {
+		tgt->load_position(src->get_position());
+	}
+};
+
 #endif // __WPL_MATCHER_H

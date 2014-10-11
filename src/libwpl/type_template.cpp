@@ -55,31 +55,56 @@ void wpl_type_template::parse_value (wpl_namespace *parent_namespace) {
 		throw;
 	}
 
-	wpl_parseable *parseable;
-	if (!(parseable = parent_namespace->new_find_parseable(buf))) {
+	wpl_type_complete *complete_type;
+	wpl_type_template *template_type;
+
+	if (complete_type = parent_namespace->find_complete_type(buf)) {
+		/* Parse a complete type like 'int'. We do not allow statements
+		   like array<int a>, throw exception if this happens. */
+		complete_type->load_position(get_position());
+
+		try {
+			complete_type->parse_value(parent_namespace);
+		}
+		catch (wpl_type_begin_declaration &e) {
+			THROW_ELEMENT_EXCEPTION("Variable declaration not allowed inside template definition. Maybe you forgot a '>'?");
+		}
+	}
+	else if (template_type = parent_namespace->find_template_type(buf)) {
+		/* Parse another template type, like if we have array<array<int>> */
+		template_type->load_position(get_position());
+
+		try {
+			template_type->parse_value(parent_namespace);
+		}
+		catch (wpl_type_begin_declaration &e) {
+			THROW_ELEMENT_EXCEPTION("Variable declaration not allowed inside template definition. Maybe you forgot a '>'?");
+		}
+
+		/* The other template type will create a new complete type
+		   in the namespace which we retrieve here */
+		complete_type = parent_namespace->get_last_complete_type();
+	}
+	else {
 		cerr << "While parsing name '" << buf << "' inside template definition:\n";
 		THROW_ELEMENT_EXCEPTION("Undefined name");
 	}
 
-	try {
-		parseable->load_position(get_position());
-		parseable->parse_value(parent_namespace);
+	load_position(complete_type->get_position());
+	ignore_whitespace();
+	if (!ignore_letter('>')) {
+		THROW_ELEMENT_EXCEPTION("Expected > after template definition");
 	}
-	catch (wpl_type_end_template_declaration &e) {
-		load_position(parseable->get_position());
-		parseable = register_unique_complete_type(parent_namespace, e.get_type());
 
-		try {
-			parseable->load_position(get_position());
-			parseable->parse_value(parent_namespace);
-		}
-		catch (wpl_type_end_template_declaration &e) {
-			load_position(parseable->get_position());
-			parseable = register_unique_complete_type(parent_namespace, e.get_type());
-			parseable->load_position(get_position());
-			parseable->parse_value(parent_namespace);
-		}
-	}
+	/* Create a new complete type, like array<int>. */
+	complete_type = register_unique_complete_type(parent_namespace, complete_type);
+	complete_type->load_position(get_position());
+
+	/* Use this since we've got not finally{} in C++, the variable
+	   declaration is thrown inside parse_value below */
+	wpl_smart_load_position lp(this, complete_type);
+
+	complete_type->parse_value(parent_namespace);
 }
 
 wpl_type_complete *wpl_type_template::register_unique_complete_type (
@@ -94,7 +119,7 @@ wpl_type_complete *wpl_type_template::register_unique_complete_type (
 		parent_namespace->new_register_parseable(new_type.get());
 		complete_type = new_type.release();
 		parent_namespace->add_managed_pointer(complete_type);
-		parent_namespace->add_complete_type(complete_type);
+		parent_namespace->add_type(complete_type);
 	}
 
 	return complete_type;

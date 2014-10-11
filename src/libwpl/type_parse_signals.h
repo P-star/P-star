@@ -88,22 +88,6 @@ class wpl_type_begin_variable_declaration : public wpl_type_begin_declaration, p
 };
 
 /**
- * @brief When a complete type finds a '>' after itself, this is thrown
- */
-class wpl_type_end_template_declaration {
-	private:
-	const wpl_type_complete *type;
-
-	public:
-	wpl_type_end_template_declaration (const wpl_type_complete *_type) :
-		type(_type)
-	{}
-	const wpl_type_complete *get_type() {
-		return type;
-	}
-};
-
-/**
  * @brief This is thrown when structs are completely parsed
  */
 class wpl_type_end_statement {

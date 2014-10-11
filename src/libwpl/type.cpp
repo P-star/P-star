@@ -35,8 +35,8 @@ void wpl_type_complete::parse_value (wpl_namespace *parent_namespace) {
 	wpl_matcher_position begin_pos(get_position());
 
 	ignore_whitespace();
-	if (ignore_letter ('>')) {
-		throw wpl_type_end_template_declaration(this);
+	if (search_letter ('>')) {
+		return;
 	}
 
 	char name[WPL_VARNAME_SIZE];

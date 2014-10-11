@@ -145,7 +145,8 @@ wpl_value *wpl_type_void::new_instance() const {
 }
 
 #define REGISTER_TYPE(name) \
-	name_space->new_register_parseable(&constant_type_##name);
+	name_space->new_register_parseable(&constant_type_##name); \
+	name_space->add_type(&constant_type_##name);
 
 // From type_file.cpp
 void wpl_type_file_register(wpl_namespace *target);
@@ -160,9 +161,6 @@ void wpl_types_add_all_to_namespace(wpl_namespace *name_space) {
 	REGISTER_TYPE(double);
 	REGISTER_TYPE(bool);
 	REGISTER_TYPE(string);
-	REGISTER_TYPE(array);
-	REGISTER_TYPE(pointer);
-	REGISTER_TYPE(hash);
 	REGISTER_TYPE(struct);
 	REGISTER_TYPE(class);
 	REGISTER_TYPE(env);
@@ -173,6 +171,10 @@ void wpl_types_add_all_to_namespace(wpl_namespace *name_space) {
 #endif
 	REGISTER_TYPE(time);
 	REGISTER_TYPE(line);
+
+	REGISTER_TYPE(array);
+	REGISTER_TYPE(pointer);
+	REGISTER_TYPE(hash);
 
 	wpl_type_file_register(name_space);
 }
