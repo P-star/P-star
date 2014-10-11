@@ -1,8 +1,14 @@
+pstar (1.2~alpha9ubuntu2) trusty; urgency=low
+
+  * Ubuntu version
+
+ -- Atle Solbakken <atle@goliathdns.no>  Sat, 11 Oct 2014 23:16:33 +0200
+
 pstar (1.2~alpha9ubuntu1) saucy; urgency=low
 
   * Ubuntu version
 
- -- Atle <atle@atle-VirtualBox>  Sat, 11 Oct 2014 22:53:39 +0200
+ -- Atle Solbakken <atle@goliathdns.no>  Sat, 11 Oct 2014 22:53:39 +0200
 
 pstar (1.2~alpha9) experimental; urgency=low
 
