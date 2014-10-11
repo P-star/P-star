@@ -101,6 +101,23 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 
 		wpl_matcher_position def_begin = get_position();
 
+		// Check for comment
+		if (ignore_string ("/*")) {
+			while (get_letter ('*', NON_ASTERISK)) {
+				if (ignore_letter ('/')) {
+					goto comment_ok;
+				}
+			}
+
+			load_position(def_begin);
+			revert_string(2);
+
+			THROW_ELEMENT_EXCEPTION("Could not find comment end for this comment");
+
+			comment_ok:
+			ignore_whitespace();
+		}
+
 		// Check for destructor
 		if (ignore_letter('~')) {
 			if (dtor_found) {
