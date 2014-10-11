@@ -23,4 +23,64 @@ SCENE main {
 
 	pointer<array<int>> array_ptr;
 	array_ptr = &my_array;
+
+	{
+		int ab = 1;
+
+		pointer<int> ptr_a = &ab;
+		pointer<int> ptr_b = ptr_a;
+
+		struct mystruct {
+			int value;
+
+			mystruct(pointer<int> set) {
+				value = *set;
+			};
+
+			public pointer<int> get_pointer() {
+				return &value;
+			};
+		};
+
+		int print (int a) {
+			echo "Value is: " . a . "\n";
+		}
+
+		print (*&*&*ptr_b);
+
+		array<array<int>> a;
+
+		pointer<int> b = &a[0][0];
+		**a = 2;
+		print (**a);
+		**a++;
+		print (**a);
+		**a = *b + 1;
+		print (**a);
+		*(ptr_b = b)++;
+		print (**a);
+
+		pointer<int> c;
+
+		*(c = b) += 100;
+
+		print (*c);
+
+		int edit_pointer(pointer<int> ptr, int value) {
+			*ptr = value;
+		}
+
+		edit_pointer (b, *b + 1);
+
+		print (**a);
+
+		edit_pointer (b, **a + 1);
+
+		print (*b);
+
+		mystruct d(&200);
+		print (*(d->get_pointer()));
+		*(d->get_pointer())++;
+		print (*(d->get_pointer()));
+	}
 }

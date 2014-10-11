@@ -93,6 +93,7 @@ void wpl_type_template::parse_value (wpl_namespace *parent_namespace) {
 	load_position(complete_type->get_position());
 	ignore_whitespace();
 	if (!ignore_letter('>')) {
+		cerr << "While parsing complete type " << complete_type->get_name() << " derived from template:";
 		THROW_ELEMENT_EXCEPTION("Expected > after template definition");
 	}
 
@@ -119,8 +120,11 @@ wpl_type_complete *wpl_type_template::register_unique_complete_type (
 		parent_namespace->new_register_parseable(new_type.get());
 		complete_type = new_type.release();
 		parent_namespace->add_managed_pointer(complete_type);
-		parent_namespace->add_type(complete_type);
 	}
+
+	/* We need to do this even if were already added so that our
+	   caller can find the correct value */
+	parent_namespace->add_type(complete_type);
 
 	return complete_type;
 }
