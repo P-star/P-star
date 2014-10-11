@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "user_function.h"
+#include "type_parse_signals.h"
 #include "block.h"
 
 wpl_user_function::wpl_user_function(
@@ -77,7 +78,7 @@ void wpl_user_function::parse_value(wpl_namespace *ns) {
 		}
 		catch (wpl_type_begin_variable_declaration &e) {
 			e.create_variable(this);
-			load_position(parseable->get_position());
+			load_position(e.get_position());
 		}
 
 		ignore_whitespace();

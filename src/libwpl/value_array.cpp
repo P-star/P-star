@@ -29,7 +29,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_array.h"
 #include "value_int.h"
 #include "operator_types.h"
-	
+#include "value_pointer.h"	
+
 wpl_value *wpl_value_array::define_if_needed(int index) {
 	wpl_value *value = get(index);
 	if (value == NULL) {
@@ -112,6 +113,10 @@ int wpl_value_array::do_operator (
 		wpl_value_int count(size());
 		return count.do_operator_recursive(exp_state, final_result);
 	}
+	else if (op == &OP_POINTERTO) {
+		wpl_value_pointer result(exp_state->get_nss(), container_type, this);
+		return result.do_operator_recursive(exp_state, final_result);
+	}
 
 	if (ret & WPL_OP_OK) {
 		if (ret & WPL_OP_DISCARD) {
@@ -122,6 +127,53 @@ int wpl_value_array::do_operator (
 	}
 
 	return ret;
+}
+
+int wpl_value_array::do_operator_recursive (wpl_expression_state *exp_state, wpl_value *final_result) {
+	if (exp_state->get_flags() & exp_state->CTX_LOOP) {
+		int index = exp_state->get_loop_number();
+		int max = size();
+
+		int index_mod = index % max;
+
+		int ret = 0;
+
+		wpl_value *value = get(index_mod);
+		wpl_value *value_next = get(index_mod+1);
+
+		if (value == NULL) {
+			wpl_value_bool result(0);
+			ret |= WPL_OP_RANGE_COMPLETE;
+			return result.do_operator_recursive(exp_state, final_result);
+		}
+		else if (value_next == NULL) {
+			ret |= WPL_OP_RANGE_COMPLETE;
+		}
+		else {
+			ret |= WPL_OP_RANGE;
+		}
+
+		ret |= value->do_operator_recursive(exp_state, final_result);
+
+		return ret;
+	}
+
+	return wpl_value::do_operator_recursive(exp_state, final_result);
+}
+
+int wpl_value_array::finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) {
+	/*
+	   TODO
+	   Set array by discard chain?
+	 */
+
+	if (!set_strong (last_value)) {
+		cerr << "While setting final result of type " << get_type_name() <<
+			" to array of type " << last_value->get_type_name() << ":\n";
+		throw runtime_error("Incompatible types");
+	}
+
+	return WPL_OP_OK;
 }
 
 bool wpl_value_array::set_strong (wpl_value *value) {

@@ -51,6 +51,9 @@ class wpl_scene;
 class wpl_pragma;
 
 class wpl_exception_name_exists {};
+class wpl_type_complete;
+class wpl_type_template;
+class wpl_type_incomplete;
 
 class wpl_namespace {
 	private:
@@ -86,6 +89,10 @@ class wpl_namespace {
 /*	list<wpl_variable*> variables_new;
 	list<wpl_function*> functions_new;*/
 
+	list<wpl_type_complete*> complete_types;
+	list<wpl_type_template*> template_types;
+	list<wpl_type_incomplete*> incomplete_types;
+
 	wpl_namespace *parent_namespace;
 
 	wpl_identifier *find_identifier_no_parent(const char *name);
@@ -103,12 +110,36 @@ class wpl_namespace {
 		managed_pointers.emplace_back(identifier);
 	}
 
+	/*
+	   Templates, when being parsed, requires these to be at the 
+	   end after added, but we don't need two of them.
+	   */
+	void add_type (wpl_type_complete *type) {
+		complete_types.remove(type);
+		complete_types.push_back(type);
+	}
+	void add_type (wpl_type_template *type) {
+		template_types.remove(type);
+		template_types.push_back(type);
+	}
+	void add_type (wpl_type_incomplete *type) {
+		incomplete_types.remove(type);
+		incomplete_types.push_back(type);
+	}
+
+	/* Used in template parsing */
+	wpl_type_complete *get_last_complete_type() const {
+		return complete_types.back();
+	}
+
 	void new_register_parseable (wpl_parseable *parseable);
 /*	void new_register_function (wpl_function *function);
 	void new_register_variable (wpl_variable *variable);*/
 
 	wpl_parseable *new_find_parseable(const char *name);
 	wpl_parseable *new_find_parseable_no_parent(const char *name);
+	wpl_type_complete *find_complete_type(const char *name) const;
+	wpl_type_template *find_template_type(const char *name) const;
 
 	int variables_count() const {
 		return variables.size();

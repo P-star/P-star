@@ -38,9 +38,9 @@ using namespace std;
 
 class wpl_value_unresolved_identifier : public wpl_value_strings<string> {
 	public:
-	PRIMITIVE_TYPEINFO(unresolved_identifier)
+	PRIMITIVE_TYPEATTR(unresolved_identifier)
 
-	wpl_value_unresolved_identifier() {}
+	wpl_value_unresolved_identifier() : wpl_value_strings<string>() {}
 	wpl_value_unresolved_identifier(const wpl_value_unresolved_identifier &copy) :
 		wpl_value_strings(copy) {
 	}

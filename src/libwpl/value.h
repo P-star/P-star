@@ -58,6 +58,7 @@ class wpl_namespace_session;
 class wpl_expression_state;
 class wpl_type_complete;
 class wpl_value_bool;
+class wpl_pointer;
 class wpl_value;
 
 class wpl_value_no_strong_set : public runtime_error {
@@ -116,22 +117,27 @@ class wpl_value_return {
  */
 class wpl_value : public wpl_suicidal {
 	private:
+	vector<wpl_pointer*> pointers;
+	void invalidate_pointers();
 
 	protected:
 	wpl_value *create_bool(bool value);
 	int flags;
 
 	public:
-	wpl_value() : wpl_suicidal() {
-		flags = 0;
-	}
-	wpl_value(const wpl_value &copy) : wpl_suicidal(copy) {
-		flags = 0;
-	}
+	wpl_value(const wpl_value &copy) :
+		wpl_suicidal(copy),
+		flags(0)
+	{}
+	wpl_value() :
+		wpl_suicidal(),
+		flags(0)
+	{}
 	virtual ~wpl_value();
-	virtual void suicide() override {
-		delete this;
-	}
+	virtual void suicide() override;
+
+	void register_pointer(wpl_pointer *ptr);
+	void remove_pointer(wpl_pointer *ptr); 
 
 	void set_flags(int flags) {
 		this->flags = flags;
@@ -145,6 +151,9 @@ class wpl_value : public wpl_suicidal {
 
 	virtual const char *get_type_name() const = 0;
 	virtual int get_precedence() const = 0;
+	virtual const wpl_type_complete *get_type() const {
+		throw runtime_error("No type exists for this value");
+	}
 
 	virtual wpl_value *clone() const = 0;
 	virtual wpl_value *clone_empty() const {  throw runtime_error ("Empty cloning not supported by this type"); }
@@ -165,6 +174,12 @@ class wpl_value : public wpl_suicidal {
 			wpl_expression_state *exp_state,
 			wpl_value *final_result,
 			const wpl_operator_struct *op
+	);
+
+	int do_operator_discard (
+			wpl_expression_state *exp_state,
+			wpl_value *discarded,
+			wpl_value *final_result
 	);
 
 	virtual int do_operator_recursive (
@@ -285,14 +300,31 @@ class wpl_value : public wpl_suicidal {
 
 class wpl_value_template : public wpl_value {
 	protected:
+	const wpl_type_complete *container_type;
 	const wpl_type_complete *template_type;
+
+	shared_ptr<const wpl_type_complete> temporary_type;
 
 	public:
 	virtual ~wpl_value_template() {};
-	wpl_value_template(const wpl_type_complete *template_type) {
+	wpl_value_template(
+			const wpl_type_complete *container_type,
+			const wpl_type_complete *template_type
+	) : wpl_value() {
+		this->container_type = container_type;
 		this->template_type = template_type;
 	}
-	const wpl_type_complete *get_template() {
+
+	wpl_value_template(
+			wpl_namespace_session *nss,
+			shared_ptr<const wpl_type_complete> mother_type,
+			const wpl_type_complete *template_type
+	);
+
+	const wpl_type_complete *get_container() const {
+		return container_type;
+	}
+	const wpl_type_complete *get_template() const {
 		return template_type;
 	}
 	virtual bool isTemplate() {

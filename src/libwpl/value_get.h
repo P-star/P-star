@@ -52,11 +52,12 @@ class wpl_value_get : public wpl_value {
 
 	// Initialized in .cpp
 	static wpl_type_array_instance type_complete_array;
+	static wpl_type_hash_instance type_complete_hash;
 
 	public:
 	PRIMITIVE_TYPEINFO(get)
 	wpl_value_get(int dummy) :
-		hash(&type_complete_array),
+		hash(&type_complete_hash, &type_complete_array),
 		did_parse(false)
 	{}
 	wpl_value_get *clone() const { return new wpl_value_get(0); };

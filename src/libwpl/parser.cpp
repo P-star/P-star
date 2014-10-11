@@ -32,7 +32,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "pragma.h"
 #include "expression.h"
 #include "blocks.h"
-#include "types.h"
 #include "template.h"
 #include "exception.h"
 

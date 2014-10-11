@@ -39,11 +39,16 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace mimetic;
 
-extern wpl_type_bool *wpl_type_global_bool;
-extern wpl_type_array *wpl_type_global_array;
+extern const wpl_type_bool *wpl_type_global_bool;
+extern const wpl_type_array *wpl_type_global_array;
+extern const wpl_type_hash *wpl_type_global_hash;
 
-wpl_type_array_instance wpl_value_post::type_complete_array(
+wpl_type_array_instance wpl_value_post::type_complete_array (
 	wpl_type_global_array, wpl_type_global_bool
+);
+
+wpl_type_hash_instance wpl_value_post::type_complete_hash (
+	wpl_type_global_hash, &type_complete_array
 );
 
 void wpl_value_post::parse_entity (MimeEntity *me) {

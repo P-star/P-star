@@ -28,7 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "function.h"
 #include "expression_state.h"
-#include "types.h"
+#include "type.h"
 
 #include <cstring>
 

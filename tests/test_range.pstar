@@ -37,32 +37,5 @@ SCENE main {
 	}
 	echo "\n";
 
-	struct my_type {
-		private int i;
-		private int j;
-		my_type (int _i) {
-			i = _i;
-			j = _i + 1;
-		};
-		public int print() {
-			echo "$i\n";
-		};
-	};
-
-	echo "Test array foreach loop\n";
-	array<my_type> my_array;
-	my_array[@my_array](1);
-	my_array[@my_array](2);
-	my_array[@my_array](3);
-	my_array[@my_array](4);
-
-	for (i = 0; i < 3; i++) {
-		my_type *var;
-		echo " - Loop start nr $i\n";
-		foreach (var; my_array[0..(@my_array-1)]) {
-			var->print();
-		}
-	}
-
 	return 0;
 }

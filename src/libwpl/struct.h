@@ -28,7 +28,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "types.h"
+#include "type_precedence.h"
+#include "typenames.h"
+#include "type.h"
 #include "namespace.h"
 #include "variable.h"
 

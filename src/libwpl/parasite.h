@@ -34,6 +34,11 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <memory>
 #include <list>
 
+/**
+ * @brief Objects allocated in other libraries, like MySQL, must be deleted
+ in those libraries. This is why we use the suicide() function instead of
+ just delete here.
+ */
 class wpl_parasite_deleter {
 	public:
 	template<class T> void operator() (T *p) {
@@ -41,6 +46,11 @@ class wpl_parasite_deleter {
 	}
 };
 
+/**
+ * @brief Extend this class to create a new parasite type. The parasite is notified with notify() being cold when the value it lives in changes.
+ *
+ * @tparam T Type of the value which supports being parasite host
+ */
 template<class T> class wpl_parasite {
 	protected:
 	T *host;
@@ -56,6 +66,11 @@ template<class T> class wpl_parasite {
 	}
 };
 
+/**
+ * @brief A value can extend this class to become a parasite host. The host must call notify_parasites() every time it changes. Functionality like MySQL statements register parasites on values which are part of SQL queries.
+ *
+ * @tparam T The value type
+ */
 template<class T> class wpl_parasite_host {
 	list<unique_ptr<wpl_parasite<T>,wpl_parasite_deleter>> parasites;
 

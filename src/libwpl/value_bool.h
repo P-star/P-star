@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,12 +28,14 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "types.h"
 #include "value_number.h"
+#include "value_pointer.h"
 
 #include <string>
 
 class wpl_value_bool : public wpl_value_number<bool> {
-	PRIMITIVE_CLASS_CONTENT(bool,bool,toBool())
+	PRIMITIVE_CLASS_CONTENT(bool,bool,toBool(),number)
 
 	bool toBool() override {
 		return value;

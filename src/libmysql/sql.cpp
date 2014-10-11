@@ -29,7 +29,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "sql.h"
-#include "../libwpl/types.h"
+#include "../libwpl/type_parse_signals.h"
 #include "../libwpl/exception.h"
 #include "../libwpl/namespace.h"
 #include "../libwpl/namespace_session.h"

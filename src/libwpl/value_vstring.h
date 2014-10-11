@@ -67,7 +67,7 @@ class wpl_value_vstring : public wpl_value {
 	vstring my_vstring;
 
 	public:
-	PRIMITIVE_TYPEINFO(vstring)
+	PRIMITIVE_TYPEATTR(vstring)
 
 	wpl_value_vstring(const char *new_value, int len) :
 		my_vstring(len)

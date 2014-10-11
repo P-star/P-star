@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -101,15 +101,7 @@ wpl_variable_holder::wpl_variable_holder (const wpl_variable_holder &copy) :
 	is_protected = false;
 	is_static = copy.is_static;
 }
-/*
-wpl_variable_pointer *wpl_variable_pointer::clone() const {
-	if (is_protected){
-		cerr << "While trying to clone() in variable " << get_name() << endl;
-		throw runtime_error("No access to protected variable");
-	}
-	return new wpl_variable_pointer(*this);
-}
-*/
+
 wpl_variable_holder *wpl_variable_holder::clone() const {
 	if (is_protected){
 		cerr << "While trying to clone() in variable " << get_name() << endl;

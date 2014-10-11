@@ -41,7 +41,7 @@ class wpl_value_list : public wpl_value {
 	list<unique_ptr<wpl_value>> values;
 
 	public:
-	PRIMITIVE_TYPEINFO(list)
+	PRIMITIVE_TYPEATTR(list)
 	wpl_value_list () {}
 	wpl_value_list (const wpl_value_list &copy) : wpl_value(copy) {
 		for (const unique_ptr<wpl_value> &value : copy.values) {

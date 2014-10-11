@@ -122,8 +122,7 @@ int wpl_range::run (
 	wpl_value_bool test;
 	test.set_do_finalize();
 
-	bool was_first = false;
-
+	int ret = WPL_OP_OK; // Always return OK, or the foreach loop will break
 	if (!range_state->is_active()) {
 		range_state->reset(counter_begin);
 		range_state->set_active(true);
@@ -134,16 +133,22 @@ int wpl_range::run (
 					(flags & INCREMENT ? &OP_INC_SUFFIX : &OP_DEC_SUFFIX),
 					rhs
 			);
-		}
 
-		was_first = true;
+			/* If the two numbers are equal, we've got nothing to do */
+			if (!range_state->counter_operate (&dummy_exp_state, boolean_test, rhs)) {
+				range_state->set_active(false);
+
+				ret |= WPL_OP_RANGE | WPL_OP_RANGE_ABORT;
+
+				return ret;
+			}
+		}
 	}
 
 	unique_ptr<wpl_value> result(range_state->clone_counter());
 
 	range_state->counter_operate (&dummy_exp_state, flags & INCREMENT ? &OP_INC_SUFFIX : &OP_DEC_SUFFIX, rhs);
 
-	int ret = 0;
 	if (!range_state->counter_operate (&dummy_exp_state, boolean_test, rhs)) {
 		ret |= WPL_OP_RANGE_COMPLETE;
 		range_state->set_active(false);
@@ -151,6 +156,5 @@ int wpl_range::run (
 
 	ret |= result->do_operator_recursive(exp_state, final_result);
 	ret |= WPL_OP_RANGE;
-
 	return ret;
 }

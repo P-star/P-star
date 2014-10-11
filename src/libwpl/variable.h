@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -47,6 +47,9 @@ enum {
 
 class wpl_value;
 
+/**
+ * @brief Hold a value pointer. We never destroy the value, variables must be a wpl_variable_holder to do this.
+ */
 class wpl_variable : public wpl_identifier_access_holder {
 	protected:
 	wpl_value *value;
@@ -84,6 +87,9 @@ class wpl_variable : public wpl_identifier_access_holder {
 	bool set_strong (wpl_value *value);
 };
 
+/**
+ * @brief The destructor of this class calls suicide() on the value in it's destructor.
+ */
 class wpl_variable_holder : public wpl_variable {
 	public:
 	wpl_variable_holder (const wpl_variable_holder &copy);

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -31,5 +31,5 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_integer.h"
 
 class wpl_value_uint : public wpl_value_integers<long unsigned int> {
-	PRIMITIVE_CLASS_CONTENT(unsigned int,uint,toUint())
+	PRIMITIVE_CLASS_CONTENT(long unsigned int,uint,toUint(),integers)
 };

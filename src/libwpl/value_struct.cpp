@@ -28,6 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "value_struct.h"
 #include "value_void.h"
+#include "value_pointer.h"
 #include "value_function_ptr.h"
 #include "exception.h"
 #include "debug.h"
@@ -98,10 +99,6 @@ int wpl_value_struct::do_operator (
 		wpl_value *lhs,
 		wpl_value *rhs
 ) {
-	if (lhs != this) {
-		throw runtime_error("Left side of '->' was not this struct instance");
-	}
-
 	if (first_run) {
 		/*
 		   If we en up here, the only possibility is that we came through fastop
@@ -118,7 +115,11 @@ int wpl_value_struct::do_operator (
 	}
 
 	if (op == &OP_INDIRECTION) {
-		// Do thing, the indirection only matters when we construct
+		/* Inderection tells us to not call constructor. If there are more
+		   stuff in the expression, this is an error. */
+		if (!exp_state->empty()) {
+			throw runtime_error("Inderection operator * for structs must be alone in the statement. Maybe you forgot some parantheses?");
+		}
 		return WPL_OP_OK;
 	}
 	else if (op == &OP_ELEMENT) {
@@ -150,6 +151,10 @@ int wpl_value_struct::do_operator (
 	else if (op == &OP_DISCARD) {
 		exp_state->push_discard(lhs);
 		return (WPL_OP_OK|WPL_OP_DISCARD);
+	}
+	else if (op == &OP_POINTERTO) {
+		wpl_value_pointer result(exp_state->get_nss(), mother_struct, this);
+		return result.do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_FUNCTION_CALL) {
 		throw runtime_error("Constructor for structs can only be called at first run");

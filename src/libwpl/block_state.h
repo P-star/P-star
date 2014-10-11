@@ -88,6 +88,7 @@ class wpl_block_state : public wpl_namespace_session, public wpl_state {
 
 	int run_init (wpl_runable *runable, wpl_value *final_result);
 	int run_run_condition (wpl_runable *runable, wpl_value *final_result);
+	int run_run_condition (wpl_runable *runable, wpl_value *final_result, int loop_number);
 	int run_increment (wpl_runable *runable, wpl_value *final_result);
 
 	void reset() override;
