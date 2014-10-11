@@ -1394,7 +1394,7 @@ The current path is '/usr/local/bin:/usr/bin:/bin:/usr/test/bin/'
 			</programlisting>
 		</section>
 		<section>
-			<title>HTML templates in P*</title>
+			<title>HTML templates </title>
 			<para>With P*, you don't need any external template engine. Templates are in-language!</para>
 			<para>Templates look like blocks and are defined in the main scope of the program. When a template is called, it inherits all variables available from the location of the call.</para>
 			<para>Inside templates, you can use the special syntax <code>{@variable}</code> to interpolate variables.
@@ -1835,6 +1835,285 @@ SCENE main {
 			You can insert or append new lines to a file by adding data to the LINE objects at desired locations. Original data will be overwritten.
 			</para>
 		</section>
+		<section>
+			<title>Pointers</title>
+			<para>A pointers is a type which doesn't hold a value itself. Instead, it "points to" another value.
+			If you are familiar with any C-like language, you are (hopefully) well aware of why pointers are nice, and you also know that they can be dangerous.
+			In P*, pointers are not dangerous, and errors you make are detected without having programs crashing badly.
+			</para>
+			<para>Let's begin with an example.
+			We want to pass a value into a function, and the function should do something with it.
+			We do not, however, want the value to be copied as we want to keep the result. This is how you could do it without pointers:</para>
+			<programlisting language="c">
+SCENE main {
+	int move_to_neighbour(int i) {
+		return i + 1;
+	}
+
+	int my_house_number = 134;
+
+	/* Gives 134 */
+	echo "I live in house number $my_house_number\n";
+
+	my_house_number = move_to_neighbour(134);
+
+	/* Gives 135 */
+	echo "I have now moved, and live with my neighbour in number $my_house_number\n";
+}
+			</programlisting>
+			<para>Easy or what? No need for pointers here. But what if we want to modify two values?
+			A function can only return one value, so this might be a problem.
+			But what if we put the values into an array?
+			Surely a function can return an array with many values.
+			</para>
+			<programlisting language="c">
+SCENE main {
+	array&lt;int&gt; move_to_neighbour(array&lt;int&gt; values) {
+		values[0] += 1;
+		values[1] += 100;
+
+		return values;
+	}
+
+	int my_house_number = 134;
+	int my_phone_number = 5550453;
+
+	/* Gives 134 and 5550453 */
+	echo "I live in house number $my_house_number\n";
+	echo "My phone number is $my_phone_number\n";
+
+	array&lt;int&gt; my_info;
+	my_house_number, my_phone_number =&gt; my_info;
+
+	my_info = move_to_neighbour(my_info);
+
+	my_house_number = my_info[0];
+	my_phone_number = my_info[1];
+
+	/* Gives 135 and 5550553 */
+	echo "After moving, I live in house number $my_house_number\n";
+	echo "After moving, my phone number is $my_phone_number\n";
+}
+			</programlisting>
+			<bridgehead>The big example</bridgehead>
+			<para>OK, let's state that this works, but the readability is horrendous. What we need is pointers!</para>
+<programlisting language="c">
+SCENE main {
+	void move_to_neighbour(pointer&lt;int&gt; house_number, pointer&lt;int&gt; phone_number) {
+		*house_number += 1;
+		*phone_number += 100;
+	}
+
+	int my_house_number = 134;
+	int my_phone_number = 5550453;
+
+	/* Gives 134 and 5550453 */
+	echo "I live in house number $my_house_number\n";
+	echo "My phone number is $my_phone_number\n";
+
+	move_to_neighbour (&amp;my_house_number, &amp;my_phone_number);
+
+	/* Gives 135 and 5550553 */
+	echo "After moving, I live in house number $my_house_number\n";
+	echo "After moving, my phone number is $my_phone_number\n";
+}
+</programlisting>
+			<bridgehead>A smaller example</bridgehead>
+			<para>So, what's really going on here? Let us first talk about how a pointer is used in an easier example.</para>
+<programlisting language="c">
+SCENE main {
+	int my_value = 1;
+	pointer&lt;int&gt; my_pointer = &amp;my_value;
+	echo "The value is " . *my_pointer . "\n";
+}
+</programlisting>
+			<para>We first declare an <code>int</code> value called <code>my_value</code> and assign the value <code>1</code> to it.
+			Pointers are template types, that means that they can only point to values of one type.
+			You choose this type by putting it's name between <code>&lt;</code> and <code>&gt;</code>.
+			In theory, the pointers wouldn't have to only work with one type, but we do this to help prevent programming mistakes.</para>
+			<para>Then, we have the <code>&amp;my_value</code> statement. The <code>&amp;</code> is an operator which we in P* call <emphasis>pointer to</emphasis>. 
+			This operator can be used on most values, and it tells the value to create a new pointer which points to itself.
+			Then we assign this new pointer with <code>=</code> to our <code>my_pointer</code> variable.
+			</para>
+			<para>Now, <code>my_pointer</code> holds a pointer to <code>my_value</code>, and to convert it back, the pointer supports an operator with a lovely name: The <emphasis>indirection</emphasis> operator <code>*</code>.
+			If you have the pointer, and wishes to use the value it's pointing to, you must always add the <code>*</code> in front of it, like we do here when we print the value out.
+			</para>
+			<para>In the big example, the function <code>void move_to_neighbour(pointer&lt;int&gt; house_number, pointer&lt;int&gt; phone_number)</code> takes two pointers to integers and modifies the values they point to.
+			When we call the function, we add <code>&amp;</code> in front of the variable names to convert them to pointers to match what the function expects to receive.
+			</para>
+		<bridgehead>Now some object orientation!</bridgehead>
+		<para>The example we've just gone through doesn't take advantage of the object orientation in P*.
+		It works since we've only keeping track of two values, phone- and house number, but what if there were 20 different values?
+		We would need to have 20 arguments in our move_to_neighbour function, and at the same time keep track of 20 different variables in our main program block.
+		To clean up mess like this, we create an object, a <code>struct</code>, to stash our stuff into. Read more about structs in the Structs-section of the documentation.
+		</para>
+		<programlisting language="c">
+SCENE main {
+	/* Define a struct wich can hold contact info for someone */
+	struct contact_info {
+		/* These variables are only visible inside this struct */
+		int house_number;
+		int phone_number;
+		string street;
+
+		/* The constructor which sets the initial values */
+		contact_info (int a, int b, string c) {
+			house_number = a;
+			phone_number = b;
+			street = c;
+		};
+
+		/* The function which modifies the values. No arguments! */
+		public void move_to_neighbour() {
+			house_number += 1;
+			phone_number += 100;
+		};
+
+		/* Print out the values, still no arguments needed. */
+		public void print_info() {
+			echo "- Street is $street\n";
+			echo "- House number $house_number\n";
+			echo "- Phone number is $phone_number\n";
+		};
+	};
+
+	/* Create an instance of the struct 'contact_info' and
+	   call the constructor to set my information */
+	contact_info my_info(134, 5550453, "Sesame Street");
+
+	/* Call the print function of the struct, gives 134 and 5550453 */
+	echo "This was my contact info before i moved:\n";
+	my_info->print_info();
+
+	/* Call the move function to move to our neighbour */
+	my_info->move_to_neighbour();
+
+	/* Tell the struct to print the values one more time,
+	   it should give out 135 and 5550553 */
+	echo "This is where i live now:\n";
+	my_info->print_info();
+}
+		</programlisting>
+		<para>But now the pointers are gone again! Does this mean that we don't need them after all?
+		If we only hold the contact info for a single person, this example works pretty well.
+		But what if there were five persons which were moving? Or ANY number of persons?
+		</para>
+		<para>Let's first create an array to hold contact info for may persons, arrays should always be used for cases like this.
+		Not that arrays are template types just as pointers, and we create and array here to hold values of the type <code>contact_info</code>
+		</para>
+		<programlisting langauge="c">
+array&lt;contact_info&gt; neighbourhood_info;
+		</programlisting>
+		<para>Now, let's have some people moving to our neighbourhood:</para>
+		<programlisting langauge="c">
+/* The '@contact_info' returns the size of the array. The first time we
+   use it, the size is zero, so we set the 0'th element to the person
+   who lives in Blue Street. The next time the size is 1, because we
+   just added a value, so the Polar Bear drive-person is added to this
+   slot, and so on. */
+neighbourhood_info[@neighbourhood_info](2, 5551000, "Blue street");
+neighbourhood_info[@neighbourhood_info](34, 5552000, "Polar Bear drive");
+neighbourhood_info[@neighbourhood_info](56, 5553000, "Mountain road");
+neighbourhood_info[@neighbourhood_info](78, 5554000, "Apple close");
+		</programlisting>
+		<para>What happens now, is that ALL the four persons have to move to their neighbours due to a flood.
+		To do an operation many times, we use a loop to iterate through the array.
+		Here, all loops are possible to use, but the easiest way is to use a <code>foreach</code> loop with a pointer.
+		</para>
+		<programlisting language="c">
+/* Declare a pointer to some value of the type 'contact_info' */
+pointer&lt;contact_info&gt; iterator;
+
+/* The foreach loop will run multiple times, and for each run, it will
+   put a new value into our pointer called 'iterator' beginning with 
+   the first one. */
+foreach (iterator; neighbourhood_info) {
+	/* Call the move function on a person. Remember the star!!! */
+	*iterator->move_to_neighbour();
+}
+		</programlisting>
+		<para>Now, all persons have moved. We didn't have to use a pointer in the <code>foreach</code> loop, but not without issues. Let's see the alternative first before we smash it to pieces:</para>
+
+		<programlisting language="c">
+/* Declare a temporary variable used in the foreach loop */
+contact_info temp;
+
+foreach (temp; neighbourhood_info) {
+	temp->move_to_neighbour();
+}
+		</programlisting>
+		<para>What happens here, is that for every iteration of the loop, a value from our neighbourhood array is <emphasis>COPIED</emphasis> into the temporary variable.
+		When we then call the move function, the temporary value gets modified, but the original value stays unchanged, and the person doesn't move to it's neighbour.
+		</para>
+		<para>Let's put in the full example, with structs, arrays and pointers, for you to copy-paste and play with:</para>
+		<programlisting language="c">
+SCENE main {
+	/* Define a struct wich can hold contact info for someone */
+	struct contact_info {
+		int house_number;
+		int phone_number;
+		string street;
+
+		/* Constructor for this struct, set's all the values */
+		contact_info (int a, int b, string c) {
+			house_number = a;
+			phone_number = b;
+			street = c;
+		};
+
+		/* Function to move to the neighbours */
+		public void move_to_neighbour() {
+			house_number += 1;
+			phone_number += 100;
+		};
+
+		/* Print out the content of this struct in a readable form */
+		public void print_info() {
+			echo "- Person lives in $street number $house_number with tel. $phone_number\n";
+		};
+	};
+
+	/* Declare an array to hold contact info of many persons */
+	array&lt;contact_info&gt; neighbourhood_info;
+
+	/* Construct contact info for four persons and put this into an array */
+	neighbourhood_info[@neighbourhood_info](2, 5551000, "Blue street");
+	neighbourhood_info[@neighbourhood_info](34, 5552000, "Polar Bear drive");
+	neighbourhood_info[@neighbourhood_info](56, 5553000, "Mountain road");
+	neighbourhood_info[@neighbourhood_info](78, 5554000, "Apple close");
+
+	/* Declare a temporary variable used in the foreach loop */
+	contact_info *temp;
+
+	foreach (temp; neighbourhood_info) {
+		temp-&gt;move_to_neighbour();
+	}
+
+	/* Let's verify that no move really happened, since we used a temporary variable. */
+	echo "Result after attempting to move using a temporary variable, no change has happened:\n";
+	foreach (temp; neighbourhood_info) {
+		temp-&gt;print_info();
+	}
+
+	/* Do the moving the proper way, now with a pointer */
+	pointer&lt;contact_info&gt; iterator;
+
+	/* The foreach loop will run multiple times, and for each run, it will
+	   put a new value into our pointer called 'iterator' beginning with
+	   the first one. */
+	foreach (iterator; neighbourhood_info) {
+		/* Call the move function on a person. Remember the star!!! */
+		*iterator-&gt;move_to_neighbour();
+	}
+
+	/* Make sure that the moving occured. */
+	echo "\nResult after moving using pointer:\n";
+	foreach (iterator; neighbourhood_info) {
+		*iterator-&gt;print_info();
+	}
+}
+		</programlisting>
+		</section>
 	</chapter>
 	<chapter>
 		<title>Development</title>
@@ -1902,14 +2181,6 @@ SCENE main {
 					<row>
 						<entry>Perl-like in-language regular expressions</entry>
 						<entry>Replacement and matching now possible</entry>
-					</row>
-					<row>
-						<entry>Time &amp; date</entry>
-						<entry>P* needs funcitonality for time and date</entry>
-					</row>
-					<row>
-						<entry>File I/O</entry>
-						<entry>Not written (supports STDIN)</entry>
 					</row>
 					<row>
 						<entry>HTTP Cookies</entry>
