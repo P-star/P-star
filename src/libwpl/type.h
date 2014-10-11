@@ -30,10 +30,11 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "parseable.h"
 #include "identifier.h"
-#include "namespace.h"
 
 class wpl_value;
+class wpl_namespace;
 class wpl_type_complete;
+class wpl_type_user_incomplete;
 
 class wpl_type : public wpl_parseable {
 	private:
@@ -81,28 +82,12 @@ class wpl_type_complete : public wpl_type {
 
 	void parse_value (wpl_namespace *parent_namespace);
 
+	virtual bool check_type(const wpl_type_complete *type) const {
+		return (type == this);
+	}
 	bool isComplete() const {
 		return true;
 	}
-};
-/**
- * @brief Class for user-defined types, created with keywords like struct and class. These types need more parsing than just the name of the type. Incomplete types become complete when they are parsed.
- */
-class wpl_type_user_incomplete : public wpl_type_complete, public wpl_namespace {
-	private:
-
-	public:
-	wpl_type_user_incomplete(const char *name) :
-		wpl_type_complete(name)
-	{}
-	virtual ~wpl_type_user_incomplete() {
-#ifdef WPL_DEBUG_DESTRUCTION
-		DBG("T (" << (wpl_identifier*)this << "): Destructing incomplete user type\n");
-#endif
-	}
-	virtual void suicide() = 0;
-
-	virtual void parse_value(wpl_namespace *parent_namespace) = 0;
 };
 
 /**
