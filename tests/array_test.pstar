@@ -1,7 +1,11 @@
 SCENE main {
-	array<int> my_first_array;
+	/* Parse testing */
+	array<array<array<array<int>>>> my_stupid_array;
+	my_stupid_array[0][0][0][0] = 1;
+	echo "My stupid array has a value which is " . ****my_stupid_array . "\n";
 
 	/* Set the first three elements of the array to 10, 20 and 30 */
+	array<int> my_first_array;
 	my_first_array[0] = 10;
 	my_first_array[1] = 20;
 	my_first_array[2] = 30;
@@ -20,14 +24,18 @@ SCENE main {
 	my_second_array[2] = 20;
 	my_second_array[10] = 100;
 
-	for (i = 0; i < @my_second_array; i++) {
-		if (defined my_second_array[i]) {
-			echo "Array index $i has value " . my_second_array[i] . "\n";
-		}
-		else {
-			echo "Array index $i is not defined\n";
+	int print_array(array<int> subject) {
+		for (i = 0; i < @subject; i++) {
+			if (defined subject[i]) {
+				echo "Array index $i has value " . subject[i] . "\n";
+			}
+			else {
+				echo "Array index $i is not defined\n";
+			}
 		}
 	}
+
+	print_array(my_second_array);
 
 	return 0;
 }

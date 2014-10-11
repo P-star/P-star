@@ -30,124 +30,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "expression_state.h"
 #include "operator_types.h"
+#include "value_holder_macros.h"
 #include "value.h"
-
-#define RESULT_LOGIC wpl_value_holder<A>::result_logic
-#define RESULT wpl_value_holder<A>::result
-#define LHS *wpl_value_holder<A>::lhs_value
-#define RHS *wpl_value_holder<A>::rhs_value
-
-#define CALL_OP(_op, func)									\
-	if (op == &_op) { return func(); }
-
-#define PRIMITIVE_CONSTRUCTOR(type,shortname)							\
-	wpl_value_##shortname () {								\
-		zero();										\
-	}											\
-	wpl_value_##shortname (const type &new_value) {						\
-		value = new_value;								\
-       	}											\
-	wpl_value_##shortname (const wpl_value_##shortname &copy) {				\
-		value = copy.value;								\
-       	}											\
-	wpl_value_##shortname *clone() const override {						\
-		return new wpl_value_##shortname(*this);					\
-	}											\
-	wpl_value_##shortname *clone_empty() const override {					\
-		return new wpl_value_##shortname();						\
-	}											\
-
-#define PRIMITIVE_SET_WEAK_REAL(type,shortname,translator,notify)				\
-	void set_weak (wpl_value *new_value) {							\
-		value = new_value->translator;							\
-		notify										\
-	}
-
-#define PRIMITIVE_SET_WEAK(type,shortname,translator)						\
-	PRIMITIVE_SET_WEAK_REAL(type,shortname,translator,)
-
-#define PRIMITIVE_SET_WEAK_NOTIFY(type,shortname,translator)					\
-	PRIMITIVE_SET_WEAK_REAL(type,shortname,translator,notify_parasites();)
-
-#define PRIMITIVE_DO_OPERATOR_REAL(shortname,translator,notify)					\
-	int do_operator (									\
-			wpl_expression_state *exp_state,					\
-			wpl_value *final_result,						\
-			const struct wpl_operator_struct *op,					\
-			wpl_value *lhs,								\
-			wpl_value *rhs								\
-	) {											\
-		/*cout << "V(" << this << "): do_operator op " << op->name << "\n";		*/\
-		/*cout << " - lhs is " << (lhs) << endl;					*/\
-		/*cout << " - rhs is " << (rhs) << endl;					*/\
-		/*cout << " - exp state wait top is empty: " << exp_state.empty_waiting() << endl;*/\
-		if (lhs) {									\
-			set_lhs_value(lhs, lhs->translator);			 		\
-		}										\
-		if (rhs) {									\
-			set_rhs_value(rhs, rhs->translator);			 		\
-		}										\
-		int ret = __do_operator (							\
-			op									\
-		);										\
-		if (ret & WPL_OP_DATA_MODIFIED) {						\
-			notify									\
-		}										\
-		if ((ret & WPL_OP_LOGIC_OK) == WPL_OP_LOGIC_OK) {				\
-			/*cout << "V(" << this << "): result is boolean logic " << result_logic << endl;*/\
-			wpl_value_bool bool_result(result_logic);				\
-			return bool_result.do_operator_recursive(				\
-					exp_state, final_result					\
-					);							\
-		}										\
-		if (ret & WPL_OP_OK) {								\
-/*			cout << "V(" << this << "): result is " << result << endl;		*/\
-			wpl_value_##shortname mytype_result(result);				\
-			if (ret & WPL_OP_DISCARD) {						\
-				exp_state->push_discard(&mytype_result);				\
-				if (exp_state->empty()) {					\
-					return ret;						\
-				}								\
-				shunting_yard_carrier next = exp_state->top();			\
-				if (!next.value){						\
-					throw runtime_error("Operator can't follow discard operator");\
-				}								\
-				exp_state->pop();						\
-				return next.value->do_operator_recursive(				\
-						exp_state, final_result				\
-						);						\
-			}									\
-			else {									\
-				return mytype_result.do_operator_recursive(			\
-						exp_state, final_result				\
-						);						\
-			}									\
-		}										\
-		if (ret & WPL_OP_UNKNOWN) {							\
-			cerr << "In operator '" << op->name <<					\
-				"' in type '" << wpl_typename_##shortname << "':\n";		\
-			throw runtime_error("Unknown operator for this type");			\
-		}										\
-/*		cout << "V(" << this << "): no return from operator\n";				*/\
-		return ret;									\
-	}	
-
-#define PRIMITIVE_DO_OPERATOR(shortname,translator)						\
-	PRIMITIVE_DO_OPERATOR_REAL(shortname,translator,)
-
-#define PRIMITIVE_DO_OPERATOR_NOTIFY(shortname,translator)					\
-	PRIMITIVE_DO_OPERATOR_REAL(shortname,translator,notify_parasites();)
-
-#define PRIMITIVE_TYPEINFO(shortname)								\
-	int get_precedence() const { return wpl_type_precedence_##shortname; }			\
-	const char *get_type_name() const { return wpl_typename_##shortname; }
-
-#define PRIMITIVE_CLASS_CONTENT(type,shortname,translator)					\
-	public:											\
-	PRIMITIVE_CONSTRUCTOR(type,shortname)							\
-	PRIMITIVE_TYPEINFO(shortname)								\
-	PRIMITIVE_SET_WEAK(type,shortname,translator)						\
-	PRIMITIVE_DO_OPERATOR(shortname,translator)						\
 
 template<typename A> class wpl_value_holder : public wpl_value {
 	private:
@@ -206,3 +90,6 @@ template<typename A> class wpl_value_holder : public wpl_value {
 		this->value = value;
 	}
 };
+
+#include "value_pointer.h"
+#include "value_bool.h"

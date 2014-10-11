@@ -64,8 +64,14 @@ wpl_program::wpl_program(wpl_io &io, int argc, char **argv) :
 	wpl_types_add_all_to_namespace(this);
 	wpl_pragma_add_all_to_namespace(this);
 
+	wpl_type_complete *argv_type = wpl_type_global_array->new_instance(wpl_type_global_string);
+	add_managed_pointer (argv_type);
+	new_register_parseable (argv_type);
+	add_type (argv_type);
+
 	unique_ptr<wpl_value_array> val_argv (
 			new wpl_value_array (
+				argv_type,
 				wpl_type_global_string,
 				argc
 				)

@@ -56,13 +56,14 @@ class wpl_value_post : public wpl_value {
 
 	// Initialized in .cpp
 	static wpl_type_array_instance type_complete_array;
+	static wpl_type_hash_instance type_complete_hash;
 
 	void parse_entity (mimetic::MimeEntity *me);
 
 	public:
 	PRIMITIVE_TYPEINFO(get)
 	wpl_value_post(int dummy) :
-		hash(&type_complete_array),
+		hash(&type_complete_hash, &type_complete_array),
 		did_parse(false),
 		use_get(false),
 		value_get(0)

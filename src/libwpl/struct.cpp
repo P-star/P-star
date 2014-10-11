@@ -34,6 +34,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_struct.h"
 #include "debug.h"
 #include "user_function.h"
+#include "type_parse_signals.h"
 
 #include <memory>
 
@@ -57,8 +58,8 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 
 	if (parse_complete) {
 		ignore_whitespace();
-		if (ignore_letter ('>')) {
-			throw wpl_type_end_template_declaration(this);
+		if (search_letter ('>')) {
+			return;
 		}
 
 		// Check for constructor disabler. When the definition
@@ -99,6 +100,23 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 		ignore_whitespace();
 
 		wpl_matcher_position def_begin = get_position();
+
+		// Check for comment
+		if (ignore_string ("/*")) {
+			while (get_letter ('*', NON_ASTERISK)) {
+				if (ignore_letter ('/')) {
+					goto comment_ok;
+				}
+			}
+
+			load_position(def_begin);
+			revert_string(2);
+
+			THROW_ELEMENT_EXCEPTION("Could not find comment end for this comment");
+
+			comment_ok:
+			ignore_whitespace();
+		}
 
 		// Check for destructor
 		if (ignore_letter('~')) {

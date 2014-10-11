@@ -40,6 +40,42 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <utility>
 #include <list>
 
+wpl_type_complete *wpl_namespace::add_unique_complete_type (shared_ptr<wpl_type_complete> type) {
+	wpl_type_complete *complete_type;
+
+	/* Add all complete types to the top namespace */
+	if (parent_namespace) {
+		complete_type = parent_namespace->add_unique_complete_type(type);
+	}
+	else if (!(complete_type = find_complete_type(type.get()))) {
+		new_register_parseable(type.get());
+		add_managed_pointer(type);
+		complete_type = type.get();
+	}
+
+	/* We need to do this even if were already added so that template
+	   parsing can find the correct value */
+	complete_types.remove(complete_type);
+	complete_types.push_back(complete_type);
+
+	return complete_type;
+}
+
+void wpl_namespace::add_type (wpl_type_complete *type) {
+	complete_types.remove(type);
+	complete_types.push_back(type);
+}
+
+void wpl_namespace::add_type (wpl_type_template *type) {
+	template_types.remove(type);
+	template_types.push_back(type);
+}
+
+void  wpl_namespace::add_type (wpl_type_incomplete *type) {
+	incomplete_types.remove(type);
+	incomplete_types.push_back(type);
+}
+
 void wpl_namespace::new_register_parseable (wpl_parseable *parseable) {
 	if (new_find_parseable_no_parent (parseable->get_name())) {
 		throw wpl_exception_name_exists();
@@ -68,6 +104,42 @@ wpl_parseable *wpl_namespace::new_find_parseable_no_parent(const char *name) {
 		if (parseable->is_name(name)) {
 			return parseable;
 		}
+	}
+	return NULL;
+}
+
+wpl_type_complete *wpl_namespace::find_complete_type(const wpl_type_complete *type_check) const {
+	for (auto type : complete_types) {
+		if (type->check_type(type_check)) {
+			return type;
+		}
+	}
+	if (parent_namespace) {
+		return parent_namespace->find_complete_type(type_check);
+	}
+	return NULL;
+}
+
+wpl_type_complete *wpl_namespace::find_complete_type(const char *name) const {
+	for (auto type : complete_types) {
+		if (type->is_name(name)) {
+			return type;
+		}
+	}
+	if (parent_namespace) {
+		return parent_namespace->find_complete_type(name);
+	}
+	return NULL;
+}
+
+wpl_type_template *wpl_namespace::find_template_type(const char *name) const {
+	for (auto type : template_types) {
+		if (type->is_name(name)) {
+			return type;
+		}
+	}
+	if (parent_namespace) {
+		return parent_namespace->find_template_type(name);
 	}
 	return NULL;
 }

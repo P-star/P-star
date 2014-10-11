@@ -73,6 +73,13 @@ int wpl_block_state::run_run_condition (wpl_runable *runable, wpl_value *final_r
 	return runable->run(run_condition_state.get(), final_result);
 }
 
+int wpl_block_state::run_run_condition (wpl_runable *runable, wpl_value *final_result, int loop_number) {
+	if (run_condition_state.get() == nullptr) {
+		run_condition_state.reset(runable->new_state(this, io));
+	}
+	return runable->run(run_condition_state.get(), final_result, loop_number);
+}
+
 int wpl_block_state::run_init (wpl_runable *runable, wpl_value *final_result) {
 	if (init_state.get() == nullptr) {
 		init_state.reset(runable->new_state(this, io));

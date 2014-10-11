@@ -54,10 +54,11 @@ int wpl_block_foreach::run(wpl_state *state, wpl_value *final_result) {
 		throw runtime_error("No constant found in foreach loop variable section");
 	}
 
+	int i = 0;
 	int condition_ret;
-	while ((condition_ret = block_state->run_run_condition(exp_condition.get(), var)) & WPL_OP_OK) {
-		if (condition_ret & WPL_OP_BREAK) {
-			return condition_ret & ~WPL_OP_BREAK | ret;
+	while ((condition_ret = block_state->run_run_condition(exp_condition.get(), var, i)) & WPL_OP_OK) {
+		if (condition_ret & (WPL_OP_BREAK|WPL_OP_RANGE_ABORT)) {
+			return condition_ret & ~(WPL_OP_BREAK|WPL_OP_RANGE_ABORT) | ret;
 		}
 
 		ret = wpl_block::run(block_state, final_result);
@@ -71,6 +72,7 @@ int wpl_block_foreach::run(wpl_state *state, wpl_value *final_result) {
 		if (condition_ret & WPL_OP_RANGE_COMPLETE) {
 			return ret;
 		}
+		i++;
 	}
 
 	return ret;

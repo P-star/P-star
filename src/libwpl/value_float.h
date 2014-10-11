@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -31,5 +31,5 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_number.h"
 
 class wpl_value_float : public wpl_value_number<float> {
-	PRIMITIVE_CLASS_CONTENT(float,float,toFloat())
+	PRIMITIVE_CLASS_CONTENT(float,float,toFloat(),number)
 };

@@ -27,7 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "variable.h"
-#include "types.h"
+#include "type_parse_signals.h"
 #include "parseable.h"
 
 class wpl_namespace;

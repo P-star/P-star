@@ -142,7 +142,7 @@ class wpl_value_regex : public wpl_value, public wpl_matcher {
 	void parse_replacement();
 
 	public:
-	PRIMITIVE_TYPEINFO(regex)
+	PRIMITIVE_TYPEATTR(regex)
 	wpl_value_regex() {
 		quote_inline_variables = false;
 		do_global = false;

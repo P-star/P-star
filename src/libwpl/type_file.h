@@ -34,6 +34,19 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <memory>
 
+class wpl_type_file : public wpl_struct {
+	public:
+	wpl_type_file();
+	void suicide() override {
+		delete this;
+	}
+	int get_precedence() const {
+		return wpl_type_precedence_file;
+	}
+};
+
+extern wpl_type_file constant_type_file;
+
 class wpl_value_file : public wpl_value {
 	private:
 	shared_ptr<wpl_file> file;
@@ -71,17 +84,6 @@ class wpl_value_file : public wpl_value {
 		}
 		file = src->get_file_shared_ptr();
 		return true;
-	}
-};
-
-class wpl_type_file : public wpl_struct {
-	public:
-	wpl_type_file();
-	void suicide() override {
-		delete this;
-	}
-	int get_precedence() const {
-		return wpl_type_precedence_file;
 	}
 };
 

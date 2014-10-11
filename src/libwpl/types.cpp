@@ -29,34 +29,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "types.h"
 #include "namespace.h"
 
-#include "struct.h"
-#include "class.h"
-#include "array.h"
-
-#include "variable.h"
-#include "user_function.h"
-
-#include "value_void.h"
-#include "value_string.h"
-#include "value_bool.h"
-#include "value_int.h"
-#include "value_longlongint.h"
-#include "value_uint.h"
-#include "value_longlonguint.h"
-#include "value_float.h"
-#include "value_double.h"
-
-#include "value_env.h"
-#include "value_get.h"
-#include "value_post.h"
-#include "value_stdin.h"
-#include "value_time.h"
-#include "value_line.h"
-
-#include <string>
-#include <cstring>
-#include <iostream>
-
 using namespace std;
 
 const char *wpl_typename_void = "void";
@@ -72,6 +44,7 @@ const char *wpl_typename_vstring = "vstring";
 const char *wpl_typename_struct = "struct";
 const char *wpl_typename_class = "class";
 const char *wpl_typename_array = "array";
+const char *wpl_typename_pointer = "pointer";
 const char *wpl_typename_hash = "hash";
 
 const char *wpl_typename_env = "ENV";
@@ -93,9 +66,15 @@ const char *wpl_typename_constant_pointer = "{constant pointer}";
 const char *wpl_typename_double_finalizer = "{double finalizer}";
 const char *wpl_typename_unsafe_pointer = "{unsafe pointer}";
 
+#include "struct.h"
+#include "class.h"
+#include "array.h"
+#include "hash.h"
+#include "pointer.h"
+
 #define DEFINE_TYPE(name)					\
 	static wpl_type_##name constant_type_##name;		\
-wpl_type_##name *wpl_type_global_##name =			\
+const wpl_type_##name *wpl_type_global_##name =			\
 	&constant_type_##name;
 
 DEFINE_TYPE(void);
@@ -108,6 +87,7 @@ DEFINE_TYPE(double);
 DEFINE_TYPE(bool);
 DEFINE_TYPE(string);
 DEFINE_TYPE(array);
+DEFINE_TYPE(pointer);
 DEFINE_TYPE(hash);
 DEFINE_TYPE(struct);
 DEFINE_TYPE(class);
@@ -120,149 +100,22 @@ DEFINE_TYPE(stdin);
 DEFINE_TYPE(time);
 DEFINE_TYPE(line);
 
-void wpl_type_begin_function_declaration::parse_value (wpl_namespace *parent_namespace) {
-	wpl_user_function *function = new wpl_user_function(type, name.c_str(), access_flags);
-	parent_namespace->register_identifier(function);
+#include "value_void.h"
+#include "value_string.h"
+#include "value_bool.h"
+#include "value_int.h"
+#include "value_longlongint.h"
+#include "value_uint.h"
+#include "value_longlonguint.h"
+#include "value_float.h"
+#include "value_double.h"
 
-	function->load_position(get_position());
-	function->parse_value(parent_namespace);
-	load_position(function->get_position());
-}
-
-wpl_type_begin_variable_declaration::wpl_type_begin_variable_declaration (
-	wpl_type_complete *type,
-	const char *name,
-	const wpl_matcher_position &position_at_name,
-	const wpl_matcher_position &position_after_name
-) :
-	position_at_name(position_at_name),
-	wpl_matcher(position_after_name),
-	wpl_type_begin_declaration (type, name, WPL_VARIABLE_ACCESS_PRIVATE)
-{}
-
-void wpl_type_begin_variable_declaration::create_variable (wpl_namespace *parent_namespace) {
-	wpl_variable_holder new_var (name.c_str(), type->new_instance(), access_flags);
-	parent_namespace->register_identifier(&new_var);
-}
-
-void wpl_type_complete::parse_value (wpl_namespace *parent_namespace) {
-	wpl_matcher_position begin_pos(get_position());
-
-	ignore_whitespace();
-	if (ignore_letter ('>')) {
-		throw wpl_type_end_template_declaration(this);
-	}
-
-	char name[WPL_VARNAME_SIZE];
-	try {
-		get_word(name);
-	}
-	catch (wpl_element_exception &e) {
-		cerr << "While parsing complete type '" << get_name() << "':\n";
-		throw;
-	}
-
-	ignore_whitespace();
-	if (ignore_letter ('(')) {
-		throw wpl_type_begin_function_declaration(this, name, get_position());
-	}
-	else {
-		throw wpl_type_begin_variable_declaration(this, name, begin_pos, get_position());
-	}
-}
-
-wpl_parseable *wpl_type_template::register_unique_parseable (
-		wpl_namespace *parent_namespace,
-		const wpl_type_complete *type
-) {
-	unique_ptr<wpl_type_complete> new_type(new_instance(type));
-
-	// Check if this template type is already defined
-	wpl_parseable *parseable = NULL;
-	if (!(parseable = parent_namespace->new_find_parseable(new_type->get_name()))) {
-		parent_namespace->new_register_parseable(new_type.get());
-		parseable = new_type.release();
-		parent_namespace->add_managed_pointer(parseable);
-	}
-
-	return parseable;
-}
-
-void wpl_type_template::parse_value (wpl_namespace *parent_namespace) {
-	char buf[WPL_VARNAME_SIZE];
-
-	ignore_whitespace();
-	if (!ignore_letter ('<')) {
-		THROW_ELEMENT_EXCEPTION("Expected '<' after template type name");
-	}
-
-	try {
-		get_word(buf);
-	}
-	catch (wpl_element_exception &e) {
-		cerr << "While parsing name for template sub-type:\n";
-		throw;
-	}
-
-	wpl_parseable *parseable;
-	if (!(parseable = parent_namespace->new_find_parseable(buf))) {
-		cerr << "While parsing name '" << buf << "' inside template definition:\n";
-		THROW_ELEMENT_EXCEPTION("Undefined name");
-	}
-
-	try {
-		parseable->load_position(get_position());
-		parseable->parse_value(parent_namespace);
-	}
-	catch (wpl_type_end_template_declaration &e) {
-		load_position(parseable->get_position());
-		parseable = register_unique_parseable(parent_namespace, e.get_type());
-		try {
-			parseable->load_position(get_position());
-			parseable->parse_value(parent_namespace);
-		}
-		catch (wpl_type_end_template_declaration &e) {
-			load_position(parseable->get_position());
-			parseable = register_unique_parseable(parent_namespace, e.get_type());
-
-			parseable->load_position(get_position());
-			parseable->parse_value(parent_namespace);
-		}
-	}
-}
-
-wpl_type_complete_template::wpl_type_complete_template (
-		const wpl_type_template *mother_type,
-		const wpl_type_complete *template_type
-		) :
-	wpl_type_complete((string(mother_type->get_name()) + "<" + template_type->get_name() + ">").c_str())
-{
-	this->template_type = template_type;
-	this->mother_type = mother_type;
-}
-
-void wpl_type_incomplete::parse_value (wpl_namespace *parent_namespace) {
-	char buf[WPL_VARNAME_SIZE];
-	try {
-		get_word(buf);
-	}
-	catch (wpl_element_exception &e) {
-		cerr << "While parsing '" << get_name() <<
-		       "' definition:\n";
-		throw;
-	}
-
-	wpl_type_user_incomplete *usr_obj = new_instance(buf);
-	parent_namespace->new_register_parseable(usr_obj);
-	parent_namespace->add_managed_pointer (usr_obj);
-
-	usr_obj->set_parent_namespace(parent_namespace);
-	usr_obj->load_position(get_position());
-
-	usr_obj->parse_value(usr_obj);
-
-	throw runtime_error("Expected end statement exception when parsing incomplete type");
-}
+#include "value_env.h"
+#include "value_get.h"
+#include "value_post.h"
+#include "value_stdin.h"
+#include "value_time.h"
+#include "value_line.h"
 
 #define NEW_INSTANCE(name,default_value)			\
 wpl_value *wpl_type_##name::new_instance() const {		\
@@ -292,7 +145,8 @@ wpl_value *wpl_type_void::new_instance() const {
 }
 
 #define REGISTER_TYPE(name) \
-	name_space->new_register_parseable(&constant_type_##name);
+	name_space->new_register_parseable(&constant_type_##name); \
+	name_space->add_type(&constant_type_##name);
 
 // From type_file.cpp
 void wpl_type_file_register(wpl_namespace *target);
@@ -307,8 +161,6 @@ void wpl_types_add_all_to_namespace(wpl_namespace *name_space) {
 	REGISTER_TYPE(double);
 	REGISTER_TYPE(bool);
 	REGISTER_TYPE(string);
-	REGISTER_TYPE(array);
-	REGISTER_TYPE(hash);
 	REGISTER_TYPE(struct);
 	REGISTER_TYPE(class);
 	REGISTER_TYPE(env);
@@ -319,6 +171,10 @@ void wpl_types_add_all_to_namespace(wpl_namespace *name_space) {
 #endif
 	REGISTER_TYPE(time);
 	REGISTER_TYPE(line);
+
+	REGISTER_TYPE(array);
+	REGISTER_TYPE(pointer);
+	REGISTER_TYPE(hash);
 
 	wpl_type_file_register(name_space);
 }

@@ -1,0 +1,105 @@
+SCENE main {
+	string mystring = "aaa";
+
+	array<pointer<string>> sa;
+	*sa =& mystring;
+	pointer<string> sb = *sa;
+
+	/* This is the first time pointer<int> in used, and it should
+	   be registered in the top namespace for statements further down
+	   to find it so that they are equal when we run this later and
+	   call print_pointer from outside the tree. */
+	struct mystruct {
+		public int print_pointer (pointer<int> p) {
+			echo "Pointer is " . *p . "\n";
+		};
+	};
+
+	int a = 10;
+
+	pointer<int> b = &a;
+
+	*b++;
+
+	echo "A is now: $a and " . *b . "\n";
+
+	mystruct mystruct_instance;
+	mystruct_instance->print_pointer(b);
+
+	int modify_value(pointer<int> a) {
+		*a++;
+	}
+
+	modify_value(&a);
+	modify_value(b);
+
+	echo "A is now: $a and " . *b . "\n";
+
+	array<int> my_array;
+	1 ==> my_array;
+	2 ==> my_array;
+	3 ==> my_array;
+
+	pointer<array<int>> array_ptr;
+	array_ptr = &my_array;
+
+	{
+		int ab = 1;
+
+		pointer<int> ptr_a = &ab;
+		pointer<int> ptr_b = ptr_a;
+
+		struct mystruct {
+			int value;
+
+			mystruct(pointer<int> set) {
+				value = *set;
+			};
+
+			public pointer<int> get_pointer() {
+				return &value;
+			};
+		};
+
+		int print (int a) {
+			echo "Value is: " . a . "\n";
+		}
+
+		print (*&*&*ptr_b);
+
+		array<array<int>> a;
+
+		pointer<int> b = &a[0][0];
+		**a = 2;
+		print (**a);
+		**a++;
+		print (**a);
+		**a = *b + 1;
+		print (**a);
+		*(ptr_b = b)++;
+		print (**a);
+
+		pointer<int> c;
+
+		*(c = b) += 100;
+
+		print (*c);
+
+		int edit_pointer(pointer<int> ptr, int value) {
+			*ptr = value;
+		}
+
+		edit_pointer (b, *b + 1);
+
+		print (**a);
+
+		edit_pointer (b, **a + 1);
+
+		print (*b);
+
+		mystruct d(&200);
+		print (*(d->get_pointer()));
+		*(d->get_pointer())++;
+		print (*(d->get_pointer()));
+	}
+}

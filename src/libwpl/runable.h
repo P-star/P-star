@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -48,5 +48,8 @@ class wpl_runable {
 	public:
 	virtual ~wpl_runable() {};
 	virtual int run(wpl_state *state, wpl_value *res) = 0;
+	virtual int run(wpl_state *state, wpl_value *res, int loop_number) {
+		return run(state, res);
+	}
 	virtual wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io);
 };

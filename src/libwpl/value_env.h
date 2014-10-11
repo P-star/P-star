@@ -28,7 +28,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "types.h"
 #include "value_holder.h"
 #include "exception.h"
 

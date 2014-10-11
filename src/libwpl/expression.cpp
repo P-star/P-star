@@ -102,6 +102,16 @@ int wpl_expression::run (
 	}
 }
 
+int wpl_expression::run (
+	wpl_state *state,
+	wpl_value *final_result,
+	int loop_number
+) {
+	wpl_expression_state *exp_state = (wpl_expression_state*) state;
+	exp_state->set_loop_number(loop_number);
+	return run(state, final_result);
+}
+
 void wpl_expression::add_constant (wpl_value *value) {
 	constant_values.push_back(unique_ptr<wpl_value>(value));
 	value->set_flags(wpl_value_is_constant);

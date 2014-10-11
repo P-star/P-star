@@ -117,6 +117,7 @@ class wpl_expression : public wpl_runable, public shunting_yard, public wpl_matc
 	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) override;
 
 	int run(wpl_state *exp_state, wpl_value *final_result) override;
+	int run(wpl_state *exp_state, wpl_value *final_result, int loop_number) override;
 
 	virtual void parse_value(wpl_namespace *parent_namespace);
 	void parse_value (wpl_namespace *parent_namespace, uint32_t expect);

@@ -372,6 +372,23 @@ wpl_template *wpl_namespace_session::find_template(const char *name) {
 	return template_namespace->find_template(name);
 }
 
+const wpl_type_complete *wpl_namespace_session::find_complete_type(const char *name) {
+	const wpl_type_complete *ret;
+
+	/* Look everywhere to find the type */
+	if (nss_this && (ret = nss_this->find_complete_type(name))) {
+		return ret;
+	}
+	if (template_namespace && (ret = template_namespace->find_complete_type(name))) {
+		return ret;
+	}
+	if (parent && (ret = parent->find_complete_type(name))) {
+		return ret;
+	}
+
+	return NULL;
+}
+
 int wpl_namespace_session::do_operator_on_unresolved (
 	wpl_value_unresolved_identifier *unresolved,
 	wpl_expression_state *exp_state,
