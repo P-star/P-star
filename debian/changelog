@@ -1,3 +1,9 @@
+pstar (1.2~alpha8ubuntu1) saucy; urgency=low
+
+  * Ubuntu version
+
+ -- Atle <atle@goliathdns.no>  Wed, 08 Oct 2014 01:32:46 +0200
+
 pstar (1.2~alpha8) experimental; urgency=low
 
   * Fix issues with constructors
