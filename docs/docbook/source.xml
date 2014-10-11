@@ -1837,7 +1837,7 @@ SCENE main {
 		</section>
 		<section>
 			<title>Pointers</title>
-			<para>A pointers is a type which doesn't hold a value itself. Instead, it "points to" another value.
+			<para>A pointer is a type which doesn't hold a value itself. Instead, it "points to" another value.
 			If you are familiar with any C-like language, you are (hopefully) well aware of why pointers are nice, and you also know that they can be dangerous.
 			In P*, pointers are not dangerous, and errors you make are detected without having programs crashing badly.
 			</para>
@@ -1866,6 +1866,7 @@ SCENE main {
 			But what if we put the values into an array?
 			Surely a function can return an array with many values.
 			</para>
+			<bridgehead>The stupid example</bridgehead>
 			<programlisting language="c">
 SCENE main {
 	array&lt;int&gt; move_to_neighbour(array&lt;int&gt; values) {
@@ -1895,8 +1896,11 @@ SCENE main {
 	echo "After moving, my phone number is $my_phone_number\n";
 }
 			</programlisting>
+			<para>OK, let's state that this works, but the readability is horrendous.</para>
 			<bridgehead>The big example</bridgehead>
-			<para>OK, let's state that this works, but the readability is horrendous. What we need is pointers!</para>
+			<para>What we need is pointers!
+			Code with pointers in have strange stuff in it, like <code>&amp;</code>, <code>&lt;int&gt;</code> and <code>*</code>
+			</para>
 <programlisting language="c">
 SCENE main {
 	void move_to_neighbour(pointer&lt;int&gt; house_number, pointer&lt;int&gt; phone_number) {
@@ -1918,7 +1922,7 @@ SCENE main {
 	echo "After moving, my phone number is $my_phone_number\n";
 }
 </programlisting>
-			<bridgehead>A smaller example</bridgehead>
+			<bridgehead>A narrow-down</bridgehead>
 			<para>So, what's really going on here? Let us first talk about how a pointer is used in an easier example.</para>
 <programlisting language="c">
 SCENE main {
@@ -1938,7 +1942,7 @@ SCENE main {
 			<para>Now, <code>my_pointer</code> holds a pointer to <code>my_value</code>, and to convert it back, the pointer supports an operator with a lovely name: The <emphasis>indirection</emphasis> operator <code>*</code>.
 			If you have the pointer, and wishes to use the value it's pointing to, you must always add the <code>*</code> in front of it, like we do here when we print the value out.
 			</para>
-			<para>In the big example, the function <code>void move_to_neighbour(pointer&lt;int&gt; house_number, pointer&lt;int&gt; phone_number)</code> takes two pointers to integers and modifies the values they point to.
+			<para>In the big example, the function <code>move_to_neighbour</code> takes two pointers to integers and modifies the values they point to.
 			When we call the function, we add <code>&amp;</code> in front of the variable names to convert them to pointers to match what the function expects to receive.
 			</para>
 		<bridgehead>Now some object orientation!</bridgehead>
@@ -2035,8 +2039,10 @@ foreach (iterator; neighbourhood_info) {
 		<para>Now, all persons have moved. We didn't have to use a pointer in the <code>foreach</code> loop, but not without issues. Let's see the alternative first before we smash it to pieces:</para>
 
 		<programlisting language="c">
-/* Declare a temporary variable used in the foreach loop */
-contact_info temp;
+/* Declare a temporary variable used in the foreach loop. The asterisk, *,
+   tells P* that we shouldn't call any constructor for this variable,
+   we don't need that since we'll be overwriting it in the loop anyway. */
+contact_info *temp;
 
 foreach (temp; neighbourhood_info) {
 	temp->move_to_neighbour();
@@ -2045,6 +2051,8 @@ foreach (temp; neighbourhood_info) {
 		<para>What happens here, is that for every iteration of the loop, a value from our neighbourhood array is <emphasis>COPIED</emphasis> into the temporary variable.
 		When we then call the move function, the temporary value gets modified, but the original value stays unchanged, and the person doesn't move to it's neighbour.
 		</para>
+		<para>The other advantage of using pointers when we pass structs around to functions, is that we prevent the struct from being copied.
+		Copying structs in P* uses much more CPU and memory on your box than pointers. Pointers also use less memory than default types like <code>int</code>, but since copying an <code>int</code> is very fast, it's usually OK to keep the program readable and skip the pointers if we don't need them.</para>
 		<para>Let's put in the full example, with structs, arrays and pointers, for you to copy-paste and play with:</para>
 		<programlisting language="c">
 SCENE main {
