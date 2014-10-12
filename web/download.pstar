@@ -18,15 +18,18 @@ HTML_TEMPLATE body {
 	<p>Run this if you are running <b>Ubuntu 13.10 (Saucy Salamander)</b></b><pre>
 # echo -e "\n\ndeb [ arch=amd64 ] http://ubuntu.p-star.org/ saucy main\n\n" \
   &gt;&gt /etc/apt/sources.list</pre>
+	<p>Run this if you are running <b>Ubuntu 14.04 LTS (Trusty Tahr)</b></b><pre>
+# echo -e "\n\ndeb [ arch=amd64 ] http://ubuntu.p-star.org/ trusty main\n\n" \
+  &gt;&gt /etc/apt/sources.list</pre>
 	<p>This will download and install the required packages:</p>
 	<pre>
 # apt-get update
 # apt-get install pstar</pre>
 
 	<h2>Get the latest P* tarball</h2>
-	<p>First, <a href="http://apt.p-star.org/pool/main/p/pstar/pstar_1.2~alpha8.tar.xz">download the latest tar.gz-archive</a>.</p>
+	<p>First, <a href="http://apt.p-star.org/pool/main/p/pstar/pstar_1.2~alpha9.tar.xz">download the latest tar.gz-archive</a>.</p>
 	<p>The source of P* will be put into a directory called "P-star". To complile the program, you will need to have <i>autotools</i> and a C++11 compliant compiler installed. You also need the development packages for <i>MySQL client</i>, <i>Boost regex</i> and <i>Mimetic</i>.</p>
-	<pre>$ tar -Jxvf p-star_1.2~alpha8.tar.xz
+	<pre>$ tar -Jxvf p-star_1.2~alpha9.tar.xz
 $ cd P-star
 $ autoreconf -i 
 $ ./configure

@@ -1,14 +1,20 @@
 #!/usr/bin/wpl -f
 
-
 SCENE main {
+	/* Specify which chapters we want */
+	array<int> get_chapters;
+	3, 4 => get_chapters;
+
 	struct chunk {
 		string title;
 		string filename;
+		int id;
 
 		FILE input;
 
-		chunk (string path) {
+		chunk (int id_, string path) {
+			id = id_;
+	
 			filename = path;
 			filename =~ s/^.+\/([^\/]+)$/$1/;
 
@@ -22,6 +28,10 @@ SCENE main {
 				input->flush();
 				input->close();
 			}
+		};
+
+		public int get_id() {
+			return id;
 		};
 
 		public string dump() {
@@ -63,72 +73,97 @@ SCENE main {
 		};
 	};
 
-	array<array<chunk>> chunk_tree;
+	struct chapter {
+		int chapter_id;
+		array<chunk> chunks;
+	
+		chapter (int chapter_id_) {
+			chapter_id = chapter_id_;
+		};
+
+		public void add_chunk (int section, string path) {
+			chunks[section](section, path);
+		};
+
+		/* Write P-star code to a file for the web site to use */
+		public int write_index_file() {
+			FILE index_file;
+			string filename = "ch" . chapter_id . "_index.pstar";
+			if (!index_file->open_truncate(filename)) {
+				errcho "Could not open index file '$filename' for writing: " . index_file->error() . "\n";
+				return 1;
+			}
+
+			LINE line = index_file;
+			line++;
+
+			line .= "SCENE buttons {\n";
+			line .= "
+	struct doc_button {
+		public string filename;
+		public string title;
+		public string class;
+
+		doc_button (string a, string b) {
+			filename = a;
+			title = b;
+		};
+	};
+
+	protected array<doc_button> buttons;
+";
+
+			pointer<chunk> chunk_it;
+			foreach (chunk_it; chunks) {
+				if (*chunk_it->get_id() > 0) {
+					line .= "\t" . *chunk_it->dump() . "\n";
+				}
+			}
+
+			line .= "}\n";
+
+			index_file->update(line);
+			index_file->flush();
+			index_file->close();
+		};
+	};
+
+	array<chapter> chapters;
 
 	STDIN stdin;
 	string path;
 	while ((path = stdin) != "") {
 		array<string> matches;
-		int chapter;
-		int section;
+		int ch;
+		int se;
 
 		echo "Fixing chunk $path\n";
 
 		path =~ /[1-9]\d*/g => matches;
 
 		if (@matches == 2) {
-			chapter = matches[0];
-			section = 0;
+			ch = matches[0];
+			se = 0;
 		}
 		else if (@matches == 3) {
-			chapter = matches[0];
-			section = matches[1];
+			ch = matches[0];
+			se = matches[1];
 		}
 
-		if (chapter) {
-			chunk_tree[chapter][section](path);
-		}
-	}
-
-	/* Chapter 3 is what we want */
-
-	FILE index_file;
-	if (!index_file->open_truncate("ch3_index.pstar")) {
-		errcho "Could not open index file for writing: " . index_file->error() . "\n";
-		return 1;
-	}
-
-	LINE line = index_file;
-	line++;
-
-	line .= "SCENE buttons {\n";
-	line .= "
-	struct button {
-		public string filename;
-		public string title;
-		public string class;
-
-		button (string a, string b) {
-			filename = a;
-			title = b;
-		};
-	};
-
-	protected array<button> buttons;
-";
-
-	int j;
-	for (j = 1; j < @chunk_tree[3]; j++) {
-		if (defined chunk_tree[3][j]) {
-			line .= "\t" . chunk_tree[3][j]->dump() . "\n";
+		if (ch) {
+			if (!defined chapters[ch]) {
+				chapters[ch](ch);
+			}
+			chapters[ch]->add_chunk(se, path);
 		}
 	}
 
-	line .= "}\n";
-
-	index_file->update(line);
-	index_file->flush();
-	index_file->close();
+	int chapter;
+	foreach (chapter; get_chapters) {
+		if (chapters[chapter]->write_index_file() != 0) {
+			return 1;
+		}
+	}
 
 	return 0;
 }

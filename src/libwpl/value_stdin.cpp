@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "value_stdin.h"
+#include "value_string.h"
 
 int wpl_value_stdin::do_operator (
 		wpl_expression_state *exp_state,
@@ -36,5 +37,10 @@ int wpl_value_stdin::do_operator (
 		wpl_value *rhs
 		)
 {
+	if (op == &OP_ASSIGN) {
+		wpl_value_string res(toString());
+		lhs->set_weak(&res);
+		return res.do_operator_recursive(exp_state, final_result);
+	}
 	return WPL_OP_UNKNOWN;
 }

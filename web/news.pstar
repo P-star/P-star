@@ -24,12 +24,18 @@ SCENE news {
 
 	#HTML_TEMPLATE news_head;
 
+	int max_articles = 3;
+	int articles_count = 0;
+
 	int line_counter = 0;
 	LINE line = file;
 	while (line++) {
 		line_counter++;
 		line =~ s/\n$//;
 		if (line =~ s/^ARTICLE\s+//) {
+			if (++articles_count > max_articles) {
+				break;
+			}
 			string subject = line;
 			TIME time;
 			array<string> paragraphs;
