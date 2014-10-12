@@ -253,6 +253,10 @@ class wpl_value : public wpl_suicidal {
 		cerr << "In value toString() of type '" << get_type_name() << "':\n";
 		throw runtime_error ("Cannot get string value of this type");
 	}
+	/* Objects which do not support toString() should override this */
+	virtual string toStringDBG() {
+		return toString();
+	}
 	virtual char *toVoid() { throw runtime_error ("Cannot get void pointer of this type"); }
 	virtual unsigned int toUint() { throw runtime_error ("Cannot get uint value of this type"); }
 	virtual long long int toLongLongInt() { throw runtime_error ("Cannot get llint value of this type");}
@@ -261,7 +265,7 @@ class wpl_value : public wpl_suicidal {
 	virtual double toDouble() { throw runtime_error ("Cannot get double value of this type"); }
 
 	virtual void dump() {
-		cout << " " << toString();
+		cout << " " << toStringDBG();
 	}
 
 	virtual bool isStruct() {

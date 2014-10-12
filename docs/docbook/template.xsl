@@ -3,4 +3,5 @@
 	<xsl:import href="/usr/share/xml/docbook/stylesheet/docbook-xsl/xhtml/chunk.xsl"/>
 	<xsl:param name="use.id.as.filename" select="0"></xsl:param>
 	<xsl:param name="suppress.navigation" select="1"></xsl:param>
+	<xsl:param name="chunk.first.sections" select="1"></xsl:param>
 </xsl:stylesheet>

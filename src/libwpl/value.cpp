@@ -269,15 +269,6 @@ int wpl_value::do_operator_recursive (
 			preferred = rhs;
 		}
 	}
-/*	else if (op == &OP_ELEMENT) {
-		preferred = lhs;
-	}
-	else if (!rhs) {
-		preferred = lhs;
-	}
-	else if (!lhs) {
-		preferred = rhs;
-	}*/
 	else if (op->flags & WPL_OP_F_ASSOC_LEFT) {
 		preferred = lhs;
 	}

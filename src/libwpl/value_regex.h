@@ -155,6 +155,10 @@ class wpl_value_regex : public wpl_value, public wpl_matcher {
 		return new wpl_value_regex(*this);
 	}
 
+	virtual string toStringDBG() override {
+		return "{regex}";
+	}
+
 	bool do_pattern_match (
 			wpl_expression_state *exp_state,
 			string &subject,
