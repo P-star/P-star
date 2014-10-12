@@ -34,46 +34,33 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value.h"
 
 template<typename A> class wpl_value_holder : public wpl_value {
-	private:
-	A lhs_tmp;
-	A rhs_tmp;
-
 	protected:
 	int discard_op() {
-		result = *lhs_value;
+		RESULT = LHS;
 		return (WPL_OP_OK|WPL_OP_DISCARD);
 	}
 	int return_op() {
-		result = *rhs_value;
+		RESULT = RHS;
 		return (WPL_OP_OK|WPL_OP_RETURN);
 	}
 	int block_return_op() {
-		result = *rhs_value;
+		RESULT = RHS;
 		return (WPL_OP_OK|WPL_OP_BLOCK_RETURN);
 	}
 
 	A value;
 
 	bool result_logic;
+	A lhs_tmp;
+	A rhs_tmp;
 	A result;
-	A *lhs_value;
-	A *rhs_value;
 
-	void set_lhs_value (wpl_value *lhs, A value_lhs
-	) {
+	inline void set_lhs_value (A value_lhs) {
 		lhs_tmp = value_lhs;
-		lhs_value = (lhs == (wpl_value*) this ? &value : &lhs_tmp);
 	}
 
-	void set_rhs_value (wpl_value *rhs, A value_rhs
-	) {
+	inline void set_rhs_value (A value_rhs) {
 		rhs_tmp = value_rhs;
-		rhs_value = (rhs == (wpl_value*) this ? &value : &rhs_tmp);
-	}
-
-	void set_values_to_myself() {
-		lhs_value = &result;
-		rhs_value = &result;
 	}
 
 	virtual int __do_operator (const struct wpl_operator_struct *op) {

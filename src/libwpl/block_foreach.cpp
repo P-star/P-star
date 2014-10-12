@@ -49,6 +49,7 @@ int wpl_block_foreach::run(wpl_state *state, wpl_value *final_result) {
 		return ret;
 	}
 	var = constant_pointer.dereference();
+	var->set_do_finalize();
 
 	if (var == NULL) {
 		throw runtime_error("No constant found in foreach loop variable section");

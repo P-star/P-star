@@ -45,8 +45,8 @@ template<typename A> class wpl_value_strings : public wpl_value_holder<A> {
 	int neq() {RESULT_LOGIC = (LHS != RHS); return WPL_OP_LOGIC_OK; };
 	int eq() {RESULT_LOGIC = (LHS == RHS); return WPL_OP_LOGIC_OK; };
 	int concat() {RESULT = LHS + RHS; return WPL_OP_OK; }
-	int assign_concat() {RESULT = LHS + RHS; LHS = RESULT; return WPL_OP_OK|WPL_OP_DATA_MODIFIED; }
-	int assign() {LHS = RHS; RESULT = RHS; return WPL_OP_OK|WPL_OP_DATA_MODIFIED; }
+	int assign_concat() {RESULT = LHS + RHS; LHS = RESULT; return WPL_OP_OK|WPL_OP_DATA_MODIFIED|WPL_OP_ASSIGN; }
+	int assign() {LHS = RHS; RESULT = RHS; return WPL_OP_OK|WPL_OP_DATA_MODIFIED|WPL_OP_ASSIGN; }
 	int echo() {cout << RHS; return WPL_OP_OK; }
 	int errcho() {cerr << RHS; return WPL_OP_OK; }
 	int is_empty() {RESULT_LOGIC = (RHS).empty() ? true : false; return WPL_OP_LOGIC_OK; }

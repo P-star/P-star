@@ -89,6 +89,8 @@ class wpl_expression : public wpl_runable, public shunting_yard, public wpl_matc
 	static const uint32_t EXPECT_OPERATOR =		1<<0;
 	static const uint32_t EXPECT_NUMBER =		1<<1;
 
+	static const uint32_t EXPECT_IS_FIRST =		1<<5;
+
 	static const uint32_t EXPECT_DO_BREAK =		1<<10;
 	static const uint32_t EXPECT_SEMICOLON_END =	1<<11;
 

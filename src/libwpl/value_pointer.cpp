@@ -41,7 +41,7 @@ int wpl_value_pointer::do_operator (
 		return get_value()->do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_ASSIGN) {
-		set_weak(rhs);
+		lhs->set_weak(rhs);
 
 		wpl_value_pointer result(*this);
 		return result.do_operator_recursive(exp_state, final_result);

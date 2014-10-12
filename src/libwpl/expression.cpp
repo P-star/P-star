@@ -386,6 +386,8 @@ void wpl_expression::parse_regex(wpl_namespace *parent_namespace) {
 }
 
 void wpl_expression::parse(wpl_namespace *parent_namespace) {
+	expect |= EXPECT_IS_FIRST;
+
 	while (!at_end() && !(expect & EXPECT_DO_BREAK)) {
 		int whitespace_length = ignore_string_match (WHITESPACE, 0);
 
@@ -395,10 +397,16 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 
 		int operator_search_flags;
 		if (expect & EXPECT_NUMBER) {
-			operator_search_flags = WPL_OP_F_ASSOC_RIGHT;
+			operator_search_flags = (
+				WPL_OP_F_RIGHT_ONE
+		);
 		}
 		else if (expect & EXPECT_OPERATOR) {
-			operator_search_flags = WPL_OP_F_ASSOC_ALL;
+			operator_search_flags = (
+				WPL_OP_F_LEFT_ONE |
+				WPL_OP_F_LEFT_BOTH |
+				WPL_OP_F_RIGHT_BOTH
+			);
 		}
 
 		if (ignore_letter (';')) {
@@ -455,6 +463,13 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 				revert_string(len);
 				parse_regex(parent_namespace);
 			}
+			else if (strcmp (buf, OP_BREAK_OP.name) == 0) {
+				if (!(expect & EXPECT_IS_FIRST)) {
+					throw runtime_error("Invalid break statement");
+				}
+				revert_string(OP_BREAK_OP.length);
+				parse_operator(&OP_BREAK_OP);
+			}
 			else {
 				parse_unresolved_identifier(parent_namespace, buf);
 			}
@@ -474,6 +489,8 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 			msg << "Syntax error in expression near '" << get_string_pointer()[0] << "'";
 			THROW_ELEMENT_EXCEPTION(msg.str());
 		}
+
+		expect &= ~(EXPECT_IS_FIRST);
 	}
 }
 

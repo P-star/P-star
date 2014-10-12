@@ -44,11 +44,6 @@ using namespace std;
 template<typename A> class wpl_value_number : public wpl_value_holder<A> {
 	private:
 
-	int inc_suffix() {RESULT = LHS; LHS = LHS + 1; return WPL_OP_OK; }
-	int dec_suffix() {RESULT = LHS; LHS = LHS - 1; return WPL_OP_OK; }
-	int inc_prefix() {RESULT = RHS + 1; RHS = RESULT; return WPL_OP_OK; }
-	int dec_prefix() {RESULT = RHS - 1; RHS = RESULT; return WPL_OP_OK; }
-
 	int add() {RESULT = LHS + RHS; return WPL_OP_OK; }
 	int sub() {RESULT = LHS - RHS; return WPL_OP_OK; }
 	int mul() {RESULT = LHS * RHS; return WPL_OP_OK; }
@@ -60,12 +55,12 @@ template<typename A> class wpl_value_number : public wpl_value_holder<A> {
 		return WPL_OP_OK;
 	}
 
-	int assign_sum() {RESULT = LHS += RHS; return WPL_OP_OK; }
-	int assign_sub() {RESULT = LHS -= RHS; return WPL_OP_OK; }
-	int assign_mul() {RESULT = LHS *= RHS; return WPL_OP_OK; }
-	int assign_div() {RESULT = LHS /= RHS; return WPL_OP_OK; }
+	int assign_sum() {RESULT = LHS += RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
+	int assign_sub() {RESULT = LHS -= RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
+	int assign_mul() {RESULT = LHS *= RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
+	int assign_div() {RESULT = LHS /= RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
 
-	int assign() {LHS = RHS; RESULT = RHS; return WPL_OP_OK; }
+	int assign() {LHS = RHS; RESULT = RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
 
 	int echo() {cout << RHS; return WPL_OP_OK; }
 	int errcho() {cerr << RHS; return WPL_OP_OK; }
@@ -88,14 +83,10 @@ template<typename A> class wpl_value_number : public wpl_value_holder<A> {
 			return res;
 		}
 
-		CALL_OP(OP_INC_SUFFIX, inc_suffix)
-		CALL_OP(OP_DEC_SUFFIX, dec_suffix)
 		CALL_OP(OP_LT, lt)
 		CALL_OP(OP_GT, gt)
 		CALL_OP(OP_LTEQ, lteq)
 		CALL_OP(OP_GTEQ, gteq)
-		CALL_OP(OP_INC_PREFIX, inc_prefix)
-		CALL_OP(OP_DEC_PREFIX, dec_prefix)
 		CALL_OP(OP_SUM, add)
 		CALL_OP(OP_SUB,sub)
 		CALL_OP(OP_MUL,mul)

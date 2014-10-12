@@ -56,4 +56,5 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #define WPL_OP_RANGE		(1<<19)
 #define WPL_OP_RANGE_COMPLETE	(1<<20)
 #define WPL_OP_RANGE_ABORT	(1<<21)
+#define WPL_OP_ASSIGN		(1<<22)
 

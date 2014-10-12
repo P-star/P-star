@@ -53,79 +53,79 @@ const wpl_operator_struct OP_PAR_CLOSE(")", 2, WPL_OP_F_NONE, 1);
 const wpl_operator_struct OP_BRACK_OPEN("[", 2, WPL_OP_F_NONE, 1);
 const wpl_operator_struct OP_BRACK_CLOSE("]", 2, WPL_OP_F_NONE, 1);
 
-const wpl_operator_struct OP_FUNCTION_CALL("()", 2, WPL_OP_F_LEFT_BOTH|WPL_OP_F_OPTIONAL_LHS|WPL_OP_F_OPTIONAL_RHS, 2);
-const wpl_operator_struct OP_ARRAY_SUBSCRIPTING("[]", 2, WPL_OP_F_LEFT_BOTH, 2);
-const wpl_operator_struct OP_ELEMENT("->", 2, WPL_OP_F_LEFT_BOTH, 2);
+const wpl_operator_struct OP_FUNCTION_CALL("()", 2, WPL_OP_F_LEFT_BOTH_BIG|WPL_OP_F_OPTIONAL_LHS|WPL_OP_F_OPTIONAL_RHS, 2);
+const wpl_operator_struct OP_ARRAY_SUBSCRIPTING("[]", 2, WPL_OP_F_LEFT_BOTH_BIG, 2);
+const wpl_operator_struct OP_ELEMENT("->", 2, WPL_OP_F_LEFT_BOTH_BIG, 2);
 
-const wpl_operator_struct OP_COUNT("@", 2, WPL_OP_F_RIGHT_ONE, 1);
-const wpl_operator_struct OP_INDIRECTION("*", 2, WPL_OP_F_RIGHT_ONE, 1);
-const wpl_operator_struct OP_POINTERTO("&", 2, WPL_OP_F_RIGHT_ONE, 1);
-const wpl_operator_struct OP_IS_EMPTY("isempty", 2, WPL_OP_F_RIGHT_ONE, 7);
-const wpl_operator_struct OP_DEFINED("defined", 2, WPL_OP_F_RIGHT_ONE, 7);
+const wpl_operator_struct OP_COUNT("@", 2, WPL_OP_F_RIGHT_ONE_BIG, 1);
+const wpl_operator_struct OP_INDIRECTION("*", 2, WPL_OP_F_RIGHT_ONE_BIG, 1);
+const wpl_operator_struct OP_POINTERTO("&", 2, WPL_OP_F_RIGHT_ONE_BIG, 1);
+const wpl_operator_struct OP_IS_EMPTY("isempty", 2, WPL_OP_F_RIGHT_ONE_BIG, 7);
+const wpl_operator_struct OP_DEFINED("defined", 2, WPL_OP_F_RIGHT_ONE_BIG, 7);
 
-const wpl_operator_struct OP_INC_SUFFIX("++", 2, WPL_OP_F_LEFT_ONE, 2);
-const wpl_operator_struct OP_DEC_SUFFIX("--", 2, WPL_OP_F_LEFT_ONE, 2);
-const wpl_operator_struct OP_INC_PREFIX("++", 3, WPL_OP_F_RIGHT_ONE, 2);
-const wpl_operator_struct OP_DEC_PREFIX("--", 3, WPL_OP_F_RIGHT_ONE, 2);
-const wpl_operator_struct OP_BITWISE_NOT("~", 3, WPL_OP_F_RIGHT_ONE, 1);
-const wpl_operator_struct OP_LOGIC_NOT("!", 3, WPL_OP_F_RIGHT_ONE, 1);
+const wpl_operator_struct OP_INC_SUFFIX("++", 2, WPL_OP_F_LEFT_ONE_BIG, 2);
+const wpl_operator_struct OP_DEC_SUFFIX("--", 2, WPL_OP_F_LEFT_ONE_BIG, 2);
+const wpl_operator_struct OP_INC_PREFIX("++", 3, WPL_OP_F_RIGHT_ONE_BIG, 2);
+const wpl_operator_struct OP_DEC_PREFIX("--", 3, WPL_OP_F_RIGHT_ONE_BIG, 2);
+const wpl_operator_struct OP_BITWISE_NOT("~", 3, WPL_OP_F_RIGHT_ONE_BIG, 1);
+const wpl_operator_struct OP_LOGIC_NOT("!", 3, WPL_OP_F_RIGHT_ONE_BIG, 1);
 
-const wpl_operator_struct OP_PATTERN_EQ("=~", 4, WPL_OP_F_LEFT_BOTH, 2);
-const wpl_operator_struct OP_PATTERN_NOT_EQ("!~", 4, WPL_OP_F_LEFT_BOTH, 2);
+const wpl_operator_struct OP_PATTERN_EQ("=~", 4, WPL_OP_F_LEFT_BOTH_BIG, 2);
+const wpl_operator_struct OP_PATTERN_NOT_EQ("!~", 4, WPL_OP_F_LEFT_BOTH_BIG, 2);
 
-const wpl_operator_struct OP_MUL("*", 5, WPL_OP_F_LEFT_BOTH, 1);
-const wpl_operator_struct OP_DIV("/", 5, WPL_OP_F_LEFT_BOTH, 1);
-const wpl_operator_struct OP_MOD("%", 5, WPL_OP_F_LEFT_BOTH, 1);
+const wpl_operator_struct OP_MUL("*", 5, WPL_OP_F_LEFT_BOTH_BIG, 1);
+const wpl_operator_struct OP_DIV("/", 5, WPL_OP_F_LEFT_BOTH_BIG, 1);
+const wpl_operator_struct OP_MOD("%", 5, WPL_OP_F_LEFT_BOTH_BIG, 1);
 
-const wpl_operator_struct OP_SUM("+", 6, WPL_OP_F_LEFT_BOTH, 1);
-const wpl_operator_struct OP_SUB("-", 6, WPL_OP_F_LEFT_BOTH, 1);
-const wpl_operator_struct OP_CONCAT(".", 6, WPL_OP_F_LEFT_BOTH, 1);
+const wpl_operator_struct OP_SUM("+", 6, WPL_OP_F_LEFT_BOTH_BIG, 1);
+const wpl_operator_struct OP_SUB("-", 6, WPL_OP_F_LEFT_BOTH_BIG, 1);
+const wpl_operator_struct OP_CONCAT(".", 6, WPL_OP_F_LEFT_BOTH_BIG, 1);
 
-const wpl_operator_struct OP_SH_LEFT("<<", 7, WPL_OP_F_LEFT_BOTH, 2);
-const wpl_operator_struct OP_SH_RIGHT(">>", 7, WPL_OP_F_LEFT_BOTH, 2);
+const wpl_operator_struct OP_SH_LEFT("<<", 7, WPL_OP_F_LEFT_BOTH_BIG, 2);
+const wpl_operator_struct OP_SH_RIGHT(">>", 7, WPL_OP_F_LEFT_BOTH_BIG, 2);
 
-const wpl_operator_struct OP_BITWISE_AND("&", 8, WPL_OP_F_LEFT_BOTH, 1);
-const wpl_operator_struct OP_BITWISE_XOR("^", 9, WPL_OP_F_LEFT_BOTH, 1);
-const wpl_operator_struct OP_BITWISE_OR("|", 10, WPL_OP_F_LEFT_BOTH, 1);
+const wpl_operator_struct OP_BITWISE_AND("&", 8, WPL_OP_F_LEFT_BOTH_BIG, 1);
+const wpl_operator_struct OP_BITWISE_XOR("^", 9, WPL_OP_F_LEFT_BOTH_BIG, 1);
+const wpl_operator_struct OP_BITWISE_OR("|", 10, WPL_OP_F_LEFT_BOTH_BIG, 1);
 
-const wpl_operator_struct OP_LTEQ("<=", 11, WPL_OP_F_LEFT_BOTH, 2);
-const wpl_operator_struct OP_GTEQ(">=", 11, WPL_OP_F_LEFT_BOTH, 2);
-const wpl_operator_struct OP_LT("<", 11, WPL_OP_F_LEFT_BOTH, 1);
-const wpl_operator_struct OP_GT(">", 11, WPL_OP_F_LEFT_BOTH, 1);
+const wpl_operator_struct OP_LTEQ("<=", 11, WPL_OP_F_LEFT_BOTH_BIG, 2);
+const wpl_operator_struct OP_GTEQ(">=", 11, WPL_OP_F_LEFT_BOTH_BIG, 2);
+const wpl_operator_struct OP_LT("<", 11, WPL_OP_F_LEFT_BOTH_BIG, 1);
+const wpl_operator_struct OP_GT(">", 11, WPL_OP_F_LEFT_BOTH_BIG, 1);
 
-const wpl_operator_struct OP_EQ("==", 12, WPL_OP_F_LEFT_BOTH, 2);
-const wpl_operator_struct OP_NOT_EQ("!=", 12, WPL_OP_F_LEFT_BOTH, 2);
+const wpl_operator_struct OP_EQ("==", 12, WPL_OP_F_LEFT_BOTH_BIG, 2);
+const wpl_operator_struct OP_NOT_EQ("!=", 12, WPL_OP_F_LEFT_BOTH_BIG, 2);
 
-const wpl_operator_struct OP_LOGIC_AND("&&", 13, WPL_OP_F_LEFT_BOTH, 2);
-const wpl_operator_struct OP_LOGIC_OR("||", 14, WPL_OP_F_LEFT_BOTH, 2);
+const wpl_operator_struct OP_LOGIC_AND("&&", 13, WPL_OP_F_LEFT_BOTH_BIG, 2);
+const wpl_operator_struct OP_LOGIC_OR("||", 14, WPL_OP_F_LEFT_BOTH_BIG, 2);
 
-const wpl_operator_struct OP_REPLACE_DISCARD("==>", 15, WPL_OP_F_RIGHT_ONE, 3);
-const wpl_operator_struct OP_SAVE_DISCARD("=>", 15, WPL_OP_F_RIGHT_ONE, 2);
+const wpl_operator_struct OP_REPLACE_DISCARD("==>", 15, WPL_OP_F_RIGHT_BOTH_BIG, 3);
+const wpl_operator_struct OP_SAVE_DISCARD("=>", 15, WPL_OP_F_RIGHT_BOTH_BIG, 2);
 
-const wpl_operator_struct OP_ASSIGN("=", 16, WPL_OP_F_RIGHT_BOTH, 1);
-const wpl_operator_struct OP_ASSIGN_SUM("+=", 16, WPL_OP_F_RIGHT_BOTH, 2);
-const wpl_operator_struct OP_ASSIGN_SUB("-=", 16, WPL_OP_F_RIGHT_BOTH, 2);
-const wpl_operator_struct OP_ASSIGN_MUL("*=", 16, WPL_OP_F_RIGHT_BOTH, 2);
-const wpl_operator_struct OP_ASSIGN_DIV("/=", 16, WPL_OP_F_RIGHT_BOTH, 2);
-const wpl_operator_struct OP_ASSIGN_MOD("%=", 16, WPL_OP_F_RIGHT_BOTH, 2);
-const wpl_operator_struct OP_ASSIGN_AND("&=", 16, WPL_OP_F_RIGHT_BOTH, 2);
-const wpl_operator_struct OP_ASSIGN_XOR("^=", 16, WPL_OP_F_RIGHT_BOTH, 2);
-const wpl_operator_struct OP_ASSIGN_OR("|=", 16, WPL_OP_F_RIGHT_BOTH, 2);
-const wpl_operator_struct OP_ASSIGN_SH_LEFT("<<=", 16, WPL_OP_F_RIGHT_BOTH, 3);
-const wpl_operator_struct OP_ASSIGN_SH_RIGHT(">>=", 16, WPL_OP_F_RIGHT_BOTH, 3);
-const wpl_operator_struct OP_ASSIGN_CONCAT(".=", 16, WPL_OP_F_RIGHT_BOTH, 2);
+const wpl_operator_struct OP_ASSIGN("=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 1);
+const wpl_operator_struct OP_ASSIGN_SUM("+=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 2);
+const wpl_operator_struct OP_ASSIGN_SUB("-=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 2);
+const wpl_operator_struct OP_ASSIGN_MUL("*=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 2);
+const wpl_operator_struct OP_ASSIGN_DIV("/=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 2);
+const wpl_operator_struct OP_ASSIGN_MOD("%=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 2);
+const wpl_operator_struct OP_ASSIGN_AND("&=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 2);
+const wpl_operator_struct OP_ASSIGN_XOR("^=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 2);
+const wpl_operator_struct OP_ASSIGN_OR("|=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 2);
+const wpl_operator_struct OP_ASSIGN_SH_LEFT("<<=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 3);
+const wpl_operator_struct OP_ASSIGN_SH_RIGHT(">>=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 3);
+const wpl_operator_struct OP_ASSIGN_CONCAT(".=", 16, WPL_OP_F_RIGHT_BOTH_BIG, 2);
 
-const wpl_operator_range_inclusive OP_RANGE_INCLUSIVE("..", 17, WPL_OP_F_LEFT_BOTH|WPL_OP_F_HAS_RUNABLE, 2);
-const wpl_operator_range_exclusive OP_RANGE_EXCLUSIVE("...", 17, WPL_OP_F_LEFT_BOTH|WPL_OP_F_HAS_RUNABLE, 3);
+const wpl_operator_range_inclusive OP_RANGE_INCLUSIVE("..", 17, WPL_OP_F_LEFT_BOTH_BIG|WPL_OP_F_HAS_RUNABLE, 2);
+const wpl_operator_range_exclusive OP_RANGE_EXCLUSIVE("...", 17, WPL_OP_F_LEFT_BOTH_BIG|WPL_OP_F_HAS_RUNABLE, 3);
 
-const wpl_operator_struct OP_DISCARD(",", 18, WPL_OP_F_LEFT_ONE, 1);
+const wpl_operator_struct OP_DISCARD(",", 18, WPL_OP_F_LEFT_ONE_BIG, 1);
 
-const wpl_operator_struct OP_ECHO("echo", 19, WPL_OP_F_RIGHT_ONE, 4);
-const wpl_operator_struct OP_ERRCHO("errcho", 19, WPL_OP_F_RIGHT_ONE, 6);
+const wpl_operator_struct OP_ECHO("echo", 19, WPL_OP_F_RIGHT_ONE_BIG, 4);
+const wpl_operator_struct OP_ERRCHO("errcho", 19, WPL_OP_F_RIGHT_ONE_BIG, 6);
 
 const wpl_operator_struct OP_BREAK_OP("break",20, WPL_OP_F_NONE, 5);
-const wpl_operator_struct OP_RETURN_OP("return",20, WPL_OP_F_RIGHT_ONE, 6);
-const wpl_operator_struct OP_BLOCK_RETURN_OP("block_return",20, WPL_OP_F_RIGHT_ONE, 12);
+const wpl_operator_struct OP_RETURN_OP("return",20, WPL_OP_F_RIGHT_ONE_BIG, 6);
+const wpl_operator_struct OP_BLOCK_RETURN_OP("block_return",20, WPL_OP_F_RIGHT_ONE_BIG, 12);
 
 static const struct wpl_operator_struct *operators[] = {
 	&OP_ARRAY_SUBSCRIPTING,
@@ -197,12 +197,7 @@ const struct wpl_operator_struct *wpl_get_operator(const char *name, int flags) 
 	const struct wpl_operator_struct *op;
 
 	for (i = 0, op = operators[0]; op != NULL; i++, op = operators[i]) {
-		if ((	WPL_OP_IS_LEFT_ASSOC(flags & op->flags) ||
-			WPL_OP_IS_RIGHT_ASSOC(flags & op->flags) ||
-			WPL_OP_IS_NO_ASSOC(op->flags)
-		) && (
-			strcmp(name, op->name) == 0
-		)) {
+		if ((flags & op->flags) && (strcmp(name, op->name) == 0)) {
 			return op;
 		}
 	}

@@ -46,7 +46,7 @@ int wpl_value_array::do_operator (
 		const struct wpl_operator_struct *op,
 		wpl_value *lhs,
 		wpl_value *rhs
-) { 
+) {
 	this->lhs = lhs;
 	this->rhs = rhs;
 
@@ -88,14 +88,17 @@ int wpl_value_array::do_operator (
 		return value->do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_SAVE_DISCARD) {
-		if (exp_state->empty_waiting()) {
+		if (!lhs) {
 			throw runtime_error("Cannot assign discard chain to array with operator '=>' without any previous operands");
 		}
+
+/*		cerr << "LHS in array is " << lhs->toInt() << endl;
+		exp_state->push_discard(lhs);
 
 		if (wpl_value *wait_top = exp_state->top_waiting()) {
 			exp_state->pop_waiting();
 			exp_state->push_discard(wait_top);
-		}
+		}*/
 
 		/* Push discard chain to array */
 		int i;
@@ -103,7 +106,10 @@ int wpl_value_array::do_operator (
 			define_if_needed(size())->set_weak(exp_state->get_discard()[i]);
 		}
 
-		wpl_value_int res(i);
+		/* Push last element, our LHS */
+		define_if_needed(size())->set_weak(lhs);
+
+		wpl_value_int res(i + 1);
 		return res.do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_DISCARD) {
@@ -118,7 +124,7 @@ int wpl_value_array::do_operator (
 		return result.do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_ASSIGN) {
-		if (!set_strong(rhs)) {
+		if (!lhs->set_strong(rhs)) {
 			cerr << "While assigning value of type " << rhs->get_type_name() <<
 				" to array of type " << get_type_name() << " in operator =:\n";
 			throw runtime_error("Incompatible types");
