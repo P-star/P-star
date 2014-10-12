@@ -30,8 +30,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #define RESULT_LOGIC wpl_value_holder<A>::result_logic
 #define RESULT wpl_value_holder<A>::result
-#define LHS *wpl_value_holder<A>::lhs_value
-#define RHS *wpl_value_holder<A>::rhs_value
+#define VALUE wpl_value_holder<A>::value
+#define LHS wpl_value_holder<A>::lhs_tmp
+#define RHS wpl_value_holder<A>::rhs_tmp
 
 #define CALL_OP(_op, func)									\
 	if (op == &_op) { return func(); }
@@ -82,10 +83,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 			return result.do_operator_recursive(exp_state, final_result);		\
 		}										\
 		if (lhs) {									\
-			set_lhs_value(lhs, lhs->translator);			 		\
+			set_lhs_value(lhs->translator);			 			\
 		}										\
 		if (rhs) {									\
-			set_rhs_value(rhs, rhs->translator);			 		\
+			set_rhs_value(rhs->translator);			 			\
 		}										\
 		int ret = __do_operator (							\
 			op									\
@@ -93,6 +94,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 		if (ret & WPL_OP_DATA_MODIFIED) {						\
 			notify									\
 		}										\
+		/*cerr << "Logic result is: " << result_logic << endl;*/			\
 		if ((ret & WPL_OP_LOGIC_OK) == WPL_OP_LOGIC_OK) {				\
 			/*cout << "V(" << this << "): result is boolean logic " << result_logic << endl;*/\
 			wpl_value_bool bool_result(result_logic);				\
@@ -103,7 +105,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 		if (ret & WPL_OP_OK) {								\
 /*			cout << "V(" << this << "): result is " << result << endl;		*/\
 			wpl_value_##shortname mytype_result(result);				\
-			if (ret & WPL_OP_DISCARD) {						\
+			if (ret & WPL_OP_ASSIGN) {						\
+				lhs->set_weak(&mytype_result);					\
+			}									\
+			else if (ret & WPL_OP_DISCARD) {					\
 				return do_operator_discard(exp_state, &mytype_result, final_result); \
 			}									\
 			return mytype_result.do_operator_recursive(				\

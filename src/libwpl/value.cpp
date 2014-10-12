@@ -269,7 +269,7 @@ int wpl_value::do_operator_recursive (
 			preferred = rhs;
 		}
 	}
-	else if (op == &OP_ELEMENT) {
+/*	else if (op == &OP_ELEMENT) {
 		preferred = lhs;
 	}
 	else if (!rhs) {
@@ -277,23 +277,22 @@ int wpl_value::do_operator_recursive (
 	}
 	else if (!lhs) {
 		preferred = rhs;
-	}
-	else if (WPL_OP_LEFT_PRECEDENCE (op)) {
+	}*/
+	else if (op->flags & WPL_OP_F_ASSOC_LEFT) {
 		preferred = lhs;
 	}
-/*	else if (rhs->get_precedence() > lhs->get_precedence()) {
+	else if (op->flags & WPL_OP_F_ASSOC_RIGHT) {
 		preferred = rhs;
 	}
-	else if (lhs->get_precedence() > rhs->get_precedence()) {
-		preferred = lhs;
-	}*/
 	else {
-		preferred = lhs;
+		ostringstream msg;
+		msg << "Don't know which value to run operator " << op->name << " on!!\n";
+		throw runtime_error(msg.str());
 	}
 
-/*	cout << "- preferred is " << preferred->get_type_name() << endl;
-	cout << "- lhs type is " << (lhs?lhs->get_type_name():"-") << endl;
-	cout << "- rhs type is " << (rhs?rhs->get_type_name():"-") << endl;
+/*	cout << "- preferred is " << preferred << " - " << preferred->get_type_name() << endl;
+	cout << "- lhs type is  " << lhs       << " - " << (lhs?lhs->get_type_name():"-") << endl;
+	cout << "- rhs type is  " << rhs       << " - " << (rhs?rhs->get_type_name():"-") << endl;
 	cout << "- calling operator " << op->name << "\n";*/
 
 	int ret_op;

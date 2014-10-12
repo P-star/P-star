@@ -35,24 +35,29 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 template<typename A> class wpl_value_integers : public wpl_value_number<A> {
 	private:
 
+	int inc_suffix() {RESULT = (VALUE)++; return WPL_OP_OK; }
+	int dec_suffix() {RESULT = (VALUE)--; return WPL_OP_OK; }
+	int inc_prefix() {RESULT = ++(VALUE); return WPL_OP_OK; }
+	int dec_prefix() {RESULT = --(VALUE); return WPL_OP_OK; }
+
 	int mod() {RESULT = LHS % RHS; return WPL_OP_OK; }
-	int assign_mod() {RESULT = LHS %= RHS; return WPL_OP_OK; }
+	int assign_mod() {RESULT = LHS %= RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
 
 	int bitwise_not() {RESULT = ~RHS; return WPL_OP_OK; }
 
 	int sh_left() {RESULT = LHS << RHS; return WPL_OP_OK; }
 	int sh_right() {RESULT = LHS >> RHS; return WPL_OP_OK; }
 
-	int assign_sh_left() {RESULT = LHS <<= RHS; return WPL_OP_OK; }
-	int assign_sh_right() {RESULT = LHS >>= RHS; return WPL_OP_OK; }
+	int assign_sh_left() {RESULT = LHS <<= RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
+	int assign_sh_right() {RESULT = LHS >>= RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
 
 	int bitwise_and() {RESULT = LHS & RHS; return WPL_OP_OK; }
 	int bitwise_or() {RESULT = LHS | RHS; return WPL_OP_OK; }
 	int bitwise_xor() {RESULT = LHS ^ RHS; return WPL_OP_OK; }
 
-	int assign_and() {RESULT = LHS &= RHS; return WPL_OP_OK; }
-	int assign_or() {RESULT = LHS |= RHS; return WPL_OP_OK; }
-	int assign_xor() {RESULT = LHS ^= RHS; return WPL_OP_OK; }
+	int assign_and() {RESULT = LHS &= RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
+	int assign_or() {RESULT = LHS |= RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
+	int assign_xor() {RESULT = LHS ^= RHS; return WPL_OP_OK|WPL_OP_ASSIGN; }
 
 	protected:
 	virtual int __do_operator (const struct wpl_operator_struct *op) {
@@ -61,6 +66,10 @@ template<typename A> class wpl_value_integers : public wpl_value_number<A> {
 			return res;
 		}
 
+		CALL_OP(OP_INC_SUFFIX, inc_suffix)
+		CALL_OP(OP_DEC_SUFFIX, dec_suffix)
+		CALL_OP(OP_INC_PREFIX, inc_prefix)
+		CALL_OP(OP_DEC_PREFIX, dec_prefix)
 		CALL_OP(OP_MOD,mod)
 		CALL_OP(OP_ASSIGN_MOD, assign_mod)
 

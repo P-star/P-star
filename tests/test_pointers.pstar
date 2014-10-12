@@ -1,9 +1,20 @@
 SCENE main {
+	/* Test nested templates */
 	string mystring = "aaa";
-
 	array<pointer<string>> sa;
 	*sa =& mystring;
 	pointer<string> sb = *sa;
+	int two = 2;
+
+	echo "String is $mystring, two is $two\n";
+
+	/* Test that "bitwise and" and "multiplication"
+	  operator still works */
+	1 & 3;
+	int bw_and = 3 & 2 & 3;
+	int mul = 3 * 2;
+
+	echo "Two: $bw_and, Six: $mul\n";
 
 	/* This is the first time pointer<int> in used, and it should
 	   be registered in the top namespace for statements further down
@@ -36,9 +47,9 @@ SCENE main {
 	echo "A is now: $a and " . *b . "\n";
 
 	array<int> my_array;
-	1 ==> my_array;
-	2 ==> my_array;
-	3 ==> my_array;
+	1 => my_array;
+	2 => my_array;
+	3 => my_array;
 
 	pointer<array<int>> array_ptr;
 	array_ptr = &my_array;

@@ -140,10 +140,10 @@ int wpl_value_struct::do_operator (
 		throw runtime_error(msg.str());
 	}
 	else if (op == &OP_ASSIGN) {
-		if (!set_strong(rhs)) {
+		if (!lhs->set_strong(rhs)) {
 			ostringstream msg;
 			msg << "In = operator for struct type '" << mother_struct->get_name() << 
-				"' while assigning from value of type '" << rhs->get_type_name() << "': Incompatible types\n";
+				"' while assigning to value of type '" << lhs->get_type_name() << "': Incompatible types\n";
 			throw runtime_error(msg.str());
 		}
 		return rhs->do_operator_recursive(exp_state, final_result);

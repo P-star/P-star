@@ -93,7 +93,7 @@ int wpl_value_line::do_operator (
 	wpl_value *rhs
 ) {
 	if (op == &OP_ASSIGN) {
-		set_weak(rhs);
+		lhs->set_weak(rhs);
 		wpl_value_bool res(1);
 		return res.do_operator_recursive(exp_state, final_result);
 	}

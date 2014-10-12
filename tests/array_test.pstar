@@ -2,7 +2,7 @@ SCENE main {
 	/* Parse testing */
 	array<array<array<array<int>>>> my_stupid_array;
 	my_stupid_array[0][0][0][0] = 1;
-	echo "My stupid array has a value which is " . ****my_stupid_array . "\n";
+	echo "My stupid array has a value which is " . *&****my_stupid_array . "\n";
 
 	/* Set the first three elements of the array to 10, 20 and 30 */
 	array<int> my_first_array;
