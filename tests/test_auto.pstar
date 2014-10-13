@@ -1,0 +1,30 @@
+SCENE main {
+	auto my_int = 2;
+	auto my_string = "two";
+
+	echo "Auto is $my_int and $my_string\n";
+
+	struct mystruct {
+		public void print() {
+			echo "Hello!\n";
+		};
+	};
+
+	mystruct mystruct_instance;
+
+	array<auto> my_array;
+
+	1 => my_array;
+	"one" => my_array;
+	mystruct_instance => my_array;
+
+	my_array[2]->print();
+
+	void my_function(auto var) {
+		echo "Var is: $var\n";
+	}
+
+	my_function(my_array[0]);
+	my_function(my_array[1]);
+}
+

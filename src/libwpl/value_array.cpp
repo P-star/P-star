@@ -191,18 +191,15 @@ int wpl_value_array::finalize_expression (wpl_expression_state *exp_state, wpl_v
 }
 
 bool wpl_value_array::set_strong (wpl_value *value) {
+	/* This is important to unmask the auto type */
 	value = value->dereference();
 
-	/*
-	   TODO
-	   create copy_to_array(wpl_value_array *target) or something in wpl_value
-	   */
-	if (!value->isArray()) {
+	wpl_value_array *value_array =
+		dynamic_cast<wpl_value_array*>(value);
+
+	if (!value_array) {
 		return false;
 	}
-
-	wpl_value_array *value_array =
-		static_cast<wpl_value_array*>(value);
 
 	if (get_template() != value_array->get_template()) {
 		return false;

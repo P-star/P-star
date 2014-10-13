@@ -75,6 +75,7 @@ class wpl_value_no_weak_set : public runtime_error {
 /**
  * @brief This class should be allocated on the stack before running runables. Set the result from the runable with set(), and the value will be automatically deleted on destruction of this class if WPL_OP_RETURN_REFERENCE is set.
  */
+/*
 class wpl_value_return {
 	private:
 	wpl_value *value;
@@ -109,7 +110,7 @@ class wpl_value_return {
 	void set(wpl_value *value, int flags);
 	int run(wpl_value **final_result);
 };
-
+*/
 /**
  * @brief This is the master value class. All values derive from this type. Values support doing operators and to be converted between one another.
  */
@@ -134,16 +135,16 @@ class wpl_value : public wpl_suicidal {
 	virtual ~wpl_value();
 	virtual void suicide() override;
 
-	void register_pointer(wpl_pointer *ptr);
-	void remove_pointer(wpl_pointer *ptr); 
+	virtual void register_pointer(wpl_pointer *ptr);
+	virtual void remove_pointer(wpl_pointer *ptr); 
 
-	void set_flags(int flags) {
+	virtual void set_flags(int flags) {
 		this->flags = flags;
 	}
-	int get_flags() {
+	virtual int get_flags() {
 		return flags;
 	}
-	void set_do_finalize() {
+	virtual void set_do_finalize() {
 		this->flags |= wpl_value_do_finalize;
 	}
 
@@ -160,6 +161,7 @@ class wpl_value : public wpl_suicidal {
 		return this;
 	}
 
+	/* Used by MySQL */
 	virtual void resize(int length) {
 		throw runtime_error ("Cannot resize value of this type");
 	}
@@ -174,7 +176,7 @@ class wpl_value : public wpl_suicidal {
 			const wpl_operator_struct *op
 	);
 
-	int do_operator_discard (
+	virtual int do_operator_discard (
 			wpl_expression_state *exp_state,
 			wpl_value *discarded,
 			wpl_value *final_result
@@ -185,7 +187,7 @@ class wpl_value : public wpl_suicidal {
 			wpl_value *final_result
 	);
 
-	int do_regex (
+	virtual int do_regex (
 			wpl_expression_state *exp_state,
 			wpl_value *final_result,
 			const struct wpl_operator_struct *op,
@@ -222,9 +224,9 @@ class wpl_value : public wpl_suicidal {
 		return WPL_OP_UNKNOWN;
 	}
 
-	virtual wpl_value *resolve (wpl_namespace_session *nss) {
+/*	virtual wpl_value *resolve (wpl_namespace_session *nss) {
 		return this;
-	}
+	}*/
 
 	virtual void output_json(wpl_io &io) {
 		cerr << "In value output_json() of type '" << get_type_name() << "':\n";
@@ -235,7 +237,7 @@ class wpl_value : public wpl_suicidal {
 		throw runtime_error ("Cannot output this type");
 	}
 
-	virtual wpl_value *next() { throw runtime_error ("Cannot iterate with next() on this type"); }
+//	virtual wpl_value *next() { throw runtime_error ("Cannot iterate with next() on this type"); }
 /*	virtual void push(wpl_value *value) {
 		unique_ptr<wpl_value> value_ptr(value);
 		set_weak (value);
@@ -276,9 +278,9 @@ class wpl_value : public wpl_suicidal {
 		return false;
 	}
 
-	virtual bool isUnresolved() const {
+/*	virtual bool isUnresolved() const {
 		return false;
-	}
+	}*/
 
 	virtual int finalize_expression(wpl_expression_state *exp_state, wpl_value *last_value) {
 		if (flags & wpl_value_do_finalize) {

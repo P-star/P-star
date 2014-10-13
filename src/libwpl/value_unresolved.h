@@ -66,7 +66,7 @@ class wpl_value_unresolved_identifier : public wpl_value_strings<string> {
 			wpl_value *final_result
 			) override;
 
-	wpl_value *resolve(wpl_namespace_session *nss) override;
+/*	wpl_value *resolve(wpl_namespace_session *nss) override;*/
 
 	void output(wpl_io &io) override {
 		cerr << "In output() of unresolved identifier '" << value << "':\n";
@@ -77,8 +77,8 @@ class wpl_value_unresolved_identifier : public wpl_value_strings<string> {
 		return value;
 	}
 
-	bool isUnresolved() const override {
+/*	bool isUnresolved() const override {
 		return true;
-	}
+	}*/
 };
 

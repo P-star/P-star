@@ -111,7 +111,6 @@ void wpl_program::parse_file (const char *filename) {
 int wpl_program::run(wpl_io &io) {
 	int ret;
 	wpl_value *value;
-	wpl_value_return retval;
 	wpl_namespace_session nss;
 	copy_variables_to_namespace_session (&nss);
 

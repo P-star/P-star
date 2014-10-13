@@ -34,6 +34,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "expression_state.h"
 #include "operator.h"
 
+/*
 wpl_value_return::~wpl_value_return() {
 #ifdef WPL_DEBUG_DESTRUCTION
 	DBG("VR (" << this << "): Destructing return value, no delete is " << do_delete << endl);
@@ -50,7 +51,6 @@ wpl_value *wpl_value_return::iterate() {
 	}
 	return value->next();
 }
-
 void wpl_value_return::set(wpl_value *new_value, int flags) {
 	if (value && do_delete) {
 		value->suicide();
@@ -70,7 +70,7 @@ int wpl_value_return::run(wpl_value **final_result) {
 		return WPL_OP_NO_RETURN;
 	}
 }
-
+*/
 void wpl_value::invalidate_pointers() {
 	for (auto ptr : pointers) {
 		ptr->value_dies_now();
