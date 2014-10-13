@@ -46,6 +46,7 @@ const char *wpl_typename_class = "class";
 const char *wpl_typename_array = "array";
 const char *wpl_typename_pointer = "pointer";
 const char *wpl_typename_hash = "hash";
+const char *wpl_typename_auto = "auto";
 
 const char *wpl_typename_env = "ENV";
 const char *wpl_typename_get = "GET";
@@ -99,6 +100,7 @@ DEFINE_TYPE(stdin);
 #endif
 DEFINE_TYPE(time);
 DEFINE_TYPE(line);
+DEFINE_TYPE(auto);
 
 #include "value_void.h"
 #include "value_string.h"
@@ -116,6 +118,7 @@ DEFINE_TYPE(line);
 #include "value_stdin.h"
 #include "value_time.h"
 #include "value_line.h"
+#include "value_auto.h"
 
 #define NEW_INSTANCE(name,default_value)			\
 wpl_value *wpl_type_##name::new_instance() const {		\
@@ -139,6 +142,7 @@ NEW_INSTANCE(stdin,0)
 #endif
 NEW_INSTANCE(time,0)
 NEW_INSTANCE(line,0)
+NEW_INSTANCE(auto,0)
 
 wpl_value *wpl_type_void::new_instance() const {
 	return new wpl_value_void();
@@ -175,6 +179,7 @@ void wpl_types_add_all_to_namespace(wpl_namespace *name_space) {
 	REGISTER_TYPE(array);
 	REGISTER_TYPE(pointer);
 	REGISTER_TYPE(hash);
+	REGISTER_TYPE(auto);
 
 	wpl_type_file_register(name_space);
 }

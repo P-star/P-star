@@ -43,14 +43,15 @@ void wpl_value_struct::output_json(wpl_io &io) {
 }
 
 bool wpl_value_struct::set_strong (wpl_value *value) {
+	/* This is important to unmask the auto-type */
 	value = value->dereference();
 
-	if (!value->isStruct()) {
+	wpl_value_struct *struct_value =
+		dynamic_cast<wpl_value_struct*>(value);
+
+	if (!struct_value) {
 		return false;
 	}
-
-	wpl_value_struct *struct_value =
-		static_cast<wpl_value_struct*>(value);
 
 	if (mother_struct != struct_value->get_mother_struct()) {
 		return false;

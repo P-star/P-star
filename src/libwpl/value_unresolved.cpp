@@ -33,14 +33,14 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 
-wpl_value *wpl_value_unresolved_identifier::resolve(wpl_namespace_session *nss) {
+/*wpl_value *wpl_value_unresolved_identifier::resolve(wpl_namespace_session *nss) {
 	cout << "Resolve identifier " << value << "\n";
 	if (wpl_variable *variable = nss->find_variable(value.c_str(), WPL_NSS_CTX_SELF)) {
 		return variable->get_value();
 	}
 	cerr << "While resolving name '" << value << "':\n";
 	throw runtime_error("Could not resolve name");
-}
+}*/
 
 int wpl_value_unresolved_identifier::do_fastop (
 		wpl_expression_state *exp_state,

@@ -61,4 +61,5 @@ extern const char *wpl_typename_stdin;
 extern const char *wpl_typename_time;
 extern const char *wpl_typename_file;
 extern const char *wpl_typename_line;
+extern const char *wpl_typename_auto;
 
