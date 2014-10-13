@@ -44,7 +44,7 @@ wpl_type_complete *wpl_namespace::add_unique_complete_type (shared_ptr<wpl_type_
 	wpl_type_complete *complete_type;
 
 	/* Add all complete types to the top namespace */
-	if (parent_namespace) {
+	if (!is_toplevel && parent_namespace) {
 		complete_type = parent_namespace->add_unique_complete_type(type);
 	}
 	else if (!(complete_type = find_complete_type(type.get()))) {
@@ -78,7 +78,7 @@ void  wpl_namespace::add_type (wpl_type_incomplete *type) {
 
 void wpl_namespace::new_register_parseable (wpl_parseable *parseable) {
 	if (new_find_parseable_no_parent (parseable->get_name())) {
-		throw wpl_exception_name_exists();
+		throw wpl_exception_name_exists(parseable->get_name());
 	}
 	new_parseables.push_back(parseable);
 }
