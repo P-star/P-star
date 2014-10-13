@@ -184,6 +184,14 @@ div#body {
 	border-radius: 20px;
 }
 
+div#followbox {
+	float: right;
+}
+
+div#followbox > div {
+	padding-bottom: 1em;
+	clear: both;
+}
 div#foot {
 	margin-top: 10px;
 	border: 1px solid #000;

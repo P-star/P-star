@@ -1,7 +1,7 @@
 #!/usr/bin/wpl -f
 
 HTML_TEMPLATE body {
-	<div id="fb-root"></div>
+	<div id="followbox">
 	<script>(function(d, s, id) {
 	  var js, fjs = d.getElementsByTagName(s)[0];
 	  if (d.getElementById(id)) return;
@@ -9,10 +9,9 @@ HTML_TEMPLATE body {
 	  js.src = "//connect.facebook.net/nb_NO/all.js#xfbml=1";
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));</script>
-	<div style="float: right">
-		<div class="g-follow" data-annotation="bubble" data-height="20" data-href="//plus.google.com/105062947022242379130" data-rel="publisher"></div>
-		<div class="fb-like" data-href="https://www.facebook.com/PStarOrg" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-	</div>
+	<div class="g-follow" data-annotation="bubble" data-height="20" data-href="//plus.google.com/105062947022242379130" data-rel="publisher"></div>
+	<div style="clear: both"></div>
+	<div class="fb-like" data-href="https://www.facebook.com/PStarOrg" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
 	<script type="text/javascript">
 	  (function() {
 	    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
@@ -20,6 +19,9 @@ HTML_TEMPLATE body {
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
 	  })();
 	</script>
+	<div><a href="https://twitter.com/PStarWPL" class="twitter-follow-button" data-show-count="false">Follow @PStarWPL</a></div>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+	</div>
 }
 
 HTML_TEMPLATE home {
@@ -74,7 +76,6 @@ HTML_TEMPLATE development {
 	<img style="float: right" width="120px" src="patch.svg" />
 	<p>The P* language is still under development, but it already supports many features. <b>Help is needed to develop P* further.</b> If you have experience with C++ and/or web design, don't hesitate to say hello on one of the mailing lists or contact the author at <a href="mailto:atle@goliathdns.no">atle@goliathdns.no</a></p>
 	<p>Checkout the latest source code on the <a href="https://github.com/P-star/P-star">P* GitHub repository</a>. Maybe you can find an <a href="https://github.com/P-star/P-star/issues">issue</a> there to work on?</p>
-	<div style="clear: both"></div>
 	</div>
 }
 

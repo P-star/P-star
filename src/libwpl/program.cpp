@@ -61,12 +61,23 @@ wpl_program::wpl_program(wpl_io &io, int argc, char **argv) :
 	}
 #endif /* WIN32 */
 
+	wpl_namespace::set_toplevel();
+
 	wpl_types_add_all_to_namespace(this);
 	wpl_pragma_add_all_to_namespace(this);
 
 	wpl_type_complete *argv_type = wpl_type_global_array->new_instance(wpl_type_global_string);
 	add_managed_pointer (argv_type);
-	new_register_parseable (argv_type);
+	try {
+		new_register_parseable (argv_type);
+	}
+	catch (wpl_exception_name_exists &e) {
+		ostringstream msg;
+		msg << "While registering ARGV type with name " <<
+			e.get_name() <<
+			" in namesapce: Name already defined\n";
+		throw runtime_error(msg.str());
+	}
 	add_type (argv_type);
 
 	unique_ptr<wpl_value_array> val_argv (

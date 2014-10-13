@@ -115,7 +115,18 @@ wpl_type_complete *wpl_type_template::register_unique_complete_type (
 ) {
 	shared_ptr<wpl_type_complete> new_type(new_instance(type));
 
-	return parent_namespace->add_unique_complete_type(new_type);
+	try {
+		return parent_namespace->add_unique_complete_type(new_type);
+	}
+	catch (wpl_exception_name_exists &e) {
+		ostringstream msg;
+		msg << "While registering type '" <<
+		type->get_name() <<
+		"' into namespace: Name collision with another type also called '" <<
+		e.get_name() <<
+		"'. Maybe you have defined two structs with the same name?\n";
+		THROW_ELEMENT_EXCEPTION(msg.str());
+	}
 }
 
 bool wpl_type_complete_template::check_type (const wpl_type_complete *type) const {

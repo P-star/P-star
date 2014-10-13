@@ -52,12 +52,28 @@ class wpl_scene;
 class wpl_pragma;
 
 class wpl_type_template;
-class wpl_exception_name_exists {};
+class wpl_exception_name_exists {
+	private:
+	string name;
+	public:
+	wpl_exception_name_exists (string name) :
+		name(name)
+	{}
+	string get_name() {
+		return name;
+	}
+};
 
 class wpl_namespace {
 	private:
 
 	int id;
+
+	/*
+   	  When set to true, new template types are added here. This is
+	  to prevent types from being added to namespace of loadable modules.
+	*/
+	bool is_toplevel = false;
 
 	list<shared_ptr<wpl_identifier>> managed_pointers;
 
@@ -96,6 +112,11 @@ class wpl_namespace {
 
 	wpl_identifier *find_identifier_no_parent(const char *name);
 //	wpl_identifier *find_identifier(const char *name);
+
+	protected:
+	void set_toplevel() {
+		is_toplevel = true;
+	}
 
 	public:
 	wpl_namespace() {
