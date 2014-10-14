@@ -743,158 +743,171 @@ Float result: 11.500000
 				</thead>
 				<tbody>
 					<row>
-						<entry morerows="8">2</entry>
+						<entry morerows="5">1</entry>
 						<entry>()</entry>
 						<entry>Function call</entry>
 						<entry>Left or none</entry>
-						<entry>call(2,3) (expands to call 2, 3 ())</entry>
+						<entry><code>call(2,3)</code> (expands to call 2, 3 ())</entry>
 					</row>
 					<row>
 						<entry>[]</entry>
 						<entry>Array subscription (hashes and arrays)</entry>
-						<entry morerows="3">Left</entry>
-						<entry>my_array[2] (expands to my_array 2 [])</entry>
+						<entry morerows="1">Left</entry>
+						<entry><code>my_array[2]</code> (expands to my_array 2 [])</entry>
 					</row>
 					<row>
 						<entry>-&gt;</entry>
 						<entry>Element selection (structs and classes)</entry>
-						<entry>my_struct-&gt;variable (expands to my_struct variable -&gt;)</entry>
+						<entry><code>my_struct-&gt;variable</code> (expands to my_struct variable -&gt;)</entry>
 					</row>
 					<row>
+						<entry>*</entry>
+						<entry>Indirection - Return the value of a pointer</entry>
+						<entry morerows="2">Right</entry>
+						<entry><code>*my_pointer</code></entry>
+					</row>
+					<row>
+						<entry>*</entry>
+						<entry>First element selector - Returns first element of an array, same as [0]</entry>
+						<entry><code>*my_array</code></entry>
+					</row>
+					<row>
+						<entry>&amp;</entry>
+						<entry>Pointer To - Returns a pointer to a value</entry>
+						<entry><code>&amp;my_value</code></entry>
+					</row>
+					<row>
+						<entry morerows="4">2</entry>
 						<entry>++</entry>
 						<entry>Postfix increment</entry>
-						<entry>i++</entry>
+						<entry morerows="1">Left</entry>
+						<entry><code>i++</code></entry>
 					</row>
 					<row>
 						<entry>--</entry>
 						<entry>Postfix decrement</entry>
-						<entry>i--</entry>
-					</row>
-					<row>
-						<entry>*</entry>
-						<entry>First element selector (arrays)</entry>
-						<entry morerows="3">Right</entry>
-						<entry>*my_array</entry>
+						<entry><code>i--</code></entry>
 					</row>
 					<row>
 						<entry>@</entry>
 						<entry>Element counter (arrays and hashes)</entry>
-						<entry>@my_array</entry>
+						<entry morerows="2">Right</entry>
+						<entry><code>@my_array</code></entry>
 					</row>
 					<row>
 						<entry>isempty</entry>
 						<entry>Empty check logic (strings)</entry>
-						<entry>isempty my_string</entry>
+						<entry><code>isempty my_string</code></entry>
 					</row>
 					<row>
 						<entry>defined</entry>
-						<entry>Check if array element is defined</entry>
-						<entry>defined my_array[2]</entry>
+						<entry>Check if array, hash or ENV element is defined</entry>
+						<entry><code>defined my_array[2]</code></entry>
 					</row>
 					<row>
 						<entry morerows="3">3</entry>
 						<entry>++</entry>
 						<entry>Prefix increment</entry>
 						<entry morerows="3">Right</entry>
-						<entry>++i</entry>
+						<entry><code>++i</code></entry>
 					</row>
 					<row>
 						<entry>--</entry>
 						<entry>Prefix decrement</entry>
-						<entry>--i</entry>
+						<entry><code>--i</code></entry>
 					</row>
 					<row>
 						<entry>~</entry>
 						<entry>Bitwise not</entry>
-						<entry>~invert_this</entry>
+						<entry><code>~invert_this</code></entry>
 					</row>
 					<row>
 						<entry>!</entry>
 						<entry>Logical not</entry>
-						<entry>!var</entry>
+						<entry><code>!var</code></entry>
 					</row>
 					<row>
 						<entry morerows="1">4</entry>
 						<entry>=~</entry>
 						<entry>Pattern match</entry>
 						<entry morerows="1">Left</entry>
-						<entry>a =~ /regular expression/</entry>
+						<entry><code>a =~ /regular expression/</code></entry>
 					</row>
 					<row>
 						<entry>!~</entry>
 						<entry>Pattern negative match</entry>
-						<entry>a !~ /regular expression/</entry>
+						<entry><code>a !~ /regular expression/</code></entry>
 					</row>
 					<row>
 						<entry morerows="2">5</entry>
 						<entry>*</entry>
 						<entry>Multiplication</entry>
 						<entry morerows="5">Left</entry>
-						<entry>a*b</entry>
+						<entry><code>a*b</code></entry>
 					</row>
 					<row>
 						<entry>/</entry>
 						<entry>Division</entry>
-						<entry>a/b</entry>
+						<entry><code>dividend / divisor</code></entry>
 					</row>
 					<row>
 						<entry>%</entry>
 						<entry>Modulus</entry>
-						<entry>a%b</entry>
+						<entry><code>dividend % divisor</code></entry>
 					</row>
 					<row>
 						<entry morerows="2">6</entry>
 						<entry>+</entry>
 						<entry>Sum</entry>
-						<entry>a+b</entry>
+						<entry><code>number_a + number_b</code></entry>
 					</row>
 					<row>
 						<entry>-</entry>
 						<entry>Subtraction</entry>
-						<entry>a-b</entry>
+						<entry><code>number_a - number_b</code></entry>
 					</row>
 					<row>
 						<entry>.</entry>
 						<entry>String concatenation</entry>
-						<entry>a . b</entry>
+						<entry><code>string_a . string_b</code></entry>
 					</row>
 					<row>
 						<entry morerows="1">7</entry>
 						<entry>&lt;&lt;</entry>
 						<entry>Left bitshift</entry>
 						<entry morerows="1">Left</entry>
-						<entry>a &lt;&lt; 1</entry>
+						<entry><code>a &lt;&lt; 1</code></entry>
 					</row>
 					<row>
 						<entry>&gt;&gt;</entry>
 						<entry>Right bitshift</entry>
-						<entry>a &gt;&gt; 1</entry>
+						<entry><code>a &gt;&gt; 1</code></entry>
 					</row>
 					<row>
 						<entry>8</entry>
 						<entry>&amp;</entry>
 						<entry>Bitwise AND</entry>
 						<entry morerows="2">Left</entry>
-						<entry>a &amp; b</entry>
+						<entry><code>a &amp; b</code></entry>
 					</row>
 					<row>
 						<entry>9</entry>
 						<entry>^</entry>
 						<entry>Bitwise XOR</entry>
-						<entry>a ^ b</entry>
+						<entry><code>a ^ b</code></entry>
 					</row>
 					<row>
 						<entry>10</entry>
 						<entry>|</entry>
 						<entry>Bitwise OR</entry>
-						<entry>a | b</entry>
+						<entry><code>a | b</code></entry>
 					</row>
 					<row>
 						<entry morerows="3">11</entry>
 						<entry>&lt;=</entry>
 						<entry>Logical less than or equal</entry>
 						<entry morerows="5">Left</entry>
-						<entry>a &lt;= b</entry>
+						<entry><code>a &lt;= b</code></entry>
 					</row>
 					<row>
 						<entry>&gt;=</entry>
@@ -904,154 +917,154 @@ Float result: 11.500000
 					<row>
 						<entry>&lt;</entry>
 						<entry>Logical less than</entry>
-						<entry>a &lt; b</entry>
+						<entry><code>a &lt; b</code></entry>
 					</row>
 					<row>
 						<entry>&gt;</entry>
 						<entry>Logical more than</entry>
-						<entry>a &gt; b</entry>
+						<entry><code>a &gt; b</code></entry>
 					</row>
 					<row>
 						<entry morerows="1">12</entry>
 						<entry>==</entry>
 						<entry>Logical equal</entry>
-						<entry>a == b</entry>
+						<entry><code>a == b</code></entry>
 					</row>
 					<row>
 						<entry>!=</entry>
 						<entry>Logical not equal</entry>
-						<entry>a != b</entry>
+						<entry><code>a != b</code></entry>
 					</row>
 					<row>
 						<entry>13</entry>
 						<entry>&amp;&amp;</entry>
 						<entry>Logical AND</entry>
 						<entry morerows="1">Left</entry>
-						<entry>a &amp;&amp; b</entry>
+						<entry><code>a &amp;&amp; b</code></entry>
 					</row>
 					<row>
 						<entry>14</entry>
 						<entry>||</entry>
 						<entry>Logical OR</entry>
-						<entry>a || b</entry>
+						<entry><code>a || b</code></entry>
 					</row>
 					<row>
 						<entry morerows="1">15</entry>
 						<entry>=></entry>
 						<entry>Push discard chain to array</entry>
 						<entry morerows="1">Right</entry>
-						<entry>10, 20, 30 => my_array</entry>
+						<entry><code>10, 20, 30 => my_array</code></entry>
 					</row>
 					<row>
 						<entry>==></entry>
-						<entry>Same as =>, but clear array first</entry>
-						<entry>10, 20, 30 ==> my_array</entry>
+						<entry>Same as =>, but clears array first</entry>
+						<entry><code>10, 20, 30 ==> my_array</code></entry>
 					</row>
 					<row>
 						<entry morerows="11">16</entry>
 						<entry>=</entry>
 						<entry>Assign</entry>
-						<entry morerows="11">Left</entry>
-						<entry>a = b</entry>
+						<entry morerows="11">Right</entry>
+						<entry><code>a = b</code></entry>
 					</row>
 					<row>
 						<entry>+=</entry>
 						<entry>Assign by sum</entry>
-						<entry>a += b</entry>
+						<entry><code>a += b</code></entry>
 					</row>
 					<row>
 						<entry>-=</entry>
 						<entry>Assign by difference</entry>
-						<entry>a -= b</entry>
+						<entry><code>a -= b</code></entry>
 					</row>
 					<row>
 						<entry>*=</entry>
 						<entry>Assign by product</entry>
-						<entry>a *= b</entry>
+						<entry><code>a *= b</code></entry>
 					</row>
 					<row>
 						<entry>/=</entry>
 						<entry>Assign by quotient</entry>
-						<entry>a /= b</entry>
+						<entry><code>a /= b</code></entry>
 					</row>
 					<row>
 						<entry>%=</entry>
 						<entry>Assign by remainder</entry>
-						<entry>a %= b</entry>
+						<entry><code>a %= b</code></entry>
 					</row>
 					<row>
 						<entry>&amp;=</entry>
 						<entry>Assign by bitwise AND</entry>
-						<entry>a &amp;= b</entry>
+						<entry><code>a &amp;= b</code></entry>
 					</row>
 					<row>
 						<entry>^=</entry>
 						<entry>Assign by bitwise XOR</entry>
-						<entry>a ^= b</entry>
+						<entry><code>a ^= b</code></entry>
 					</row>
 					<row>
 						<entry>|=</entry>
 						<entry>Assign by bitwise OR</entry>
-						<entry>a |= b</entry>
+						<entry><code>a |= b</code></entry>
 					</row>
 					<row>
 						<entry>&lt;&lt;=</entry>
 						<entry>Assign by bitwise left shift</entry>
-						<entry>a &lt;&lt;= b</entry>
+						<entry><code>a &lt;&lt;= b</code></entry>
 					</row>
 					<row>
 						<entry>&gt;&gt;=</entry>
 						<entry>Assign by bitwise right shift</entry>
-						<entry>a &gt;&gt;= b</entry>
+						<entry><code>a &gt;&gt;= b</code></entry>
 					</row>
 					<row>
 						<entry>.=</entry>
 						<entry>Append to string</entry>
-						<entry>a .= b</entry>
+						<entry><code>a .= b</code></entry>
 					</row>
 					<row>
 						<entry morerows="1">17</entry>
 						<entry>..</entry>
 						<entry>Range operator inclusive</entry>
 						<entry morerows="1">Left</entry>
-						<entry>foreach (i; 0..10) { /* Loops 0 through 10 */ }</entry>
+						<entry><code>foreach (i; 0..10) { /* Loops 0 through 10 */ }</code></entry>
 					</row>
 					<row>
 						<entry>...</entry>
 						<entry>Range operator exclusive</entry>
-						<entry>foreach (i; 0..10) { /* Loops 1 through 9 */ }</entry>
+						<entry><code>foreach (i; 0..10) { /* Loops 1 through 9 */ }</code></entry>
 					</row>
 					<row>
 						<entry>18</entry>
 						<entry>,</entry>
 						<entry>Discard operator (comma)</entry>
 						<entry>Left</entry>
-						<entry>a, b</entry>
+						<entry><code>a, b</code></entry>
 					</row>
 					<row>
 						<entry morerows="1">19</entry>
 						<entry>echo</entry>
 						<entry>Write expression to standard output</entry>
 						<entry morerows="1">Right</entry>
-						<entry>echo "Hello world!"</entry>
+						<entry><code>echo "Hello world!"</code></entry>
 					</row>
 					<row>
 						<entry>errcho</entry>
 						<entry>Write expression to standard error</entry>
-						<entry>errcho "This is an error message"</entry>
+						<entry><code>errcho "This is an error message"</code></entry>
 					</row>
 					<row>
 						<entry morerows="1">20</entry>
 						<entry>break</entry>
 						<entry>Break out from nearest loop</entry>
 						<entry>None</entry>
-						<entry>break</entry>
+						<entry><code>break</code></entry>
 					</row>
 					<row>
 						<entry>return</entry>
 						<entry>Return from nearest function</entry>
-						<entry>Right</entry>
-						<entry>return 1</entry>
+						<entry>Right or none</entry>
+						<entry><code>return 1</code></entry>
 					</row>
 				</tbody>
 				</tgroup>

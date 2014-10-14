@@ -1,4 +1,9 @@
 SCENE main {
 	ENV env;
-	echo "The current path is '" . env->PATH . "'\n";
+	if (!defined env->BLABLABLA) {
+		echo "Strange environment variable is not set\n";
+	}
+	if (defined env->PATH) {
+		echo "The current path is '" . env->PATH . "'\n";
+	}
 }

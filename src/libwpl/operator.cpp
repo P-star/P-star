@@ -47,19 +47,20 @@ wpl_runable_operator *wpl_operator_struct::new_runable (
 	throw runtime_error("Runable not provided by this operator");
 }
 
-const wpl_operator_struct OP_PAR_OPEN("(", 2, WPL_OP_F_NONE, 1);
-const wpl_operator_struct OP_PAR_CLOSE(")", 2, WPL_OP_F_NONE, 1);
+const wpl_operator_struct OP_PAR_OPEN("(", 0, WPL_OP_F_NONE, 1);
+const wpl_operator_struct OP_PAR_CLOSE(")", 0, WPL_OP_F_NONE, 1);
 
-const wpl_operator_struct OP_BRACK_OPEN("[", 2, WPL_OP_F_NONE, 1);
-const wpl_operator_struct OP_BRACK_CLOSE("]", 2, WPL_OP_F_NONE, 1);
+const wpl_operator_struct OP_BRACK_OPEN("[", 0, WPL_OP_F_NONE, 1);
+const wpl_operator_struct OP_BRACK_CLOSE("]", 0, WPL_OP_F_NONE, 1);
 
-const wpl_operator_struct OP_FUNCTION_CALL("()", 2, WPL_OP_F_LEFT_BOTH_BIG|WPL_OP_F_OPTIONAL_LHS|WPL_OP_F_OPTIONAL_RHS, 2);
-const wpl_operator_struct OP_ARRAY_SUBSCRIPTING("[]", 2, WPL_OP_F_LEFT_BOTH_BIG, 2);
-const wpl_operator_struct OP_ELEMENT("->", 2, WPL_OP_F_LEFT_BOTH_BIG, 2);
+const wpl_operator_struct OP_FUNCTION_CALL("()", 1, WPL_OP_F_LEFT_BOTH_BIG|WPL_OP_F_OPTIONAL_LHS|WPL_OP_F_OPTIONAL_RHS, 2);
+const wpl_operator_struct OP_ARRAY_SUBSCRIPTING("[]", 1, WPL_OP_F_LEFT_BOTH_BIG, 2);
+const wpl_operator_struct OP_ELEMENT("->", 1, WPL_OP_F_LEFT_BOTH_BIG, 2);
+
+const wpl_operator_struct OP_INDIRECTION("*", 1, WPL_OP_F_RIGHT_ONE_BIG, 1);
+const wpl_operator_struct OP_POINTERTO("&", 1, WPL_OP_F_RIGHT_ONE_BIG, 1);
 
 const wpl_operator_struct OP_COUNT("@", 2, WPL_OP_F_RIGHT_ONE_BIG, 1);
-const wpl_operator_struct OP_INDIRECTION("*", 2, WPL_OP_F_RIGHT_ONE_BIG, 1);
-const wpl_operator_struct OP_POINTERTO("&", 2, WPL_OP_F_RIGHT_ONE_BIG, 1);
 const wpl_operator_struct OP_IS_EMPTY("isempty", 2, WPL_OP_F_RIGHT_ONE_BIG, 7);
 const wpl_operator_struct OP_DEFINED("defined", 2, WPL_OP_F_RIGHT_ONE_BIG, 7);
 
