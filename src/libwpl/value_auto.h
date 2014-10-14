@@ -53,7 +53,6 @@ class wpl_value_auto : public wpl_value {
 
 	inline void check_empty() {
 		if (!my_value.get()) {
-			int a = 2 / 0;
 			throw runtime_error("Attempted to use auto-type before it was set to a value");
 		}
 	}

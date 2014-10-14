@@ -60,6 +60,10 @@ class wpl_value_time : public wpl_value, public wpl_time, public wpl_parasite_ho
 		return get_is_set();
 	}
 
+	int toInt() override {
+		return get_time();
+	}
+
 	int do_operator (
 			wpl_expression_state *exp_state,
 			wpl_value *final_result,
