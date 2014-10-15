@@ -28,7 +28,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "debug.h"
 #include "identifier.h"
 #include "exception.h"
 #include "variable.h"

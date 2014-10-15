@@ -29,7 +29,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "expression.h"
 #include "expression_state.h"
 #include "exception.h"
-#include "blocks.h"
 #include "string.h"
 #include "function.h"
 #include "operator.h"

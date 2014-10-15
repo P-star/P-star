@@ -157,7 +157,6 @@ class wpl_block_state : public wpl_namespace_session, public wpl_state {
 		wpl_state(parent, io)
 	{}
 
-	void clear_child_states();
 	int run_child (wpl_runable *child, int index, wpl_value *final_result);
 	void reset() override;
 };

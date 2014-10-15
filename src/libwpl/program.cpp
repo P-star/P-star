@@ -27,15 +27,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "program.h"
-#include "parser.h"
-#include "pragma.h"
-#include "types.h"
-#include "value.h"
 #include "value_array.h"
 #include "value_string.h"
 #include "value_int.h"
-#include "namespace_session.h"
-#include "io.h"
 
 #include <utility>
 #include <memory>
@@ -46,6 +40,9 @@ static bool initialized = false;
 #ifndef WIN32
 static list<wpl_module_loader> modules;
 #endif
+
+// From pragma.cpp
+void wpl_pragma_add_all_to_namespace(wpl_namespace *ns);
 
 wpl_program::wpl_program(wpl_io &io, int argc, char **argv) :
 	parser(io, 0)

@@ -83,12 +83,3 @@ void wpl_block_state::reset() {
 		wpl_namespace_session::reset_variables();
 	}
 }
-
-void wpl_block_state::clear_child_states() {
-	for (int i = 0; i < WPL_BLOCK_MAX_CHILDREN; i++) {
-		if (child_states[i].get() == nullptr) {
-			break;
-		}
-		child_states[i].reset(nullptr);
-	}
-}
