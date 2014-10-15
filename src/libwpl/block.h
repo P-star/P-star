@@ -75,10 +75,6 @@ class wpl_block : public wpl_runable, public wpl_namespace, public wpl_matcher {
 
 	int run_children(wpl_block_state *block_state, wpl_value *final_result);
 
-	protected:
-	bool check_run(wpl_block_state *block_state);
-	wpl_expression *run_condition;
-
 	public:
 	wpl_block();
 	virtual ~wpl_block();
@@ -88,9 +84,4 @@ class wpl_block : public wpl_runable, public wpl_namespace, public wpl_matcher {
 	int run (wpl_state *state, wpl_value *final_result);
 
 	void parse_value(wpl_namespace *ns);
-
-	void set_run_condition(wpl_expression *exp) {
-		run_condition = exp;
-	}
 };
-

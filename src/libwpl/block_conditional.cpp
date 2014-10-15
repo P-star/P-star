@@ -26,21 +26,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#pragma once
-
 #include "block_conditional.h"
+#include "value_bool.h"
 
-class wpl_io;
-class wpl_value;
-class wpl_state;
-class wpl_namespace;
-class wpl_namespace_session;
+bool wpl_block_conditional::check_run(wpl_block_conditional_state *block_state) {
+	wpl_value_bool return_value;
+	return_value.set_do_finalize();
 
-class wpl_block_while : public wpl_block_conditional {
-	private:
-
-	public:
-	wpl_state *new_state (wpl_namespace_session *nss, wpl_io *io) override;
-	void parse_value(wpl_namespace *ns);
-	int run(wpl_state *state, wpl_value *final_result) override;
-};
+	int ret = block_state->run_condition(run_condition.get(), &return_value);
+	return ret & WPL_OP_OK && return_value.get();
+}

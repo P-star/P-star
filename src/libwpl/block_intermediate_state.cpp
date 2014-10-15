@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII-MMXIV Atle Solbakken
+Copyright (c) MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -26,21 +26,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#pragma once
+#include "block_intermediate_state.h"
+#include "runable.h"
 
-#include "block_conditional.h"
-
-class wpl_io;
-class wpl_value;
-class wpl_state;
-class wpl_namespace;
-class wpl_namespace_session;
-
-class wpl_block_while : public wpl_block_conditional {
-	private:
-
-	public:
-	wpl_state *new_state (wpl_namespace_session *nss, wpl_io *io) override;
-	void parse_value(wpl_namespace *ns);
-	int run(wpl_state *state, wpl_value *final_result) override;
-};
+int wpl_block_intermediate_state::run_runable(wpl_runable *runable, wpl_value *final_result) {
+	if (!runable_state.get()) {
+		runable_state.reset(runable->new_state(this, io));
+	}
+	return runable->run(runable_state.get(), final_result);
+}

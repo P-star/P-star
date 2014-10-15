@@ -28,24 +28,33 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "block_conditional.h"
-#include "expression.h"
+#include "block_intermediate_state.h"
+#include "namespace.h"
+#include "runable.h"
 
 #include <memory>
 
-class wpl_io;
-class wpl_value;
-class wpl_state;
-class wpl_namespace;
-class wpl_namespace_session;
+/**
+ * @brief This class is an intermediate namespace between conditional blocks like if and while and the blocks where they are defined to hold namespace for variables declared in the condition statement.
+ */
+class wpl_block_intermediate : public wpl_namespace, public wpl_runable {
+	private:
+	unique_ptr<wpl_runable> runable;
 
-class wpl_block_foreach : public wpl_block_conditional {
 	protected:
-	unique_ptr<wpl_expression> exp_init;
+	void set_runable(wpl_runable *runable) {
+		this->runable.reset(runable);
+	}
 
 	public:
-	virtual ~wpl_block_foreach() {}
-	wpl_state *new_state (wpl_namespace_session *nss, wpl_io *io) override;
-	void parse_value(wpl_namespace *ns);
-	int run(wpl_state *state, wpl_value *final_result) override;
+	virtual ~wpl_block_intermediate() {}
+	virtual int run (wpl_state *state, wpl_value *final_result) override {
+		wpl_block_intermediate_state *my_state =
+			(wpl_block_intermediate_state*) state;
+
+		return my_state->run_runable(runable.get(), final_result);
+	}
+	virtual wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) override {
+		return new wpl_block_intermediate_state(nss, io, this);
+	}
 };

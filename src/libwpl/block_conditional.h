@@ -28,19 +28,17 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "block_conditional.h"
+#include "block_intermediate.h"
+#include "matcher.h"
+#include <memory>
 
-class wpl_io;
-class wpl_value;
-class wpl_state;
-class wpl_namespace;
-class wpl_namespace_session;
+class wpl_block_conditional_state;
 
-class wpl_block_while : public wpl_block_conditional {
-	private:
+class wpl_block_conditional : public wpl_block_intermediate, public wpl_matcher {
+	protected:
+	unique_ptr<wpl_runable> run_condition;
+	bool check_run(wpl_block_conditional_state *block_state);
 
 	public:
-	wpl_state *new_state (wpl_namespace_session *nss, wpl_io *io) override;
-	void parse_value(wpl_namespace *ns);
-	int run(wpl_state *state, wpl_value *final_result) override;
+	virtual ~wpl_block_conditional() {}
 };

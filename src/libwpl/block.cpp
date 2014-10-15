@@ -39,9 +39,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "block_while.h"
 #include "block_for.h"
 #include "block_foreach.h"
+#include "block_intermediate.h"
 #include "pragma.h"
 #include "text.h"
-#include "value_bool.h"
 #include "parseable.h"
 
 #include "modifier.h"
@@ -53,7 +53,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 wpl_block::wpl_block() {
-	run_condition = NULL;
 	wpl_modifier_add_all_to_namespace(this);
 }
 
@@ -61,9 +60,6 @@ wpl_block::~wpl_block() {
 #ifdef WPL_DEBUG_DESTRUCTION
 	DBG("B (" << this << "): Destructing wpl_block\n");
 #endif
-	if (run_condition) {
-		delete run_condition;
-	}
 }
 
 wpl_state *wpl_block::new_state(wpl_namespace_session *nss, wpl_io *io) {
@@ -123,7 +119,6 @@ void wpl_block::parse_pragma (wpl_namespace *ns) {
 void wpl_block::parse_foreach(wpl_namespace *ns) {
 	wpl_block_foreach *block = new wpl_block_foreach();
 	append_child(block);
-
 	block->load_position(get_position());
 	block->parse_value(ns);
 	load_position(block->get_position());
@@ -142,86 +137,18 @@ void wpl_block::parse_while(wpl_namespace *ns) {
 	wpl_block_while *block = new wpl_block_while();
 	append_child(block);
 
-	wpl_expression *exp = new wpl_expression_par_enclosed();
-	block->set_run_condition(exp);
-
-	exp->load_position(get_position());
-	exp->parse_value(ns);
-	load_position(exp->get_position());
-
-	ignore_blockstart();
-
-	block->set_parent_namespace(ns);
 	block->load_position(get_position());
-	block->parse_value(block);
+	block->parse_value(ns);
 	load_position(block->get_position());
 }
 
 void wpl_block::parse_if_else_sequenze(wpl_namespace *ns) {
-#ifdef WPL_DEBUG_BLOCKS
-	DBG("B (" << this << "): Parse if-else-seq\n");
-#endif
-	wpl_block_if *block;
-	wpl_expression_par_enclosed *exp; 
+	wpl_block_if *block = new wpl_block_if(wpl_block_if::F_IF);
+	append_child(block);
 
-	block = new wpl_block_if();
-	append_child (block);
-
-	exp = new wpl_expression_par_enclosed();
-	block->set_run_condition(exp);
-
-	exp->load_position(get_position());
-	exp->parse_value(ns);
-	load_position(exp->get_position());
-
-	ignore_blockstart();
-
-	block->set_parent_namespace(ns);
 	block->load_position(get_position());
-	block->parse_value(block);
+	block->parse_value(ns);
 	load_position(block->get_position());
-
-	wpl_block_if *block_if_prev = block;
-
-	ignore_string_match(WHITESPACE, 0);
-
-	while (ignore_string (wpl_blockname_else_if)) {
-		// Found an else if
-		wpl_block_if *block_else_if = new wpl_block_if();
-		block_if_prev->set_next_else_if(block_else_if);
-		exp = new wpl_expression_par_enclosed();
-		block_else_if->set_run_condition(exp);
-
-		exp->load_position(get_position());
-		exp->parse_value(ns);
-		load_position(exp->get_position());
-
-		ignore_blockstart();
-	
-		block_else_if->set_parent_namespace(ns);
-		block_else_if->load_position(get_position());
-		block_else_if->parse_value(block_else_if);
-		load_position(block_else_if->get_position());
-
-		block_if_prev = block_else_if;
-
-		ignore_string_match(WHITESPACE, 0);
-	}
-
-	if (ignore_string (wpl_blockname_else)) {
-		// Found an else, last loop
-		wpl_block_if *block_else;
-
-		block_else = new wpl_block_if();
-		block_if_prev->set_next_else_if(block_else);
-
-		ignore_blockstart();
-
-		block_else->set_parent_namespace(ns);
-		block_else->load_position(get_position());
-		block_else->parse_value(block_else);
-		load_position(block_else->get_position());
-	}
 }
 
 /**
@@ -386,21 +313,6 @@ int wpl_block::run_children (wpl_block_state *block_state, wpl_value *final_resu
 	return ret;
 }
 
-bool wpl_block::check_run(wpl_block_state *block_state) {
-	if (run_condition) {
-#ifdef WPL_DEBUG_BLOCKS
-		DBG("BI (" << (wpl_block*)this << "): Running condition " << run_condition << endl);
-#endif
-		wpl_value_bool return_value;
-		return_value.set_do_finalize();
-		block_state->run_run_condition(run_condition, &return_value);
-		return return_value.get();
-	}
-	else {
-		return true;
-	}
-}
-
 int wpl_block::run(wpl_state *state, wpl_value *final_result) {
 	wpl_block_state *block_state = (wpl_block_state*) state;
 	block_state->reset();
@@ -411,20 +323,3 @@ int wpl_block::run(wpl_state *state, wpl_value *final_result) {
 
 	return run_children(block_state, final_result);
 }
-/*
-int wpl_block::run_no_variables(wpl_namespace_session &nss, wpl_value *final_result) {
-#ifdef WPL_DEBUG_BLOCKS
-	DBG("B: (" << this << "): Run w/o variables" << endl);
-#endif
-	wpl_namespace_session my_nss(&nss);
-	my_nss.set_namespace(this);
-	return run_children(my_nss, final_result);
-
-
-int wpl_block::run_no_nss(wpl_namespace_session &nss, wpl_value *final_result) {
-#ifdef WPL_DEBUG_BLOCKS
-	DBG("B: (" << this << "): Run w/o namespace session" << endl);
-#endif
-	return run_children(nss, final_result);
-}
-*/

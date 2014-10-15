@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,33 +28,29 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "block.h"
-#include "operator_return_values.h"
-#include "debug.h"
+#include "block_conditional.h"
 
-#include <cstddef>
-
+class wpl_io;
 class wpl_value;
+class wpl_state;
+class wpl_namespace;
+class wpl_namespace_session;
 
-class wpl_block_if : public wpl_block {
-	private:
-	wpl_block_if *next_else_if;
+class wpl_block_if : public wpl_block_conditional {
+	public:
+	enum {
+		F_IF,
+		F_ELSE_IF,
+		F_ELSE
+	};
+
+	const int flag;
+	unique_ptr<wpl_block_if> next_else_if;
 
 	public:
-	wpl_block_if() {
-		next_else_if = NULL;
-	}
-
-	~wpl_block_if() {
-		if (next_else_if) {
-			delete next_else_if;
-		}
-	}
-
-	void set_next_else_if(wpl_block_if *next_else_if) {
-		this->next_else_if = next_else_if;
-	}
-
+	wpl_block_if(const int flag) : flag(flag) {}
+	wpl_state *new_state (wpl_namespace_session *nss, wpl_io *io) override;
+	void parse_value(wpl_namespace *ns);
 	int run(wpl_state *state, wpl_value *final_result) override;
 };
 
