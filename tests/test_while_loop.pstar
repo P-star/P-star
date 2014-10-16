@@ -1,7 +1,7 @@
 SCENE main {
-	while (int i++ > -1) {
+	while (int i >= 0) {
 		echo "$i\n";
-		if (i == 10) {
+		if (++i == 10) {
 			break;
 		}
 	}
