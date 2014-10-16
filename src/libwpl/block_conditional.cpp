@@ -36,3 +36,25 @@ bool wpl_block_conditional::check_run(wpl_block_conditional_state *block_state) 
 	int ret = block_state->run_condition(run_condition.get(), &return_value);
 	return ret & WPL_OP_OK && return_value.get();
 }
+
+void wpl_block_conditional::find_and_parse_complete_type() {
+	char buf[WPL_VARNAME_SIZE+1];
+
+	ignore_whitespace();
+
+	if (int len = search (WORD, 0, false)) {
+		check_varname_length(len);
+		get_string(buf, len);
+
+		/* Don't check for incomplete types like struct */
+		if (wpl_parseable *parseable = find_complete_type(buf)) {
+			parse_parseable(this, parseable);
+		}
+		else if (wpl_parseable *parseable = find_template_type(buf)) {
+			parse_parseable(this, parseable);
+		}
+		else {
+			revert_string(len);
+		}
+	}
+}

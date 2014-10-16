@@ -74,6 +74,11 @@ void wpl_block_for::parse_value (wpl_namespace *ns) {
 		THROW_ELEMENT_EXCEPTION("Expected '(' in for loop definition");
 	}
 
+	/*
+	   Allows us to declare a variable inside the init section
+	   */
+	find_and_parse_complete_type();
+
 	exp_init->load_position(get_position());
 	exp_init->parse_value(ns);
 	load_position(exp_init->get_position());

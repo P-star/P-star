@@ -68,6 +68,8 @@ void wpl_block_while::parse_value(wpl_namespace *ns) {
 		THROW_ELEMENT_EXCEPTION("Expected '(' in foreach while definition");
 	}
 
+	find_and_parse_complete_type();
+
 	exp->insert_fake_open_par();
 	exp->load_position(get_position());
 	exp->parse_value(this);

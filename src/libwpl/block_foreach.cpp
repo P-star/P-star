@@ -90,6 +90,11 @@ void wpl_block_foreach::parse_value(wpl_namespace *ns) {
 		THROW_ELEMENT_EXCEPTION("Expected '(' in foreach loop definition");
 	}
 
+	/*
+	   Allow declaration of variables inside init statement
+	   */
+	find_and_parse_complete_type();
+
 	exp_init->load_position(get_position());
 	exp_init->parse_value(this);
 	load_position(exp_init->get_position());

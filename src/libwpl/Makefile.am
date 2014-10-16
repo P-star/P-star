@@ -4,10 +4,11 @@ AM_CXXFLAGS = -std=c++11 -rdynamic
 lib_LTLIBRARIES = libpstar.la
 libpstar_la_LDFLAGS =  -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -lmimetic -lboost_regex
 libpstar_la_SOURCES = \
-	program.cpp parser.cpp block.cpp pragma.cpp \
+	program.cpp parser.cpp pragma.cpp \
 	module_loader.cpp io.cpp state.cpp \
 	expression.cpp matcher.cpp identifier.cpp shunting_yard.cpp \
 	variable.cpp namespace.cpp runable.cpp runable_operator.cpp \
+	block.cpp block_parser.cpp \
 	block_conditional.cpp block_if.cpp block_while.cpp block_for.cpp block_foreach.cpp \
 	scene.cpp string.cpp object.cpp \
 	types.cpp type.cpp type_template.cpp type_parse_signals.cpp \

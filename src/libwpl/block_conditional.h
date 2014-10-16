@@ -29,16 +29,19 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "block_intermediate.h"
-#include "matcher.h"
 #include <memory>
 
+class wpl_namespace;
 class wpl_block_conditional_state;
 
-class wpl_block_conditional : public wpl_block_intermediate, public wpl_matcher {
+class wpl_block_conditional : public wpl_block_intermediate {
 	protected:
 	unique_ptr<wpl_runable> run_condition;
 	bool check_run(wpl_block_conditional_state *block_state);
 
+	void find_and_parse_complete_type();
+
 	public:
+	virtual void parse_value(wpl_namespace *ns) = 0;
 	virtual ~wpl_block_conditional() {}
 };

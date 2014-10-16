@@ -1,6 +1,5 @@
 SCENE main {
-	int i = 0;
-	while (++i) {
+	while (int i++ > -1) {
 		echo "$i\n";
 		if (i == 10) {
 			break;

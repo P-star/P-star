@@ -28,32 +28,29 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "namespace.h"
+#include "matcher.h"
 #include "runable.h"
-#include "block_parser.h"
 
 #include <vector>
 
-class wpl_io;
-class wpl_value;
-class wpl_state;
-class wpl_namespace;
-class wpl_block_state;
-class wpl_namespace_session;
-
-class wpl_block : public wpl_runable, public wpl_block_parser {
+class wpl_block_parser : public wpl_namespace, public wpl_matcher {
 	private:
-	vector<struct wpl_matcher_position> child_positions;
-	vector<unique_ptr<wpl_runable>> child_elements;
+	int parse_statement_to_semicolon (const char **target, uint32_t match, uint32_t ignore);
 
-	void append_child (unique_ptr<wpl_runable> element);
-	void append_child_position ();
+	protected:
+	unique_ptr<wpl_runable> parse_expression (wpl_namespace *ns);
+	unique_ptr<wpl_runable> parse_block (wpl_namespace *ns);
+	unique_ptr<wpl_runable> parse_pragma (wpl_namespace *ns);
 
-	int run_children(wpl_block_state *block_state, wpl_value *final_result);
-	public:
-	wpl_block();
-	virtual ~wpl_block() {}
+	unique_ptr<wpl_runable> parse_foreach(wpl_namespace *ns);
+	unique_ptr<wpl_runable> parse_for(wpl_namespace *ns);
+	unique_ptr<wpl_runable> parse_while(wpl_namespace *ns);
+	unique_ptr<wpl_runable> parse_if(wpl_namespace *ns);
 
-	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) override;
-	int run (wpl_state *state, wpl_value *final_result) override;
-	void parse_value(wpl_namespace *ns);
+	unique_ptr<wpl_runable> parse_text(wpl_namespace *ns);
+
+	void parse_parseable(wpl_namespace *ns, wpl_parseable *parseable);
+	void parse_comment();
+	
 };

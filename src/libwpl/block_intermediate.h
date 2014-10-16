@@ -29,7 +29,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "block_intermediate_state.h"
-#include "namespace.h"
+#include "block_parser.h"
 #include "runable.h"
 
 #include <memory>
@@ -37,7 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 /**
  * @brief This class is an intermediate namespace between conditional blocks like if and while and the blocks where they are defined to hold namespace for variables declared in the condition statement.
  */
-class wpl_block_intermediate : public wpl_namespace, public wpl_runable {
+class wpl_block_intermediate : public wpl_runable, public wpl_block_parser {
 	private:
 	unique_ptr<wpl_runable> runable;
 

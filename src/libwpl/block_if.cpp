@@ -73,6 +73,10 @@ void wpl_block_if::parse_value(wpl_namespace *ns) {
 		if (!ignore_letter ('(')) {
 			THROW_ELEMENT_EXCEPTION("Expected '(' in if definition");
 		}
+		/*
+		   Allow declaration inside if conditinal statement
+		 */
+		find_and_parse_complete_type();
 
 		exp->insert_fake_open_par();
 		exp->load_position(get_position());
