@@ -1,0 +1,26 @@
+SCENE main {
+	array<string> my_array[0] = 100;
+
+	for(int a = 0 ; a < 10 ; a++) {
+		"A - $a" => my_array;
+	}
+	while (int b < 10) {
+		"B - $b" => my_array;
+		b++;
+	}
+	if (int c = 0) {
+		"C - $c" => my_array;
+	}
+	else if (int c = 2) {
+		"C - $c" => my_array;
+	}
+
+	array<pointer<string>> my_ptr_array;
+	foreach (pointer<string> ptr; my_array) {
+		ptr => my_ptr_array;
+	}
+
+	foreach (pointer<string> ptr; my_ptr_array) {
+		echo "F is: " . *ptr . "\n";
+	}
+}
