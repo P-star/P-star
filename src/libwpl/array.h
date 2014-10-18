@@ -57,6 +57,7 @@ class wpl_array {
 	wpl_array () {};
 	wpl_array (const wpl_array &copy);
 	wpl_value *get(int index);
+	void pop();
 	void set(int index, wpl_value *value);
 	void push(wpl_value *value);
 	void replace (wpl_array &new_array);

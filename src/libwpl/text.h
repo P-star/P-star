@@ -48,6 +48,7 @@ class wpl_text_chunk_it;
 namespace wpl_text_chunks {
 	class base {
 		private:
+		wpl_matcher_position position;
 
 		public:
 		virtual ~base() {}
@@ -63,6 +64,14 @@ namespace wpl_text_chunks {
 		) = 0;
 		virtual bool isText() {
 			return false;
+		}
+
+		void set_position(wpl_matcher_position position) {
+			this->position = position;
+		}
+
+		wpl_matcher_position get_position() const {
+			return position;
 		}
 	};
 
@@ -87,7 +96,7 @@ namespace wpl_text_chunks {
 			return true;
 		}
 	};
-
+/*
 	class html_template : public base {
 		private:
 		wpl_template *my_template;
@@ -104,7 +113,7 @@ namespace wpl_text_chunks {
 			wpl_value *final_result
 		);
 	};
-
+*/
 	class runable : public base {
 		private:
 		unique_ptr<wpl_runable> block;

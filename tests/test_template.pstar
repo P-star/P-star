@@ -1,7 +1,13 @@
-HTML_TEMPLATE row {
+HTML_TEMPLATE rowforeach {
 		<tr>
 			<td>{@my_row->id}</td>
 			<td>{@my_row->description}</td>
+		</tr>
+}
+HTML_TEMPLATE rowfor {
+		<tr>
+			<td>{@rows[i]->id}</td>
+			<td>{@rows[i]->description}</td>
 		</tr>
 }
 
@@ -20,7 +26,17 @@ HTML_TEMPLATE document {
 				<th>Description</th>
 			</tr>
 			{@foreach (auto my_row; rows)
-				{@#HTML_TEMPLATE row}
+				{@#HTML_TEMPLATE rowforeach}
+			}
+			{@for (int i = 0; i < @rows; i++)
+				{@#HTML_TEMPLATE rowfor}
+				{@if (i == 0)
+					<!-- i is 0 -->
+				} else if (int a = i == 1)
+					<!-- i is 1, and a is {@a}  -->
+				} else
+					<!-- i is other -->
+				}
 			}
 		</table>
 	}
