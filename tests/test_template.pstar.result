@@ -31,17 +31,17 @@ Content-type: text/html;
 			<td>1</td>
 			<td>First row</td>
 		</tr>
-
+					<!-- i is 0 -->
 		<tr>
 			<td>2</td>
 			<td>Second row</td>
 		</tr>
-
+					<!-- i is 1, and a is 1  -->
 		<tr>
 			<td>3</td>
 			<td>Third row</td>
 		</tr>
-
+					<!-- i is other -->
 
 		</table>
 </body>
