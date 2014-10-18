@@ -62,7 +62,7 @@ class wpl_range : public wpl_runable_operator {
 		wpl_value *rhs
 	);
 
-	wpl_state *new_state (wpl_namespace_session *nss, wpl_io *io) override;
+	wpl_state *new_state (wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) override;
 
 	int run (
 		wpl_state *state,
@@ -84,8 +84,14 @@ class wpl_range_state : public wpl_state {
 	/*
 	   Don't store RHS as it may be a dummy. Use new rhs each run.
 	   */
-	wpl_range_state (wpl_namespace_session *nss, wpl_io *io, wpl_value *counter_begin, wpl_value *dummy) :
-		wpl_state(nss, io),
+	wpl_range_state (
+		wpl_state *parent,
+		wpl_namespace_session *nss,
+		wpl_io *io,
+		wpl_value *counter_begin,
+		wpl_value *dummy
+	) :
+		wpl_state(parent, nss, io),
 		active(false)
 	{}
 

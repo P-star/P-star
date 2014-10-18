@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -29,6 +29,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "runable.h"
 #include "state.h"
 
-wpl_state *wpl_runable::new_state(wpl_namespace_session *nss, wpl_io *io) {
-	return new wpl_state(nss, io);
+wpl_state *wpl_runable::new_state(wpl_state *state, wpl_namespace_session *nss, wpl_io *io) {
+	return new wpl_state(state, nss, io);
 }

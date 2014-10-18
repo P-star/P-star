@@ -43,6 +43,7 @@ enum {
 	WPL_NSS_CTX_OUTSIDE
 };
 
+class wpl_state;
 class wpl_template;
 class wpl_expression_state;
 class wpl_value_unresolved_identifier;
@@ -87,7 +88,7 @@ class wpl_namespace_session {
 	wpl_namespace_session();
 	~wpl_namespace_session();
 
-	void notify_destructors(wpl_io &io);
+	void notify_destructors(wpl_state *state);
 
 	void use_this_and_parent() {
 		this_and_parent = true;

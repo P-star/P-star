@@ -47,11 +47,11 @@ void wpl_block_conditional::find_and_parse_complete_type() {
 		get_string(buf, len);
 
 		/* Don't check for incomplete types like struct */
-		if (wpl_parseable *parseable = find_complete_type(buf)) {
-			parse_parseable(this, parseable);
+		if (wpl_parseable_identifier *parseable = find_complete_type(buf)) {
+			parse_parseable_identifier(this, parseable);
 		}
-		else if (wpl_parseable *parseable = find_template_type(buf)) {
-			parse_parseable(this, parseable);
+		else if (wpl_parseable_identifier *parseable = find_template_type(buf)) {
+			parse_parseable_identifier(this, parseable);
 		}
 		else {
 			revert_string(len);

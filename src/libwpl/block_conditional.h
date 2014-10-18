@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <memory>
 
 class wpl_namespace;
+class wpl_parse_and_run;
 class wpl_block_conditional_state;
 
 class wpl_block_conditional : public wpl_block_intermediate {
@@ -42,6 +43,14 @@ class wpl_block_conditional : public wpl_block_intermediate {
 	void find_and_parse_complete_type();
 
 	public:
-	virtual void parse_value(wpl_namespace *ns) = 0;
+	wpl_block_conditional(wpl_parse_and_run *block) :
+		wpl_block_intermediate(block)
+	{}
+	wpl_block_conditional(const wpl_block_conditional &copy) :
+		wpl_block_intermediate(copy),
+		run_condition()
+	{}
 	virtual ~wpl_block_conditional() {}
+
+	virtual void parse_value(wpl_namespace *ns) = 0;
 };

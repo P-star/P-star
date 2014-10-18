@@ -36,11 +36,11 @@ class wpl_namespace;
 class wpl_type_complete;
 class wpl_type_user_incomplete;
 
-class wpl_type : public wpl_parseable {
+class wpl_type : public wpl_parseable_identifier {
 	private:
 
 	public:
-	wpl_type(const char *name) : wpl_parseable(name) {}
+	wpl_type(const char *name) : wpl_parseable_identifier(name) {}
 	virtual ~wpl_type() {
 #ifdef WPL_DEBUG_DESTRUCTION
 		DBG("T (" << (wpl_identifier*)this << "): Destructing type\n");

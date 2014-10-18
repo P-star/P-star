@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -31,18 +31,27 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_string.h"
 #include "value_int.h"
 
+#include "global.h"
+
 #include <utility>
 #include <memory>
 
 static mutex init_lock;
 static bool initialized = false;
 
+static wpl_global_block constant_global_block;
+static wpl_global_text constant_global_text;
+static wpl_global_template constant_global_template;
+
+const wpl_global_block *global_block = &constant_global_block;
+const wpl_global_text *global_text = &constant_global_text;
+const wpl_global_template *global_template = &constant_global_template;
+
 #ifndef WIN32
 static list<wpl_module_loader> modules;
 #endif
 
-// From pragma.cpp
-void wpl_pragma_add_all_to_namespace(wpl_namespace *ns);
+void wpl_types_add_all_to_namespace(wpl_namespace *ns);
 
 wpl_program::wpl_program(wpl_io &io, int argc, char **argv) :
 	parser(io, 0)
@@ -61,12 +70,12 @@ wpl_program::wpl_program(wpl_io &io, int argc, char **argv) :
 	wpl_namespace::set_toplevel();
 
 	wpl_types_add_all_to_namespace(this);
-	wpl_pragma_add_all_to_namespace(this);
 
 	wpl_type_complete *argv_type = wpl_type_global_array->new_instance(wpl_type_global_string);
 	add_managed_pointer (argv_type);
+
 	try {
-		new_register_parseable (argv_type);
+		register_parseable (argv_type);
 	}
 	catch (wpl_exception_name_exists &e) {
 		ostringstream msg;
@@ -118,9 +127,9 @@ int wpl_program::run(wpl_io &io) {
 
 	wpl_value_int return_value;
 
-	wpl_block_state program_state(NULL, &io, this);
+	wpl_block_state program_state(&io, this);
 
-	unique_ptr<wpl_state> main_state(main->new_state(&program_state, &io));
+	unique_ptr<wpl_state> main_state(main->new_state(&program_state, &program_state, &io));
 
 	ret = main->run(main_state.get(), &return_value);
 

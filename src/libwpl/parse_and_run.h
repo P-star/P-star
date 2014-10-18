@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -26,17 +26,34 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "template.h"
-#include "expression.h"
-#include "exception.h"
+#pragma once
 
-/* From text.cpp */
-void wpl_text_add_parse_and_run_to_ns(wpl_namespace *ns);
+#include "parseable.h"
+#include "runable.h"
 
-/* From pragma.cpp */
-void wpl_pragma_add_template_stuff_to_namespace(wpl_namespace *ns);
+#include <cstring>
 
-void wpl_template_add_parse_and_run_to_ns(wpl_namespace *ns) {
-	wpl_text_add_parse_and_run_to_ns(ns);
-	wpl_pragma_add_template_stuff_to_namespace(ns);
-}
+class wpl_parse_and_run : public wpl_parseable, public wpl_runable {
+	private:
+	char name[WPL_VARNAME_SIZE+1];
+
+	public:
+	wpl_parse_and_run(const char *name) :
+		wpl_parseable(),
+	       	wpl_runable()
+	{
+		strncpy(this->name, name, WPL_VARNAME_SIZE);
+	}
+	wpl_parse_and_run(const wpl_parse_and_run &copy) :
+		wpl_parseable(copy),
+		wpl_runable(copy)
+	{
+		strncpy(this->name, copy.name, WPL_VARNAME_SIZE);
+	}
+	virtual ~wpl_parse_and_run() {}
+	virtual const char *get_name() const {
+		return name;
+	}
+	virtual wpl_parse_and_run *new_instance() const = 0;
+	void parse_parseable_identifier(wpl_namespace *ns, wpl_parseable_identifier *parseable);
+};

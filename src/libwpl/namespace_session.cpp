@@ -34,10 +34,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "function.h"
 #include "variable.h"
 
-void wpl_namespace_session::notify_destructors(wpl_io &io) {
+void wpl_namespace_session::notify_destructors(wpl_state *state) {
 	for (auto it = variables_ptr.rbegin(); it != variables_ptr.rend(); it++) {
 		wpl_variable *var = (*it).get();
-		var->get_value()->notify_destructor(this, io);
+		var->get_value()->notify_destructor(state, this, state->get_io());
 	}
 }
 

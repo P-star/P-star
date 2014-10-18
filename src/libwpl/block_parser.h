@@ -29,28 +29,37 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "namespace.h"
-#include "matcher.h"
+#include "parse_and_run.h"
 #include "runable.h"
 
 #include <vector>
+#include <memory>
 
-class wpl_block_parser : public wpl_namespace, public wpl_matcher {
+class wpl_parseable_identifier;
+
+class wpl_block_parser : public wpl_parse_and_run, public wpl_namespace {
 	private:
+	vector<unique_ptr<wpl_parse_and_run>> parse_and_run_blocks;
+
 	int parse_statement_to_semicolon (const char **target, uint32_t match, uint32_t ignore);
 
 	protected:
-	unique_ptr<wpl_runable> parse_expression (wpl_namespace *ns);
-	unique_ptr<wpl_runable> parse_block (wpl_namespace *ns);
-	unique_ptr<wpl_runable> parse_pragma (wpl_namespace *ns);
+	wpl_block_parser() : wpl_parse_and_run("BLOCK_PARSER"), wpl_namespace() {}
+	wpl_block_parser (const wpl_block_parser &copy) :
+		wpl_parse_and_run(copy),
+		wpl_namespace() // DO NOT clone namespace
+	{}
 
-	unique_ptr<wpl_runable> parse_foreach(wpl_namespace *ns);
-	unique_ptr<wpl_runable> parse_for(wpl_namespace *ns);
-	unique_ptr<wpl_runable> parse_while(wpl_namespace *ns);
-	unique_ptr<wpl_runable> parse_if(wpl_namespace *ns);
+	/*
+	   TODO
+	   put these in namespace with new parseable types, like the
+	   text chunk system
+	   */
+	unique_ptr<wpl_runable> parse_expression ();
+	unique_ptr<wpl_runable> parse_block ();
 
-	unique_ptr<wpl_runable> parse_text(wpl_namespace *ns);
-
-	void parse_parseable(wpl_namespace *ns, wpl_parseable *parseable);
+	const wpl_parse_and_run *find_parse_and_run(const char *name);
+	void parse_parse_and_run(wpl_parse_and_run *block);
 	void parse_comment();
 	
 };

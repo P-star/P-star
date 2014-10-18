@@ -36,7 +36,11 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "user_function.h"
 #include "type_parse_signals.h"
 
+#include "global.h"
+
 #include <memory>
+
+extern const wpl_global_block *global_block;
 
 wpl_struct::~wpl_struct() {
 #ifdef WPL_DEBUG_DESTRUCTION
@@ -52,6 +56,8 @@ wpl_value *wpl_struct::new_instance() const {
 void wpl_struct::parse_value(wpl_namespace *ns) {
 	char buf[WPL_VARNAME_SIZE+1];
 	bool dtor_found = false;
+
+	set_parent_namespace(ns);
 
 	wpl_matcher_position begin_pos(get_position());
 	ignore_string_match(WHITESPACE,0);
@@ -181,10 +187,12 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 
 		// Check for other parseables
 		{
-			if (!(parseable = ns->new_find_parseable(buf))) {
-				load_position(def_begin);
-				cerr << "While parsing name '" << buf << "' inside struct:\n";
-				THROW_ELEMENT_EXCEPTION("Undefined name");
+			if (!(parseable = global_block->find_parseable(buf))) {
+				if (!(parseable = find_parseable(buf))) {
+					load_position(def_begin);
+					cerr << "While parsing name '" << buf << "' inside struct:\n";
+					THROW_ELEMENT_EXCEPTION("Undefined name");
+				}
 			}
 
 			parseable->load_position(get_position());

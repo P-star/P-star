@@ -30,8 +30,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "block_state.h"
 #include "block.h"
 
-wpl_state *wpl_block_for::new_state (wpl_namespace_session *nss, wpl_io *io) {
-	 return new wpl_block_for_state(nss, io, this);
+wpl_state *wpl_block_for::new_state (wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) {
+	 return new wpl_block_for_state(parent, nss, io, this, get_block());
 }
 
 int wpl_block_for::run(wpl_state *state, wpl_value *final_result) {
@@ -57,9 +57,6 @@ int wpl_block_for::run(wpl_state *state, wpl_value *final_result) {
 
 void wpl_block_for::parse_value (wpl_namespace *ns) {
 	set_parent_namespace(ns);
-
-	wpl_block *block = new wpl_block();
-	set_runable(block);
 
 	/*
 	   Three expressions, like for (init ; condition ; continue) {
@@ -93,9 +90,7 @@ void wpl_block_for::parse_value (wpl_namespace *ns) {
 	exp_continue->parse_value(ns);
 	load_position(exp_continue->get_position());
 
-	ignore_blockstart();
-	block->set_parent_namespace(this);
-	block->load_position(get_position());
-	block->parse_value(block);
-	load_position(block->get_position());
+	get_block()->load_position(get_position());
+	get_block()->parse_value(this);
+	load_position(get_block()->get_position());
 }

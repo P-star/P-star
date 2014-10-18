@@ -32,16 +32,23 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "modifier.h"
 #include "blocks.h"
 
+#include "block_if.h"
+#include "block_while.h"
+#include "block_foreach.h"
+#include "block_for.h"
+
+#include "global.h"
+
 #include <cstring>
 
 using namespace std;
 
-wpl_block::wpl_block() {
-	wpl_modifier_add_all_to_namespace(this);
-}
+extern const wpl_global_block *global_block;
 
-wpl_state *wpl_block::new_state(wpl_namespace_session *nss, wpl_io *io) {
-	return new wpl_block_state (nss, io, this);
+wpl_block::wpl_block() : wpl_block_parser() {}
+
+wpl_state *wpl_block::new_state(wpl_state *state, wpl_namespace_session *nss, wpl_io *io) {
+	return new wpl_block_state (state, nss, io, this);
 }
 
 void wpl_block::append_child (unique_ptr<wpl_runable> element) {
@@ -70,7 +77,7 @@ int wpl_block::run_children (wpl_block_state *block_state, wpl_value *final_resu
 	}
 
 	// Notify destructors
-	block_state->notify_destructors(block_state->get_io());
+	block_state->notify_destructors(block_state);
 
 	return ret;
 }
@@ -95,76 +102,77 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 #ifdef WPL_DEBUG_BLOCKS
 	DBG("B: (" << this << "): Parse" << endl);
 #endif
+	set_parent_namespace(ns);
 	wpl_matcher_position start_pos = get_position();
+
+	ignore_blockstart();
 
 	char buf[WPL_VARNAME_SIZE+1];
 	// Descend into block and find child blocks and elements
 	while (!at_end()) {
 		const char *prev_pos = get_string_pointer();
 
-		ignore_string_match (WHITESPACE,0);
+		ignore_whitespace();
 
 		if (at_end()) { break; }
 
-		if (int len = search (WORD, 0, false)) {
+		int len = ignore_letter('#');
+		len += ignore_string_match(WORD, 0);
+		revert_string(len);
+
+		if (len) {
 			check_varname_length(len);
 			get_string(buf, len);
 
-			if (strcmp (buf, wpl_blockname_if) == 0) {
+			if (const wpl_parse_and_run *block = global_block->find_parse_and_run(buf)) {
 				append_child_position();
-				append_child(parse_if(ns));
-			}
-			else if (strcmp (buf, wpl_blockname_while) == 0) {
-				append_child_position();
-				append_child(parse_while(ns));
-			}
-			else if (strcmp (buf, wpl_blockname_foreach) == 0) {
-				append_child_position();
-				append_child(parse_foreach(ns));
-			}
-			else if (strcmp (buf, wpl_blockname_for) == 0) {
-				append_child_position();
-				append_child(parse_for(ns));
-			}
-			else if (strcmp (buf, wpl_blockname_text) == 0) {
-				append_child_position();
-				append_child(parse_text(ns));
-			}
-			else if (wpl_parseable *parseable = ns->new_find_parseable(buf)) {
-				try {
-					parse_parseable(ns, parseable);
-				}
-				catch (wpl_type_end_statement &e) {
-					load_position(e.get_position());
-					ignore_whitespace();
-					if (!ignore_letter (';')) {
-						THROW_ELEMENT_EXCEPTION("Expected ';' after declaration of incomplete type");
-					}
-				}
+
+				wpl_parse_and_run *new_block = block->new_instance();
+				append_child(unique_ptr<wpl_runable>(new_block));
+				parse_parse_and_run(new_block);
 			}
 			else {
-				revert_string(len);
-				append_child_position();
-				append_child(parse_expression(ns));
+				wpl_parseable_identifier *parseable;
+				if (!(parseable = global_block->find_parseable(buf))) {
+					parseable = find_parseable(buf);
+				}
+
+				if (parseable) {
+					try {
+						parse_parseable_identifier(this, parseable);
+					}
+					catch (wpl_type_end_statement &e) {
+						load_position(e.get_position());
+						ignore_whitespace();
+						if (!ignore_letter (';')) {
+							THROW_ELEMENT_EXCEPTION("Expected ';' after declaration of incomplete type");
+						}
+					}
+				}
+				else {
+					revert_string(len);
+					append_child_position();
+					append_child(parse_expression());
+				}
 			}
 		}
 		else if (ignore_string ("/*")) {
 			parse_comment();
 		}
-		else if (ignore_letter ('{')) {
+		else if (search_letter ('{')) {
 			append_child_position();
-			append_child(parse_block(ns));
+			append_child(parse_block());
 		}
 		else if (ignore_letter ('}')) {
 			return;
 		}
-		else if (ignore_letter ('#')) {
+/*		else if (ignore_letter ('#')) {
 			append_child_position();
-			append_child(parse_pragma(ns));
-		}
+			append_child(parse_pragma());
+		}*/
 		else if (search (EXPRESSION, WHITESPACE, false)) {
 			append_child_position();
-			append_child(parse_expression(ns));
+			append_child(parse_expression());
 		}
 		else {
 			ostringstream msg;
@@ -175,4 +183,26 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 	load_position(start_pos);
 	revert_string(1);
 	THROW_ELEMENT_EXCEPTION("Missing '}' after block, block began here:");
+}
+
+/* From modifier.cpp */
+void wpl_modifier_add_all_to_namespace(wpl_namespace *ns);
+
+/* From pragma.cpp */
+void wpl_pragma_add_all_to_namespace(wpl_namespace *ns);
+
+#define ADD_TO_NS(classname) \
+	{									\
+		wpl_parse_and_run *block = new classname(new wpl_block());	\
+		ns->add_managed_pointer(block);					\
+		ns->register_parse_and_run(block);				\
+	}									\
+
+void wpl_block_add_parse_and_run_to_ns(wpl_namespace *ns) {
+	ADD_TO_NS(wpl_block_if)
+	ADD_TO_NS(wpl_block_while)
+	ADD_TO_NS(wpl_block_for)
+	ADD_TO_NS(wpl_block_foreach)
+	wpl_modifier_add_all_to_namespace(ns);
+	wpl_pragma_add_all_to_namespace(ns);
 }

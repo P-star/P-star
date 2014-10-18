@@ -29,9 +29,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "block_intermediate_state.h"
 #include "runable.h"
 
-int wpl_block_intermediate_state::run_runable(wpl_runable *runable, wpl_value *final_result) {
-	if (!runable_state.get()) {
-		runable_state.reset(runable->new_state(this, io));
+int wpl_block_intermediate_state::run_block (wpl_value *final_result) {
+	if (!block_state.get()) {
+		block_state.reset(block->new_state(this, this, &get_io()));
 	}
-	return runable->run(runable_state.get(), final_result);
+	return block->run(block_state.get(), final_result);
 }

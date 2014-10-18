@@ -37,6 +37,8 @@ class wpl_namespace;
 class wpl_namespace_session;
 
 class wpl_block_if : public wpl_block_conditional {
+	const char *name = "if";
+
 	public:
 	enum {
 		F_IF,
@@ -48,8 +50,34 @@ class wpl_block_if : public wpl_block_conditional {
 	unique_ptr<wpl_block_if> next_else_if;
 
 	public:
-	wpl_block_if(const int flag) : flag(flag) {}
-	wpl_state *new_state (wpl_namespace_session *nss, wpl_io *io) override;
+	wpl_block_if(wpl_parse_and_run *block, const int flag) :
+		wpl_block_conditional(block),
+		flag(F_IF)
+	{}
+	wpl_block_if(wpl_parse_and_run *block) :
+		wpl_block_conditional(block),
+		flag(F_IF)
+	{}
+	wpl_block_if(const wpl_block_if &copy) :
+		wpl_block_conditional(copy),
+		next_else_if(),
+		flag(F_IF)
+	{}
+	wpl_block_if(const wpl_block_if &copy, int flag) :
+		wpl_block_conditional(copy),
+		next_else_if(),
+		flag(flag)
+	{}
+
+	const char *get_name() const override {
+		return name;
+	}
+
+	wpl_block_if *new_instance() const override {
+		return new wpl_block_if(*this);
+	}
+
+	wpl_state *new_state (wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) override;
 	void parse_value(wpl_namespace *ns);
 	int run(wpl_state *state, wpl_value *final_result) override;
 };

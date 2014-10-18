@@ -37,6 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 
 class wpl_value;
+class wpl_state;
 class wpl_namespace_session;
 
 /**
@@ -67,7 +68,7 @@ class wpl_array {
 	void reserve(int i) {
 		array.reserve(i);
 	}
-	void notify_destructor(wpl_namespace_session *nss, wpl_io &io);
+	void notify_destructor(wpl_state *state, wpl_namespace_session *nss, wpl_io &io);
 };
 
 /**

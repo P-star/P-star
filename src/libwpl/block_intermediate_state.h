@@ -41,23 +41,27 @@ class wpl_namespace_session;
 
 class wpl_block_intermediate_state : public wpl_namespace_session, public wpl_state {
 	private:
-	unique_ptr<wpl_state> runable_state;
+	unique_ptr<wpl_state> block_state;
+	wpl_runable *block;
 
 	public:
 	wpl_block_intermediate_state (
-			wpl_namespace_session *parent,
+			wpl_state *parent,
+			wpl_namespace_session *nss,
 			wpl_io *io,
-			wpl_namespace *template_namespace
+			wpl_namespace *template_namespace,
+			wpl_runable *block
 	) :
-		wpl_namespace_session(parent, template_namespace, WPL_NSS_CTX_SELF),
-		wpl_state(parent, io)
+		wpl_namespace_session(nss, template_namespace, WPL_NSS_CTX_SELF),
+		wpl_state(parent, nss, io),
+		block(block)
 	{}
 	virtual ~wpl_block_intermediate_state() {}
 
 	void reset() override {
-		runable_state->reset();
+		block_state->reset();
 		wpl_namespace_session::reset_variables();
 	}
 
-	int run_runable(wpl_runable *runable, wpl_value *final_result);
+	int run_block (wpl_value *final_result);
 };

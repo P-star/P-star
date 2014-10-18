@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -41,7 +41,8 @@ class wpl_scene_state : public wpl_block_state {
 
 	public:
 	wpl_scene_state (
-			wpl_namespace_session *parent,
+			wpl_state *parent,
+			wpl_namespace_session *nss,
 			wpl_io *io,
 			wpl_namespace *template_namespace,
 			list<wpl_scene*> base_scenes

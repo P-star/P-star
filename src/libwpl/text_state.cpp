@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -27,34 +27,32 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "text_state.h"
-#include "expression.h"
+#include "runable.h"
 #include "text.h"
-#include "expression_state.h"
 #include "operator_types.h"
 
-int wpl_text_state::run_expression(wpl_expression *exp, int index, wpl_value *final_result) {
-	if (expression_states[index].get() == nullptr) {
-		expression_states[index].reset(exp->new_state(nss, io));
+int wpl_text_state::run_runable(wpl_runable *runable, int index, wpl_value *final_result) {
+	if (runable_states[index].get() == nullptr) {
+		runable_states[index].reset(runable->new_state(this, get_nss(), &get_io()));
 	}
 	final_result->set_do_finalize();
-	return exp->run(expression_states[index].get(), final_result);
+	return runable->run(runable_states[index].get(), final_result);
 }
 
 int wpl_text_state::run_text(wpl_text *text, int index, wpl_value *final_result, wpl_io &io) {
 	if (text_states[index].get() == nullptr) {
-		text_states[index].reset(text->new_state(nss, wpl_state::io));
+		text_states[index].reset(text->new_state(this, get_nss(), &get_io()));
 	}
-	return text->run(text_states[index].get(), final_result, io);
+	return text->run(text_states[index].get(), final_result);
 }
 
 int wpl_text_state::run_text_output_json (
 		wpl_text *text,
 		int index,
-		const set<wpl_value*> &vars,
 		wpl_value *final_result
 ) {
 	if (text_states[index].get() == nullptr) {
-		text_states[index].reset(text->new_state(nss, io));
+		text_states[index].reset(text->new_state(this, get_nss(), &get_io()));
 	}
-	return text->output_json(text_states[index].get(), vars, final_result);
+	return text->output_json(text_states[index].get(), get_vars(), final_result);
 }

@@ -54,5 +54,5 @@ class wpl_runable_operator {
 		wpl_value *lhs,
 		wpl_value *rhs,
 		wpl_value *final_result) = 0;
-	virtual wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io);
+	virtual wpl_state *new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io);
 };

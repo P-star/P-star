@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -26,17 +26,19 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "template.h"
-#include "expression.h"
-#include "exception.h"
+#pragma once
 
-/* From text.cpp */
-void wpl_text_add_parse_and_run_to_ns(wpl_namespace *ns);
+#include "matcher.h"
 
-/* From pragma.cpp */
-void wpl_pragma_add_template_stuff_to_namespace(wpl_namespace *ns);
+class wpl_namespace;
 
-void wpl_template_add_parse_and_run_to_ns(wpl_namespace *ns) {
-	wpl_text_add_parse_and_run_to_ns(ns);
-	wpl_pragma_add_template_stuff_to_namespace(ns);
-}
+class wpl_text_chunk : public wpl_matcher {
+	public:
+	wpl_text_chunk() {}
+	virtual ~wpl_text_chunk() {}
+
+	virtual void parse_value (wpl_namespace *ns);
+};
+
+class wpl_text_chunk_foreach : public wpl_text_chunk {
+};

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -34,17 +34,21 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 class wpl_namespace;
 
-class wpl_parseable : public wpl_identifier, public wpl_suicidal, public wpl_matcher {
+class wpl_parseable : public wpl_suicidal, public wpl_matcher {
 	public:
-	wpl_parseable (const char *name) : wpl_identifier(name) {
-	}
 	virtual ~wpl_parseable() {}
 
-	/*
-	   TODO
-	   XXX
-	   Definition of these functions are temporary. Remove the non-const.
-	   */
-
 	virtual void parse_value (wpl_namespace *parent_namespace) = 0;
+};
+
+/**
+ * @brief Used by the type system
+ */
+class wpl_parseable_identifier : public wpl_parseable, public wpl_identifier {
+	public:
+	wpl_parseable_identifier(const char *name) :
+		wpl_parseable(),
+		wpl_identifier(name)
+	{}
+	virtual ~wpl_parseable_identifier() {}
 };

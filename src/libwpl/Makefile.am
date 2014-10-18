@@ -13,7 +13,9 @@ libpstar_la_SOURCES = \
 	scene.cpp string.cpp object.cpp \
 	types.cpp type.cpp type_template.cpp type_parse_signals.cpp \
 	function.cpp user_function.cpp internal_function.cpp \
-	value.cpp operator.cpp operator_special.cpp text.cpp modifier.cpp \
+	value.cpp operator.cpp operator_special.cpp \
+	text.cpp text_chunk_type.cpp \
+	modifier.cpp global.cpp parse_and_run.cpp \
 	value_array.cpp value_pointer.cpp value_struct.cpp value_hash.cpp \
 	value_unresolved.cpp value_function_ptr.cpp value_list.cpp \
 	value_string.cpp value_vstring.cpp value_regex.cpp \

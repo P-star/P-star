@@ -33,8 +33,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "blocks.h"
 
-wpl_state *wpl_block_if::new_state (wpl_namespace_session *nss, wpl_io *io) {
-	 return new wpl_block_if_state(nss, io, this);
+wpl_state *wpl_block_if::new_state (wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) {
+	 return new wpl_block_if_state(parent, nss, io, this, get_block());
 }
 
 int wpl_block_if::run(wpl_state *state, wpl_value *final_result) {
@@ -56,15 +56,14 @@ int wpl_block_if::run(wpl_state *state, wpl_value *final_result) {
 void wpl_block_if::parse_value(wpl_namespace *ns) {
 	set_parent_namespace (ns);
 
-	wpl_block *block = new wpl_block();
-	set_runable(block);
+	wpl_namespace *use_parent_namespace;
 
 	if (flag == F_ELSE) {
 		/* No need for intermediate NS in else blocks */
-		block->set_parent_namespace(ns);
+		use_parent_namespace = ns;
 	}
 	else {
-		block->set_parent_namespace(this);
+		use_parent_namespace = this;
 
 		wpl_expression_par_enclosed *exp = new wpl_expression_par_enclosed();
 		run_condition.reset(exp);
@@ -84,19 +83,17 @@ void wpl_block_if::parse_value(wpl_namespace *ns) {
 		load_position(exp->get_position());
 	}
 
-	ignore_blockstart();
-
-	block->load_position(get_position());
-	block->parse_value(block);
-	load_position(block->get_position());
+	get_block()->load_position(get_position());
+	get_block()->parse_value(use_parent_namespace);
+	load_position(get_block()->get_position());
 
 	ignore_whitespace();
 
 	if (ignore_string (wpl_blockname_else_if)) {
-		next_else_if.reset(new wpl_block_if(F_ELSE_IF));
+		next_else_if.reset(new wpl_block_if(*this, F_ELSE_IF));
 	}
 	else if (ignore_string (wpl_blockname_else)) {
-		next_else_if.reset(new wpl_block_if(F_ELSE));
+		next_else_if.reset(new wpl_block_if(*this, F_ELSE));
 	}
 	else {
 		return;

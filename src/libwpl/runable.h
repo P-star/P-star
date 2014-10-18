@@ -43,5 +43,5 @@ class wpl_runable {
 	virtual int run(wpl_state *state, wpl_value *res, int loop_number) {
 		return run(state, res);
 	}
-	virtual wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io);
+	virtual wpl_state *new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io);
 };
