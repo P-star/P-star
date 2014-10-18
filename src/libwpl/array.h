@@ -37,6 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 
 class wpl_value;
+class wpl_state;
 class wpl_namespace_session;
 
 /**
@@ -56,6 +57,7 @@ class wpl_array {
 	wpl_array () {};
 	wpl_array (const wpl_array &copy);
 	wpl_value *get(int index);
+	void pop();
 	void set(int index, wpl_value *value);
 	void push(wpl_value *value);
 	void replace (wpl_array &new_array);
@@ -67,7 +69,7 @@ class wpl_array {
 	void reserve(int i) {
 		array.reserve(i);
 	}
-	void notify_destructor(wpl_namespace_session *nss, wpl_io &io);
+	void notify_destructor(wpl_state *state, wpl_namespace_session *nss, wpl_io &io);
 };
 
 /**
@@ -112,7 +114,7 @@ class wpl_type_array : public wpl_type_template {
 		return new wpl_type_array(*this);
 	}
 
-	wpl_type_complete_template *new_instance (const wpl_type_complete *template_type) const {
+	wpl_type_array_instance *new_instance (const wpl_type_complete *template_type) const {
 		return new wpl_type_array_instance(this, template_type);
 	}
 };

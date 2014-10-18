@@ -297,7 +297,7 @@ class wpl_value : public wpl_suicidal {
 		throw wpl_value_no_strong_set();
 	}
 
-	virtual void notify_destructor(wpl_namespace_session *nss, wpl_io &io) {
+	virtual void notify_destructor(wpl_state *state, wpl_namespace_session *nss, wpl_io &io) {
 		// Default is no behaviour
 	}
 };

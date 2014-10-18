@@ -77,12 +77,18 @@ class wpl_value_auto : public wpl_value {
 		}
 	}
 	int get_flags() override {
-		check_empty();
-		return my_value->get_flags();
+		if (my_value.get()) {
+			return my_value->get_flags();
+		}
+		return wpl_value::get_flags();
 	}
 	void set_do_finalize() override {
-		check_empty();
-		my_value->set_do_finalize();
+		if (my_value.get()) {
+			my_value->set_do_finalize();
+		}
+		else {
+			wpl_value::set_do_finalize();
+		}
 	}
 
 
@@ -260,6 +266,7 @@ class wpl_value_auto : public wpl_value {
 		}
 		else {
 			set_if_empty(last_value);
+			last_value->set_do_finalize();
 			return WPL_OP_OK;
 		}
 	}
@@ -277,8 +284,8 @@ class wpl_value_auto : public wpl_value {
 		return true;
 	}
 
-	void notify_destructor(wpl_namespace_session *nss, wpl_io &io) override {
+	void notify_destructor(wpl_state *state, wpl_namespace_session *nss, wpl_io &io) override {
 		check_empty();
-		my_value->notify_destructor(nss, io);
+		my_value->notify_destructor(state, nss, io);
 	}
 };

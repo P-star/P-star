@@ -1,7 +1,13 @@
-HTML_TEMPLATE row {
+HTML_TEMPLATE rowforeach {
 		<tr>
-			<td>{@rows[row_counter]->id}</td>
-			<td>{@rows[row_counter]->description}</td>
+			<td>{@my_row->id}</td>
+			<td>{@my_row->description}</td>
+		</tr>
+}
+HTML_TEMPLATE rowfor {
+		<tr>
+			<td>{@rows[i]->id}</td>
+			<td>{@rows[i]->description}</td>
 		</tr>
 }
 
@@ -12,16 +18,28 @@ HTML_TEMPLATE document {
 	<title>{@title}</title>
 	</head>
 	<body>
-{@CONDITION (@rows > 0)
-	<p>We have rows to print!</p>
-	<table>
-		<tr>
-			<th>ID</th>
-			<th>Description</th>
-		</tr>
-{@LOOP (++row_counter < @rows) {@TEMPLATE row} }
-	</table>
-}
+	{@if (@rows > 0)
+		<p>We have rows to print!</p>
+		<table>
+			<tr>
+				<th>ID</th>
+				<th>Description</th>
+			</tr>
+			{@foreach (auto my_row; rows)
+				{@#HTML_TEMPLATE rowforeach}
+			}
+			{@for (int i = 0; i < @rows; i++)
+				{@#HTML_TEMPLATE rowfor}
+				{@if (i == 0)
+					<!-- i is 0 -->
+				} else if (int a = i == 1)
+					<!-- i is 1, and a is {@a}  -->
+				} else
+					<!-- i is other -->
+				}
+			}
+		</table>
+	}
 	</body>
 	</html>
 }
@@ -46,6 +64,7 @@ SCENE main {
 
 	#CONTENT_TYPE text/html;
 
-	int row_counter = "-1";
 	#HTML_TEMPLATE document;
+
+	return 0;
 }

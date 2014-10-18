@@ -39,6 +39,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "output_json.h"
 #include "template.h"
 
+#include "block_foreach.h"
+#include "block_while.h"
+#include "block_for.h"
+#include "block_if.h"
+
+#include "global.h"
+
 #include <cstdio>
 #include <set>
 #include <cstring>
@@ -52,9 +59,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 wpl_text_chunks::base *wpl_text::push_chunk(const char *start, const char *end) {
 	wpl_text_chunks::base *chunk = new wpl_text_chunks::text(start, end);
 	chunks.emplace_back(chunk);
+	chunks.back()->set_position(get_position());
 	return chunk;
 }
-
+/*
 int wpl_text_chunks::html_template::run (
 		wpl_text_state *state,
 		int index,
@@ -63,7 +71,7 @@ int wpl_text_chunks::html_template::run (
 ) {
 	return state->run_text(my_template, index, final_result, io);
 }
-
+*/
 int wpl_text_chunks::text::run (
 		wpl_text_state *state,
 		int index,
@@ -72,15 +80,6 @@ int wpl_text_chunks::text::run (
 ) {
 	io.write_immortal(start, end-start);
 	return WPL_OP_NO_RETURN;
-}
-
-int wpl_text_chunks::textblock::run (
-		wpl_text_state *state,
-		int index,
-		wpl_value *final_result,
-		wpl_io &io
-) {
-	return state->run_text(text.get(), index, final_result, io);
 }
 
 int wpl_text_chunks::expression::run (
@@ -93,58 +92,20 @@ int wpl_text_chunks::expression::run (
    	wpl_value_output_trigger output_trigger(io);
 	wpl_value_double_finalizer finalizer(&output_trigger, final_result);
 
-	return state->run_expression (exp.get(), index, &finalizer);
+	return state->run_runable (exp.get(), index, &finalizer);
 }
 
-int wpl_text_chunks::expression::run_raw (
-		wpl_text_state *state,
-		int index,
-		wpl_value *final_result
-) {
-	return state->run_expression (exp.get(), index, final_result);
-}
-
-bool wpl_text_chunks::exp_block::check_condition(wpl_text_state *state, int index) {
-	wpl_value_bool result;
-	result.set_do_finalize();
-
-	if ((state->run_expression (exp.get(), index, &result) & WPL_OP_OK) && result.get()) {
-		return true;
-	}
-
-	return false;
-}
-
-int wpl_text_chunks::loop::run (
+int wpl_text_chunks::runable::run (
 		wpl_text_state *state,
 		int index,
 		wpl_value *final_result,
 		wpl_io &io
 ) {
-	int ret = WPL_OP_NO_RETURN;
-	while (check_condition (state, index)) {
-		ret = state->run_text(get_text(), index, final_result, io);
-	}
-	return ret;
-}
-
-int wpl_text_chunks::condition::run (
-		wpl_text_state *state,
-		int index,
-		wpl_value *final_result,
-		wpl_io &io
-) {
-	int ret = WPL_OP_NO_RETURN;
-	if (check_condition (state, index)) {
-		ret = state->run_text(get_text(), index, final_result, io);
-	}
-	return ret;
+	return state->run_runable(block.get(), index, final_result);
 }
 
 int wpl_text_chunks::text::output_json (
 		wpl_text_state *state,
-		const set<wpl_value*> &vars,
-		wpl_text_chunk_it *it,
 		wpl_value *final_result
 ) {
 	const char id_string[] = "id=\"";
@@ -165,14 +126,14 @@ int wpl_text_chunks::text::output_json (
 	   next chunk as the JSON name.
 	   */
 	if (strncmp (end - id_string_len, id_string, id_string_len) != 0) {
-		return (*(++(*it)))->output_json(state, vars, it, final_result);
+		return (*(++(*state->get_it())))->output_json(state, final_result);
 	}
 
 	/*
 	   If no return from the next block, just proceed with output_json
 	   */
-	if (!((*(++(*it)))->run(state, it->get_pos(), &json_name, io_void) & WPL_OP_OK)) {
-		return (*it)->output_json(state, vars, it, final_result);
+	if (!((*(++(*state->get_it())))->run(state, state->get_it()->get_pos(), &json_name, io_void) & WPL_OP_OK)) {
+		return (*state->get_it())->output_json(state, final_result);
 	}
 
 	/*
@@ -183,112 +144,92 @@ int wpl_text_chunks::text::output_json (
 	 */
 	while (true) {
 	   	// it++ throws wpl_text_chunk_end_reached() when we're done
-		(*it)++;
+		(*state->get_it())++;
 
 		/*
 		   Check if the next chuck is an expression with return value
 		   */
-		if (!((*it)->run(state, it->get_pos(), &unsafe_pointer, io_void) & WPL_OP_OK)) {
+		if (!((*state->get_it())->run(state, state->get_it()->get_pos(), &unsafe_pointer, io_void) & WPL_OP_OK)) {
 			continue;
 		}
 
 		/*
 		   Check if the value exists in the list
 		   */
-		if (vars.find(unsafe_pointer.dereference()) == vars.end()) {
+		if (state->get_vars().find(unsafe_pointer.dereference()) == state->get_vars().end()) {
 			continue;
 		}
 
 		/*
 		   All OK, output this variable
 		   */
-		(*it)->run(state, it->get_pos(), &json_value, io_void);
+		(*state->get_it())->run(state, state->get_it()->get_pos(), &json_value, io_void);
 		io << "\"";
 		json_name.output_json(io);
 		io << "\": \"";
 		json_value.output_json(io);
 		io << "\",\n";
 
-		(*it)++;
+		(*state->get_it())++;
 
-		return (*it)->output_json(state, vars, it, final_result);
+		return (*state->get_it())->output_json(state, final_result);
 	}
 
 	return WPL_OP_NO_RETURN;
 }
-
+/*
 int wpl_text_chunks::html_template::output_json (
 		wpl_text_state *state,
-		const set<wpl_value*> &vars,
-		wpl_text_chunk_it *it,
 		wpl_value *final_result
 ) {
-	state->run_text_output_json(my_template, it->get_pos(), vars, final_result);
-	return (*(++(*it)))->output_json(state, vars, it, final_result);
+	state->run_text_output_json(my_template, state->get_it()->get_pos(), final_result);
+	return (*(++(*state->get_it())))->output_json(state, final_result);
 }
-
-int wpl_text_chunks::textblock::output_json (
-		wpl_text_state *state,
-		const set<wpl_value*> &vars,
-		wpl_text_chunk_it *it,
-		wpl_value *final_result
-) {
-	state->run_text_output_json(text.get(), it->get_pos(), vars, final_result);
-	return (*(++(*it)))->output_json(state, vars, it, final_result);
-}
-
+*/
 int wpl_text_chunks::expression::output_json (
 		wpl_text_state *state,
-		const set<wpl_value*> &vars,
-		wpl_text_chunk_it *it,
 		wpl_value *final_result
 ) {
-/*	wpl_io_buffer buf;
-	wpl_value_output_trigger output_trigger(buf);
-
-	state->run_expression(exp.get(), it->get_pos(), &output_trigger);
-
-	wpl_output_json output_json;
-	output_json.output_json(state->get_io(), buf.c_str(), buf.size());
-*/
-	return (*(++(*it)))->output_json(state, vars, it, final_result);
+	return (*(++(*state->get_it())))->output_json(state, final_result);
 }
 
-int wpl_text_chunks::loop::output_json (
+/*
+   Child text blocks may exist inside runables, and their state will have
+   do_json set. Child text blocks will then find our state in the tree
+   and re-use the variables.
+   */
+int wpl_text_chunks::runable::output_json (
 		wpl_text_state *state,
-		const set<wpl_value*> &vars,
-		wpl_text_chunk_it *it,
 		wpl_value *final_result
 ) {
-	while (check_condition (state, it->get_pos())) {
-		 state->run_text_output_json(get_text(), it->get_pos(), vars, final_result);
-	}
-
-	return WPL_OP_NO_RETURN;
-}
-
-int wpl_text_chunks::condition::output_json (
-		wpl_text_state *state,
-		const set<wpl_value*> &vars,
-		wpl_text_chunk_it *it,
-		wpl_value *final_result
-) {
-	if (check_condition (state, it->get_pos())) {
-		 state->run_text_output_json(get_text(), it->get_pos(), vars, final_result);
-	}
-
-	return WPL_OP_NO_RETURN;
+	state->run_runable(block.get(), state->get_it()->get_pos(), final_result);
+	return (*(++(*state->get_it())))->output_json(state, final_result);
 }
 
 int wpl_text::run(wpl_state *state, wpl_value *final_result) {
-	return run(state, final_result, state->get_io());
-}
-
-int wpl_text::run(wpl_state *state, wpl_value *final_result, wpl_io &io) {
+	wpl_io &io = state->get_io();
 	wpl_text_state *text_state = (wpl_text_state*) state;
+
+	/* Detect ancestor JSON output */
+	if (state->get_json_output()) {
+		wpl_text_state *parent = state->find_parent<wpl_text_state>();
+		if (!parent) {
+			throw runtime_error("Could not find parent text state while do_output_json flags was set");
+		}
+
+		parent->set_vars(parent->get_vars());
+
+		output_json (parent, parent->get_vars(), final_result);
+	}
+
 	int index = 0;
 	for (auto &my_chunk : chunks) {
-		my_chunk->run(text_state, index, final_result, io);
+		try {
+			my_chunk->run(text_state, index, final_result, io);
+		}
+		catch (runtime_error &e) {
+			throw wpl_element_exception(e.what(), my_chunk->get_position());
+		}
 		index++;
 	}
 	return WPL_OP_NO_RETURN;
@@ -304,8 +245,12 @@ int wpl_text::output_json (
 	wpl_io &io = state->get_io();
 	wpl_text_chunk_it it(chunks);
 
+	text_state->set_json_output();
+	text_state->set_vars(vars);
+	text_state->set_it(&it);
+
 	try {
-		it->output_json(text_state, vars, &it, final_result);
+		it->output_json(text_state, final_result);
 	}
 	catch (wpl_text_chunk_end_reached &e) {
 		/* Iteration complete :-) */
@@ -324,10 +269,11 @@ int wpl_text::output_as_json_var(wpl_state *state, wpl_value *final_result) {
 	io << "\": \"";
 
 	wpl_io_buffer buf;
+	state->set_io(buf);
+
+	run(state, final_result);
+
 	wpl_output_json json_io;
-
-	run(state, final_result, buf);
-
 	json_io.output_json(io, buf.c_str(), buf.size());
 
 	io << "\",\n";
@@ -349,76 +295,56 @@ void wpl_text::parse_expression(wpl_namespace *parent_namespace, wpl_expression 
 void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 	ignore_string_match(NEWLINE, NON_NEWLINE_WS);
 
+	char buf[WPL_VARNAME_SIZE+1];
+
+	if (par_level == 0) {
+		ignore_blockstart();
+		ignore_string_match(NEWLINE, WHITESPACE);
+		par_level++;
+	}
+
 	const char *start = get_string_pointer();
 	const char *end;
-	int par_level = 1;
+	const char *before_whitespace_end;
+
+	int whitespace_len = 0;
 	while (par_level > 0 && !at_end()) {
+		before_whitespace_end = get_string_pointer();
+		ignore_string_match(WHITESPACE|NEWLINE, 0);
 		end = get_string_pointer();
-		if (ignore_letter('{')) {
-			if (ignore_string("@LOOP")) {
-				push_chunk (start, end);
 
-				wpl_text *text =
-					new wpl_text();
-				wpl_expression *exp =
-					new wpl_expression_par_enclosed();
+		if (ignore_string("{@")) {
+			push_chunk (start, before_whitespace_end);
 
-				chunks.emplace_back(new wpl_text_chunks::loop(text, exp));
+			int len = ignore_letter('#');
+			len += ignore_string_match(WORD, 0);
+			revert_string(len);
 
-				parse_expression(parent_namespace, exp);
-				ignore_string_match(NEWLINE, NON_NEWLINE_WS);
-				parse_text(parent_namespace, text);
+			if (len) {
+				check_varname_length(len);
+				get_string(buf, len);
 
-				start = get_string_pointer();
-			}
-			else if (ignore_string("@CONDITION")) {
-				push_chunk (start, end);
+				if (const wpl_parse_and_run *block = global_types->find_parse_and_run(buf)) {
+					wpl_parse_and_run *new_block = block->new_instance();
+					chunks.emplace_back(new wpl_text_chunks::runable(new_block)); 
+					chunks.back()->set_position(get_position());
 
-				wpl_text *text =
-					new wpl_text();
-				wpl_expression *exp =
-					new wpl_expression_par_enclosed();
-				wpl_text *text_else = NULL;
+					new_block->load_position(get_position());
+					new_block->parse_value(parent_namespace);
+					load_position(new_block->get_position());
 
-				wpl_text_chunks::condition *condition = new wpl_text_chunks::condition(text, exp);
-				chunks.emplace_back(condition);
-
-				parse_expression(parent_namespace, exp);
-				ignore_string_match(NEWLINE, NON_NEWLINE_WS);
-				parse_text(parent_namespace, text);
-
-				start = get_string_pointer();
-			}
-			else if (ignore_string("@TEMPLATE")) {
-				push_chunk (start, end);
-
-				wpl_matcher_position pos = get_position();
-
-				char name[WPL_VARNAME_SIZE];
-				ignore_whitespace();
-				get_word(name);
-
-				wpl_template *my_template = parent_namespace->find_template(name);
-				if (!my_template) {
-					load_position(pos);
-					THROW_ELEMENT_EXCEPTION("Unknown template name");
+					goto noexpression;
 				}
-
-				chunks.emplace_back(new wpl_text_chunks::html_template(my_template));
-
-				ignore_whitespace();
-				if (!ignore_letter ('}')) {
-					THROW_ELEMENT_EXCEPTION("Expected } after TEMPLATE call definition");
+				else {
+					revert_string(len);
 				}
-
-				start = get_string_pointer();
 			}
-			else if (ignore_string("@")) {
-				push_chunk (start, end);
 
+			{
 				wpl_expression *exp =
 					new wpl_expression_loose_end();
 				chunks.emplace_back(new wpl_text_chunks::expression(exp));
+				chunks.back()->set_position(get_position());
 
 				exp->load_position(get_position());
 				exp->parse_value(parent_namespace);
@@ -428,12 +354,12 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 				if (!ignore_letter('}')) {
 					THROW_ELEMENT_EXCEPTION("Expected '}' after expression-in-TEXT");
 				}
-
-				start = get_string_pointer();
 			}
-			else {
-				par_level++;
-			}
+			noexpression:
+			start = get_string_pointer();
+		}
+		else if (ignore_letter('{')) {
+			par_level++;
 		}
 		else if (ignore_letter('}')) {
 			par_level--;
@@ -460,4 +386,18 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 	if (end > start) {
 		push_chunk (start, end);
 	}
+}
+
+#define ADD_TO_NS(classname) \
+	{									\
+		wpl_parse_and_run *block = new classname(new wpl_text(ns));	\
+		ns->add_managed_pointer(block);					\
+		ns->register_parse_and_run(block);				\
+	}									\
+
+void wpl_text_add_parse_and_run_to_ns(wpl_namespace *ns) {
+	ADD_TO_NS(wpl_block_if)
+	ADD_TO_NS(wpl_block_while)
+	ADD_TO_NS(wpl_block_for)
+	ADD_TO_NS(wpl_block_foreach)
 }

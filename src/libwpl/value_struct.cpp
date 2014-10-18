@@ -164,7 +164,7 @@ int wpl_value_struct::do_operator (
 	return (WPL_OP_UNKNOWN|WPL_OP_NO_RETURN);
 }
 
-void wpl_value_struct::notify_destructor(wpl_namespace_session *nss, wpl_io &io) {
+void wpl_value_struct::notify_destructor(wpl_state *state, wpl_namespace_session *nss, wpl_io &io) {
 	wpl_function *function = mother_struct->get_dtor();
 
 	if (!function) {
@@ -172,6 +172,6 @@ void wpl_value_struct::notify_destructor(wpl_namespace_session *nss, wpl_io &io)
 	}
 
 	wpl_value_void ret;
-	unique_ptr<wpl_state> state(function->new_state(this, &io));
-	function->run(state.get(), &ret);
+	unique_ptr<wpl_state> new_state(function->new_state(state, this, &io));
+	function->run(new_state.get(), &ret);
 }

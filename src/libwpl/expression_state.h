@@ -77,11 +77,12 @@ class wpl_expression_state : public wpl_state {
 	static const int CTX_LOOP = 1;
 
 	wpl_expression_state (
+			wpl_state *parent,
 			wpl_namespace_session *nss,
 			wpl_io *io,
 			const wpl_exp_deque<shunting_yard_carrier> &my_list
 			) :
-		wpl_state(nss, io),
+		wpl_state(parent, nss, io),
 		run_stack(my_list),
 		wait_stack(),
 		discard_chain(),
@@ -102,12 +103,8 @@ class wpl_expression_state : public wpl_state {
 		run_stack.save_pos();
 	}
 
-	wpl_namespace_session *get_nss() {
-		return nss;
-	}
-
 	wpl_variable *find_variable (const char *name) {
-		return nss->find_variable(name, WPL_NSS_CTX_SELF);
+		return get_nss()->find_variable(name, WPL_NSS_CTX_SELF);
 	}
 
 	wpl_state *get_child_state(int index) {
@@ -210,7 +207,7 @@ class wpl_expression_state : public wpl_state {
 		wpl_value_unresolved_identifier *unresolved,
 		wpl_value *final_result
 	) {
-		return nss->do_operator_on_unresolved (
+		return get_nss()->do_operator_on_unresolved (
 			unresolved,
 			this,
 			final_result,

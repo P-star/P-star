@@ -66,7 +66,7 @@ int wpl_expression_state::run_function (
 	}
 
 	if (!child_states[index].validate (nss_this)) {
-		child_states[index].set(function->new_state(get_nss(), nss_this, io), nss_this);
+		child_states[index].set(function->new_state(this, get_nss(), nss_this, &get_io()), nss_this);
 	}
 
 	wpl_function_state *function_state =
@@ -110,7 +110,7 @@ int wpl_expression_state::run_runable_operator(
 		throw runtime_error("Index out of range in wpl_expression_state");
 	}
 	if (!child_states[index].validate(runable)) {
-		wpl_state *new_state = runable->new_state(nss, io);
+		wpl_state *new_state = runable->new_state(this, get_nss(), &get_io());
 		child_states[index].set(new_state, runable);
 	}
 

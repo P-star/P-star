@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,33 +28,57 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "block.h"
-#include "operator_return_values.h"
-#include "debug.h"
+#include "block_conditional.h"
 
-#include <cstddef>
-
+class wpl_io;
 class wpl_value;
+class wpl_state;
+class wpl_namespace;
+class wpl_namespace_session;
 
-class wpl_block_if : public wpl_block {
-	private:
-	wpl_block_if *next_else_if;
+class wpl_block_if : public wpl_block_conditional {
+	const char *name = "if";
 
 	public:
-	wpl_block_if() {
-		next_else_if = NULL;
+	enum {
+		F_IF,
+		F_ELSE_IF,
+		F_ELSE
+	};
+
+	const int flag;
+	unique_ptr<wpl_block_if> next_else_if;
+
+	public:
+	wpl_block_if(wpl_parse_and_run *block, const int flag) :
+		wpl_block_conditional(block),
+		flag(F_IF)
+	{}
+	wpl_block_if(wpl_parse_and_run *block) :
+		wpl_block_conditional(block),
+		flag(F_IF)
+	{}
+	wpl_block_if(const wpl_block_if &copy) :
+		wpl_block_conditional(copy),
+		next_else_if(),
+		flag(F_IF)
+	{}
+	wpl_block_if(const wpl_block_if &copy, int flag) :
+		wpl_block_conditional(copy),
+		next_else_if(),
+		flag(flag)
+	{}
+
+	const char *get_name() const override {
+		return name;
 	}
 
-	~wpl_block_if() {
-		if (next_else_if) {
-			delete next_else_if;
-		}
+	wpl_block_if *new_instance() const override {
+		return new wpl_block_if(*this);
 	}
 
-	void set_next_else_if(wpl_block_if *next_else_if) {
-		this->next_else_if = next_else_if;
-	}
-
+	wpl_state *new_state (wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) override;
+	void parse_value(wpl_namespace *ns);
 	int run(wpl_state *state, wpl_value *final_result) override;
 };
 

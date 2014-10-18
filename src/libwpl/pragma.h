@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -28,28 +28,44 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "identifier.h"
-#include "runable.h"
 #include "template.h"
 #include "scene.h"
 #include "pragma_names.h"
 #include "namespace_session.h"
 #include "pragma_state.h"
 #include "expression.h"
+#include "parse_and_run.h"
 
 #include <cstring>
 
 class wpl_value;
 class wpl_namespace;
 
-class wpl_pragma : public wpl_identifier, public wpl_runable, public wpl_matcher {
+class wpl_pragma : public wpl_parse_and_run {
+	private:
+	const char terminator;
+
 	public:
-	wpl_pragma (const char *name) : wpl_identifier(name) {
+	wpl_pragma (const char *name, const char terminator) :
+		wpl_parse_and_run(name),
+		terminator(terminator)
+	{
+		if (terminator != ';' && terminator != '}') {
+			throw runtime_error("wrong terminator");
+		}
+	}
+	wpl_pragma (const wpl_pragma &copy) :
+		wpl_parse_and_run(copy),
+		terminator(copy.terminator)
+	{
 	}
 	virtual ~wpl_pragma() {}
-	virtual wpl_pragma *clone() const = 0;
-	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) override {
-		return new wpl_pragma_state(nss, io);
+	virtual wpl_pragma *new_instance() const = 0;
+	virtual void suicide() override {
+		delete this;
+	}
+	wpl_state *new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) override {
+		return new wpl_pragma_state(parent, nss, io);
 	}
 	void parse_default_end();
 	virtual void parse_value(wpl_namespace *parent_namespace) = 0;
@@ -63,10 +79,12 @@ class wpl_pragma_fixed_text : public wpl_pragma {
 	const char *text;
 
 	public:
-	wpl_pragma_fixed_text(const char *text, const char *name) : wpl_pragma (name) {
+	wpl_pragma_fixed_text(const char *text, const char *name, const char terminator) :
+		wpl_pragma (name, terminator)
+	{
 		this->text = text;
 	}
-	wpl_pragma *clone() const {
+	wpl_pragma *new_instance() const {
 		return new wpl_pragma_fixed_text(*this);
 	}
 	void parse_value(wpl_namespace *parent_namespace);
@@ -75,10 +93,11 @@ class wpl_pragma_fixed_text : public wpl_pragma {
 
 class wpl_pragma_json_begin : public wpl_pragma_fixed_text {
 	public:
-	wpl_pragma_json_begin () :
+	wpl_pragma_json_begin (const char terminator) :
 		wpl_pragma_fixed_text (
 				"Content-type: application/json\r\n\r\n{\n",
-				wpl_pragma_name_json_begin
+				wpl_pragma_name_json_begin,
+				terminator
 				)
 		{
 		}
@@ -86,8 +105,8 @@ class wpl_pragma_json_begin : public wpl_pragma_fixed_text {
 
 class wpl_pragma_json_end : public wpl_pragma_fixed_text {
 	public:
-	wpl_pragma_json_end () :
-		wpl_pragma_fixed_text ("\t\"\": \"\"\n}\n", wpl_pragma_name_json_end) {
+	wpl_pragma_json_end (const char terminator) :
+		wpl_pragma_fixed_text ("\t\"\": \"\"\n}\n", wpl_pragma_name_json_end, terminator) {
 	}
 };
 
@@ -97,14 +116,17 @@ class wpl_pragma_template_var : public wpl_pragma {
 	unique_ptr<wpl_expression> value_expression;
 
 public:
-	wpl_pragma_template_var() : wpl_pragma (wpl_pragma_name_template_var) {
+	wpl_pragma_template_var(const char terminator) :
+		wpl_pragma (wpl_pragma_name_template_var, terminator)
+	{
 		my_template = NULL;
 	}
 	wpl_pragma_template_var(const wpl_pragma_template_var &copy) :
-		wpl_pragma (copy) {
+		wpl_pragma (copy)
+	{
 		my_template = copy.my_template;
 	}
-	virtual wpl_pragma_template_var *clone() const {
+	virtual wpl_pragma_template_var *new_instance() const {
 		return new wpl_pragma_template_var(*this);
 	}
 	int run (wpl_state *state, wpl_value *final_result) override;
@@ -119,25 +141,22 @@ class wpl_pragma_template : public wpl_pragma {
 	wpl_template *get_template(wpl_pragma_state *pragma_state);
 
 	public:
-	wpl_pragma_template() :
-		wpl_pragma (wpl_pragma_name_template),
-		exp()
+	wpl_pragma_template(const char *name, const char terminator) :
+		wpl_pragma (name, terminator)
 	{
 		my_template = NULL;
 	}
-	wpl_pragma_template(const char *name) :
-		wpl_pragma (name),
-		exp()
+	wpl_pragma_template(const char terminator) :
+		wpl_pragma (wpl_pragma_name_template, terminator)
 	{
 		my_template = NULL;
 	}
 	wpl_pragma_template (const wpl_pragma_template &copy) :
-		wpl_pragma (copy),
-		exp()
+		wpl_pragma (copy)
 	{
 		my_template = NULL;
 	}
-	virtual wpl_pragma_template *clone() const {
+	virtual wpl_pragma_template *new_instance() const {
 		return new wpl_pragma_template(*this);
 	}
 	virtual int run(wpl_state *state, wpl_value *final_result) override;
@@ -146,9 +165,10 @@ class wpl_pragma_template : public wpl_pragma {
 
 class wpl_pragma_template_as_var : public wpl_pragma_template {
 	public:
-	wpl_pragma_template_as_var() : wpl_pragma_template (wpl_pragma_name_template_as_var) {
-	}
-	wpl_pragma_template_as_var *clone() const {
+	wpl_pragma_template_as_var(const char terminator) :
+		wpl_pragma_template (wpl_pragma_name_template_as_var, terminator)
+	{}
+	wpl_pragma_template_as_var *new_instance() const {
 		return new wpl_pragma_template_as_var(*this);
 	}
 	int run(wpl_state *state, wpl_value *final_result) override;
@@ -159,9 +179,10 @@ class wpl_pragma_scene : public wpl_pragma {
 	wpl_scene *my_scene;
 
 	public:
-	wpl_pragma_scene() : wpl_pragma (wpl_pragma_name_scene) {
-	}
-	virtual wpl_pragma_scene *clone() const {
+	wpl_pragma_scene(const char terminator) :
+		wpl_pragma (wpl_pragma_name_scene, terminator)
+	{}
+	virtual wpl_pragma_scene *new_instance() const {
 		return new wpl_pragma_scene(*this);
 	}
 	int run(wpl_state *state, wpl_value *final_result) override {
@@ -199,19 +220,23 @@ class wpl_pragma_text : public wpl_pragma {
 
 	public:
 	virtual ~wpl_pragma_text() {}
-	wpl_pragma_text(const char *name) : wpl_pragma(name) {}
+	wpl_pragma_text(const char *name, const char terminator) :
+		wpl_pragma(name, terminator)
+	{}
 
 	virtual void parse_value(wpl_namespace *parent_namespace);
 };
 
-class wpl_pragma_dump_file : wpl_pragma {
+class wpl_pragma_dump_file : public wpl_pragma {
 	private:
 	unique_ptr<wpl_expression> value_expression;
 	string static_filename;
 
 	public:
-	wpl_pragma_dump_file() : wpl_pragma("DUMP_FILE") {}
-	wpl_pragma_dump_file *clone() const {
+	wpl_pragma_dump_file(const char terminator) :
+		wpl_pragma(wpl_pragma_name_dump_file, terminator)
+	{}
+	wpl_pragma_dump_file *new_instance() const {
 		return new wpl_pragma_dump_file(*this);
 	}
 	wpl_pragma_dump_file (const wpl_pragma_dump_file &copy) : wpl_pragma(copy) {}
@@ -221,8 +246,10 @@ class wpl_pragma_dump_file : wpl_pragma {
 
 class wpl_pragma_text_content_type : public wpl_pragma_text {
 	public:
-	wpl_pragma_text_content_type() : wpl_pragma_text ("CONTENT_TYPE") {}
-	wpl_pragma_text_content_type *clone() const {
+	wpl_pragma_text_content_type(const char terminator) :
+		wpl_pragma_text (wpl_pragma_name_content_type, terminator)
+	{}
+	wpl_pragma_text_content_type *new_instance() const {
 		return new wpl_pragma_text_content_type(*this);
 	}
 	int run(wpl_state *state, wpl_value *final_result) override;

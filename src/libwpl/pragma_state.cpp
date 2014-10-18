@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -31,14 +31,14 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 int wpl_pragma_state::run_child (wpl_runable *child, int index, wpl_value *final_result){
 	if (child_state[index].get() == nullptr) {
-		child_state[index].reset(child->new_state(nss, io));
+		child_state[index].reset(child->new_state(this, get_nss(), &get_io()));
 	}
 	return child->run(child_state[index].get(), final_result);
 }
 
 wpl_state *wpl_pragma_state::get_child_state(wpl_runable *child, int index) {
 	if (child_state[index].get() == nullptr) {
-		child_state[index].reset(child->new_state(nss, io));
+		child_state[index].reset(child->new_state(this, get_nss(), &get_io()));
 	}
 	return child_state[index].get();
 }

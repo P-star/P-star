@@ -6,26 +6,43 @@ Content-type: text/html;
 	<title>P* Web Programmin Language test page</title>
 	</head>
 	<body>
-	<p>We have rows to print!</p>
-	<table>
-		<tr>
-			<th>ID</th>
-			<th>Description</th>
-		</tr>
- 		<tr>
+			<p>We have rows to print!</p>
+		<table>
+			<tr>
+				<th>ID</th>
+				<th>Description</th>
+			</tr>
+					<tr>
 			<td>1</td>
 			<td>First row</td>
 		</tr>
- 		<tr>
+
+		<tr>
 			<td>2</td>
 			<td>Second row</td>
 		</tr>
- 		<tr>
+
+		<tr>
 			<td>3</td>
 			<td>Third row</td>
 		</tr>
 
-	</table>
+		<tr>
+			<td>1</td>
+			<td>First row</td>
+		</tr>
+					<!-- i is 0 -->
+		<tr>
+			<td>2</td>
+			<td>Second row</td>
+		</tr>
+					<!-- i is 1, and a is 1  -->
+		<tr>
+			<td>3</td>
+			<td>Third row</td>
+		</tr>
+					<!-- i is other -->
 
-	</body>
+		</table>
+</body>
 	</html>

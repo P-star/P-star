@@ -40,6 +40,10 @@ wpl_value *wpl_value_array::define_if_needed(int index) {
 	return value;
 }
 
+void wpl_value_array::push_weak(wpl_value *value) {
+	define_if_needed(size())->set_weak(value);
+}
+
 int wpl_value_array::do_operator (
 		wpl_expression_state *exp_state,
 		wpl_value *final_result,
@@ -152,13 +156,17 @@ int wpl_value_array::do_operator_recursive (wpl_expression_state *exp_state, wpl
 
 		int ret = 0;
 
+		int orig_size = size();
+
 		wpl_value *value = get(index_mod);
 		wpl_value *value_next = get(index_mod+1);
 
+		while (size() > orig_size) {
+			pop();
+		}
+
 		if (value == NULL) {
-			wpl_value_bool result(0);
-			ret |= WPL_OP_RANGE_COMPLETE;
-			return result.do_operator_recursive(exp_state, final_result);
+			return WPL_OP_RANGE_COMPLETE | WPL_OP_RANGE_ABORT;
 		}
 		else if (value_next == NULL) {
 			ret |= WPL_OP_RANGE_COMPLETE;

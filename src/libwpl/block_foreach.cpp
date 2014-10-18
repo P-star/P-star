@@ -26,47 +26,42 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "value_bool.h"
-#include "value_constant_pointer.h"
+#include "block_state.h"
 #include "block_foreach.h"
-#include "expression.h"
+#include "block.h"
+#include "value_constant_pointer.h"
 
-#include <memory>
-
-wpl_block_foreach::wpl_block_foreach() :
-	exp_var(new wpl_expression()),
-	exp_condition(new wpl_expression_par_enclosed())
-{}
+wpl_state *wpl_block_foreach::new_state (wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) {
+	 return new wpl_block_foreach_state(parent, nss, io, this, get_block());
+}
 
 int wpl_block_foreach::run(wpl_state *state, wpl_value *final_result) {
 	int ret = WPL_OP_NO_RETURN;
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_block_foreach_state *block_state =
+		(wpl_block_foreach_state*) state;
 
 	wpl_value *var;
 	wpl_value_constant_pointer constant_pointer;
 	constant_pointer.set_do_finalize();
-	if (!(ret = block_state->run_init(exp_var.get(), &constant_pointer)) & WPL_OP_OK) {
+	if (!(ret = block_state->run_init(exp_init.get(), &constant_pointer)) & WPL_OP_OK) {
 		return ret;
 	}
-	var = constant_pointer.dereference();
-	var->set_do_finalize();
-
-	if (var == NULL) {
+	if ((var = constant_pointer.dereference()) == NULL) {
 		throw runtime_error("No constant found in foreach loop variable section");
 	}
+	var->set_do_finalize();
 
 	int i = 0;
 	int condition_ret;
-	while ((condition_ret = block_state->run_run_condition(exp_condition.get(), var, i)) & WPL_OP_OK) {
+	while ((condition_ret = block_state->run_condition(run_condition.get(), var, i)) & WPL_OP_OK) {
 		if (condition_ret & (WPL_OP_BREAK|WPL_OP_RANGE_ABORT)) {
 			return condition_ret & ~(WPL_OP_BREAK|WPL_OP_RANGE_ABORT) | ret;
 		}
 
-		ret = wpl_block::run(block_state, final_result);
+		ret = wpl_block_intermediate::run(block_state, final_result);
 		if (ret & (WPL_OP_BREAK|WPL_OP_RETURN)) {
 			return ret & ~WPL_OP_BREAK;
 		}
-
 		if (!(condition_ret & WPL_OP_RANGE)) {
 			return ret;
 		}
@@ -79,23 +74,34 @@ int wpl_block_foreach::run(wpl_state *state, wpl_value *final_result) {
 	return ret;
 }
 
-void wpl_block_foreach::parse_value (wpl_namespace *ns) {
-	set_parent_namespace(ns);
+void wpl_block_foreach::parse_value(wpl_namespace *ns) {
+	set_parent_namespace (ns);
+
+	exp_init.reset(new wpl_expression());
+
+	wpl_expression_par_enclosed *exp = new wpl_expression_par_enclosed();
+	run_condition.reset(exp);
 
 	ignore_whitespace();
 	if (!ignore_letter ('(')) {
 		THROW_ELEMENT_EXCEPTION("Expected '(' in foreach loop definition");
 	}
 
-	exp_var->load_position(get_position());
-	exp_var->parse_value(ns);
-	load_position(exp_var->get_position());
+	/*
+	   Allow declaration of variables inside init statement
+	   */
+	find_and_parse_complete_type();
 
-	exp_condition->insert_fake_open_par();
-	exp_condition->load_position(get_position());
-	exp_condition->parse_value(ns);
-	load_position(exp_condition->get_position());
+	exp_init->load_position(get_position());
+	exp_init->parse_value(this);
+	load_position(exp_init->get_position());
 
-	ignore_blockstart();
-	wpl_block::parse_value(this);
+	exp->insert_fake_open_par();
+	exp->load_position(get_position());
+	exp->parse_value(this);
+	load_position(exp->get_position());
+
+	get_block()->load_position(get_position());
+	get_block()->parse_value(this);
+	load_position(get_block()->get_position());
 }

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -45,6 +45,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "mysql_types.h"
 #include "../libwpl/namespace.h"
 #include "../libwpl/types.h"
+#include "../libwpl/global.h"
 
 using namespace std;
 
@@ -53,9 +54,20 @@ static wpl_sql sql;
 static wpl_type_MYSQL mysql_type_constant_MYSQL;
 static wpl_type_MYSQL_STMT mysql_type_constant_MYSQL_STMT;
 static wpl_type_MYSQL_ROW mysql_type_constant_MYSQL_ROW;
-	
+
+class wpl_global_mysql : public wpl_global {
+	public:
+	wpl_global_mysql() : wpl_global()
+	{
+		// Nothing fancy in SQL-block namespace (yet)
+	}
+};
+
+const wpl_global_mysql constant_global_mysql;
+const wpl_namespace *global_mysql_sql = &constant_global_mysql;
+
 #define REGISTER_TYPE(name)						\
-	new_register_parseable(&mysql_type_constant_##name);	\
+	register_parseable(&mysql_type_constant_##name);	\
 
 static bool is_initialized = false;
 static mutex is_initialized_lock;
@@ -68,7 +80,7 @@ class wpl_mysql : public wpl_namespace {
 		REGISTER_TYPE(MYSQL_STMT)
 		REGISTER_TYPE(MYSQL)
 
-		new_register_parseable(&sql);
+		register_parse_and_run(&sql);
 	}
 	~wpl_mysql() {
 	}

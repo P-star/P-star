@@ -28,69 +28,45 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "runable.h"
-#include "namespace.h"
+#include "block_parser.h"
 
-#include <stdint.h>
+#include <vector>
 
+class wpl_io;
+class wpl_value;
 class wpl_state;
-class wpl_expression;
+class wpl_namespace;
 class wpl_block_state;
-class wpl_type_complete;
-class wpl_type_complete;
-class wpl_type_incomplete;
-class wpl_type_template;
-class wpl_type;
-class wpl_variable;
+class wpl_namespace_session;
 
-using namespace std;
-
-class wpl_block : public wpl_runable, public wpl_namespace, public wpl_matcher {
+class wpl_block : public wpl_block_parser {
 	private:
-	int parse_statement_to_semicolon (const char **target, uint32_t match, uint32_t ignore);
-	list <unique_ptr<wpl_runable>> child_elements;
 	vector<struct wpl_matcher_position> child_positions;
+	vector<unique_ptr<wpl_runable>> child_elements;
 
-	void append_child (wpl_runable *element);
+	void append_child (unique_ptr<wpl_runable> element);
 	void append_child_position ();
-
-	template<typename T> void parse_element_set_namespace(T *obj);
-	template<typename T> void parse_element_send_namespace(T *obj);
-
-	void parse_expression (wpl_namespace *ns);
-	void parse_block (wpl_namespace *ns);
-	void parse_pragma (wpl_namespace *ns);
-
-	void parse_foreach(wpl_namespace *ns);
-	void parse_for(wpl_namespace *ns);
-	void parse_while(wpl_namespace *ns);
-	void parse_if_else_sequenze(wpl_namespace *ns);
-
-	void parse_text(wpl_namespace *ns);
-	void parse_parseable(wpl_namespace *ns, wpl_parseable *parseable);
-	void parse_comment();
-
-	static const int parse_f_none			= 0;
-	static const int parse_f_only_declarations	= 1<<0;
 
 	int run_children(wpl_block_state *block_state, wpl_value *final_result);
 
-	protected:
-	bool check_run(wpl_block_state *block_state);
-	wpl_expression *run_condition;
-
 	public:
 	wpl_block();
-	virtual ~wpl_block();
+	wpl_block(const wpl_block &copy) :
+		wpl_block_parser(copy),
+		child_positions(),
+		child_elements()
+	{}
+	virtual ~wpl_block() {}
 
-	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) override;
-
-	int run (wpl_state *state, wpl_value *final_result);
-
-	void parse_value(wpl_namespace *ns);
-
-	void set_run_condition(wpl_expression *exp) {
-		run_condition = exp;
+	virtual void suicide() override {
+		delete this;
 	}
-};
 
+	wpl_block *new_instance() const override {
+		return new wpl_block(*this);
+	}
+
+	wpl_state *new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) override;
+	int run (wpl_state *state, wpl_value *final_result) override;
+	void parse_value(wpl_namespace *ns);
+};

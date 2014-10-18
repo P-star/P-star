@@ -26,10 +26,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+#include "value_array.h"
 #include "value_hash.h"
 #include "value_int.h"
 #include "value_pointer.h"	
 #include "operator_types.h"
+#include "types.h"
 
 #include <string>
 
@@ -83,6 +85,18 @@ int wpl_value_hash::do_operator (
 	else if (op == &OP_COUNT) {
 		wpl_value_int count(size());
 		return count.do_operator_recursive(exp_state, final_result);
+	}
+	else if (op == &OP_KEYS) {
+		unique_ptr<wpl_type_complete> my_array_type (
+			wpl_type_global_array->new_instance(wpl_type_global_string)
+		);
+		unique_ptr<wpl_value_array> my_array (
+			(wpl_value_array*) my_array_type->new_instance()
+		);
+
+		get_keys(my_array.get());
+
+		return my_array->do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_POINTERTO) {
 		wpl_value_pointer result(exp_state->get_nss(), container_type, this);

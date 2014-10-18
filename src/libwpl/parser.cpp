@@ -91,12 +91,9 @@ void wpl_parser::parse_scene(wpl_namespace *parent_namespace) {
 		} while (ignore_letter (','));
 	}
 
-	ignore_blockstart();
-
-	scene->set_parent_namespace(parent_namespace);
-	scene->load_position(get_position());
-	scene->parse_value(scene);
-	load_position(scene->get_position());
+	scene->wpl_block_parser::load_position(get_position());
+	scene->parse_value(parent_namespace);
+	load_position(scene->wpl_block_parser::get_position());
 }
 
 void wpl_parser::parse_template(wpl_namespace *parent_namespace) {
@@ -105,8 +102,7 @@ void wpl_parser::parse_template(wpl_namespace *parent_namespace) {
 	wpl_template *my_template = new wpl_template(buf);
 	parent_namespace->register_identifier(my_template);
 
-	ignore_blockstart();
-
+	my_template->set_expect_blockstart();
 	my_template->load_position(get_position());
 	my_template->parse_value(parent_namespace);
 	load_position(my_template->get_position());

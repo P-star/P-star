@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -38,28 +38,45 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <unordered_map>
 
 class wpl_text;
-class wpl_expression;
+class wpl_runable;
+class wpl_text_chunk_it;
 
 class wpl_text_state : public wpl_state {
 	protected:
-	unordered_map<int,unique_ptr<wpl_state>> expression_states;
+	unordered_map<int,unique_ptr<wpl_state>> runable_states;
 	unordered_map<int,unique_ptr<wpl_state>> text_states;
 	unordered_map<int,unique_ptr<wpl_state>> template_states;
 
+	const set<wpl_value*> *vars;
+	wpl_text_chunk_it *it;
+
 	public:
-	wpl_text_state(wpl_namespace_session *nss, wpl_io *io, int children) :
-		wpl_state(nss, io)
+	wpl_text_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io, int children) :
+		wpl_state(parent, nss, io),
+		it(NULL)
 	{
-		expression_states.reserve(children/2);
+		runable_states.reserve(children/2);
 	}
-	wpl_namespace_session *get_nss() {
-		return nss;
+
+	void set_vars(const set<wpl_value*> &vars) {
+		this->vars = &vars;
 	}
+	const set<wpl_value*> &get_vars() {
+		return *vars;
+	}
+	void set_it(wpl_text_chunk_it *it) {
+		this->it = it;
+	}
+	wpl_text_chunk_it *get_it() {
+		return it;
+	}
+
 	wpl_state *get_exp_state(int index) {
-		return expression_states[index].get();
+		return runable_states[index].get();
 	}
-	int run_expression (
-			wpl_expression *exp,
+
+	int run_runable (
+			wpl_runable *runable,
 			int index,
 			wpl_value *final_result
 	);
@@ -72,7 +89,6 @@ class wpl_text_state : public wpl_state {
 	int run_text_output_json(
 			wpl_text *text,
 			int index,
-			const set<wpl_value*> &vars,
 			wpl_value *final_result
 	);
 };

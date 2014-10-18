@@ -29,6 +29,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "runable_operator.h"
 #include "state.h"
 
-wpl_state *wpl_runable_operator::new_state(wpl_namespace_session *nss, wpl_io *io) {
-	return new wpl_state(nss, io);
+wpl_state *wpl_runable_operator::new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) {
+	return new wpl_state(parent, nss, io);
 }

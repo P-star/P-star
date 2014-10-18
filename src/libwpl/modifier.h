@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -32,10 +32,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 class wpl_namespace;
 
-class wpl_modifier : public wpl_parseable {
+class wpl_modifier : public wpl_parseable_identifier {
 	protected:
 	wpl_modifier (const char *name) :
-		wpl_parseable(name)
+		wpl_parseable_identifier(name)
 	{}
 	void suicide() {
 		delete this;
@@ -70,5 +70,3 @@ class wpl_modifier_public : public wpl_modifier {
 		e.set_flags(WPL_VARIABLE_ACCESS_PUBLIC);
 	}
 };
-
-void wpl_modifier_add_all_to_namespace(wpl_namespace *parent_namespace);

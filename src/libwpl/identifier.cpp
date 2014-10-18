@@ -27,15 +27,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "identifier.h"
+#include "exception.h"
 
 #include <cstdio>
 #include <cstring>
 
 void wpl_identifier::set_name (const char *name) {
-	int chars = snprintf (this->name, WPL_VARNAME_SIZE, "%s", name);
-	if (chars > WPL_VARNAME_SIZE) {
-		throw runtime_error("Overflow in identifier name");
-	}
+	strncpy(this->name, name, WPL_VARNAME_SIZE);
 }
 
 void wpl_identifier::set_name(const char *name, int len) {
@@ -43,7 +41,6 @@ void wpl_identifier::set_name(const char *name, int len) {
 		throw runtime_error("Identifier name too long");
 	}
 	strncpy (this->name, name, len);
-	this->name[len] = '\0';
 }
 
 bool wpl_identifier::is_name (const char *name) const {

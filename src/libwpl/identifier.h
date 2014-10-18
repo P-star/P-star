@@ -28,8 +28,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "exception.h"
-#include "debug.h"
+#include <cstring>
 
 using namespace std;
 
@@ -46,16 +45,13 @@ class wpl_identifier {
 	wpl_identifier () {
 		this->name[0] = '\0';
 	}
-
 	wpl_identifier (const char *name) {
 		set_name (name);
 	}
-
-	virtual ~wpl_identifier() {
-#ifdef WPL_DEBUG_DESTRUCTION
-		DBG("I (" << this << "): Destructing identifier '" << name << "'\n");
-#endif
+	wpl_identifier (const wpl_identifier &copy) {
+		strncpy(name, copy.name, WPL_VARNAME_SIZE+1);
 	}
+	virtual ~wpl_identifier() {}
 
 	virtual void suicide() {
 		delete this;

@@ -62,8 +62,10 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 	wpl_value_array *clone() const {return new wpl_value_array(*this); };
 	wpl_value_array *clone_empty() const {return new wpl_value_array(container_type, template_type); }
 
-	void notify_destructor(wpl_namespace_session *nss, wpl_io &io) override {
-		wpl_array::notify_destructor(nss, io);
+	void push_weak(wpl_value *value);
+
+	void notify_destructor(wpl_state *state, wpl_namespace_session *nss, wpl_io &io) override {
+		wpl_array::notify_destructor(state, nss, io);
 	}
 
 	void reset() override {

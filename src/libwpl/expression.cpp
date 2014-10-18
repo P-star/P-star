@@ -29,7 +29,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "expression.h"
 #include "expression_state.h"
 #include "exception.h"
-#include "blocks.h"
 #include "string.h"
 #include "function.h"
 #include "operator.h"
@@ -54,8 +53,8 @@ using namespace std;
 wpl_expression::~wpl_expression() {
 }
 
-wpl_state *wpl_expression::new_state(wpl_namespace_session *nss, wpl_io *io) {
-	return new wpl_expression_state(nss, io, get_run_stack());
+wpl_state *wpl_expression::new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) {
+	return new wpl_expression_state(parent, nss, io, get_run_stack());
 }
 
 int wpl_expression::run (
@@ -119,11 +118,17 @@ void wpl_expression::add_constant (wpl_value *value) {
 
 const struct wpl_operator_struct *wpl_expression::find_operator(int flags) {
 	char tmp[WPL_OP_NAME_MAX_LENGTH+1];
+	memset(tmp, 0, WPL_OP_NAME_MAX_LENGTH+1);
 	const struct wpl_operator_struct *ret = NULL;
 
 	int len = search (NON_WHITESPACE, 0, false);
 	const char *pos = get_string_pointer();
+	const char *end = get_string_end();
 	int maxlen = std::min<int>(len,WPL_OP_NAME_MAX_LENGTH);
+
+	if (pos + maxlen > end) {
+		maxlen = (end-pos);
+	}
 
 	strncpy(tmp, pos, maxlen);
 
@@ -395,11 +400,11 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 			THROW_ELEMENT_EXCEPTION("Unexpected EOF in expression");
 		}
 
-		int operator_search_flags;
+		int operator_search_flags = 0;
 		if (expect & EXPECT_NUMBER) {
 			operator_search_flags = (
 				WPL_OP_F_RIGHT_ONE
-		);
+			);
 		}
 		else if (expect & EXPECT_OPERATOR) {
 			operator_search_flags = (
@@ -410,6 +415,9 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 		}
 
 		if (ignore_letter (';')) {
+			if (expect & EXPECT_END_ON_PAR) {
+				THROW_ELEMENT_EXCEPTION("Expected ) in expression, but found ;");
+			}
 			parse_semicolon();
 		}
 		else if (expect & EXPECT_SEMICOLON_END) {

@@ -49,9 +49,10 @@ using namespace boost::interprocess;
 using namespace std;
 
 void wpl_pragma::parse_default_end() {
-	ignore_string_match(WHITESPACE, 0);
-	if (!ignore_letter(';')) {
-		THROW_ELEMENT_EXCEPTION("Expected ';' after pragma");
+	ignore_whitespace();
+	if (!ignore_letter(terminator)) {
+		cerr << "While looking for terminator '" << terminator << "' after pragma '" << get_name() << "':\n";
+		THROW_ELEMENT_EXCEPTION("Could not find terminator");
 	}
 }
 
@@ -73,20 +74,18 @@ int wpl_pragma_template_var::run(wpl_state *state, wpl_value *final_result) {
 	set<wpl_value*> my_set;
 	my_set.insert(value_pointer.dereference());
 
+	wpl_state *text_state = pragma_state->get_child_state(my_template, 1);
+
 	my_template->output_json(
-			(wpl_text_state*) pragma_state->get_child_state(my_template, 1),
-			my_set,
-			final_result
-			);
+		text_state,
+		my_set,
+		final_result
+	);
 	return WPL_OP_OK;
 }
 
 void wpl_pragma_fixed_text::parse_value(wpl_namespace *parent_namespace) {
-	ignore_string_match(WHITESPACE, 0);
-	if (!ignore_letter(';')) {
-		cerr << "While parsing pragma '" << get_name() << "':\n";
-		THROW_ELEMENT_EXCEPTION("Expected ';' after pragma");
-	}
+	parse_default_end();
 }
 
 int wpl_pragma_fixed_text::run (wpl_state *state, wpl_value *final_result) {
@@ -262,20 +261,31 @@ void wpl_pragma_text::parse_value (wpl_namespace *parent_namespace) {
 
 	const char *end = get_string_pointer();
 
-	if (!ignore_letter (';')) {
-		THROW_ELEMENT_EXCEPTION("Expected ';' after pragma definition");
-	}
+	parse_default_end();
 
 	set_text(start, end);
 }
 
+#define REGISTER_PRAGMA_BLOCK(classname)				\
+	static classname constant_##classname(';');			\
+	my_namespace->register_parse_and_run(&constant_##classname);
+
+#define REGISTER_PRAGMA_TEXT(classname)					\
+	static classname constant_##classname('}');			\
+	my_namespace->register_parse_and_run(&constant_##classname);
+
 void wpl_pragma_add_all_to_namespace (wpl_namespace *my_namespace) {
-	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_text_content_type());
-	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_template());
-	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_template_as_var());
-	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_template_var());
-	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_scene());
-	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_json_begin());
-	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_json_end());
-	my_namespace->register_identifier((wpl_pragma *) new wpl_pragma_dump_file());
+	REGISTER_PRAGMA_BLOCK(wpl_pragma_text_content_type)
+	REGISTER_PRAGMA_BLOCK(wpl_pragma_template)
+	REGISTER_PRAGMA_BLOCK(wpl_pragma_template_as_var)
+	REGISTER_PRAGMA_BLOCK(wpl_pragma_template_var)
+	REGISTER_PRAGMA_BLOCK(wpl_pragma_scene)
+	REGISTER_PRAGMA_BLOCK(wpl_pragma_json_begin)
+	REGISTER_PRAGMA_BLOCK(wpl_pragma_json_end)
+	REGISTER_PRAGMA_BLOCK(wpl_pragma_dump_file)
+}
+void wpl_pragma_add_template_stuff_to_namespace (wpl_namespace *my_namespace) {
+	REGISTER_PRAGMA_TEXT(wpl_pragma_text_content_type)
+	REGISTER_PRAGMA_TEXT(wpl_pragma_template)
+	REGISTER_PRAGMA_TEXT(wpl_pragma_dump_file)
 }

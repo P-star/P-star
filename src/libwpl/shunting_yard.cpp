@@ -30,8 +30,6 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "shunting_yard.h"
 #include "exception.h"
 #include "expression.h"
-#include "block.h"
-#include "debug.h"
 
 void shunting_yard_queue::dump() {
 	cout << "\n\n-----------------\n";

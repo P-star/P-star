@@ -29,16 +29,18 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "runable.h"
-#include "parseable.h"
+#include "parse_and_run.h"
 #include "expression.h"
 #include "text_state.h"
-#include "namespace_session.h"
+#include "namespace.h"
 #include "io.h"
 
 #include <set>
 #include <deque>
+#include <memory>
 
 class wpl_value;
+class wpl_namespace_session;
 
 class wpl_text_chunk_end_reached {};
 class wpl_text_chunk_it;
@@ -46,12 +48,10 @@ class wpl_text_chunk_it;
 namespace wpl_text_chunks {
 	class base {
 		private:
+		wpl_matcher_position position;
 
 		public:
 		virtual ~base() {}
-		virtual bool isText() {
-			return false;
-		}
 		virtual int run (
 			wpl_text_state *state,
 			int index,
@@ -60,16 +60,18 @@ namespace wpl_text_chunks {
 		) = 0;
 		virtual int output_json (
 			wpl_text_state *state,
-			const set<wpl_value*> &vars,
-			wpl_text_chunk_it *it,
 			wpl_value *final_result
 		) = 0;
-		virtual int run_raw (
-			wpl_text_state *state,
-			int index,
-			wpl_value *final_result
-		) {
-			return WPL_OP_NO_RETURN;
+		virtual bool isText() {
+			return false;
+		}
+
+		void set_position(wpl_matcher_position position) {
+			this->position = position;
+		}
+
+		wpl_matcher_position get_position() const {
+			return position;
 		}
 	};
 
@@ -84,28 +86,17 @@ namespace wpl_text_chunks {
 			end(end)
 		{}
 		virtual ~text() {}
-		bool isText() override {
-			return true;
-		}
-		const char *get_start() const {
-			return start;
-		}
-		const char *get_end() const {
-			return end;
-		}
-		int length() const {
-			return end-start;
-		}
 
 		int run(wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
 		virtual int output_json (
 			wpl_text_state *state,
-			const set<wpl_value*> &vars,
-			wpl_text_chunk_it *it,
 			wpl_value *final_result
 		);
+		virtual bool isText() {
+			return true;
+		}
 	};
-
+/*
 	class html_template : public base {
 		private:
 		wpl_template *my_template;
@@ -119,32 +110,23 @@ namespace wpl_text_chunks {
 		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
 		int output_json (
 			wpl_text_state *state,
-			const set<wpl_value*> &vars,
-			wpl_text_chunk_it *it,
 			wpl_value *final_result
 		);
 	};
-
-	class textblock : public base {
+*/
+	class runable : public base {
 		private:
-		unique_ptr<wpl_text> text;
-
-		protected:
-		wpl_text *get_text() const {
-			return text.get();
-		}
+		unique_ptr<wpl_runable> block;
 
 		public:
-		textblock(wpl_text *text) :
-			text(text)
+		runable (wpl_runable *block) :
+			block(block)
 		{}
-		virtual ~textblock() {}
+		virtual ~runable() {}
 
-		int run(wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
-		virtual int output_json (
+		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
+		int output_json (
 			wpl_text_state *state,
-			const set<wpl_value*> &vars,
-			wpl_text_chunk_it *it,
 			wpl_value *final_result
 		);
 	};
@@ -160,58 +142,8 @@ namespace wpl_text_chunks {
 		virtual ~expression() {}
 
 		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
-		int run_raw (wpl_text_state *state, int index, wpl_value *final_result) override;
 		virtual int output_json (
 			wpl_text_state *state,
-			const set<wpl_value*> &vars,
-			wpl_text_chunk_it *it,
-			wpl_value *final_result
-		);
-	};
-
-	class exp_block : public textblock {
-		private:
-		unique_ptr<wpl_expression> exp;
-
-		public:
-		exp_block (wpl_text *text, wpl_expression *exp) :
-			textblock(text),
-			exp(exp)
-		{}
-		virtual ~exp_block() {}
-
-		bool check_condition (wpl_text_state *state, int index);
-	};
-
-	class loop : public exp_block {
-		public:
-		loop (wpl_text *text, wpl_expression *exp) :
-			exp_block(text, exp)
-		{}
-		virtual ~loop() {}
-
-		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
-		int output_json (
-			wpl_text_state *state,
-			const set<wpl_value*> &vars,
-			wpl_text_chunk_it *it,
-			wpl_value *final_result
-		);
-	};
-
-	class condition : public exp_block {
-		private:
-		public:
-		condition (wpl_text *text, wpl_expression *exp) :
-			exp_block(text, exp)
-		{}
-		virtual ~condition() {}
-
-		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
-		int output_json (
-			wpl_text_state *state,
-			const set<wpl_value*> &vars,
-			wpl_text_chunk_it *it,
 			wpl_value *final_result
 		);
 	};
@@ -263,25 +195,46 @@ class wpl_text_chunk_it {
 	}
 };
 
-class wpl_text : public wpl_runable, public wpl_parseable {
+class wpl_text : public wpl_parse_and_run {
 	protected:
 
 	private:
 	wpl_text_chunks::base *push_chunk(const char *start, const char *end);
 
+	const wpl_namespace *global_types;
+	int par_level = 1;
+
 	protected:
 	deque<unique_ptr<wpl_text_chunks::base>> chunks;
 
 	public:
-	wpl_text (const char *name) : wpl_parseable(name) {};
-	wpl_text () : wpl_parseable("TEXT") {};
+	wpl_text (const wpl_namespace *global_types) :
+		wpl_parse_and_run("TEXT"),
+		global_types(global_types),
+		par_level(1)
+	{};
+	wpl_text (const char *name, const wpl_namespace *global_types) :
+		wpl_parse_and_run(name),
+		global_types(global_types),
+		par_level(1)
+	{};
+	wpl_text(const wpl_text &copy) :
+		wpl_parse_and_run(copy),
+		global_types(copy.global_types),
+		par_level(1)
+	{}
+
 	virtual void suicide() override {
 		delete this;
 	}
 	virtual ~wpl_text() {}
 
-	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) {
-		return new wpl_text_state(nss, io, chunks.size());
+	wpl_text *new_instance() const override {
+		return new wpl_text(*this);
+	}
+
+	wpl_state *new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) override {
+		return new wpl_text_state(parent, nss, io, chunks.size());
 	}
 
 	private:
@@ -289,9 +242,12 @@ class wpl_text : public wpl_runable, public wpl_parseable {
 	void parse_expression(wpl_namespace *parent_namespace, wpl_expression *exp);
 
 	public:
-	virtual void parse_value(wpl_namespace *parent_namespace);
-	int run(wpl_state *state, wpl_value *final_result, wpl_io &io);
-	virtual int run(wpl_state *state, wpl_value *final_result);
+	void set_expect_blockstart() override {
+		par_level = 0;
+	}
+	virtual void parse_value(wpl_namespace *parent_namespace) override;
+	virtual int run(wpl_state *state, wpl_value *final_result) override;
+
 	int output_json(wpl_state *state, const set<wpl_value*> &vars, wpl_value *final_result);
 	int output_as_json_var(wpl_state *state, wpl_value *final_result);
 };
@@ -304,8 +260,8 @@ class wpl_text_var_io_method : public wpl_runable {
 	wpl_text_var_io_method(wpl_text *my_text) {
 		this->my_text = my_text;
 	}
-	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) {
-		return my_text->new_state(nss, io);
+	wpl_state *new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) {
+		return my_text->new_state(parent, nss, io);
 	}
 	int run (wpl_state *state, wpl_value *final_result) {
 		return my_text->output_as_json_var(state, final_result);

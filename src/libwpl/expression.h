@@ -116,7 +116,7 @@ class wpl_expression : public wpl_runable, public shunting_yard, public wpl_matc
 	}
 	virtual ~wpl_expression();
 
-	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io) override;
+	wpl_state *new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) override;
 
 	int run(wpl_state *exp_state, wpl_value *final_result) override;
 	int run(wpl_state *exp_state, wpl_value *final_result, int loop_number) override;
@@ -130,7 +130,7 @@ class wpl_expression_loose_end : public wpl_expression {
 
 	virtual ~wpl_expression_loose_end() {}
 	wpl_expression_loose_end() :
-		wpl_expression(EXPECT_LOOSE_END)
+		wpl_expression(EXPECT_LOOSE_END|EXPECT_NUMBER)
 	{}
 	void parse_value(wpl_namespace *parent_namespace) override {
 		parse(parent_namespace);
@@ -143,7 +143,7 @@ class wpl_expression_par_enclosed : public wpl_expression {
 
 	virtual ~wpl_expression_par_enclosed() {}
 	wpl_expression_par_enclosed() :
-		wpl_expression(EXPECT_OPEN_PAR|EXPECT_END_ON_PAR)
+		wpl_expression(EXPECT_OPEN_PAR|EXPECT_END_ON_PAR|EXPECT_NUMBER)
 	{}
 	void insert_fake_open_par();
 	void parse_value(wpl_namespace *parent_namespace) override {
