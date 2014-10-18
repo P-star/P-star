@@ -415,6 +415,9 @@ void wpl_expression::parse(wpl_namespace *parent_namespace) {
 		}
 
 		if (ignore_letter (';')) {
+			if (expect & EXPECT_END_ON_PAR) {
+				THROW_ELEMENT_EXCEPTION("Expected ) in expression, but found ;");
+			}
 			parse_semicolon();
 		}
 		else if (expect & EXPECT_SEMICOLON_END) {

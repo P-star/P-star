@@ -59,9 +59,10 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 wpl_text_chunks::base *wpl_text::push_chunk(const char *start, const char *end) {
 	wpl_text_chunks::base *chunk = new wpl_text_chunks::text(start, end);
 	chunks.emplace_back(chunk);
+	chunks.back()->set_position(get_position());
 	return chunk;
 }
-
+/*
 int wpl_text_chunks::html_template::run (
 		wpl_text_state *state,
 		int index,
@@ -70,7 +71,7 @@ int wpl_text_chunks::html_template::run (
 ) {
 	return state->run_text(my_template, index, final_result, io);
 }
-
+*/
 int wpl_text_chunks::text::run (
 		wpl_text_state *state,
 		int index,
@@ -176,7 +177,7 @@ int wpl_text_chunks::text::output_json (
 
 	return WPL_OP_NO_RETURN;
 }
-
+/*
 int wpl_text_chunks::html_template::output_json (
 		wpl_text_state *state,
 		wpl_value *final_result
@@ -184,7 +185,7 @@ int wpl_text_chunks::html_template::output_json (
 	state->run_text_output_json(my_template, state->get_it()->get_pos(), final_result);
 	return (*(++(*state->get_it())))->output_json(state, final_result);
 }
-
+*/
 int wpl_text_chunks::expression::output_json (
 		wpl_text_state *state,
 		wpl_value *final_result
@@ -223,7 +224,12 @@ int wpl_text::run(wpl_state *state, wpl_value *final_result) {
 
 	int index = 0;
 	for (auto &my_chunk : chunks) {
-		my_chunk->run(text_state, index, final_result, io);
+		try {
+			my_chunk->run(text_state, index, final_result, io);
+		}
+		catch (runtime_error &e) {
+			throw wpl_element_exception(e.what(), my_chunk->get_position());
+		}
 		index++;
 	}
 	return WPL_OP_NO_RETURN;
@@ -314,6 +320,7 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 				if (const wpl_parse_and_run *block = global_types->find_parse_and_run(buf)) {
 					wpl_parse_and_run *new_block = block->new_instance();
 					chunks.emplace_back(new wpl_text_chunks::runable(new_block)); 
+					chunks.back()->set_position(get_position());
 
 					new_block->load_position(get_position());
 					new_block->parse_value(parent_namespace);
@@ -330,6 +337,7 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 				wpl_expression *exp =
 					new wpl_expression_loose_end();
 				chunks.emplace_back(new wpl_text_chunks::expression(exp));
+				chunks.back()->set_position(get_position());
 
 				exp->load_position(get_position());
 				exp->parse_value(parent_namespace);
