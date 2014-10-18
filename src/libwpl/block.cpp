@@ -36,6 +36,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "block_while.h"
 #include "block_foreach.h"
 #include "block_for.h"
+#include "text.h"
 
 #include "global.h"
 
@@ -124,11 +125,19 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 			check_varname_length(len);
 			get_string(buf, len);
 
-			if (const wpl_parse_and_run *block = global_block->find_parse_and_run(buf)) {
+			const wpl_parse_and_run *block;
+			if (!(block = global_block->find_parse_and_run(buf))) {
+				block = find_parse_and_run(buf);
+			}
+
+			if (block) {
 				append_child_position();
 
 				wpl_parse_and_run *new_block = block->new_instance();
 				append_child(unique_ptr<wpl_runable>(new_block));
+
+				// Inform the child that we have not parsed any {
+				new_block->set_expect_blockstart();
 				parse_parse_and_run(new_block);
 			}
 			else {
@@ -203,6 +212,7 @@ void wpl_block_add_parse_and_run_to_ns(wpl_namespace *ns) {
 	ADD_TO_NS(wpl_block_while)
 	ADD_TO_NS(wpl_block_for)
 	ADD_TO_NS(wpl_block_foreach)
+	ADD_TO_NS(wpl_text)
 	wpl_modifier_add_all_to_namespace(ns);
 	wpl_pragma_add_all_to_namespace(ns);
 }

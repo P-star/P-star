@@ -54,6 +54,7 @@ class wpl_parse_and_run : public wpl_parseable, public wpl_runable {
 	virtual const char *get_name() const {
 		return name;
 	}
+	virtual void set_expect_blockstart() {}
 	virtual wpl_parse_and_run *new_instance() const = 0;
 	void parse_parseable_identifier(wpl_namespace *ns, wpl_parseable_identifier *parseable);
 };

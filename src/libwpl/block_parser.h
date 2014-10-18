@@ -58,7 +58,7 @@ class wpl_block_parser : public wpl_parse_and_run, public wpl_namespace {
 	unique_ptr<wpl_runable> parse_expression ();
 	unique_ptr<wpl_runable> parse_block ();
 
-	const wpl_parse_and_run *find_parse_and_run(const char *name);
+//	const wpl_parse_and_run *find_parse_and_run(const char *name);
 	void parse_parse_and_run(wpl_parse_and_run *block);
 	void parse_comment();
 	

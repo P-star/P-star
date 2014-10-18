@@ -102,8 +102,7 @@ void wpl_parser::parse_template(wpl_namespace *parent_namespace) {
 	wpl_template *my_template = new wpl_template(buf);
 	parent_namespace->register_identifier(my_template);
 
-	ignore_blockstart();
-
+	my_template->set_expect_blockstart();
 	my_template->load_position(get_position());
 	my_template->parse_value(parent_namespace);
 	load_position(my_template->get_position());

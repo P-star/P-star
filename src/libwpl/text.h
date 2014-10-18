@@ -202,6 +202,7 @@ class wpl_text : public wpl_parse_and_run {
 	wpl_text_chunks::base *push_chunk(const char *start, const char *end);
 
 	const wpl_namespace *global_types;
+	int par_level = 1;
 
 	protected:
 	deque<unique_ptr<wpl_text_chunks::base>> chunks;
@@ -209,15 +210,18 @@ class wpl_text : public wpl_parse_and_run {
 	public:
 	wpl_text (const wpl_namespace *global_types) :
 		wpl_parse_and_run("TEXT"),
-		global_types(global_types)
+		global_types(global_types),
+		par_level(1)
 	{};
 	wpl_text (const char *name, const wpl_namespace *global_types) :
 		wpl_parse_and_run(name),
-		global_types(global_types)
+		global_types(global_types),
+		par_level(1)
 	{};
 	wpl_text(const wpl_text &copy) :
 		wpl_parse_and_run(copy),
-		global_types(copy.global_types)
+		global_types(copy.global_types),
+		par_level(1)
 	{}
 
 	virtual void suicide() override {
@@ -238,6 +242,9 @@ class wpl_text : public wpl_parse_and_run {
 	void parse_expression(wpl_namespace *parent_namespace, wpl_expression *exp);
 
 	public:
+	void set_expect_blockstart() override {
+		par_level = 0;
+	}
 	virtual void parse_value(wpl_namespace *parent_namespace) override;
 	virtual int run(wpl_state *state, wpl_value *final_result) override;
 

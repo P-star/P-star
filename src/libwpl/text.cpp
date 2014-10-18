@@ -292,21 +292,22 @@ void wpl_text::parse_expression(wpl_namespace *parent_namespace, wpl_expression 
 	load_position(exp->get_position());
 }
 
-/*
-   TODO
-   This method smells really bad, restructure + fix it.
-   */
 void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 	ignore_string_match(NEWLINE, NON_NEWLINE_WS);
 
 	char buf[WPL_VARNAME_SIZE+1];
+
+	if (par_level == 0) {
+		ignore_blockstart();
+		ignore_string_match(NEWLINE, WHITESPACE);
+		par_level++;
+	}
 
 	const char *start = get_string_pointer();
 	const char *end;
 	const char *before_whitespace_end;
 
 	int whitespace_len = 0;
-	int par_level = 1;
 	while (par_level > 0 && !at_end()) {
 		before_whitespace_end = get_string_pointer();
 		ignore_string_match(WHITESPACE|NEWLINE, 0);
