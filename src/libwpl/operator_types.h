@@ -43,6 +43,7 @@ extern const wpl_operator_struct OP_INDIRECTION;
 extern const wpl_operator_struct OP_POINTERTO;
 extern const wpl_operator_struct OP_COUNT;
 extern const wpl_operator_struct OP_DEFINED;
+extern const wpl_operator_struct OP_KEYS;
 
 extern const wpl_operator_struct OP_IS_EMPTY;
 

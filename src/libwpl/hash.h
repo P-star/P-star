@@ -37,6 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <map>
 
 class wpl_value;
+class wpl_value_array;
 
 /**
  * @brief Hash implementation
@@ -48,6 +49,7 @@ class wpl_hash {
 	void erase(string &key);
 	void set(string &key, wpl_value *value);
 	wpl_value *get(string &key);
+	void get_keys(wpl_value_array *array);
 
 	protected:
 	wpl_hash () {};

@@ -114,7 +114,7 @@ class wpl_type_array : public wpl_type_template {
 		return new wpl_type_array(*this);
 	}
 
-	wpl_type_complete_template *new_instance (const wpl_type_complete *template_type) const {
+	wpl_type_array_instance *new_instance (const wpl_type_complete *template_type) const {
 		return new wpl_type_array_instance(this, template_type);
 	}
 };

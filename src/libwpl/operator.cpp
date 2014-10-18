@@ -63,6 +63,7 @@ const wpl_operator_struct OP_POINTERTO("&", 1, WPL_OP_F_RIGHT_ONE_BIG, 1);
 const wpl_operator_struct OP_COUNT("@", 2, WPL_OP_F_RIGHT_ONE_BIG, 1);
 const wpl_operator_struct OP_IS_EMPTY("isempty", 2, WPL_OP_F_RIGHT_ONE_BIG, 7);
 const wpl_operator_struct OP_DEFINED("defined", 2, WPL_OP_F_RIGHT_ONE_BIG, 7);
+const wpl_operator_struct OP_KEYS("keys", 2, WPL_OP_F_RIGHT_ONE_BIG, 4);
 
 const wpl_operator_struct OP_INC_SUFFIX("++", 2, WPL_OP_F_LEFT_ONE_BIG, 2);
 const wpl_operator_struct OP_DEC_SUFFIX("--", 2, WPL_OP_F_LEFT_ONE_BIG, 2);
@@ -168,6 +169,7 @@ static const struct wpl_operator_struct *operators[] = {
 	&OP_POINTERTO,
 	&OP_COUNT,
 	&OP_DEFINED,
+	&OP_KEYS,
 
 	&OP_DEC_SUFFIX,
 	&OP_DEC_PREFIX,

@@ -29,6 +29,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "hash.h"
 #include "value.h"
 #include "value_hash.h"
+#include "value_array.h"
+#include "value_string.h"
 #include "output_json.h"
 
 #include <memory>
@@ -49,6 +51,13 @@ void wpl_hash::erase(string &key) {
 
 void wpl_hash::set(string &key, wpl_value *value) {
 	hash[key] = unique_ptr<wpl_value>(value);
+}
+
+void wpl_hash::get_keys(wpl_value_array *array) {
+	for (auto &my_pair : hash) {
+		wpl_value_string key(my_pair.first);
+		array->push_weak(&key);
+	}
 }
 
 void wpl_hash::notify_destructor (wpl_state *state, wpl_namespace_session *nss, wpl_io &io) {

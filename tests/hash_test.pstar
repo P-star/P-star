@@ -19,9 +19,7 @@ SCENE main {
 	}
 
 	/* Create an array of the keys */
-	array<string> pet_keys;
-	pet_keys[0] = "dog";
-	pet_keys[1] = "cat";
+	array<string> pet_keys = keys(my_pets);
 
 	/* Count the elements of the hash and print to standard output */
 	echo "I have " . @my_pets . " pets and we have " . @pet_keys . " keys.\n";

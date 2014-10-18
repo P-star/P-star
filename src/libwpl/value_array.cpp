@@ -40,6 +40,10 @@ wpl_value *wpl_value_array::define_if_needed(int index) {
 	return value;
 }
 
+void wpl_value_array::push_weak(wpl_value *value) {
+	define_if_needed(size())->set_weak(value);
+}
+
 int wpl_value_array::do_operator (
 		wpl_expression_state *exp_state,
 		wpl_value *final_result,
