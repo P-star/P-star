@@ -37,6 +37,14 @@ wpl_array::wpl_array (const wpl_array &copy) {
 	}
 }
 
+void wpl_array::pop() {
+	wpl_value *value = array.back();
+	array.pop_back();
+	if (value) {
+		delete value;
+	}
+}
+
 void wpl_array::set(int index, wpl_value *value) {
 	if (index >= array.size()) {
 		array.resize(index+1, NULL);
