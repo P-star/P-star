@@ -29,8 +29,6 @@ HTML_TEMPLATE document {
 				{@#HTML_TEMPLATE rowforeach}
 			}
 			{@for (int i = 0; i < @rows; i++)
-				Row is {@i}
-				Rows is {@@rows}
 				{@#HTML_TEMPLATE rowfor}
 			}
 		</table>

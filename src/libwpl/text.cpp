@@ -303,11 +303,17 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 
 	const char *start = get_string_pointer();
 	const char *end;
+	const char *before_whitespace_end;
+
+	int whitespace_len = 0;
 	int par_level = 1;
 	while (par_level > 0 && !at_end()) {
+		before_whitespace_end = get_string_pointer();
+		ignore_string_match(WHITESPACE|NEWLINE, 0);
 		end = get_string_pointer();
+
 		if (ignore_string("{@")) {
-			push_chunk (start, end);
+			push_chunk (start, before_whitespace_end);
 
 			int len = ignore_letter('#');
 			len += ignore_string_match(WORD, 0);
