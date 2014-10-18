@@ -65,4 +65,6 @@ SCENE main {
 	#CONTENT_TYPE text/html;
 
 	#HTML_TEMPLATE document;
+
+	return 0;
 }
