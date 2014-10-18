@@ -237,5 +237,5 @@ wpl_type_file::wpl_type_file() :
 wpl_type_file constant_type_file;
 
 void wpl_type_file_register (wpl_namespace *target) {
-	target->new_register_parseable(&constant_type_file);
+	target->register_parseable(&constant_type_file);
 }

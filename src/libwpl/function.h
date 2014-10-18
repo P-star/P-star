@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -72,8 +72,9 @@ class wpl_function : public wpl_identifier_access_holder, public wpl_runable, pu
 		return true;
 	}
 
-	wpl_state *new_state(wpl_namespace_session *nss_this, wpl_io *io);
+	wpl_state *new_state(wpl_state *parent, wpl_namespace_session *nss_this, wpl_io *io);
 	wpl_state *new_state(
+			wpl_state *parent, 
 			wpl_namespace_session *nss_call_ctx,
 			wpl_namespace_session *nss_this,
 			wpl_io *io

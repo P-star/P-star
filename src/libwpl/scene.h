@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -41,8 +41,8 @@ class wpl_scene : public wpl_block, public wpl_identifier {
 	wpl_scene (const char *name) : wpl_identifier(name) {}
 	virtual ~wpl_scene() {}
 
-	wpl_state *new_state(wpl_namespace_session *nss, wpl_io *io);
-	int run (wpl_state *state, wpl_value *final_result);
+	wpl_state *new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) override;
+	int run (wpl_state *state, wpl_value *final_result) override;
 
 	void add_base (wpl_scene *base) {
 		base_scenes.push_back(base);

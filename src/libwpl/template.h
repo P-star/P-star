@@ -32,7 +32,11 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "identifier.h"
 #include "value.h"
 
+#include "global.h"
+
 #include <set>
+
+extern const wpl_global_template *global_template;
 
 class wpl_template : public wpl_text {
 	private:
@@ -42,7 +46,7 @@ class wpl_template : public wpl_text {
 	};
 
 	public:
-	wpl_template (const char *name) : wpl_text(name) {}
+	wpl_template (const char *name) : wpl_text(name, global_template) {}
 	virtual ~wpl_template() {}
 	virtual void suicide() override {
 		delete this;

@@ -283,12 +283,12 @@ class wpl_matcher {
 		return false;
 	}
 
-	inline bool ignore_letter (const char letter) {
+	inline int ignore_letter (const char letter) {
 		if (text_rpos[0] == letter) {
 			text_rpos++;
-			return true;
+			return 1;
 		}
-		return false;
+		return 0;
 	}
 
 	inline void ignore_string (const int len) {

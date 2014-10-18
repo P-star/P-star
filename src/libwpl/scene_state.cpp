@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -32,15 +32,16 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_function_ptr.h"
 
 wpl_scene_state::wpl_scene_state (
-		wpl_namespace_session *parent,
+		wpl_state *parent,
+		wpl_namespace_session *nss,
 		wpl_io *io,
 		wpl_namespace *template_namespace,
 		list<wpl_scene*> base_scenes
 		) :
-	wpl_block_state (parent, io, template_namespace)
+	wpl_block_state (parent, nss, io, template_namespace)
 {
 	for (wpl_scene *base : base_scenes) {
-		base_states.emplace_back((wpl_scene_state*) base->new_state(parent, io));
+		base_states.emplace_back((wpl_scene_state*) base->new_state(parent, nss, io));
 	}
 }
 

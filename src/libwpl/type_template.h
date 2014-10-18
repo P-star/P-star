@@ -30,14 +30,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "type.h"
 
-/**
- * @brief Type for template types like array<type>
- */
-
 class wpl_type_complete;
 class wpl_type_complete_template;
 class wpl_namespace;
 
+/**
+ * @brief Type for template types like array<type>
+ */
 class wpl_type_template : public wpl_type {
 	private:
 	wpl_type_complete *register_unique_complete_type (wpl_namespace *parent_namespace, const wpl_type_complete *type);

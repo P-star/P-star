@@ -36,6 +36,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "../libwpl/variable.h"
 #include "value_sql.h"
 #include "../libwpl/value_constant_pointer.h"
+#include "../libwpl/io.h"
 
 #include <string>
 #include <iostream>
@@ -46,7 +47,9 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 void wpl_sql::get_params(wpl_text_state *text_state, vector<wpl_value*> &params) {
 	for (wpl_text_chunk_it it (chunks); it; it.inc()) {
 		wpl_value_constant_pointer retriever;
-		if (!(it->run_raw(text_state, it.get_pos(), &retriever) & WPL_OP_OK)) {
+		wpl_io_void io;
+
+		if (!(it->run(text_state, it.get_pos(), &retriever, io) & WPL_OP_OK)) {
 			wpl_value *value = retriever.dereference();
 			continue;
 		}

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -26,37 +26,30 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "value_bool.h"
 #include "block_for.h"
-#include "expression.h"
+#include "block_state.h"
+#include "block.h"
 
-#include <memory>
-
-wpl_block_for::wpl_block_for() :
-	exp_init(new wpl_expression()),
-	exp_condition(new wpl_expression()),
-	exp_increment(new wpl_expression_par_enclosed())
-{}
+wpl_state *wpl_block_for::new_state (wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) {
+	 return new wpl_block_for_state(parent, nss, io, this, get_block());
+}
 
 int wpl_block_for::run(wpl_state *state, wpl_value *final_result) {
 	int ret = WPL_OP_NO_RETURN;
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_block_for_state *block_state =
+		(wpl_block_for_state*) state;
 
 	ret = block_state->run_init(exp_init.get(), final_result);
 
-	wpl_value_bool result;
-	result.set_do_finalize();
-	while ((ret = block_state->run_run_condition(exp_condition.get(), &result) & WPL_OP_OK) &&
-		result.get()
-	) {
-		ret = wpl_block::run(block_state, final_result);
+	while (check_run(block_state)) {
+		ret = wpl_block_intermediate::run(block_state, final_result);
 
 		if (ret & (WPL_OP_BREAK|WPL_OP_RETURN)) {
 			ret &= ~(WPL_OP_BREAK);
 			break;
 		}
 
-		ret = block_state->run_increment(exp_increment.get(), final_result);
+		ret = block_state->run_continue(exp_continue.get(), final_result);
 	}
 
 	return ret;
@@ -65,25 +58,39 @@ int wpl_block_for::run(wpl_state *state, wpl_value *final_result) {
 void wpl_block_for::parse_value (wpl_namespace *ns) {
 	set_parent_namespace(ns);
 
+	/*
+	   Three expressions, like for (init ; condition ; continue) {
+	   */
+	exp_init.reset(new wpl_expression());
+	exp_continue.reset(new wpl_expression_par_enclosed());
+	wpl_expression *exp = new wpl_expression();
+	run_condition.reset(exp);
+
 	ignore_whitespace();
 	if (!ignore_letter ('(')) {
 		THROW_ELEMENT_EXCEPTION("Expected '(' in for loop definition");
 	}
 
+	/*
+	   Allows us to declare a variable inside the init section
+	   */
+	find_and_parse_complete_type();
+
 	exp_init->load_position(get_position());
 	exp_init->parse_value(ns);
 	load_position(exp_init->get_position());
 
-	exp_condition->load_position(get_position());
-	exp_condition->parse_value(ns);
-	load_position(exp_condition->get_position());
+	exp->load_position(get_position());
+	exp->parse_value(ns);
+	load_position(exp->get_position());
 
 	// This expression catches the end parantheses ')'
-	exp_increment->insert_fake_open_par();
-	exp_increment->load_position(get_position());
-	exp_increment->parse_value(ns);
-	load_position(exp_increment->get_position());
+	exp_continue->insert_fake_open_par();
+	exp_continue->load_position(get_position());
+	exp_continue->parse_value(ns);
+	load_position(exp_continue->get_position());
 
-	ignore_blockstart();
-	wpl_block::parse_value(this);
+	get_block()->load_position(get_position());
+	get_block()->parse_value(this);
+	load_position(get_block()->get_position());
 }

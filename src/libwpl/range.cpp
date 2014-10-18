@@ -105,9 +105,8 @@ wpl_range::wpl_range (
 	}
 }
 
-wpl_state *wpl_range::new_state (wpl_namespace_session *nss, wpl_io *io) {
-	wpl_state *state = new wpl_range_state (nss, io, counter_begin, counter_end);
-	return state;
+wpl_state *wpl_range::new_state (wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) {
+	return new wpl_range_state(parent, nss, io, counter_begin, counter_end);
 }
 
 int wpl_range::run (

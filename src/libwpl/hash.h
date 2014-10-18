@@ -58,7 +58,7 @@ class wpl_hash {
 	int size() {
 		return hash.size();
 	}
-	void notify_destructor (wpl_namespace_session *nss, wpl_io &io);
+	void notify_destructor (wpl_state *state, wpl_namespace_session *nss, wpl_io &io);
 };
 
 /**

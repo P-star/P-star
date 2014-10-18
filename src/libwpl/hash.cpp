@@ -51,11 +51,11 @@ void wpl_hash::set(string &key, wpl_value *value) {
 	hash[key] = unique_ptr<wpl_value>(value);
 }
 
-void wpl_hash::notify_destructor (wpl_namespace_session *nss, wpl_io &io) {
+void wpl_hash::notify_destructor (wpl_state *state, wpl_namespace_session *nss, wpl_io &io) {
 	for (auto &my_pair : hash) {
 		wpl_value *value = my_pair.second.get();
 		if (value) {
-			value->notify_destructor(nss, io);
+			value->notify_destructor(state, nss, io);
 		}
 	}
 }

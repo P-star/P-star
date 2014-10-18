@@ -1,7 +1,7 @@
 HTML_TEMPLATE row {
 		<tr>
-			<td>{@rows[row_counter]->id}</td>
-			<td>{@rows[row_counter]->description}</td>
+			<td>{@my_row->id}</td>
+			<td>{@my_row->description}</td>
 		</tr>
 }
 
@@ -12,16 +12,18 @@ HTML_TEMPLATE document {
 	<title>{@title}</title>
 	</head>
 	<body>
-{@CONDITION (@rows > 0)
-	<p>We have rows to print!</p>
-	<table>
-		<tr>
-			<th>ID</th>
-			<th>Description</th>
-		</tr>
-{@LOOP (++row_counter < @rows) {@TEMPLATE row} }
-	</table>
-}
+	{@if (@rows > 0)
+		<p>We have rows to print!</p>
+		<table>
+			<tr>
+				<th>ID</th>
+				<th>Description</th>
+			</tr>
+			{@foreach (auto my_row; rows)
+				{@#HTML_TEMPLATE row}
+			}
+		</table>
+	}
 	</body>
 	</html>
 }
@@ -46,6 +48,5 @@ SCENE main {
 
 	#CONTENT_TYPE text/html;
 
-	int row_counter = "-1";
 	#HTML_TEMPLATE document;
 }

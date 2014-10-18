@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -26,21 +26,80 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "debug.h"
+#include "expression.h"
 #include "block_state.h"
 #include "block_if.h"
+#include "block.h"
+
+#include "blocks.h"
+
+wpl_state *wpl_block_if::new_state (wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) {
+	 return new wpl_block_if_state(parent, nss, io, this, get_block());
+}
 
 int wpl_block_if::run(wpl_state *state, wpl_value *final_result) {
 	int ret = WPL_OP_NO_RETURN;
 
-	wpl_block_state *block_state = (wpl_block_state*) state;
+	wpl_block_if_state *block_state =
+		(wpl_block_if_state*) state;
 
-	if (check_run(block_state)) {
-		ret = wpl_block::run(state, final_result);
+	if (flag == F_ELSE || check_run(block_state)) {
+		ret = wpl_block_intermediate::run(state, final_result);
 	}
-	else if (next_else_if) {
-		ret = block_state->run_next_else_if (next_else_if, final_result);
+	else if (next_else_if.get()) {
+		ret = block_state->run_next_else_if (next_else_if.get(), final_result);
 	}
 
 	return ret;
+}
+
+void wpl_block_if::parse_value(wpl_namespace *ns) {
+	set_parent_namespace (ns);
+
+	wpl_namespace *use_parent_namespace;
+
+	if (flag == F_ELSE) {
+		/* No need for intermediate NS in else blocks */
+		use_parent_namespace = ns;
+	}
+	else {
+		use_parent_namespace = this;
+
+		wpl_expression_par_enclosed *exp = new wpl_expression_par_enclosed();
+		run_condition.reset(exp);
+
+		ignore_whitespace();
+		if (!ignore_letter ('(')) {
+			THROW_ELEMENT_EXCEPTION("Expected '(' in if definition");
+		}
+		/*
+		   Allow declaration inside if conditinal statement
+		 */
+		find_and_parse_complete_type();
+
+		exp->insert_fake_open_par();
+		exp->load_position(get_position());
+		exp->parse_value(this);
+		load_position(exp->get_position());
+	}
+
+	get_block()->load_position(get_position());
+	get_block()->parse_value(use_parent_namespace);
+	load_position(get_block()->get_position());
+
+	ignore_whitespace();
+
+	if (ignore_string (wpl_blockname_else_if)) {
+		next_else_if.reset(new wpl_block_if(*this, F_ELSE_IF));
+	}
+	else if (ignore_string (wpl_blockname_else)) {
+		next_else_if.reset(new wpl_block_if(*this, F_ELSE));
+	}
+	else {
+		return;
+	}
+
+	next_else_if->load_position(get_position());
+	next_else_if->parse_value(ns);
+	load_position(next_else_if->get_position());
 }

@@ -114,7 +114,7 @@ class wpl_value_struct : public wpl_value, public wpl_namespace_session {
 		return true;
 	}
 
-	void notify_destructor(wpl_namespace_session *nss, wpl_io &io) override;
+	void notify_destructor(wpl_state *state, wpl_namespace_session *nss, wpl_io &io) override;
 
 #ifdef WPL_DEBUG_EXPRESSIONS
 	string toString() {

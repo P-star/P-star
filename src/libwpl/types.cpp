@@ -149,7 +149,7 @@ wpl_value *wpl_type_void::new_instance() const {
 }
 
 #define REGISTER_TYPE(name) \
-	name_space->new_register_parseable(&constant_type_##name); \
+	name_space->register_parseable(&constant_type_##name); \
 	name_space->add_type(&constant_type_##name);
 
 // From type_file.cpp
