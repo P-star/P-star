@@ -39,5 +39,21 @@ class wpl_value_void : public wpl_value_holder<wpl_void> {
 	wpl_value_void *clone() const {
 		return new wpl_value_void(*this);
 	}
+
+	/* Allow output, but do nothing */
+	void output(wpl_io &io) override {}
+
+	/* Allow finalize, but don't set */
+	int finalize_expression(wpl_expression_state *exp_state, wpl_value *final_result) override {
+		return WPL_OP_NO_RETURN;
+	}
+
+	/* Return 0 for toInt() */
+	int toInt() override {
+		return 0;
+	}
+	string toString() const override {
+		return string();
+	}
 };
 

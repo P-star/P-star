@@ -40,6 +40,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <memory>
 
 class wpl_value;
+class wpl_value_array;
 class wpl_namespace_session;
 
 class wpl_text_chunk_end_reached {};
@@ -96,31 +97,16 @@ namespace wpl_text_chunks {
 			return true;
 		}
 	};
-/*
-	class html_template : public base {
-		private:
-		wpl_template *my_template;
 
-		public:
-		html_template (wpl_template *my_template) :
-			my_template(my_template)
-		{}
-		virtual ~html_template() {}
-
-		int run (wpl_text_state *state, int index, wpl_value *final_result, wpl_io &io) override;
-		int output_json (
-			wpl_text_state *state,
-			wpl_value *final_result
-		);
-	};
-*/
 	class runable : public base {
 		private:
 		unique_ptr<wpl_runable> block;
+		int tabs;
 
 		public:
-		runable (wpl_runable *block) :
-			block(block)
+		runable (wpl_runable *block, int tabs) :
+			block(block),
+			tabs(tabs)
 		{}
 		virtual ~runable() {}
 
@@ -212,12 +198,12 @@ class wpl_text : public wpl_parse_and_run {
 		wpl_parse_and_run("TEXT"),
 		global_types(global_types),
 		par_level(1)
-	{};
+	{}
 	wpl_text (const char *name, const wpl_namespace *global_types) :
 		wpl_parse_and_run(name),
 		global_types(global_types),
 		par_level(1)
-	{};
+	{}
 	wpl_text(const wpl_text &copy) :
 		wpl_parse_and_run(copy),
 		global_types(copy.global_types),
@@ -248,7 +234,7 @@ class wpl_text : public wpl_parse_and_run {
 	virtual void parse_value(wpl_namespace *parent_namespace) override;
 	virtual int run(wpl_state *state, wpl_value *final_result) override;
 
-	int output_json(wpl_state *state, const set<wpl_value*> &vars, wpl_value *final_result);
+	int output_json(wpl_state *state, const wpl_value_array *vars, wpl_value *final_result);
 	int output_as_json_var(wpl_state *state, wpl_value *final_result);
 };
 

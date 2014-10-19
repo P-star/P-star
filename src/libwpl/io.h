@@ -41,6 +41,9 @@ class wpl_io {
 	char buf[256];
 
 	public:
+	wpl_io (const wpl_io &copy) = delete;
+	wpl_io () {}
+
 	wpl_io &operator<< (const char *rhs) {
 		write(rhs, strlen(rhs));
 		return *this;
@@ -126,6 +129,7 @@ class wpl_io_standard : public wpl_io {
 class wpl_io_string_wrapper : public wpl_io {
 	private:
 	string &target;
+
 	public:
 	wpl_io_string_wrapper (string &target) :
 		target(target)
@@ -144,6 +148,12 @@ class wpl_io_string_wrapper : public wpl_io {
 	}
 	void debug (const char *str) override {
 		throw runtime_error("wpl_io_string_wrapper::debug(): Not supported");
+	}
+	const char *c_str() const {
+		return target.c_str();
+	}
+	int size() const {
+		return target.size();
 	}
 };
 

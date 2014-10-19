@@ -60,6 +60,9 @@ class wpl_value_vstring : public wpl_value {
 		char* operator* () {
 			return data;
 		}
+		const char* operator* () const {
+			return data;
+		}
 		char &operator[] (const int i) {
 			return data[i];
 		}
@@ -120,8 +123,9 @@ class wpl_value_vstring : public wpl_value {
 	double toDouble() {
 		return strtod (*my_vstring, NULL);
 	}
-	string toString() {
-		return string(*my_vstring);
+	string toString() const {
+		string ret(*my_vstring);
+		return ret;
 	}
 	char *toVoid() {
 		return *my_vstring;

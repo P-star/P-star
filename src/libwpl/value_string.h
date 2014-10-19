@@ -105,7 +105,7 @@ class wpl_value_string : public wpl_value_strings<string>, public wpl_parasite_h
 	double toDouble() {
 		return strtod (value.c_str(), NULL);
 	}
-	string toString() {
+	string toString() const override {
 		return value;
 	}
 	string &rawToString() {

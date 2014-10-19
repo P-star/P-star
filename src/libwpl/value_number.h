@@ -143,7 +143,7 @@ template<typename A> class wpl_value_number : public wpl_value_holder<A> {
 	double toDouble() override {
 		return (double) wpl_value_holder<A>::value;
 	}
-	string toString() override {
+	string toString() const override {
 		return to_string(wpl_value_holder<A>::value);
 	}
 };

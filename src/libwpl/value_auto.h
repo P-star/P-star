@@ -211,7 +211,7 @@ class wpl_value_auto : public wpl_value {
 	bool toBool() override {
 		return my_value.get() ? my_value->toBool() : false;
 	}
-	string toString() override {
+	string toString() const override {
 		return my_value.get() ? my_value->toString() : "";
 	}
 	string toStringDBG() override {

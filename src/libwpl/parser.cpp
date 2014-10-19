@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -26,14 +26,12 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "matcher.h"
 #include "parser.h"
 #include "scene.h"
-#include "pragma.h"
-#include "expression.h"
 #include "blocks.h"
 #include "template.h"
 #include "exception.h"
+#include "type_parse_signals.h"
 
 #include <iostream>
 #include <fstream>
@@ -149,8 +147,38 @@ void wpl_parser::first_level(wpl_namespace *parent_namespace) {
 		else if (ignore_string("#INCLUDE")) {
 			parse_include(parent_namespace);
 		}
+		else if (ignore_string("/*")) {
+			parse_comment(this);
+		}
 		else {
-			break;
+			char buf[WPL_VARNAME_SIZE+1];
+			int len = ignore_string_match(WORD, 0);
+			if (len) {
+				check_varname_length(len);
+	
+				revert_string(len);
+				get_string(buf, len);
+
+				wpl_parseable_identifier *parseable;
+ 				if (!(parseable = parent_namespace->find_parseable(buf))) {
+					cerr << "While parsing word '" << buf << "' in top-level program: ";
+					THROW_ELEMENT_EXCEPTION("Undefined name");
+				}
+
+				const char *pos_before = get_string_pointer();
+				load_position(parse_parseable_identifier(parent_namespace, this, parseable));
+				if (pos_before == get_string_pointer()) {
+					THROW_ELEMENT_EXCEPTION("Unknown error while parsing parseable in program namespace");
+				}
+
+				ignore_whitespace();
+				if (!ignore_letter(';')) {
+					THROW_ELEMENT_EXCEPTION("Expected ; after definition in program namespace");
+				}
+			}
+			else {
+				break;
+			}
 		}
 	}
 	if (!at_end()) {
@@ -206,4 +234,58 @@ void wpl_parser::parse_file (wpl_namespace *parent_namespace, const char *filena
 
 	// Don't ever use this pointer again
 	io = NULL;
+}
+
+/**
+ * @brief Parse a parseable with unknown, but funky syntax. The parseable can add something to our namespace if it wants to.
+ */
+wpl_matcher_position wpl_parser::parse_parseable_identifier(
+		wpl_namespace *ns,
+		wpl_matcher *matcher,
+		wpl_parseable_identifier *parseable
+) {
+	try {
+		parseable->load_position(matcher->get_position());
+
+		try {
+			try {
+				parseable->parse_value(ns);
+			}
+			catch (wpl_type_begin_variable_declaration &e) {
+				e.create_variable(ns);
+				matcher->load_position(e.get_position_at_name());
+				return e.get_position();
+			}
+		}
+		catch (wpl_type_begin_function_declaration &e) {
+			e.load_position(parseable->get_position());
+			e.parse_value(ns);
+			matcher->load_position(e.get_position());
+			return matcher->get_position();
+		}
+	}
+	catch (wpl_type_end_statement &e) {
+		matcher->load_position(e.get_position());
+		matcher->ignore_whitespace();
+		return matcher->get_position();
+	}
+	return parseable->get_position();
+}
+
+/**
+ * @brief Parse a comment block ending with * / (without the space, can't write it here in C++ :-) )
+ */
+void wpl_parser::parse_comment(wpl_matcher *matcher) {
+	wpl_matcher_position start = matcher->get_position();
+
+	while (matcher->get_letter ('*', NON_ASTERISK)) {
+		if (matcher->ignore_letter ('/')) {
+			return;
+		}
+	}
+
+	matcher->load_position(start);
+	matcher->revert_string(2);
+
+	throw wpl_element_exception("Could not find comment end for this comment", matcher->get_position());
 }

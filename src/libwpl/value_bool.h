@@ -52,7 +52,7 @@ class wpl_value_bool : public wpl_value_number<bool> {
 	double toDouble() override {
 		return (value ? 1 : 0);
 	}
-	string toString() override {
+	string toString() const override {
 		return (value ? string("true") : string ("false"));
 	}
 };

@@ -142,6 +142,22 @@ class wpl_expression_state : public wpl_state {
 		run_stack.unpop();
 	}
 
+	void push_extra(shunting_yard_carrier ca) {
+		run_stack.push_front(ca);
+		run_stack.save_pos();
+
+		child_states.clear();
+		child_states.resize(run_stack.size());
+	}
+
+	void push_extra(const wpl_operator_struct *op) {
+		push_extra(shunting_yard_carrier(op));
+	}
+
+	void push_extra(wpl_value *value) {
+		push_extra(shunting_yard_carrier(value));
+	}
+
 	wpl_exp_deque<shunting_yard_carrier> &get_stack() {
 		return run_stack;
 	}

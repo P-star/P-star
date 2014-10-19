@@ -32,6 +32,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "namespace.h"
 #include "variable.h"
 #include "value_unsafe_pointer.h"
+#include "value_array.h"
 #include "value_string.h"
 #include "io.h"
 
@@ -61,24 +62,26 @@ int wpl_pragma_template_var::run(wpl_state *state, wpl_value *final_result) {
 
 	wpl_value_unsafe_pointer value_pointer;
 	value_pointer.set_do_finalize();
-	pragma_state->run_child (value_expression.get(), 0, &value_pointer);
-	/*
-	   TODO
-	   To allow multiple values, replace unsafe_pointer with something that
-	   collects all pointers from the discard chain, or create wpl_value_output_json_trigger
-	 */
-	/*
-	   XXX
-	   The expression subsystem no longer calls set_weak by default, this does not work
-	 */
-	set<wpl_value*> my_set;
-	my_set.insert(value_pointer.dereference());
+
+	wpl_value_array my_array(array_type.get(), wpl_type_global_string);
+
+	/* Don't cache this state as we do many strange things */
+	unique_ptr<wpl_expression_state> exp_state(
+		(wpl_expression_state*)
+		value_expression.get()->new_state(state, state->get_nss(), &state->get_io())
+	);
+
+	/* Insert an extra operation to fill our array with ID strings. */
+	exp_state->push_extra(&my_array);
+	exp_state->push_extra(&OP_REPLACE_DISCARD);
+
+	value_expression->run(exp_state.get(), final_result);
 
 	wpl_state *text_state = pragma_state->get_child_state(my_template, 1);
 
 	my_template->output_json(
 		text_state,
-		my_set,
+		&my_array,
 		final_result
 	);
 	return WPL_OP_OK;
@@ -95,6 +98,10 @@ int wpl_pragma_fixed_text::run (wpl_state *state, wpl_value *final_result) {
 
 void wpl_pragma_template_var::parse_value(wpl_namespace *parent_namespace) {
 	char value[WPL_VARNAME_SIZE];
+
+	if (!array_type.get()) {
+		array_type.reset(wpl_type_global_array->new_instance(wpl_type_global_string));
+	}
 
 	// Find template name
 	int len = search (WORD, WHITESPACE, false);
@@ -117,6 +124,8 @@ void wpl_pragma_template_var::parse_value(wpl_namespace *parent_namespace) {
 }
 
 wpl_template *wpl_pragma_template::get_template(wpl_pragma_state *pragma_state) {
+	string name;
+
 	if (exp.get()) {
 		wpl_value_string template_name;
 		template_name.set_do_finalize();
@@ -126,18 +135,20 @@ wpl_template *wpl_pragma_template::get_template(wpl_pragma_state *pragma_state) 
 			throw runtime_error("wpl_pragma_template::get_template(): Not OK return from expression");
 		}
 
-		wpl_template *my_template;
-		if (!(my_template = pragma_state->find_template(template_name.toString().c_str()))) {
-			ostringstream msg;
-			msg << "Could not find template with name '" <<
-				template_name.toString() << "'\n";
-			throw runtime_error(msg.str());
-		}
-		return my_template;
+		name = template_name.toString();
 	}
 	else {
-		return my_template;
+		name = this->template_name;
 	}
+
+	wpl_template *my_template;
+	if (!(my_template = pragma_state->find_template(name.c_str()))) {
+		ostringstream msg;
+		msg << "Could not find template with name '" << name << "'\n";
+		throw runtime_error(msg.str());
+	}
+
+	return my_template;
 }
 
 int wpl_pragma_template::run(wpl_state *state, wpl_value *final_result) {
@@ -162,10 +173,7 @@ void wpl_pragma_template::parse_value(wpl_namespace *parent_namespace) {
 	else {
 		// Find HTML template at parse time (static)
 		get_word(value);
-		if (!(my_template = parent_namespace->find_template(value))) {
-			revert_string(strlen(value));
-			THROW_ELEMENT_EXCEPTION("Could not find template");
-		}
+		template_name = value;
 		parse_default_end();
 	}
 }
@@ -255,15 +263,30 @@ void wpl_pragma_text::parse_value (wpl_namespace *parent_namespace) {
 	ignore_string_match(WHITESPACE, 0);
 	const char *start = get_string_pointer();
 
-	if (!ignore_string_match(NON_SEMICOLON, 0)) {
+	int ws_count = 0;
+	while (char c = get_letter()) {
+		if (c == terminator) {
+			break;
+		}
+		else if (M_WHITESPACE(c)) {
+			ws_count++;
+		}
+		else {
+			ws_count = 0;
+		}
+	}
+
+	revert_string(1);
+
+	const char *end = get_string_pointer() - ws_count;
+
+	if (start == end) {
 		THROW_ELEMENT_EXCEPTION("Expected value after pragma definition");
 	}
 
-	const char *end = get_string_pointer();
+	set_text(start, end);
 
 	parse_default_end();
-
-	set_text(start, end);
 }
 
 #define REGISTER_PRAGMA_BLOCK(classname)				\

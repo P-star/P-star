@@ -37,6 +37,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "block_foreach.h"
 #include "block_for.h"
 #include "text.h"
+#include "parser.h"
 
 #include "global.h"
 
@@ -45,6 +46,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 extern const wpl_global_block *global_block;
+extern const wpl_global_block *global_text;
 
 wpl_block::wpl_block() : wpl_block_parser() {}
 
@@ -147,16 +149,10 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 				}
 
 				if (parseable) {
-					try {
-						parse_parseable_identifier(this, parseable);
-					}
-					catch (wpl_type_end_statement &e) {
-						load_position(e.get_position());
-						ignore_whitespace();
-						if (!ignore_letter (';')) {
-							THROW_ELEMENT_EXCEPTION("Expected ';' after declaration of incomplete type");
-						}
-					}
+					wpl_parser::parse_parseable_identifier(this, this, parseable);
+
+					ignore_whitespace();
+					ignore_letter(';');
 				}
 				else {
 					revert_string(len);
@@ -166,7 +162,7 @@ void wpl_block::parse_value(wpl_namespace *ns) {
 			}
 		}
 		else if (ignore_string ("/*")) {
-			parse_comment();
+			wpl_parser::parse_comment(this);
 		}
 		else if (search_letter ('{')) {
 			append_child_position();
@@ -212,7 +208,13 @@ void wpl_block_add_parse_and_run_to_ns(wpl_namespace *ns) {
 	ADD_TO_NS(wpl_block_while)
 	ADD_TO_NS(wpl_block_for)
 	ADD_TO_NS(wpl_block_foreach)
-	ADD_TO_NS(wpl_text)
+
 	wpl_modifier_add_all_to_namespace(ns);
 	wpl_pragma_add_all_to_namespace(ns);
+
+	{
+		wpl_parse_and_run *text = new wpl_text(global_text);
+		ns->add_managed_pointer(text);
+		ns->register_parse_and_run(text);
+	}
 }

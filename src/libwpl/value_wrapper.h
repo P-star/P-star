@@ -99,7 +99,7 @@ class wpl_value_wrapper : public wpl_value {
 	int toInt() { return value->toInt(); };
 	float toFloat() { return value->toFloat(); };
 	double toDouble() { return value->toDouble(); };
-	string toString() { return value->toString(); };
+	string toString() const { return value->toString(); };
     char* toVoid(){ return value->toVoid(); }
 };
 

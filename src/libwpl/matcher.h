@@ -291,6 +291,15 @@ class wpl_matcher {
 		return 0;
 	}
 
+	inline int ignore_many_letters (const char letter) {
+		int total = 0;
+		while (text_rpos[0] == letter) {
+			text_rpos++;
+			total++;
+		}
+		return total;
+	}
+
 	inline void ignore_string (const int len) {
 		text_rpos += len;
 		if (text_rpos > text_max) {

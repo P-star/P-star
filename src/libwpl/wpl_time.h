@@ -63,11 +63,11 @@ class wpl_time {
 		timestamp = src;
 	}
 
-	time_t get_time() {
+	time_t get_time() const {
 		return timestamp;
 	}
 
-	time_t get_time(struct tm *dst) {
+	time_t get_time(struct tm *dst) const {
 		localtime_r(&timestamp, dst);
         return timestamp;
 	}
@@ -86,7 +86,7 @@ class wpl_time {
 		return format;
 	}
 
-	void format_time(const char *format, string &dst) {
+	void format_time(const char *format, string &dst) const {
 		if (format == NULL) {
 			format = this->format;
 		}

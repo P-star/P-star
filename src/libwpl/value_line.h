@@ -57,7 +57,7 @@ class wpl_value_line : public wpl_value {
 		set_weak(value);
 		return true;
 	}
-	string toString() override;
+	string toString() const override;
 	bool toBool() override {
 		return (chunk) && chunk->get_size();
 	}

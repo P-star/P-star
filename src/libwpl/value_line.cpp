@@ -78,7 +78,7 @@ notfile:
 	chunk->set_data(value->toString());
 }
 
-string wpl_value_line::toString() {
+string wpl_value_line::toString() const {
 	if (!chunk) {
 		throw runtime_error("Cannot get string value of LINE as it does not yet point to any data. Try line++ first?");
 	}

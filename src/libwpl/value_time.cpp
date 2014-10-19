@@ -63,7 +63,7 @@ void wpl_value_time::set_weak (wpl_value *value) {
 	}
 }
 
-string wpl_value_time::toString() {
+string wpl_value_time::toString() const {
 	string tmp;
 	format_time(NULL, tmp);
 	return tmp;

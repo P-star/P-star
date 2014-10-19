@@ -52,20 +52,21 @@ class wpl_array {
 
 	public:
 	void clear();
+	int size() const {
+		return array.size();
+	}
+	const wpl_value *get_readonly(int index) const;
 
 	protected:
 	wpl_array () {};
 	wpl_array (const wpl_array &copy);
-	wpl_value *get(int index);
 	void pop();
 	void set(int index, wpl_value *value);
+	wpl_value *get(int index);
 	void push(wpl_value *value);
 	void replace (wpl_array &new_array);
 	void output_json(wpl_io &io);
 	~wpl_array();
-	int size() {
-		return array.size();
-	}
 	void reserve(int i) {
 		array.reserve(i);
 	}

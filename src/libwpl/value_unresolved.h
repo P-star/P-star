@@ -73,7 +73,7 @@ class wpl_value_unresolved_identifier : public wpl_value_strings<string> {
 		throw runtime_error("Cannot output unresolved identifiers");
 	}
 
-	string toString() {
+	string toString() const {
 		return value;
 	}
 
