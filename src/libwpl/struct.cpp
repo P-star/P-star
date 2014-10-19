@@ -34,6 +34,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "value_struct.h"
 #include "debug.h"
 #include "user_function.h"
+#include "parser.h"
 #include "type_parse_signals.h"
 
 #include "global.h"
@@ -101,26 +102,13 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 	}
 
 	do {
-		wpl_parseable *parseable;
-
 		ignore_whitespace();
 
 		wpl_matcher_position def_begin = get_position();
 
 		// Check for comment
 		if (ignore_string ("/*")) {
-			while (get_letter ('*', NON_ASTERISK)) {
-				if (ignore_letter ('/')) {
-					goto comment_ok;
-				}
-			}
-
-			load_position(def_begin);
-			revert_string(2);
-
-			THROW_ELEMENT_EXCEPTION("Could not find comment end for this comment");
-
-			comment_ok:
+			wpl_parser::parse_comment(this);
 			ignore_whitespace();
 		}
 
@@ -187,6 +175,7 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 
 		// Check for other parseables
 		{
+			wpl_parseable_identifier *parseable;
 			if (!(parseable = global_block->find_parseable(buf))) {
 				if (!(parseable = find_parseable(buf))) {
 					load_position(def_begin);
@@ -196,7 +185,9 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 			}
 
 			parseable->load_position(get_position());
+			load_position(wpl_parser::parse_parseable_identifier(this, this, parseable));
 
+			/*
 			try {
 				try {
 					parseable->parse_value(this);
@@ -210,7 +201,7 @@ void wpl_struct::parse_value(wpl_namespace *ns) {
 				e.parse_value(this);
 				load_position(e.get_position());
 			}
-	
+	*/
 			goto definition_out;
 		}
 

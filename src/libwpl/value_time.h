@@ -50,7 +50,7 @@ class wpl_value_time : public wpl_value, public wpl_time, public wpl_parasite_ho
 	wpl_value_time *clone_empty() const { return new wpl_value_time(0); };
 
 	void set_weak(wpl_value *value) override;
-	string toString() override;
+	string toString() const override;
 	char* get_mysql_time_ptr();
 
 	void output_json(wpl_io &io) override;

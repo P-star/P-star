@@ -91,6 +91,9 @@ class wpl_state {
 		return parent->find_parent<T>();
 	}
 
+	void unset_json_output() {
+		flags &= (~DO_JSON_OUTPUT);
+	}
 
 	void set_json_output() {
 		flags |= DO_JSON_OUTPUT;

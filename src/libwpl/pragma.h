@@ -30,6 +30,8 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "template.h"
 #include "scene.h"
+#include "array.h"
+#include "types.h"
 #include "pragma_names.h"
 #include "namespace_session.h"
 #include "pragma_state.h"
@@ -41,8 +43,11 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 class wpl_value;
 class wpl_namespace;
 
+extern const wpl_type_array *wpl_type_global_array;
+extern const wpl_type_string *wpl_type_global_string;
+
 class wpl_pragma : public wpl_parse_and_run {
-	private:
+	protected:
 	const char terminator;
 
 	public:
@@ -114,6 +119,7 @@ class wpl_pragma_template_var : public wpl_pragma {
 	protected:
 	wpl_template *my_template;
 	unique_ptr<wpl_expression> value_expression;
+	shared_ptr<const wpl_type_complete> array_type;
 
 public:
 	wpl_pragma_template_var(const char terminator) :
@@ -135,27 +141,21 @@ public:
 
 class wpl_pragma_template : public wpl_pragma {
 	protected:
-	wpl_template *my_template;
 	unique_ptr<wpl_expression> exp;
+	string template_name;
 
 	wpl_template *get_template(wpl_pragma_state *pragma_state);
 
 	public:
 	wpl_pragma_template(const char *name, const char terminator) :
 		wpl_pragma (name, terminator)
-	{
-		my_template = NULL;
-	}
+	{}
 	wpl_pragma_template(const char terminator) :
 		wpl_pragma (wpl_pragma_name_template, terminator)
-	{
-		my_template = NULL;
-	}
+	{}
 	wpl_pragma_template (const wpl_pragma_template &copy) :
 		wpl_pragma (copy)
-	{
-		my_template = NULL;
-	}
+	{}
 	virtual wpl_pragma_template *new_instance() const {
 		return new wpl_pragma_template(*this);
 	}

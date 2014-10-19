@@ -55,7 +55,7 @@ class wpl_value_stdin : public wpl_value {
 			wpl_value *rhs
 	);
 
-	string toString() override {
+	string toString() const override {
 		string res;
 		getline (cin, res);
 		return res;

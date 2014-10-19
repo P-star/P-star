@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIV Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -70,5 +70,11 @@ class wpl_parser : public wpl_matcher {
 	wpl_parser (wpl_io &io, int num_parents);
 	~wpl_parser ();
 	void parse_file(wpl_namespace *parent_namespace, const char *filename);
+	static wpl_matcher_position parse_parseable_identifier(
+		wpl_namespace *ns,
+		wpl_matcher *matcher,
+		wpl_parseable_identifier *parseable
+	);
+	static void parse_comment(wpl_matcher *matcher);
 };
 

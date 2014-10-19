@@ -99,7 +99,7 @@ class wpl_value_array : public wpl_value_template, public wpl_array {
 
 
 #ifdef WPL_DEBUG_EXPRESSIONS
-	string toString() {
+	string toString() const {
 		return string("DBG{array ") + template_type->get_name() + "}";
 	}
 #endif

@@ -251,7 +251,7 @@ class wpl_value : public wpl_suicidal {
 		cerr << "In value toBool() of type '" << get_type_name() << "':\n";
 		throw runtime_error ("Cannot get bool value of this type");
 	}
-	virtual string toString() {
+	virtual string toString() const {
 		cerr << "In value toString() of type '" << get_type_name() << "':\n";
 		throw runtime_error ("Cannot get string value of this type");
 	}

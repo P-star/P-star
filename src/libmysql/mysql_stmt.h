@@ -126,7 +126,7 @@ class wpl_value_MYSQL_STMT : public wpl_value {
 		}
 	}
 
-	string toString() override {
+	string toString() const override {
 		return string(wpl_typename_MYSQL_STMT);
 	}
 };

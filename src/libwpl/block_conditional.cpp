@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "block_conditional.h"
+#include "parser.h"
 #include "value_bool.h"
 
 bool wpl_block_conditional::check_run(wpl_block_conditional_state *block_state) {
@@ -48,10 +49,10 @@ void wpl_block_conditional::find_and_parse_complete_type() {
 
 		/* Don't check for incomplete types like struct */
 		if (wpl_parseable_identifier *parseable = find_complete_type(buf)) {
-			parse_parseable_identifier(this, parseable);
+			wpl_parser::parse_parseable_identifier(this, this, parseable);
 		}
 		else if (wpl_parseable_identifier *parseable = find_template_type(buf)) {
-			parse_parseable_identifier(this, parseable);
+			wpl_parser::parse_parseable_identifier(this, this, parseable);
 		}
 		else {
 			revert_string(len);

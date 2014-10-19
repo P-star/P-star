@@ -63,21 +63,3 @@ void wpl_block_parser::parse_parse_and_run(wpl_parse_and_run *block) {
 	load_position(block->get_position());
 }
 
-/**
- * @brief Parse a comment block ending with * / (without the space, can't write it here in C++ :-) )
- */
-void wpl_block_parser::parse_comment() {
-	wpl_matcher_position start = get_position();
-
-	while (get_letter ('*', NON_ASTERISK)) {
-		if (ignore_letter ('/')) {
-			return;
-		}
-	}
-
-	load_position(start);
-	revert_string(2);
-
-	THROW_ELEMENT_EXCEPTION("Could not find comment end for this comment");
-}
-

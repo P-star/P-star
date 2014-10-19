@@ -116,7 +116,7 @@ class wpl_value_MYSQL_ROW : public wpl_value {
 		return true;
 	}
 
-	string toString() override {
+	string toString() const override {
 		return string(wpl_typename_MYSQL_ROW);
 	};
 };

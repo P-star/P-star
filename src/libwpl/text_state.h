@@ -35,19 +35,18 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include <set>
 #include <memory>
 #include <sstream>
-#include <unordered_map>
+#include <deque>
 
+class wpl_value_array;
 class wpl_text;
 class wpl_runable;
 class wpl_text_chunk_it;
 
 class wpl_text_state : public wpl_state {
 	protected:
-	unordered_map<int,unique_ptr<wpl_state>> runable_states;
-	unordered_map<int,unique_ptr<wpl_state>> text_states;
-	unordered_map<int,unique_ptr<wpl_state>> template_states;
+	deque<unique_ptr<wpl_state>> child_states;
 
-	const set<wpl_value*> *vars;
+	const wpl_value_array *vars;
 	wpl_text_chunk_it *it;
 
 	public:
@@ -55,14 +54,16 @@ class wpl_text_state : public wpl_state {
 		wpl_state(parent, nss, io),
 		it(NULL)
 	{
-		runable_states.reserve(children/2);
+		child_states.resize(children);
 	}
 
-	void set_vars(const set<wpl_value*> &vars) {
-		this->vars = &vars;
+	bool has_var(const string name);
+
+	void set_vars(const wpl_value_array *vars) {
+		this->vars = vars;
 	}
-	const set<wpl_value*> &get_vars() {
-		return *vars;
+	const wpl_value_array *get_vars() {
+		return vars;
 	}
 	void set_it(wpl_text_chunk_it *it) {
 		this->it = it;
@@ -71,9 +72,7 @@ class wpl_text_state : public wpl_state {
 		return it;
 	}
 
-	wpl_state *get_exp_state(int index) {
-		return runable_states[index].get();
-	}
+	wpl_state *get_child_state(wpl_runable *runable, int index);
 
 	int run_runable (
 			wpl_runable *runable,

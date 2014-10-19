@@ -33,6 +33,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "exception.h"
 #include "value_output_trigger.h"
 #include "value_bool.h"
+#include "value_array.h"
 #include "value_string.h"
 #include "value_unsafe_pointer.h"
 #include "value_double_finalizer.h"
@@ -62,16 +63,7 @@ wpl_text_chunks::base *wpl_text::push_chunk(const char *start, const char *end) 
 	chunks.back()->set_position(get_position());
 	return chunk;
 }
-/*
-int wpl_text_chunks::html_template::run (
-		wpl_text_state *state,
-		int index,
-		wpl_value *final_result,
-		wpl_io &io
-) {
-	return state->run_text(my_template, index, final_result, io);
-}
-*/
+
 int wpl_text_chunks::text::run (
 		wpl_text_state *state,
 		int index,
@@ -88,11 +80,12 @@ int wpl_text_chunks::expression::run (
 		wpl_value *final_result,
 		wpl_io &io
 ) {
-
    	wpl_value_output_trigger output_trigger(io);
 	wpl_value_double_finalizer finalizer(&output_trigger, final_result);
 
-	return state->run_runable (exp.get(), index, &finalizer);
+	int ret = state->run_runable (exp.get(), index, &finalizer);
+
+	return ret;
 }
 
 int wpl_text_chunks::runable::run (
@@ -114,11 +107,9 @@ int wpl_text_chunks::text::output_json (
 	wpl_io &io = state->get_io();
 	wpl_io_void io_void;
 	wpl_value_string json_name;
-	wpl_value_string json_value;
 	wpl_value_unsafe_pointer unsafe_pointer;
 
 	json_name.set_do_finalize();
-	json_value.set_do_finalize();
 	unsafe_pointer.set_do_finalize();
 
 	/*
@@ -126,71 +117,60 @@ int wpl_text_chunks::text::output_json (
 	   next chunk as the JSON name.
 	   */
 	if (strncmp (end - id_string_len, id_string, id_string_len) != 0) {
-		return (*(++(*state->get_it())))->output_json(state, final_result);
+		return WPL_OP_NO_RETURN;
 	}
 
 	/*
 	   If no return from the next block, just proceed with output_json
 	   */
 	if (!((*(++(*state->get_it())))->run(state, state->get_it()->get_pos(), &json_name, io_void) & WPL_OP_OK)) {
-		return (*state->get_it())->output_json(state, final_result);
+		return WPL_OP_NO_RETURN;
 	}
 
-	/*
-	   The next block which returns WPL_OP_OK is the expression
-	   whos pointer is used to match against the list of requested
-	   variables to output.
-
-	 */
-	while (true) {
-	   	// it++ throws wpl_text_chunk_end_reached() when we're done
-		(*state->get_it())++;
-
-		/*
-		   Check if the next chuck is an expression with return value
-		   */
-		if (!((*state->get_it())->run(state, state->get_it()->get_pos(), &unsafe_pointer, io_void) & WPL_OP_OK)) {
-			continue;
-		}
-
-		/*
-		   Check if the value exists in the list
-		   */
-		if (state->get_vars().find(unsafe_pointer.dereference()) == state->get_vars().end()) {
-			continue;
-		}
-
-		/*
-		   All OK, output this variable
-		   */
-		(*state->get_it())->run(state, state->get_it()->get_pos(), &json_value, io_void);
-		io << "\"";
-		json_name.output_json(io);
-		io << "\": \"";
-		json_value.output_json(io);
-		io << "\",\n";
-
-		(*state->get_it())++;
-
-		return (*state->get_it())->output_json(state, final_result);
+	/* Continue if name isn't in the output list */
+	if (!state->has_var(json_name.toString())) {
+		return WPL_OP_NO_RETURN;
 	}
+
+	/* Leave JSON mode to capture all output from children */
+	wpl_io &old_io = state->get_io();
+	state->unset_json_output();
+
+	/* This value may be written to both through the I/O
+	   buffer and directly in expressions as a final result */
+	wpl_value_string json_value;
+	wpl_io_buffer buf;
+	state->set_io(buf);
+
+	/* The next child is always a text chunk, we don't want that one */
+	++(*state->get_it());
+
+	/* Run the next child and capture output into our buffer*/
+	json_value.set_do_finalize();
+	(*(++(*state->get_it())))->run(state, state->get_it()->get_pos(), &json_value, buf);
+
+	/* Format JSON output */
+	io << "\"";
+	json_name.output_json(io);
+	io << "\": \"";
+
+	wpl_output_json json_io;
+	json_io.output_json(old_io, buf.c_str(), buf.size());
+
+	io << "\",\n";
+
+	/* Reset to normal JSON mode */
+	state->set_io(old_io);
+	state->set_json_output();
 
 	return WPL_OP_NO_RETURN;
 }
-/*
-int wpl_text_chunks::html_template::output_json (
-		wpl_text_state *state,
-		wpl_value *final_result
-) {
-	state->run_text_output_json(my_template, state->get_it()->get_pos(), final_result);
-	return (*(++(*state->get_it())))->output_json(state, final_result);
-}
-*/
+
 int wpl_text_chunks::expression::output_json (
 		wpl_text_state *state,
 		wpl_value *final_result
 ) {
-	return (*(++(*state->get_it())))->output_json(state, final_result);
+	return WPL_OP_NO_RETURN;
 }
 
 /*
@@ -202,8 +182,7 @@ int wpl_text_chunks::runable::output_json (
 		wpl_text_state *state,
 		wpl_value *final_result
 ) {
-	state->run_runable(block.get(), state->get_it()->get_pos(), final_result);
-	return (*(++(*state->get_it())))->output_json(state, final_result);
+	return state->run_runable(block.get(), state->get_it()->get_pos(), final_result);
 }
 
 int wpl_text::run(wpl_state *state, wpl_value *final_result) {
@@ -217,9 +196,7 @@ int wpl_text::run(wpl_state *state, wpl_value *final_result) {
 			throw runtime_error("Could not find parent text state while do_output_json flags was set");
 		}
 
-		parent->set_vars(parent->get_vars());
-
-		output_json (parent, parent->get_vars(), final_result);
+		return output_json (text_state, parent->get_vars(), final_result);
 	}
 
 	int index = 0;
@@ -237,7 +214,7 @@ int wpl_text::run(wpl_state *state, wpl_value *final_result) {
 
 int wpl_text::output_json (
 		wpl_state *state,
-		const set<wpl_value*> &vars,
+		const wpl_value_array *vars,
 		wpl_value *final_result
 ) {
 	wpl_text_state *text_state = (wpl_text_state*) state;
@@ -250,10 +227,16 @@ int wpl_text::output_json (
 	text_state->set_it(&it);
 
 	try {
-		it->output_json(text_state, final_result);
+		try {
+			while (true) {
+				it->output_json(text_state, final_result);
+				it++;
+			}
+		}
+		catch (wpl_text_chunk_end_reached &e) {}
 	}
-	catch (wpl_text_chunk_end_reached &e) {
-		/* Iteration complete :-) */
+	catch (runtime_error &e) {
+		throw wpl_element_exception(e.what(), it->get_position());
 	}
 
 	return WPL_OP_OK;
@@ -310,11 +293,22 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 	int whitespace_len = 0;
 	while (par_level > 0 && !at_end()) {
 		before_whitespace_end = get_string_pointer();
-		ignore_string_match(WHITESPACE|NEWLINE, 0);
+		ignore_whitespace();
 		end = get_string_pointer();
 
 		if (ignore_string("{@")) {
 			push_chunk (start, before_whitespace_end);
+
+			int reverts = 3;
+			revert_string(3);
+			while (search_letter('\t')) {
+				revert_string(1);
+				reverts++;
+			}
+			ignore_string(reverts);
+			int tabs = reverts - 3;
+
+			ignore_whitespace();
 
 			int len = ignore_letter('#');
 			len += ignore_string_match(WORD, 0);
@@ -326,7 +320,7 @@ void wpl_text::parse_value(wpl_namespace *parent_namespace) {
 
 				if (const wpl_parse_and_run *block = global_types->find_parse_and_run(buf)) {
 					wpl_parse_and_run *new_block = block->new_instance();
-					chunks.emplace_back(new wpl_text_chunks::runable(new_block)); 
+					chunks.emplace_back(new wpl_text_chunks::runable(new_block, tabs)); 
 					chunks.back()->set_position(get_position());
 
 					new_block->load_position(get_position());

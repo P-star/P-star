@@ -72,6 +72,16 @@ wpl_array::~wpl_array() {
 	clear();
 }
 
+const wpl_value *wpl_array::get_readonly(int index) const {
+	if (index < 0) {
+		throw runtime_error("Attempted to read from array with negative index");
+	}
+	else if (index >= array.size()) {
+		throw runtime_error("Attempted to read from outside the array in read only mode");
+	}
+	return array[index];
+}
+
 wpl_value *wpl_array::get(int index) {
 	if (index < 0) {
 		throw runtime_error("Attempted to read from array with negative index");
