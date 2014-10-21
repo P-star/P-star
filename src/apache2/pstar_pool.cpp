@@ -51,6 +51,7 @@ int fill_input (request_rec *r, pstar_io &io) {
 	   Some of this code is from Apaches mod_cgi.c
 	   */
 
+	int total_length = 0;
 	int seen_eos = 0;
 	apr_bucket_brigade *bb;
 	apr_status_t rv;
@@ -65,7 +66,7 @@ int fill_input (request_rec *r, pstar_io &io) {
 		if (rv != APR_SUCCESS) {
 			ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 					"Error reading request entity data");
-			return HTTP_INTERNAL_SERVER_ERROR;
+			return -1;
 		}
 
 		for (bucket = APR_BRIGADE_FIRST(bb);
@@ -89,6 +90,7 @@ int fill_input (request_rec *r, pstar_io &io) {
 			apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
 
 			io.append_input(data, len);
+			total_length += len;
 		}
 		apr_brigade_cleanup(bb);
 	}
@@ -96,7 +98,7 @@ int fill_input (request_rec *r, pstar_io &io) {
 
 	apr_brigade_cleanup(bb);
 
-	return OK;
+	return total_length;
 }
 
 shared_ptr<pstar_file> pstar_pool::get_file_handle (
@@ -130,6 +132,7 @@ shared_ptr<pstar_file> pstar_pool::get_file_handle (
 
 int pstar_pool::handle_file (request_rec *r, const char *filename, int mtime) {
 	int ret;
+	int input_length;
 
 	pstar_io io(r);
 
@@ -138,10 +141,10 @@ int pstar_pool::handle_file (request_rec *r, const char *filename, int mtime) {
 			shared_ptr<pstar_file> file = get_file_handle(r, io, filename, mtime);
 			wpl_program *program = file->get_program();
 
-			ret = fill_input(r, io);
-			if (ret != OK) {
+			if ((input_length = fill_input(r, io)) < 0) {
 				return HTTP_INTERNAL_SERVER_ERROR;
 			}
+
 
 			ret = program->run(io);
 		}
@@ -154,15 +157,19 @@ int pstar_pool::handle_file (request_rec *r, const char *filename, int mtime) {
 	catch (const wpl_element_exception &e) {
 		ostringstream msg;
 		msg << "P* exception in file '" << r->filename << "':";
-		io.debug(msg.str().c_str());
+		io.error(msg.str().c_str());
 		e.output(io);
 		return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
 	if (ret != 0) {
-		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-				"P* Non-zero return (%i) from script %s", ret, r->filename);
+		ostringstream msg;
+		msg << "P* Non-zero return (" << ret << ") from script " << r->filename;
+		io.error(msg.str().c_str());
 		return HTTP_INTERNAL_SERVER_ERROR;
+/*		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+				"P* Non-zero return (%i) from script %s", ret, r->filename);
+		return HTTP_INTERNAL_SERVER_ERROR;*/
 	}
 
 	if (ret != OK) {
@@ -193,6 +200,7 @@ int pstar_pool::handle_request (request_rec *r) {
 	ap_add_cgi_vars(r);
 
 	apr_table_t *e = r->subprocess_env;
+
 	if (r->args) {
 		apr_table_setn(e, "QUERY_STRING", r->args);
 	}
@@ -208,6 +216,7 @@ int pstar_pool::handle_request (request_rec *r) {
 	}
 
 	*pos = '\0';
+
 	apr_table_setn(e, "PSTAR_ROOT", path);
 
 	return handle_file(r, filename, r->finfo.mtime);

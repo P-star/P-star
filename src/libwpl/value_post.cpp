@@ -78,9 +78,9 @@ void wpl_value_post::parse_entity (MimeEntity *me) {
 		out = me->body();
 
 		copy_done:
-		wpl_value_array *storage = (wpl_value_array*) hash.get(name);
+		wpl_value_array *storage = (wpl_value_array*) hash->get(name);
 		if (!storage) {
-			storage = (wpl_value_array*) hash.define(name);
+			storage = (wpl_value_array*) hash->define(name);
 		}
 		storage->push(new wpl_value_string(out));
 	}
@@ -127,10 +127,15 @@ void wpl_value_post::parse(wpl_io &io) {
 	io.read(buf, length);
 	buf[length] = '\0';
 
-	if (strcmp(content_type, "application/x-www-form-urlencoded") == 0) {
-		value_get.parse(buf);
+	const char srch_a[] = "application/x-www-form-urlencoded";
+	char srch_b[sizeof(srch_a)];
+	memcpy(srch_b, content_type, sizeof(srch_b));
+	srch_b[sizeof(srch_b)-1] = '\0';
 
-		use_get = true;
+	if (strcmp(srch_a, srch_b) == 0) {
+		value_get->parse(buf);
+
+		*use_get = true;
 		return;
 	}
 
@@ -155,26 +160,26 @@ int wpl_value_post::do_operator (
 		wpl_value *lhs,
 		wpl_value *rhs
 ) {
-	if (!did_parse) {
+	if (!*did_parse) {
 		parse(exp_state->get_io());
-		did_parse = true;
+		*did_parse = true;
 	}
 
-	if (use_get) {
-		return value_get.do_operator(
+	if (*use_get) {
+		return value_get->do_operator(
 			exp_state,
 			final_result,
 			op,
-			(lhs == this ? &value_get : lhs),
-			(rhs == this ? &value_get : rhs)
+			(lhs == this ? value_get.get() : lhs),
+			(rhs == this ? value_get.get() : rhs)
 		);
 	}
 
-	return hash.do_operator (
+	return hash->do_operator (
 		exp_state,
 		final_result,
 		op,
-		(lhs == this ? &hash : lhs),
-		(rhs == this ? &hash : rhs)
+		(lhs == this ? hash.get() : lhs),
+		(rhs == this ? hash.get() : rhs)
 	);
 }

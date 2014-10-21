@@ -46,13 +46,12 @@ class wpl_operator_struct;
 class wpl_value_post : public wpl_value {
 	private:
 
-	bool did_parse;
 	void parse(wpl_io &io);
 
-	wpl_value_hash hash;
-	wpl_value_get value_get;
-
-	bool use_get;
+	shared_ptr<bool> did_parse;
+	shared_ptr<wpl_value_hash> hash;
+	shared_ptr<wpl_value_get> value_get;
+	shared_ptr<bool> use_get;
 
 	// Initialized in .cpp
 	static wpl_type_array_instance type_complete_array;
@@ -63,10 +62,10 @@ class wpl_value_post : public wpl_value {
 	public:
 	PRIMITIVE_TYPEINFO(get)
 	wpl_value_post(int dummy) :
-		hash(&type_complete_hash, &type_complete_array),
-		did_parse(false),
-		use_get(false),
-		value_get(0)
+		hash(new wpl_value_hash (&type_complete_hash, &type_complete_array)),
+		value_get(new wpl_value_get (0)),
+		did_parse(new bool(false)),
+		use_get(new bool (false))
 	{}
 	wpl_value_post *clone() const { return new wpl_value_post(0); };
 	wpl_value_post *clone_empty() const { return new wpl_value_post(0); };
@@ -78,4 +77,15 @@ class wpl_value_post : public wpl_value {
 			wpl_value *lhs,
 			wpl_value *rhs
 	);
+
+	void set_weak (wpl_value *value) override {
+		wpl_value_post *post = dynamic_cast<wpl_value_post*>(value);
+		if (!post) {
+			ostringstream msg;
+			msg << "Cannot set POST value to value of type " << value->get_type_name() << endl;
+			throw runtime_error(msg.str());
+		}
+
+		*this = *post;
+	}
 };

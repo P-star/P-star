@@ -29,15 +29,17 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 #include "exception.h"
 
 void wpl_element_exception::output(wpl_io &io) const {
-	char tmp[40+1];
-
 	wpl_matcher line_counter(pos);
 
 	int line = line_counter.get_linepos();
 	int col = line_counter.get_colpos();
 
-	line_counter.get_string_unsafe (tmp, 40);
-	tmp[40] = '\0';
+	line_counter.go_to_linestart();
+	const char *start = line_counter.get_string_pointer();
+	line_counter.ignore_string_match(wpl_matcher::NEWLINE, wpl_matcher::ALL);
+	const char *end = line_counter.get_string_pointer();
+
+	string tmp(start, end-start);
 
 	ostringstream final_msg;
 
@@ -46,5 +48,5 @@ void wpl_element_exception::output(wpl_io &io) const {
 		" column " << col <<
 		" near '" << tmp << "': " << text << endl;
 
-	io.debug(final_msg.str().c_str());
+	io.error(final_msg.str().c_str());
 }

@@ -365,6 +365,13 @@ wpl_function *wpl_namespace_session::find_function_no_parent(const char *name, i
 	return NULL;
 }
 
+wpl_scene *wpl_namespace_session::find_scene(const char *name) {
+	if (!template_namespace) {
+		return NULL;
+	}
+	return template_namespace->find_scene(name);
+}
+
 wpl_template *wpl_namespace_session::find_template(const char *name) {
 	if (!template_namespace) {
 		return NULL;

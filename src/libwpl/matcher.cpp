@@ -393,3 +393,14 @@ int wpl_matcher::ignore_string_match (const uint32_t match, const uint32_t ignor
 	return get_string (&dummy, match, ignore);
 }
 
+void wpl_matcher::go_to_linestart() {
+	while (text_rpos >= text) {
+		if (M_NEWLINE(*text_rpos)) {
+			text_rpos++;
+			return;
+		}
+		text_rpos--;
+	}
+
+	text_rpos = text;
+}

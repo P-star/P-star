@@ -41,6 +41,16 @@ pstar_io::~pstar_io() {
 	apr_status_t rv;
 	apr_bucket *b;
 
+	static const char msg[] = "<h1>P* Error</h1><p>An error occured. More information can be found in the web server log files.</p>";
+
+	if (http_error_pending) {
+		apr_table_set (r->headers_out, "Content-Type", "text/html");
+
+//		apr_brigade_cleanup(bb);
+		b = apr_bucket_immortal_create(msg, sizeof(msg), ba);
+		APR_BRIGADE_INSERT_TAIL(bb, b);
+	}
+
 	b = apr_bucket_eos_create(ba);
 	APR_BRIGADE_INSERT_TAIL(bb, b);
 
@@ -140,6 +150,11 @@ const char *pstar_io::get_env(const char *name) {
 }
 
 void pstar_io::debug(const char *str) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "%s", str);
+}
+
+void pstar_io::error(const char *str) {
+	http_error_pending = true;
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "%s", str);
 }
 
