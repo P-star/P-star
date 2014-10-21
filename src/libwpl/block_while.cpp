@@ -43,7 +43,6 @@ int wpl_block_while::run(wpl_state *state, wpl_value *final_result) {
 
 	while (check_run(block_state)) {
 		ret = wpl_block_intermediate::run(state, final_result);
-		block_state->reset();
 
 		if (ret & (WPL_OP_BREAK|WPL_OP_RETURN)) {
 			ret &= ~(WPL_OP_BREAK);

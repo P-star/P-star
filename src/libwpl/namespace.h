@@ -155,7 +155,7 @@ class wpl_namespace {
 	const wpl_parse_and_run *find_parse_and_run_no_parent(const char *name) const;
 
 	wpl_type_complete *find_complete_type(const wpl_type_complete *type_check) const;
-	wpl_type_complete *find_complete_type(const char *name) const;
+	virtual wpl_type_complete *find_complete_type(const char *name) const;
 
 	wpl_type_template *find_template_type(const char *name) const;
 
