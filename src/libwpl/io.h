@@ -101,6 +101,7 @@ class wpl_io {
 	virtual const char *get_env (const char *name) = 0;
 	virtual void http_header(const char *field, const char *str) = 0;
 	virtual void debug (const char *str) = 0;
+	virtual void error (const char *str) = 0;
 
 	virtual void write_immortal (const char *str, int len) {
 		write(str, len);
@@ -122,6 +123,10 @@ class wpl_io_standard : public wpl_io {
 	void http_header(const char *field, const char *str) override;
 
 	void debug (const char *str) override {
+		std::cerr << str;
+	}
+
+	void error (const char *str) override {
 		std::cerr << str;
 	}
 };
@@ -148,6 +153,9 @@ class wpl_io_string_wrapper : public wpl_io {
 	}
 	void debug (const char *str) override {
 		throw runtime_error("wpl_io_string_wrapper::debug(): Not supported");
+	}
+	void error (const char *str) override {
+		throw runtime_error("wpl_io_string_wrapper::error(): Not supported");
 	}
 	const char *c_str() const {
 		return target.c_str();
@@ -182,6 +190,10 @@ class wpl_io_buffer : public wpl_io {
 		buffer += string(str);
 	}
 
+	void error (const char *str) override {
+		debug(str);
+	}
+
 	void output (wpl_io &target) {
 		target.write(buffer);
 	}
@@ -202,4 +214,5 @@ class wpl_io_void : public wpl_io {
 	const char *get_env (const char *name) { throw runtime_error("wpl_io_dummy::get_env(): Not supported"); }
 	void http_header(const char *field, const char *str) {}
 	void debug (const char *str) {}
+	void error (const char *str) {}
 };

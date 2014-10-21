@@ -32,6 +32,7 @@ static const char *wpl_pragma_name_scene =		"#SCENE";
 static const char *wpl_pragma_name_template_as_var =	"#HTML_TEMPLATE_AS_VAR";
 static const char *wpl_pragma_name_template =		"#HTML_TEMPLATE";
 static const char *wpl_pragma_name_template_var =	"#HTML_TEMPLATE_VAR";
+static const char *wpl_pragma_name_http_error =		"#HTTP_ERROR";
 static const char *wpl_pragma_name_json_begin = 	"#JSON_BEGIN";
 static const char *wpl_pragma_name_json_end =		"#JSON_END";
 static const char *wpl_pragma_name_content_type =	"#CONTENT_TYPE";

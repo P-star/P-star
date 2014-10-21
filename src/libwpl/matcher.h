@@ -352,6 +352,8 @@ class wpl_matcher {
 
 	int ignore_string_match (const uint32_t match, const uint32_t ignore);
 
+	void go_to_linestart();
+
 	public:
 	void load_position (const wpl_matcher_position &pos) {
 		text = pos.text;

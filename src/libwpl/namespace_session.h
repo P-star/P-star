@@ -44,6 +44,7 @@ enum {
 };
 
 class wpl_state;
+class wpl_scene;
 class wpl_template;
 class wpl_expression_state;
 class wpl_value_unresolved_identifier;
@@ -108,6 +109,7 @@ class wpl_namespace_session {
 	virtual wpl_variable *find_variable(const char *name, int ctx);
 	wpl_function *find_function_no_parent(const char *name, int ctx);
 	wpl_template *find_template (const char *name);
+	wpl_scene *find_scene (const char *name);
 	const wpl_type_complete *find_complete_type (const char *name);
 
 	virtual int do_operator_on_unresolved (

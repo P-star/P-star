@@ -123,23 +123,43 @@ void wpl_pragma_template_var::parse_value(wpl_namespace *parent_namespace) {
 	load_position(exp->get_position());
 }
 
+string wpl_pragma_expression::get_exp_name(wpl_pragma_state *pragma_state) {
+	if (!exp.get()) {
+		return this->name;
+	}
+
+	wpl_value_string name;
+	name.set_do_finalize();
+	int ret = pragma_state->run_child(exp.get(), 1, &name);
+
+	if (!(ret & WPL_OP_OK)) {
+		throw runtime_error("wpl_pragma_template::get_template(): Not OK return from expression");
+	}
+
+	return name.toString();
+}
+
+wpl_scene *wpl_pragma_scene::get_scene(wpl_pragma_state *pragma_state) {
+	string name = get_exp_name(pragma_state);
+
+	wpl_scene *my_scene;
+	if (!(my_scene = pragma_state->find_scene(name.c_str()))) {
+		ostringstream msg;
+		msg << "Could not find scene with name '" << name << "'\n";
+		throw runtime_error(msg.str());
+	}
+
+	return my_scene;
+}
+
+int wpl_pragma_scene::run(wpl_state *state, wpl_value *final_result) {
+	wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
+	wpl_scene *my_scene = get_scene(pragma_state);
+	return pragma_state->run_child(my_scene, 0, final_result);
+}
+
 wpl_template *wpl_pragma_template::get_template(wpl_pragma_state *pragma_state) {
-	string name;
-
-	if (exp.get()) {
-		wpl_value_string template_name;
-		template_name.set_do_finalize();
-		int ret = pragma_state->run_child(exp.get(), 1, &template_name);
-
-		if (!(ret & WPL_OP_OK)) {
-			throw runtime_error("wpl_pragma_template::get_template(): Not OK return from expression");
-		}
-
-		name = template_name.toString();
-	}
-	else {
-		name = this->template_name;
-	}
+	string name = get_exp_name(pragma_state);
 
 	wpl_template *my_template;
 	if (!(my_template = pragma_state->find_template(name.c_str()))) {
@@ -154,13 +174,10 @@ wpl_template *wpl_pragma_template::get_template(wpl_pragma_state *pragma_state) 
 int wpl_pragma_template::run(wpl_state *state, wpl_value *final_result) {
 	wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
 	wpl_template *my_template = get_template(pragma_state);
-	if (!my_template) {
-		throw runtime_error("wpl_pragma_template::run(): No template set");
-	}
 	return pragma_state->run_child(my_template, 0, final_result);
 }
 
-void wpl_pragma_template::parse_value(wpl_namespace *parent_namespace) {
+void wpl_pragma_expression::parse_value(wpl_namespace *parent_namespace) {
 	char value[WPL_VARNAME_SIZE];
 	ignore_whitespace();
 	if (ignore_letter('@')) {
@@ -173,7 +190,7 @@ void wpl_pragma_template::parse_value(wpl_namespace *parent_namespace) {
 	else {
 		// Find HTML template at parse time (static)
 		get_word(value);
-		template_name = value;
+		name = value;
 		parse_default_end();
 	}
 }
@@ -259,6 +276,16 @@ int wpl_pragma_text_content_type::run (wpl_state *state, wpl_value *final_result
 	return WPL_OP_NO_RETURN;
 }
 
+int wpl_pragma_text_http_error::run (wpl_state *state, wpl_value *final_result) {
+	wpl_io &io = state->get_io();
+	string buf = get_exp_name((wpl_pragma_state*) state);
+	io.error(buf.c_str());
+	throw runtime_error("Exiting program in HTTP_ERROR pragma");
+}
+
+const char wpl_pragma_json_begin::content_type[] = "application/json";
+const char wpl_pragma_json_begin::start[] = "{\n";
+
 void wpl_pragma_text::parse_value (wpl_namespace *parent_namespace) {
 	ignore_string_match(WHITESPACE, 0);
 	const char *start = get_string_pointer();
@@ -299,6 +326,7 @@ void wpl_pragma_text::parse_value (wpl_namespace *parent_namespace) {
 
 void wpl_pragma_add_all_to_namespace (wpl_namespace *my_namespace) {
 	REGISTER_PRAGMA_BLOCK(wpl_pragma_text_content_type)
+	REGISTER_PRAGMA_BLOCK(wpl_pragma_text_http_error)
 	REGISTER_PRAGMA_BLOCK(wpl_pragma_template)
 	REGISTER_PRAGMA_BLOCK(wpl_pragma_template_as_var)
 	REGISTER_PRAGMA_BLOCK(wpl_pragma_template_var)

@@ -28,8 +28,10 @@ class pstar_io : public wpl_io {
 	private:
 	string input;
 	int rpos;
-	bool headers_sent;
 	int waiting_buckets;
+
+	bool headers_sent = false;
+	bool http_error_pending = false;
 
 	map<string,string> http_headers;
 
@@ -47,6 +49,7 @@ class pstar_io : public wpl_io {
 	const char *get_env(const char *name) override;
 	void http_header (const char *field, const char *str) override;
 	void debug (const char *str) override;
+	void error (const char *str) override;
 
 	void append_input (const char *str, int len);
 	void output_headers ();

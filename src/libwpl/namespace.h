@@ -192,7 +192,7 @@ class wpl_namespace {
 
 	void generate_typename_list (ostringstream &target);
 
-	wpl_scene *find_scene (const char *name);
+	wpl_scene *find_scene (const char *name) const;
 	wpl_template *find_template (const char *name) const;
 
 	wpl_variable *find_variable (const char *name) const;

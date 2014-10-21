@@ -50,8 +50,15 @@ class wpl_pragma : public wpl_parse_and_run {
 	protected:
 	const char terminator;
 
+	wpl_pragma () :
+		wpl_parse_and_run("PRAGMA"),
+		terminator(0)
+	{
+		throw runtime_error("Don't use this constructor");
+	}
+
 	public:
-	wpl_pragma (const char *name, const char terminator) :
+	wpl_pragma (const char *name, char terminator) :
 		wpl_parse_and_run(name),
 		terminator(terminator)
 	{
@@ -62,8 +69,7 @@ class wpl_pragma : public wpl_parse_and_run {
 	wpl_pragma (const wpl_pragma &copy) :
 		wpl_parse_and_run(copy),
 		terminator(copy.terminator)
-	{
-	}
+	{}
 	virtual ~wpl_pragma() {}
 	virtual wpl_pragma *new_instance() const = 0;
 	virtual void suicide() override {
@@ -79,50 +85,32 @@ class wpl_pragma : public wpl_parse_and_run {
 	}
 };
 
-class wpl_pragma_fixed_text : public wpl_pragma {
+class wpl_pragma_fixed_text : public virtual wpl_pragma {
 	private:
 	const char *text;
 
-	public:
-	wpl_pragma_fixed_text(const char *text, const char *name, const char terminator) :
-		wpl_pragma (name, terminator)
-	{
-		this->text = text;
-	}
+	protected:
+	wpl_pragma_fixed_text(const char *text) :
+		text(text)
+	{}
 	wpl_pragma *new_instance() const {
 		return new wpl_pragma_fixed_text(*this);
 	}
+
+	public:
+	virtual ~wpl_pragma_fixed_text() {}
 	void parse_value(wpl_namespace *parent_namespace);
 	int run(wpl_state *state, wpl_value *final_result);
 };
 
-class wpl_pragma_json_begin : public wpl_pragma_fixed_text {
-	public:
-	wpl_pragma_json_begin (const char terminator) :
-		wpl_pragma_fixed_text (
-				"Content-type: application/json\r\n\r\n{\n",
-				wpl_pragma_name_json_begin,
-				terminator
-				)
-		{
-		}
-};
-
-class wpl_pragma_json_end : public wpl_pragma_fixed_text {
-	public:
-	wpl_pragma_json_end (const char terminator) :
-		wpl_pragma_fixed_text ("\t\"\": \"\"\n}\n", wpl_pragma_name_json_end, terminator) {
-	}
-};
-
-class wpl_pragma_template_var : public wpl_pragma {
+class wpl_pragma_template_var : public virtual wpl_pragma {
 	protected:
 	wpl_template *my_template;
 	unique_ptr<wpl_expression> value_expression;
 	shared_ptr<const wpl_type_complete> array_type;
 
-public:
-	wpl_pragma_template_var(const char terminator) :
+	public:
+	wpl_pragma_template_var(char terminator) :
 		wpl_pragma (wpl_pragma_name_template_var, terminator)
 	{
 		my_template = NULL;
@@ -132,6 +120,7 @@ public:
 	{
 		my_template = copy.my_template;
 	}
+	virtual ~wpl_pragma_template_var() {}
 	virtual wpl_pragma_template_var *new_instance() const {
 		return new wpl_pragma_template_var(*this);
 	}
@@ -139,34 +128,60 @@ public:
 	void parse_value(wpl_namespace *parent_namespace);
 };
 
-class wpl_pragma_template : public wpl_pragma {
-	protected:
+class wpl_pragma_expression : public virtual wpl_pragma {
+	private:
 	unique_ptr<wpl_expression> exp;
-	string template_name;
+	string name;
 
-	wpl_template *get_template(wpl_pragma_state *pragma_state);
+	protected:
+	wpl_pragma_expression()
+	{}
+	wpl_pragma_expression(const wpl_pragma_expression &copy)
+	{}
+	virtual ~wpl_pragma_expression() {}
+
+	string get_exp_name(wpl_pragma_state *pragma_state);
 
 	public:
-	wpl_pragma_template(const char *name, const char terminator) :
-		wpl_pragma (name, terminator)
+	void parse_value(wpl_namespace *parent_namespace);
+};
+
+class wpl_pragma_scene : public wpl_pragma_expression {
+	protected:
+	wpl_scene *get_scene(wpl_pragma_state *pragma_state);
+
+	public:
+	wpl_pragma_scene(char terminator) :
+		wpl_pragma(wpl_pragma_name_scene, terminator)
 	{}
-	wpl_pragma_template(const char terminator) :
+	virtual ~wpl_pragma_scene() {}
+	virtual wpl_pragma_scene *new_instance() const {
+		return new wpl_pragma_scene(*this);
+	}
+	int run(wpl_state *state, wpl_value *final_result) override;
+};
+
+class wpl_pragma_template : public wpl_pragma_expression {
+	protected:
+	wpl_template *get_template(wpl_pragma_state *pragma_state);
+
+	wpl_pragma_template() {}
+
+	public:
+	wpl_pragma_template(char terminator) :
 		wpl_pragma (wpl_pragma_name_template, terminator)
 	{}
-	wpl_pragma_template (const wpl_pragma_template &copy) :
-		wpl_pragma (copy)
-	{}
+	virtual ~wpl_pragma_template() {}
 	virtual wpl_pragma_template *new_instance() const {
 		return new wpl_pragma_template(*this);
 	}
 	virtual int run(wpl_state *state, wpl_value *final_result) override;
-	void parse_value(wpl_namespace *parent_namespace);
 };
 
 class wpl_pragma_template_as_var : public wpl_pragma_template {
 	public:
-	wpl_pragma_template_as_var(const char terminator) :
-		wpl_pragma_template (wpl_pragma_name_template_as_var, terminator)
+	wpl_pragma_template_as_var(char terminator) :
+		wpl_pragma(wpl_pragma_name_template_as_var, terminator)
 	{}
 	wpl_pragma_template_as_var *new_instance() const {
 		return new wpl_pragma_template_as_var(*this);
@@ -174,36 +189,7 @@ class wpl_pragma_template_as_var : public wpl_pragma_template {
 	int run(wpl_state *state, wpl_value *final_result) override;
 };
 
-class wpl_pragma_scene : public wpl_pragma {
-	private:
-	wpl_scene *my_scene;
-
-	public:
-	wpl_pragma_scene(const char terminator) :
-		wpl_pragma (wpl_pragma_name_scene, terminator)
-	{}
-	virtual wpl_pragma_scene *new_instance() const {
-		return new wpl_pragma_scene(*this);
-	}
-	int run(wpl_state *state, wpl_value *final_result) override {
-		wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
-		return pragma_state->run_child(my_scene, 0, final_result);
-	}
-	void parse_value(wpl_namespace *parent_namespace) {
-		char value[WPL_VARNAME_SIZE];
-		get_word(value);
-		if (!(my_scene = parent_namespace->find_scene(value))) {
-			revert_string(strlen(value));
-			THROW_ELEMENT_EXCEPTION("Could not find scene");
-		}
-		ignore_string_match(WHITESPACE, 0);
-		if (!ignore_letter(';')) {
-			THROW_ELEMENT_EXCEPTION("Expected ';' after #SCENE-pragma");
-		}
-	}
-};
-
-class wpl_pragma_text : public wpl_pragma {
+class wpl_pragma_text : public virtual wpl_pragma {
 	private:
 	const char *text_start;
 	const char *text_end;
@@ -217,12 +203,17 @@ class wpl_pragma_text : public wpl_pragma {
 	void add_to_string (string &buf) {
 		buf.append(text_start, (text_end-text_start));
 	}
+	wpl_pragma_text(const char *text) :
+		text_start(text),
+		text_end(text_start + strlen(text))
+	{}
+	wpl_pragma_text() :
+		text_start(NULL),
+		text_end(NULL)
+	{}
 
 	public:
 	virtual ~wpl_pragma_text() {}
-	wpl_pragma_text(const char *name, const char terminator) :
-		wpl_pragma(name, terminator)
-	{}
 
 	virtual void parse_value(wpl_namespace *parent_namespace);
 };
@@ -233,7 +224,7 @@ class wpl_pragma_dump_file : public wpl_pragma {
 	string static_filename;
 
 	public:
-	wpl_pragma_dump_file(const char terminator) :
+	wpl_pragma_dump_file(char terminator) :
 		wpl_pragma(wpl_pragma_name_dump_file, terminator)
 	{}
 	wpl_pragma_dump_file *new_instance() const {
@@ -245,14 +236,64 @@ class wpl_pragma_dump_file : public wpl_pragma {
 };
 
 class wpl_pragma_text_content_type : public wpl_pragma_text {
-	public:
-	wpl_pragma_text_content_type(const char terminator) :
-		wpl_pragma_text (wpl_pragma_name_content_type, terminator)
+	protected:
+	wpl_pragma_text_content_type(const char *content_type) :
+		wpl_pragma_text(content_type)
 	{}
-	wpl_pragma_text_content_type *new_instance() const {
+
+	public:
+	wpl_pragma_text_content_type(char terminator) :
+		wpl_pragma (wpl_pragma_name_content_type, terminator)
+	{}
+	wpl_pragma_text_content_type *new_instance() const override {
 		return new wpl_pragma_text_content_type(*this);
 	}
 	int run(wpl_state *state, wpl_value *final_result) override;
+};
+
+class wpl_pragma_text_http_error : public wpl_pragma_expression {
+	protected:
+	public:
+	wpl_pragma_text_http_error(char terminator) :
+		wpl_pragma (wpl_pragma_name_http_error, terminator)
+	{}
+	wpl_pragma_text_http_error *new_instance() const override {
+		return new wpl_pragma_text_http_error(*this);
+	}
+	int run(wpl_state *state, wpl_value *final_result) override;
+};
+
+class wpl_pragma_json_begin : public wpl_pragma_fixed_text, public wpl_pragma_text_content_type {
+	private:
+	static const char content_type[];
+	static const char start[];
+
+	public:
+	wpl_pragma_json_begin (char terminator) :
+		wpl_pragma_fixed_text (start),
+		wpl_pragma_text_content_type (content_type),
+		wpl_pragma (wpl_pragma_name_json_begin, terminator)
+	{}
+	wpl_pragma_json_begin *new_instance() const override {
+		return new wpl_pragma_json_begin(*this);
+	}
+
+	void parse_value(wpl_namespace *ns) override {
+		wpl_pragma_fixed_text::parse_value(ns);
+	}
+	int run(wpl_state *state, wpl_value *final_result) override {
+		wpl_pragma_text_content_type::run(state, final_result);
+		wpl_pragma_fixed_text::run(state, final_result);
+		return WPL_OP_NO_RETURN;
+	}
+};
+
+class wpl_pragma_json_end : public wpl_pragma_fixed_text {
+	public:
+	wpl_pragma_json_end (char terminator) :
+		wpl_pragma_fixed_text ("\t\"\": \"\"\n}\n"),
+       		wpl_pragma(wpl_pragma_name_json_end, terminator)
+	{}
 };
 
 void wpl_pragma_add_all_to_namespace (wpl_namespace *my_namespace);

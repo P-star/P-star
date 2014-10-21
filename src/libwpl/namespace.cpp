@@ -187,7 +187,7 @@ wpl_identifier *wpl_namespace::find_identifier_no_parent (const char *name) {
  *
  * @return Return the scene on success or NULL on failure.
  */
-wpl_scene *wpl_namespace::find_scene (const char *name) {
+wpl_scene *wpl_namespace::find_scene (const char *name) const {
 	for (wpl_scene *scene : scenes) {
 		if (strcmp (name, scene->wpl_identifier::get_name()) == 0) {
 			return scene;

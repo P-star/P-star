@@ -52,6 +52,9 @@ class wpl_pragma_state : public wpl_state {
 	wpl_template *find_template(const char *name) {
 		return get_nss()->find_template(name);
 	}
+	wpl_scene *find_scene(const char *name) {
+		return get_nss()->find_scene(name);
+	}
 	void set_children_count(int count) {
 		child_state.resize(count);
 	}
