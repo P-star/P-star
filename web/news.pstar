@@ -6,8 +6,8 @@ HTML_TEMPLATE article {
 	<div class="article">
 		<h3>{@subject}</h3>
 		<i>{@"$time"}</i>
-{@LOOP (++i < @paragraphs)
-		<p>{@paragraphs[i]}</p>
+{@foreach (string paragraph; paragraphs)
+		<p>{@paragraph}</p>
 }
 	</div>
 
@@ -30,6 +30,9 @@ SCENE news {
 	int line_counter = 0;
 	LINE line = file;
 	while (line++) {
+		TIME time;
+		array<string> paragraphs;
+
 		line_counter++;
 		line =~ s/\n$//;
 		if (line =~ s/^ARTICLE\s+//) {
@@ -37,8 +40,6 @@ SCENE news {
 				break;
 			}
 			string subject = line;
-			TIME time;
-			array<string> paragraphs;
 
 			while (line++) {
 				line_counter++;
