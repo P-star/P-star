@@ -11,13 +11,13 @@ HTML_TEMPLATE layout_head {
 	<div id="logo"><span>Web Programming Language</span></div>
 	<div id="menu">
 		<ul class="menu_buttons">
-			{@LOOP (++i < @buttons)
+			{@foreach (auto button; buttons)
 				<li class ="{@
-					buttons[i]->classname
+					button->classname
 				}"><div><a href="{@
-					url_prefix . buttons[i]->name
+					url_prefix . button->name
 				}"><span>{@
-					buttons[i]->text
+					button->text
 				}</span></a></div></li>
 			}
 			<li style="clear:left"></li>

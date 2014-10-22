@@ -59,8 +59,6 @@ wpl_state *wpl_text_state::get_child_state(wpl_runable *runable, int index) {
 }
 
 int wpl_text_state::run_runable(wpl_runable *runable, int index, wpl_value *final_result) {
-	final_result->set_do_finalize();
-
 	wpl_state *runable_state = get_child_state(runable, index);
 	return runable->run(runable_state, final_result);
 }

@@ -65,7 +65,7 @@ void wpl_namespace_session::replace_variables (wpl_namespace_session *source) {
 
 void wpl_namespace_session::reset_variables() {
 	for (int i = 0; i < variables_ptr.size(); i++) {
-		wpl_value *value = variables_ptr[0]->get_value();
+		wpl_value *value = variables_ptr[i]->get_value();
 
 		value->reset();
 	}

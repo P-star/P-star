@@ -43,3 +43,12 @@ int wpl_scene::run (wpl_state *state, wpl_value *final_result) {
 	}
 	return wpl_block::run(state, final_result);
 }
+	
+wpl_type_complete *wpl_scene::find_complete_type(const char *name) const {
+	for (auto it : base_scenes) {
+		if (wpl_type_complete *ret = it->find_complete_type(name)) {
+	 		return ret;
+		}
+	}
+	return wpl_namespace::find_complete_type(name);
+}

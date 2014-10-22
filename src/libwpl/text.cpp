@@ -83,6 +83,8 @@ int wpl_text_chunks::expression::run (
    	wpl_value_output_trigger output_trigger(io);
 	wpl_value_double_finalizer finalizer(&output_trigger, final_result);
 
+	finalizer.set_do_finalize();
+
 	int ret = state->run_runable (exp.get(), index, &finalizer);
 
 	return ret;

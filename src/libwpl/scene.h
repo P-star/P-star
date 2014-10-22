@@ -43,6 +43,7 @@ class wpl_scene : public wpl_block, public wpl_identifier {
 
 	wpl_state *new_state(wpl_state *parent, wpl_namespace_session *nss, wpl_io *io) override;
 	int run (wpl_state *state, wpl_value *final_result) override;
+	wpl_type_complete *find_complete_type(const char *name) const override;
 
 	void add_base (wpl_scene *base) {
 		base_scenes.push_back(base);

@@ -285,6 +285,12 @@ This is B's function:
 						<entry>string text = "P* Web Programming Language";</entry>
 						<entry>Uses <code>&lt;string&gt;</code> from C++</entry>
 					</row>
+					<row>
+						<entry>auto</entry>
+						<entry>Automatic type</entry>
+						<entry>auto var = "P* Web Programming Language";</entry>
+						<entry>Automatic type selection based on the first assignment.</entry>
+					</row>
 				</tbody>
 				</tgroup>
 			</table>
@@ -742,326 +748,423 @@ Float result: 11.500000
 					</row>
 				</thead>
 				<tbody>
+				abbc
 					<row>
 						<entry morerows="5">1</entry>
-						<entry>()</entry>
+						<entry><code>()</code></entry>
 						<entry>Function call</entry>
 						<entry>Left or none</entry>
-						<entry><code>call(2,3)</code> (expands to call 2, 3 ())</entry>
+						<entry><code>call(2,3)</code></entry>
 					</row>
 					<row>
-						<entry>[]</entry>
+						<entry><code>[]</code></entry>
 						<entry>Array subscription (hashes and arrays)</entry>
 						<entry morerows="1">Left</entry>
-						<entry><code>my_array[2]</code> (expands to my_array 2 [])</entry>
+						<entry><code>my_array[2]</code></entry>
 					</row>
 					<row>
-						<entry>-&gt;</entry>
+						<entry><code>-&gt;</code></entry>
 						<entry>Element selection (structs and classes)</entry>
-						<entry><code>my_struct-&gt;variable</code> (expands to my_struct variable -&gt;)</entry>
+						<entry><code>my_struct-&gt;variable</code></entry>
 					</row>
 					<row>
-						<entry>*</entry>
+						<entry><code>*</code></entry>
 						<entry>Indirection - Return the value of a pointer</entry>
 						<entry morerows="2">Right</entry>
 						<entry><code>*my_pointer</code></entry>
 					</row>
 					<row>
-						<entry>*</entry>
+						<entry><code>*</code></entry>
 						<entry>First element selector - Returns first element of an array, same as [0]</entry>
 						<entry><code>*my_array</code></entry>
 					</row>
 					<row>
-						<entry>&amp;</entry>
+						<entry><code>&amp;</code></entry>
 						<entry>Pointer To - Returns a pointer to a value</entry>
 						<entry><code>&amp;my_value</code></entry>
 					</row>
 					<row>
-						<entry morerows="4">2</entry>
-						<entry>++</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry morerows="5">2</entry>
+						<entry><code>++</code></entry>
 						<entry>Postfix increment</entry>
 						<entry morerows="1">Left</entry>
 						<entry><code>i++</code></entry>
 					</row>
 					<row>
-						<entry>--</entry>
+						<entry><code>--</code></entry>
 						<entry>Postfix decrement</entry>
 						<entry><code>i--</code></entry>
 					</row>
 					<row>
-						<entry>@</entry>
+						<entry><code>@</code></entry>
 						<entry>Element counter (arrays and hashes)</entry>
-						<entry morerows="2">Right</entry>
+						<entry morerows="3">Right</entry>
 						<entry><code>@my_array</code></entry>
 					</row>
 					<row>
-						<entry>isempty</entry>
+						<entry><code>isempty</code></entry>
 						<entry>Empty check logic (strings)</entry>
 						<entry><code>isempty my_string</code></entry>
 					</row>
 					<row>
-						<entry>defined</entry>
+						<entry><code>defined</code></entry>
 						<entry>Check if array, hash or ENV element is defined</entry>
 						<entry><code>defined my_array[2]</code></entry>
 					</row>
 					<row>
+						<entry><code>keys</code></entry>
+						<entry>Return an array of all keys in a hash</entry>
+						<entry><code>my_array&lt;string&gt; keys_of_hash = keys my_hash</code></entry>
+					</row>
+					<row>
 						<entry morerows="3">3</entry>
-						<entry>++</entry>
+						<entry><code>++</code></entry>
 						<entry>Prefix increment</entry>
 						<entry morerows="3">Right</entry>
 						<entry><code>++i</code></entry>
 					</row>
 					<row>
-						<entry>--</entry>
+						<entry><code>--</code></entry>
 						<entry>Prefix decrement</entry>
 						<entry><code>--i</code></entry>
 					</row>
 					<row>
-						<entry>~</entry>
+						<entry><code>~</code></entry>
 						<entry>Bitwise not</entry>
 						<entry><code>~invert_this</code></entry>
 					</row>
 					<row>
-						<entry>!</entry>
+						<entry><code>!</code></entry>
 						<entry>Logical not</entry>
 						<entry><code>!var</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry morerows="1">4</entry>
-						<entry>=~</entry>
+						<entry><code>=~</code></entry>
 						<entry>Pattern match</entry>
 						<entry morerows="1">Left</entry>
 						<entry><code>a =~ /regular expression/</code></entry>
 					</row>
 					<row>
-						<entry>!~</entry>
+						<entry><code>!~</code></entry>
 						<entry>Pattern negative match</entry>
 						<entry><code>a !~ /regular expression/</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry morerows="2">5</entry>
-						<entry>*</entry>
+						<entry><code>*</code></entry>
 						<entry>Multiplication</entry>
-						<entry morerows="5">Left</entry>
+						<entry morerows="6">Left</entry>
 						<entry><code>a*b</code></entry>
 					</row>
 					<row>
-						<entry>/</entry>
+						<entry><code>/</code></entry>
 						<entry>Division</entry>
 						<entry><code>dividend / divisor</code></entry>
 					</row>
 					<row>
-						<entry>%</entry>
+						<entry><code>%</code></entry>
 						<entry>Modulus</entry>
 						<entry><code>dividend % divisor</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry morerows="2">6</entry>
-						<entry>+</entry>
+						<entry><code>+</code></entry>
 						<entry>Sum</entry>
 						<entry><code>number_a + number_b</code></entry>
 					</row>
 					<row>
-						<entry>-</entry>
+						<entry><code>-</code></entry>
 						<entry>Subtraction</entry>
 						<entry><code>number_a - number_b</code></entry>
 					</row>
 					<row>
-						<entry>.</entry>
+						<entry><code>.</code></entry>
 						<entry>String concatenation</entry>
 						<entry><code>string_a . string_b</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry morerows="1">7</entry>
-						<entry>&lt;&lt;</entry>
+						<entry><code>&lt;&lt;</code></entry>
 						<entry>Left bitshift</entry>
 						<entry morerows="1">Left</entry>
 						<entry><code>a &lt;&lt; 1</code></entry>
 					</row>
 					<row>
-						<entry>&gt;&gt;</entry>
+						<entry><code>&gt;&gt;</code></entry>
 						<entry>Right bitshift</entry>
 						<entry><code>a &gt;&gt; 1</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry>8</entry>
-						<entry>&amp;</entry>
+						<entry><code>&amp;</code></entry>
 						<entry>Bitwise AND</entry>
 						<entry morerows="2">Left</entry>
 						<entry><code>a &amp; b</code></entry>
 					</row>
 					<row>
 						<entry>9</entry>
-						<entry>^</entry>
+						<entry><code>^</code></entry>
 						<entry>Bitwise XOR</entry>
 						<entry><code>a ^ b</code></entry>
 					</row>
 					<row>
 						<entry>10</entry>
-						<entry>|</entry>
+						<entry><code>|</code></entry>
 						<entry>Bitwise OR</entry>
 						<entry><code>a | b</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry morerows="3">11</entry>
-						<entry>&lt;=</entry>
+						<entry><code>&lt;=</code></entry>
 						<entry>Logical less than or equal</entry>
-						<entry morerows="5">Left</entry>
+						<entry morerows="7">Left</entry>
 						<entry><code>a &lt;= b</code></entry>
 					</row>
 					<row>
-						<entry>&gt;=</entry>
+						<entry><code>&gt;=</code></entry>
 						<entry>Logical more than or equal</entry>
 						<entry>a &gt;= b</entry>
 					</row>
 					<row>
-						<entry>&lt;</entry>
+						<entry><code>&lt;</code></entry>
 						<entry>Logical less than</entry>
 						<entry><code>a &lt; b</code></entry>
 					</row>
 					<row>
-						<entry>&gt;</entry>
+						<entry><code>&gt;</code></entry>
 						<entry>Logical more than</entry>
 						<entry><code>a &gt; b</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry morerows="1">12</entry>
-						<entry>==</entry>
+						<entry><code>==</code></entry>
 						<entry>Logical equal</entry>
 						<entry><code>a == b</code></entry>
 					</row>
 					<row>
-						<entry>!=</entry>
+						<entry><code>!=</code></entry>
 						<entry>Logical not equal</entry>
 						<entry><code>a != b</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry>13</entry>
-						<entry>&amp;&amp;</entry>
+						<entry><code>&amp;&amp;</code></entry>
 						<entry>Logical AND</entry>
 						<entry morerows="1">Left</entry>
 						<entry><code>a &amp;&amp; b</code></entry>
 					</row>
 					<row>
 						<entry>14</entry>
-						<entry>||</entry>
+						<entry><code>||</code></entry>
 						<entry>Logical OR</entry>
 						<entry><code>a || b</code></entry>
 					</row>
 					<row>
 						<entry morerows="1">15</entry>
-						<entry>=></entry>
+						<entry><code>=></code></entry>
 						<entry>Push discard chain to array</entry>
 						<entry morerows="1">Right</entry>
 						<entry><code>10, 20, 30 => my_array</code></entry>
 					</row>
 					<row>
-						<entry>==></entry>
+						<entry><code>==></code></entry>
 						<entry>Same as =>, but clears array first</entry>
 						<entry><code>10, 20, 30 ==> my_array</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry morerows="11">16</entry>
-						<entry>=</entry>
+						<entry><code>=</code></entry>
 						<entry>Assign</entry>
 						<entry morerows="11">Right</entry>
 						<entry><code>a = b</code></entry>
 					</row>
 					<row>
-						<entry>+=</entry>
+						<entry><code>+=</code></entry>
 						<entry>Assign by sum</entry>
 						<entry><code>a += b</code></entry>
 					</row>
 					<row>
-						<entry>-=</entry>
+						<entry><code>-=</code></entry>
 						<entry>Assign by difference</entry>
 						<entry><code>a -= b</code></entry>
 					</row>
 					<row>
-						<entry>*=</entry>
+						<entry><code>*=</code></entry>
 						<entry>Assign by product</entry>
 						<entry><code>a *= b</code></entry>
 					</row>
 					<row>
-						<entry>/=</entry>
+						<entry><code>/=</code></entry>
 						<entry>Assign by quotient</entry>
 						<entry><code>a /= b</code></entry>
 					</row>
 					<row>
-						<entry>%=</entry>
+						<entry><code>%=</code></entry>
 						<entry>Assign by remainder</entry>
 						<entry><code>a %= b</code></entry>
 					</row>
 					<row>
-						<entry>&amp;=</entry>
+						<entry><code>&amp;=</code></entry>
 						<entry>Assign by bitwise AND</entry>
 						<entry><code>a &amp;= b</code></entry>
 					</row>
 					<row>
-						<entry>^=</entry>
+						<entry><code>^=</code></entry>
 						<entry>Assign by bitwise XOR</entry>
 						<entry><code>a ^= b</code></entry>
 					</row>
 					<row>
-						<entry>|=</entry>
+						<entry><code>|=</code></entry>
 						<entry>Assign by bitwise OR</entry>
 						<entry><code>a |= b</code></entry>
 					</row>
 					<row>
-						<entry>&lt;&lt;=</entry>
+						<entry><code>&lt;&lt;=</code></entry>
 						<entry>Assign by bitwise left shift</entry>
 						<entry><code>a &lt;&lt;= b</code></entry>
 					</row>
 					<row>
-						<entry>&gt;&gt;=</entry>
+						<entry><code>&gt;&gt;=</code></entry>
 						<entry>Assign by bitwise right shift</entry>
 						<entry><code>a &gt;&gt;= b</code></entry>
 					</row>
 					<row>
-						<entry>.=</entry>
+						<entry><code>.=</code></entry>
 						<entry>Append to string</entry>
 						<entry><code>a .= b</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry morerows="1">17</entry>
-						<entry>..</entry>
+						<entry><code>..</code></entry>
 						<entry>Range operator inclusive</entry>
 						<entry morerows="1">Left</entry>
 						<entry><code>foreach (i; 0..10) { /* Loops 0 through 10 */ }</code></entry>
 					</row>
 					<row>
-						<entry>...</entry>
+						<entry><code>...</code></entry>
 						<entry>Range operator exclusive</entry>
 						<entry><code>foreach (i; 0..10) { /* Loops 1 through 9 */ }</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry>18</entry>
-						<entry>,</entry>
+						<entry><code>,</code></entry>
 						<entry>Discard operator (comma)</entry>
 						<entry>Left</entry>
 						<entry><code>a, b</code></entry>
 					</row>
 					<row>
 						<entry morerows="1">19</entry>
-						<entry>echo</entry>
+						<entry><code>echo</code></entry>
 						<entry>Write expression to standard output</entry>
 						<entry morerows="1">Right</entry>
 						<entry><code>echo "Hello world!"</code></entry>
 					</row>
 					<row>
-						<entry>errcho</entry>
+						<entry><code>errcho</code></entry>
 						<entry>Write expression to standard error</entry>
 						<entry><code>errcho "This is an error message"</code></entry>
 					</row>
 					<row>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry morerows="1">20</entry>
-						<entry>break</entry>
+						<entry><code>break</code></entry>
 						<entry>Break out from nearest loop</entry>
 						<entry>None</entry>
 						<entry><code>break</code></entry>
 					</row>
 					<row>
-						<entry>return</entry>
+						<entry><code>return</code></entry>
 						<entry>Return from nearest function</entry>
 						<entry>Right or none</entry>
 						<entry><code>return 1</code></entry>
@@ -1196,9 +1299,7 @@ my_pets["dog"] = "Max";
 my_pets["cat"] = "Tiger";
 
 /* Create an array of the keys */
-array&lt;string&gt; pet_keys;
-pet_keys[0] = "dog";
-pet_keys[1] = "cat";
+array&lt;string&gt; pet_keys = keys my_pets;
 
 /* Count the elements of the hash and print to standard output */
 echo "I have " . @my_pets . " pets.\n";
@@ -1305,7 +1406,7 @@ SCENE main {
 			The GET-type reads the environment variables <code>QUERY_STRING</code>, which contains the query string from the user like <code>?id=45</code>. The GET-type is accessed just like a hash, but if you access an element which was not defined in the query string, the value will be boolean false.
 			</para>
 			<para>
-			If a key is set in the query string but without a value, it will be set as boolean true. All other values are set to be strings.
+			You can use the <code>defined</code> operator to check if a value is set or not.
 			</para>
 			<para>
 			If P* doesn't find the <code>QUERY_STRING</code> environment variable, it will crash your program, but an empty query string is OK. You may have multiple GET-variables in your program, but P* will parse the query string once for every instance.
@@ -1336,7 +1437,7 @@ SCENE main {
 		string key = keys_to_check[i];
 
 		/* Check if the key is defined */
-		if (*get[key]) {
+		if (defined get[key]) {
 			echo "The key '$key' is set in the query string\n";
 			echo "\tThere are " . @get[key] . " instances of this key\n";
 			if (@get[key] &gt; 1) {
@@ -1385,7 +1486,7 @@ The value of 'd' instance number 1 is 'Second D'
 			<para>
 			The <code>ENV</code>-type provides the element selection operator <code>-&gt;</code> to access different environment variables.
 			Variables are not cached, and <code>getenv(3)</code> is used to read environment variables every time you access them.
-			P* will crash your program if you access a variable which is not defined.
+			P* will crash your program if you access a variable which doesn't exist. To avoid this, you should use the <code>defined</code>-operator to check for existence of variables.
 			</para>
 			<para>
 			Example with the <code>ENV</code> type:
@@ -1405,8 +1506,8 @@ The current path is '/usr/local/bin:/usr/bin:/bin:/usr/test/bin/'
 			<title>HTML templates </title>
 			<para>With P*, you don't need any external template engine. Templates are in-language!</para>
 			<para>Templates look like blocks and are defined in the main scope of the program. When a template is called, it inherits all variables available from the location of the call.</para>
-			<para>Inside templates, you can use the special syntax <code>{@variable}</code> to interpolate variables.
-			You can also use while loops with the syntax <code>{@LOOP (expression) text}</code>
+			<para>Inside templates, you can use the special syntax <code>{@variable}</code> to interpolate variables. 
+			Actually, everything inside <code>{@ }</code> is parsed as an expression, and you can do anything here which you could do elsewhere in the program except for declaring variables.
 			</para>
 			<bridgehead>Example of a program using a HTML template</bridgehead>
 			<programlisting language="c">
@@ -1428,7 +1529,9 @@ SCENE main {
 	#HTML_TEMPLATE document;
 }
 </programlisting>
-			<para>In the above example, the template <code>document</code> is called statically, the name is resolved and validated at parse-time. You can also store the name of the template in a variable an call it dynamically using the expression-starter <code>@</code> at run-time like this:
+			<para>In the above example, the template <code>document</code> is calledby a fixed string.
+			If you store the name of the template which should be used in a variable, you can use the <code>@</code> to parse it as an expression instead.
+			</para>
 			<programlisting language="c">
 HTML_TEMPLATE test_template {
 	Test output
@@ -1452,22 +1555,34 @@ SCENE main {
 	return 0;
 }
 </programlisting>
+			<bridgehead>Conditional blocks</bridgehead>
+			<para><emphasis>LOOP and CONDITION blocks removed in pstar-1.2~alpha10</emphasis></para>
+			<para>You can use <code>if</code>, <code>while</code>, <code>for</code> and <code>foreach</code> blocks to control the flow of the HTML template.
+			The blocks work in the same way as elsewhere in the program, only that they contain text to be printed and not P* code.
 			</para>
-			<bridgehead>TEMPLATE blocks</bridgehead>
-			<para>You can call another template from within another template by using the <code>{@TEMPLATE template_name;}</code> syntax.
-			The template you call inherits all variables from the caller.</para>
-			<bridgehead>CONDITION and LOOP blocks</bridgehead>
-			<para>You can make the template behave in different ways depending on input data by using the <code>LOOP</code> and <code>CONDITION</code> blocks.
-			The <code>CONDITION</code> block works the same way as and <code>if</code>-block, the data inside it is printed out if the specified expression returns <code>TRUE</code>.
-			The <code>LOOP</code> block is the same as a <code>while</code>-block. The data inside it is printed out repeatedly while the specified expression returns <code>TRUE</code>. This is useful for printing out arrays.
+			<para>Here is an example program which loops an array of struct to print out all its data.
+			Note that we use and <code>if</code> block to check if the array <code>rows</code> contains any elements at all by using the count operator <code>@</code>.
+			If there are some values in it, we proceed with printing a table by looping the array in a <code>foreach</code> loop. Inside the loop, we call another template, <code>template_row</code> which contains the layout of the table row.
 			</para>
-			<para>Here is an example program which loops an array of struct to print out all its data:
+			
 				<programlisting language="c">
-HTML_TEMPLATE row {
-	&lt;tr&gt;
-		&lt;td&gt;{@rows[row_counter]-&gt;id}&lt;/td&gt;
-		&lt;td&gt;{@rows[row_counter]-&gt;description}&lt;/td&gt;
-	&lt;/tr&gt;
+/* Object we use to hold some data */
+struct row {
+	public int id;
+	public string description;
+	row (int _id, string _description) {
+		id = _id;
+		description = _description;
+	};
+};
+
+HTML_TEMPLATE template_row_header {
+	&lt;th&gt;ID&lt;/th&gt;
+	&lt;th&gt;Description&lt;/th&gt;
+}
+HTML_TEMPLATE template_row {
+	&lt;td&gt;{@row-&gt;id}&lt;/td&gt;
+	&lt;td&gt;{@row-&gt;description}&lt;/td&gt;
 }
 
 HTML_TEMPLATE document {
@@ -1477,15 +1592,18 @@ HTML_TEMPLATE document {
 	&lt;title&gt;{@title}&lt;/title&gt;
 	&lt;/head&gt;
 	&lt;body&gt;
-{@CONDITION (@rows &gt; 0)
+{@if (@rows > 0)
 	&lt;p&gt;We have rows to print!&lt;/p&gt;
 	&lt;table&gt;
 		&lt;tr&gt;
-			&lt;th&gt;ID&lt;/th&gt;
-			&lt;th&gt;Description&lt;/th&gt;
+			{@#HTML_TEMPLATE template_row_header}
 		&lt;/tr&gt;
-{@LOOP (++row_counter &lt; @rows) {@TEMPLATE row} }
+	{@foreach (auto row; rows)
+		&lt;tr id="{@row-&gt;id}"&gt;{@#HTML_TEMPLATE template_row}&lt;/tr&gt;
+	}
 	&lt;/table&gt;
+} else {
+	&lt;p&gt;We do not have any rows to print&lt;/p&gt;
 }
 	&lt;/body&gt;
 	&lt;/html&gt;
@@ -1494,15 +1612,6 @@ HTML_TEMPLATE document {
 SCENE main {
 	string title = "P* Web Programmin Language test page";
 
-	struct row {
-		public int id;
-		public string description;
-		row (int _id, string _description) {
-			id = _id;
-			description = _description;
-		};
-	};
-
 	array&lt;row&gt; rows;
 
 	rows[@rows](1, "First row");
@@ -1510,12 +1619,9 @@ SCENE main {
 	rows[@rows](3, "Third row");
 
 	#CONTENT_TYPE text/html;
-
-	int row_counter = "-1";
 	#HTML_TEMPLATE document;
 }
 </programlisting>
-			</para>
 			<bridgehead>AJAX output</bridgehead>
 			<para>
 			P* supports common AJAX-operations like replacing text inside a &lt;div&gt;. If you want to output a variable interpolated into the template, the id-tag of the previous element in you HTML is used as variable name when the JSON is generated. In the example below, a jQuery scripts does this job. 
@@ -1523,10 +1629,12 @@ SCENE main {
 			<para>
 			You can also have P* generate JSON output for you.
 			You can choose variables to output from a template, and P* will create a key/value pair to output to the browser.
-			The key is taken from the previous expression preceeded by the text "id=" from where in the template the variable was.
+			The key is taken from the expression block (<code>{@ ... }</code> preceeded by the text "id=" from where in the template the variable was.
+			You may call another template or function inside that expression if you wish, everything inside will be JSON encoded into a variable named after the ID parameter.
+			</para>
+			<para>
 			Under follows an example which outputs a variable using JSON if the GET-variable <code>do_ajax</code> is set.
 			</para>
-			<para>Here is an example program which uses templates and JSON output:
 			<programlisting language="c">
 HTML_TEMPLATE document {
 	&lt;!DOCTYPE HTML&gt;
@@ -1535,27 +1643,45 @@ HTML_TEMPLATE document {
 	&lt;title&gt;P* Web Programming Language&lt;/title&gt;
 	&lt;/head&gt;
 	&lt;body&gt;
-	&lt;h1 id="{@"header"}"&gt;{@header}&lt;/h1&gt;
+	&lt;h1 id="{@"header"}"&gt;{@header_text}&lt;/h1&gt;
+	&lt;h2 id="{@"subheader"}"&gt;{@subheader_text}&lt;/h2&gt;
 	&lt;/body&gt;
 	&lt;/html&gt;
 }
 
-SCENE main {
-	GET get;
-	string header = "This is the header";
-	if (*get["do_ajax"]) {
-		#JSON_BEGIN;
-		#HTML_TEMPLATE_VAR document header;
-		#JSON_END;
+SCENE fullpage {
+	#CONTENT_TYPE text/html;
+	#HTML_TEMPLATE document;
+}
+
+SCENE json {
+	#JSON_BEGIN;
+	/* Call the template "document" and print the
+	expression inside the tag with id "header" and "subheader" */
+	#HTML_TEMPLATE_VAR document "header", "subheader";
+	#JSON_END;
+}
+
+SCENE config {
+	public GET get;
+	public string header_text = "This is the header";
+	public string subheader_text = "This is the useless subheader";
+}
+
+/* The main scene extends the config-scene which 
+   we use to set some variables. */
+SCENE main : config {
+	if (defined get["do_ajax"]) {
+		/* Call the json scene */
+		#SCENE json;
 	}
 	else {
-		#CONTENT_TYPE text/html;
-		#HTML_TEMPLATE document;
+		/* Call the fullpage scene */
+		#SCENE fullpaga;
 	}
 }
 </programlisting> 
-			</para>
-			<bridgehead>Output of program when "do_ajax" is not set</bridgehead>
+			<para>Output of program when "do_ajax" is not set</para>
 			<programlisting language="c">
 Content-type: text/html;
 
@@ -1566,15 +1692,17 @@ Content-type: text/html;
 &lt;/head&gt;
 &lt;body&gt;
 &lt;h1 id="header"&gt;This is the header&lt;/h1&gt;
+&lt;h2 id="header"&gt;This is the useless subheader&lt;/h2&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </programlisting>
-			<bridgehead>Output of program when "do_ajax" is set</bridgehead>
+			<para>Output of program when "do_ajax" is set</para>
 			<programlisting language="c">
 Content-type: application/json
 
 {
 	"header": "This is the header",
+	"subheader": "This is the useless subheader",
 	"": ""
 }
 </programlisting>
@@ -1583,7 +1711,6 @@ Content-type: application/json
 			The JSON variable name is set to be the same as the name of the template.
 			This output method is useful if you want to output larger parts of a page.
 			</para>
-			<bridgehead>HTML_TEMPLATE_AS_VAR-Example</bridgehead>
 			<programlisting language="c">
 HTML_TEMPLATE head {
 	&lt;!DOCTYPE html&gt;
@@ -1595,32 +1722,41 @@ HTML_TEMPLATE head {
 	&lt;div id="body"&gt;
 }
 
-HTML_TEMPLATE body {
-	This is the body
-}
-
 HTML_TEMPLATE foot {
 	&lt;/div&gt;
 	&lt;/body&gt;
 	&lt;/html&gt;
 }
 
+HTML_TEMPLATE body {
+	This is the body
+}
+
+SCENE json {
+	/* Print the whole body as a JSON variable */
+	#JSON_BEGIN;
+	#HTML_TEMPLATE_AS_VAR body;
+	#JSON_END;
+}
+
+SCENE fullpage {
+	#CONTENT_TYPE text/html;
+	#HTML_TEMPLATE head;
+	#HTML_TEMPLATE body;
+	#HTML_TEMPLATE foot;
+}
+
 SCENE main {
 	GET get;
-	if (*get["do_ajax"]) {
-		#JSON_BEGIN;
-		#HTML_TEMPLATE_AS_VAR body;
-		#JSON_END;
+	if (defined get["do_ajax"]) {
+		#SCENE json;
 	}
 	else {
-		#CONTENT_TYPE text/html;
-		#HTML_TEMPLATE head;
-		#HTML_TEMPLATE body;
-		#HTML_TEMPLATE foot;
+		#SCENE fullpage;
 	}
 }
 </programlisting>
-			<bridgehead>Output of program when "do_ajax" GET variable is not set</bridgehead>
+			<para>Output of program when "do_ajax" GET variable is not set</para>
 			<programlisting language="c">
 Content-type: text/html;
 
@@ -1636,7 +1772,7 @@ This is the body
 &lt;/body&gt;
 &lt;/html&gt;
 </programlisting>
-			<bridgehead>Output with the "do_ajax" GET variable set</bridgehead>
+			<para>Output with the "do_ajax" GET variable set</para>
 			<programlisting language="c">
 Content-type: application/json
 
