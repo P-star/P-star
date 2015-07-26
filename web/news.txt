@@ -1,3 +1,9 @@
+ARTICLE New automatic type and more!
+DATE	2014-10-22
+PARA	The new type called <code>auto</code> will automatically set itself to the type you use when first assigning to it. It is particulary useful in foreach loops, where you now can do <code>foreach (auto var; my_array) {...</code>.
+PARA	You can now also define and declare stuff in the global namespace, outside of scenes. You can define structs and functions and also declare global variables.
+PARA	Template handling have been improved. The blocks <code>LOOP</code> and <code>CONDITION</code> <strong have been removed</strong>, and you should instead use the standard blocks <code>if while for foreach</code>. From now on, you must also use pragmas to call other templates and scenes from inside a template.
+PARA	See the full list of changes <a href="https://github.com/P-star/P-star/commit/96f2f9f43a6d7d5396439992db29cbdd8f2784c0">in the commit log</a>, and see the updated <a href="/documentation">documentation</a>.
 ARTICLE Implementation for pointers
 DATE	2014-10-12
 PARA	Pointers and references are an important part of many programming languages. In some languages, they are hidden away, and in others you use them actively. P* now supports pointers as a template type, like <code>pointer&lt;int&gt; my_pointer_to_int</code>. You can also use pointers in foreach loops to loop arrays.
