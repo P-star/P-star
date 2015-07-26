@@ -205,6 +205,11 @@ int wpl_value_time::do_operator (
 	else if (op == &OP_FUNCTION_CALL) {
 		throw runtime_error("Unexpected function call () after TIME object");
 	}
+	else if ((op->flags & WPL_OP_F_ASSOC_LEFT) == WPL_OP_F_ASSOC_LEFT) {
+		// Assume integer operation
+		wpl_value_int my_int(toInt());
+		return my_int.do_operator(exp_state, final_result, op, &my_int, rhs);
+	}
 
 	return WPL_OP_UNKNOWN;
 }
