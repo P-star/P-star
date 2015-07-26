@@ -215,7 +215,7 @@ class wpl_text : public wpl_parse_and_run {
 	}
 	virtual ~wpl_text() {}
 
-	wpl_text *new_instance() const override {
+	virtual wpl_text *new_instance() const override {
 		return new wpl_text(*this);
 	}
 
@@ -231,11 +231,13 @@ class wpl_text : public wpl_parse_and_run {
 	void set_expect_blockstart() override {
 		par_level = 0;
 	}
-	virtual void parse_value(wpl_namespace *parent_namespace) override;
 	virtual int run(wpl_state *state, wpl_value *final_result) override;
 
 	int output_json(wpl_state *state, const wpl_value_array *vars, wpl_value *final_result);
 	int output_as_json_var(wpl_state *state, wpl_value *final_result);
+
+	virtual void parse_value(wpl_namespace *parent_namespace) override;
+
 };
 
 class wpl_text_var_io_method : public wpl_runable {
