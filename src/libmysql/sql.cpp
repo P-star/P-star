@@ -79,6 +79,7 @@ void wpl_sql::get_stmt_string(string &result) {
 
 void wpl_sql::parse_value (wpl_namespace *parent_namespace) {
 	char buf[WPL_VARNAME_SIZE];
+	ignore_whitespace();
 	get_word(buf);
 
 	wpl_sql *sql = new wpl_sql();
