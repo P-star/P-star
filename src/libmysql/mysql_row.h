@@ -90,15 +90,7 @@ class wpl_value_MYSQL_ROW : public wpl_value {
 		return mysql_stmt->get_stmt();
 	}
 
-	bool set_strong (wpl_value *value) override {
-		wpl_value_MYSQL_ROW *src;
-		if (!(src = dynamic_cast<wpl_value_MYSQL_ROW*>(value))) {
-			return false;
-		}
-		mysql_stmt = src->get_stmt_shared_ptr();
-		mysql_res = src->get_res_shared_ptr();
-		return true;
-	}
+	bool set_strong (wpl_value *value) override;
 
 	wpl_value *get_column(const string &name);
 	wpl_value *get_column(int index);

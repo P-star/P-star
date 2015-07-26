@@ -106,7 +106,7 @@ int wpl_value_struct::do_operator (
 		   and the operator is the indirection operator * which tells us not to
 		   construct. Check if this is true.
 		   */
-		if (!exp_state->empty() || op != &OP_INDIRECTION) {
+		if (!exp_state->empty() || (op != &OP_INDIRECTION)) {
 			throw runtime_error("Struct construction problem (BUG)");
 		}
 
@@ -116,7 +116,7 @@ int wpl_value_struct::do_operator (
 	}
 
 	if (op == &OP_INDIRECTION) {
-		/* Inderection tells us to not call constructor. If there are more
+		/* Indirection tells us to not call constructor. If there are more
 		   stuff in the expression, this is an error. */
 		if (!exp_state->empty()) {
 			throw runtime_error("Inderection operator * for structs must be alone in the statement. Maybe you forgot some parantheses?");
