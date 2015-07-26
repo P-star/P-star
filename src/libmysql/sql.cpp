@@ -94,8 +94,6 @@ void wpl_sql::parse_value (wpl_namespace *parent_namespace) {
 	sql->load_position(get_position());
 	sql->__parse_value(parent_namespace);
 	load_position(sql->get_position());
-
-	throw wpl_type_end_statement(get_position());
 }
 
 void wpl_sql::__parse_value (wpl_namespace *parent_namespace) {
