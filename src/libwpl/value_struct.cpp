@@ -150,8 +150,7 @@ int wpl_value_struct::do_operator (
 		return rhs->do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_DISCARD) {
-		exp_state->push_discard(lhs);
-		return (WPL_OP_OK|WPL_OP_DISCARD);
+		return do_operator_discard(exp_state, this, final_result);
 	}
 	else if (op == &OP_POINTERTO) {
 		wpl_value_pointer result(exp_state->get_nss(), mother_struct, this);
