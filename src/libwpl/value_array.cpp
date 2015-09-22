@@ -152,6 +152,10 @@ int wpl_value_array::do_operator_recursive (wpl_expression_state *exp_state, wpl
 		int index = exp_state->get_loop_number();
 		int max = size();
 
+		if (max == 0) {
+			return WPL_OP_RANGE_COMPLETE | WPL_OP_RANGE_ABORT;
+		}
+
 		int index_mod = index % max;
 
 		int ret = 0;
