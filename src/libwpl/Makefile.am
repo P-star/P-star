@@ -1,5 +1,5 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include -include $(top_srcdir)/config.h
-AM_CXXFLAGS = -std=c++11 -rdynamic
+AM_CPPFLAGS = -I$(top_srcdir)/include -include $(top_srcdir)/config.h -Wno-unused-parameter -Wno-unused-variable
+AM_CXXFLAGS = -std=c++11 -rdynamic 
 
 lib_LTLIBRARIES = libpstar.la
 libpstar_la_LDFLAGS =  -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -lmimetic -lboost_regex

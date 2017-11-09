@@ -1,5 +1,5 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include -I../libwpl/ -include $(top_srcdir)/config.h $(MYSQL_INCLUDES)
-AM_CXXFLAGS = -std=c++11 -O3
+AM_CPPFLAGS = -I$(top_srcdir)/include -I../libwpl/ -include $(top_srcdir)/config.h $(MYSQL_INCLUDES) -Wno-unused-parameter -Wno-unused-variable
+AM_CXXFLAGS = -std=c++11 -O3 
 
 #pkgconfigdir = $(libdir)/pkgconfig
 #pkgconfig_DATA = libwpl_mysql.pc

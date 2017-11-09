@@ -1,6 +1,6 @@
 SUBDIRS = libwpl/ libmysql/ apache2/
 
-AM_CPPFLAGS = -I$(top_srcdir)/include -include $(top_srcdir)/config.h
+AM_CPPFLAGS = -I$(top_srcdir)/include -include $(top_srcdir)/config.h -Wno-unused-parameter -Wno-unused-variable
 AM_CXXFLAGS = -std=c++11
 bin_PROGRAMS = wpl
 

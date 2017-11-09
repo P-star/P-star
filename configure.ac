@@ -67,7 +67,7 @@ AC_SUBST([LIB_DL])
 AC_CHECK_HEADERS([boost/regex.hpp],, [AC_MSG_ERROR([Boost.Regex (Boost C++ Libraries) is not installed, but is required by pstar])])
 
 # Stolen from https://mod.gnutls.org/browser/mod_gnutls/configure.ac
-AP_VERSION=2.2.22
+AP_VERSION=2.4.10-10
 CHECK_APACHE(,$AP_VERSION,
 	:,:,
 	AC_MSG_ERROR([*** Apache version $AP_VERSION not found!])

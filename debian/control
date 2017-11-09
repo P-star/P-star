@@ -44,7 +44,7 @@ Description: P* Web Programming Language Interpreter Command
 Package: libapache2-mod-pstar
 Section: httpd
 Architecture: any
-Depends: libpstar1 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, apache2 (>= 2.4.4), apache2-api-20120211
+Depends: libpstar1 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, apache2 (>= 2.4.10-10+deb8u11), apache2-api-20120211
 Description: Apache module for the P* Web Programming
  Language mod_pstar provides support for P* scripts
  in the Apache web server.

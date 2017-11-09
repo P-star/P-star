@@ -1,3 +1,10 @@
+pstar (1.2~alpha10+jessie1) experimental; urgency=high
+
+  * Adapt to fit Jessie, obsolete apache functions
+  * Remove compile warnings about unused arguments and variables
+
+ -- Atle Solbakken <atle@goliathdns.no>  Thu, 09 Nov 2017 09:24:43 -0600
+
 pstar (1.2~alpha10) experimental; urgency=low
 
   * Fix bugs in operator associativity which became apparent when the new pointer to operator & crashed with bitwise &.
