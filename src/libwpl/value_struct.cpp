@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII-MMXIV Atle Solbakken
+Copyright (c) MMXIII-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -39,7 +39,36 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 void wpl_value_struct::output_json(wpl_io &io) {
-	io << "{}";
+	io << "{";
+
+	vector<wpl_variable*> list;
+
+	wpl_namespace_session::variable_list(list);
+
+	bool first = true;
+	for (wpl_variable *var : list) {
+		const char *var_name = var->get_name();
+		wpl_value *value = var->get_value();
+
+		if (!first) {
+			io << ",";
+		}
+
+		io << "\"" << var_name << "\":";
+
+		if (value->isArray() || value->isStruct() || value->isPointer()) {
+			value->output_json(io);	
+		}
+		else {
+			io << "\"";
+			value->output_json(io);	
+			io << "\"";
+		}
+
+		first = false;
+	}
+	
+	io << "}\n";
 }
 
 bool wpl_value_struct::set_strong (wpl_value *value) {

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII-MMXIV Atle Solbakken
+Copyright (c) MMXIII-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -286,6 +286,28 @@ int wpl_pragma_text_http_error::run (wpl_state *state, wpl_value *final_result) 
 const char wpl_pragma_json_begin::content_type[] = "application/json";
 const char wpl_pragma_json_begin::start[] = "{\n";
 
+wpl_variable *wpl_pragma_json_dump::get_variable(wpl_pragma_state *pragma_state) {
+	string name = get_exp_name(pragma_state);
+
+	wpl_variable *variable;
+	if (!(variable = pragma_state->find_variable(name.c_str(), WPL_NSS_CTX_SELF))) {
+		ostringstream msg;
+		msg << "Could not find variable with name '" << name << "'\n";
+		throw runtime_error(msg.str());
+	}
+
+	return variable;
+}
+
+int wpl_pragma_json_dump::run(wpl_state *state, wpl_value *final_result) {
+	wpl_pragma_state *pragma_state = (wpl_pragma_state*) state;
+	wpl_variable *variable = get_variable(pragma_state);
+	wpl_value *value = variable->get_value();
+	value->output_json(state->get_io());
+
+	return WPL_OP_NO_RETURN;
+}
+
 void wpl_pragma_text::parse_value (wpl_namespace *parent_namespace) {
 	ignore_string_match(WHITESPACE, 0);
 	const char *start = get_string_pointer();
@@ -333,6 +355,7 @@ void wpl_pragma_add_all_to_namespace (wpl_namespace *my_namespace) {
 	REGISTER_PRAGMA_BLOCK(wpl_pragma_scene)
 	REGISTER_PRAGMA_BLOCK(wpl_pragma_json_begin)
 	REGISTER_PRAGMA_BLOCK(wpl_pragma_json_end)
+	REGISTER_PRAGMA_BLOCK(wpl_pragma_json_dump)
 	REGISTER_PRAGMA_BLOCK(wpl_pragma_dump_file)
 }
 void wpl_pragma_add_template_stuff_to_namespace (wpl_namespace *my_namespace) {

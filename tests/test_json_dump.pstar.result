@@ -1,0 +1,6 @@
+{"name":"Name","age":"40","my_address":{"street":"My street","number":"10"}
+,"siblings":[{"name":"Name A","age":"41","my_address":{"street":"My street","number":"10"}
+,"siblings":[],"letters":["a","b"],"numbers":[]}
+,{"name":"Name B","age":"42","my_address":{"street":"My street","number":"10"}
+,"siblings":[],"letters":[],"numbers":["1","2"]}
+],"letters":[],"numbers":[]}

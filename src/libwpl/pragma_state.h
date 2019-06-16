@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII-MMXIV Atle Solbakken
+Copyright (c) MMXIII-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -55,9 +55,12 @@ class wpl_pragma_state : public wpl_state {
 	wpl_scene *find_scene(const char *name) {
 		return get_nss()->find_scene(name);
 	}
+	wpl_variable *find_variable(const char *name, int ctx) {
+		return get_nss()->find_variable(name, ctx);
+	}
 	void set_children_count(int count) {
 		child_state.resize(count);
 	}
 	int run_child (wpl_runable *child, int index, wpl_value *final_result);
-	wpl_state *get_child_state(wpl_runable *child, int index);
+	wpl_state *get_child_state(wpl_runable *child, int index);	
 };
