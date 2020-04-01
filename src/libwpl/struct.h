@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -43,14 +43,13 @@ class wpl_value;
 // Class for user-defined struct types (added to namespace where declared)
 class wpl_struct : public wpl_type_user_incomplete {
 	private:
+	bool parse_in_progress;
 	bool parse_complete;
 	wpl_function *destructor;
 
 	public:
-	wpl_struct (const char *name, bool no_parsing) : wpl_type_user_incomplete(name) {
-		parse_complete = no_parsing;
-		destructor = NULL;
-	}
+	wpl_struct (const char *name, bool no_parsing);
+
 	virtual ~wpl_struct();
 	virtual void suicide() override {
 		delete this;

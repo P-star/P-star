@@ -1,3 +1,9 @@
+pstar (1.2~alpha10+nmu1) stretch; urgency=medium
+
+  * Release for stretch
+
+ -- Atle Solbakken <atle@goliathdns.no>  Sun, 16 Jun 2019 10:22:12 +0200
+
 pstar (1.2~alpha10) experimental; urgency=low
 
   * Fix bugs in operator associativity which became apparent when the new pointer to operator & crashed with bitwise &.

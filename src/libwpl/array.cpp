@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII-MMXIV Atle Solbakken
+Copyright (c) MMXIII-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -115,10 +115,20 @@ void wpl_array::output_json (wpl_io &io) {
 	bool first = true;
 	for (wpl_value *value : array) {
 		if (value) {
+
 			if (!first) {
-				io << ", ";
+				io << ",";
 			}
-			value->output_json(io);
+
+			if (value->isStruct() || value->isArray() || value->isPointer()) {
+				value->output_json(io);
+			}
+			else {
+				io << "\"";
+				value->output_json(io);
+				io << "\"";
+			}
+
 			first = false;
 		}
 	}

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIV Atle Solbakken
+Copyright (c) MMXIV-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -80,7 +80,10 @@ class wpl_value_pointer : public wpl_pointer, public wpl_value_template {
 	);
 
 	int finalize_expression (wpl_expression_state *exp_state, wpl_value *last_value) override;
-
 	void set_weak(wpl_value *value) override;
+	virtual void output_json(wpl_io &io) override;
+	bool isPointer() override {
+		return true;
+	}
 };
 

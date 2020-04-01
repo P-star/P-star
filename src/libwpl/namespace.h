@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -81,6 +81,7 @@ class wpl_namespace {
 	   This is the old system, remove this
 	   */
 	list<unique_ptr<wpl_identifier>> identifiers;
+	list<wpl_identifier*> hidden_identifiers;
 
 	list<wpl_function*> functions;
 	list<wpl_template*> templates;
@@ -107,6 +108,8 @@ class wpl_namespace {
 	wpl_namespace *parent_namespace;
 
 	wpl_identifier *find_identifier_no_parent(const char *name);
+
+	bool is_hidden (const wpl_identifier *identifier) const;
 
 	protected:
 	void set_toplevel() {
@@ -207,6 +210,8 @@ class wpl_namespace {
 	void register_identifier_hard(wpl_variable *variable);
 	void register_identifier(wpl_variable *variable);
 	void register_identifier(wpl_function *function);
+
+	void register_hidden_identifier(wpl_function *function); // Used for struct CTOR
 
 	void register_identifier(wpl_parseable_identifier *parseable);
 

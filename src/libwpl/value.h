@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII-MMXIV Atle Solbakken
+Copyright (c) MMXIII-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -275,6 +275,10 @@ class wpl_value : public wpl_suicidal {
 	}
 
 	virtual bool isArray() {
+		return false;
+	}
+
+	virtual bool isPointer() {
 		return false;
 	}
 
