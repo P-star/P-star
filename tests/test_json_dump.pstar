@@ -1,0 +1,54 @@
+struct address {
+	string street;
+	int number;
+
+	address (string _street, int _number) {
+		street = _street;
+		number = _number;
+	};
+};
+
+struct person {
+	string name;
+	int age;
+	address my_address;
+	array<pointer<person>> siblings;
+	array<string> letters;
+	array<int> numbers;
+
+	person (string _name, int _age, string street, int number) {
+		name = _name;
+		age = _age;
+		my_address(street, number);
+	};
+
+	public int add_sibling(pointer<person> sibling) {
+		siblings[@siblings] = sibling;
+	};
+
+	public int add_letter(string letter) {
+		letters[@letters] = letter;
+	};
+
+	public int add_number(int number) {
+		numbers[@numbers] = number;
+	};
+};
+
+SCENE main {
+	person myperson("Name", 40, "My street", 10);
+
+	person mysibling_a("Name A", 41, "My street", 10);
+	person mysibling_b("Name B", 42, "My street", 10);
+
+	mysibling_a->add_letter("a");
+	mysibling_a->add_letter("b");
+
+	mysibling_b->add_number("1");
+	mysibling_b->add_number("2");
+
+	myperson->add_sibling(&mysibling_a);
+	myperson->add_sibling(&mysibling_b);
+
+	#JSON_DUMP myperson;
+}

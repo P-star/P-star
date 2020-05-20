@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII Atle Solbakken
+Copyright (c) MMXIII-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -35,5 +35,6 @@ static const char *wpl_pragma_name_template_var =	"#HTML_TEMPLATE_VAR";
 static const char *wpl_pragma_name_http_error =		"#HTTP_ERROR";
 static const char *wpl_pragma_name_json_begin = 	"#JSON_BEGIN";
 static const char *wpl_pragma_name_json_end =		"#JSON_END";
+static const char *wpl_pragma_name_json_dump =		"#JSON_DUMP";
 static const char *wpl_pragma_name_content_type =	"#CONTENT_TYPE";
 static const char *wpl_pragma_name_dump_file =		"#DUMP_FILE";

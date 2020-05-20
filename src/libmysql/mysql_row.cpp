@@ -27,6 +27,7 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "mysql_row.h"
+#include "mysql_stmt.h"
 
 #include "../libwpl/value_bool.h"
 
@@ -37,6 +38,16 @@ void wpl_value_MYSQL_ROW::init (
 {
 	mysql_stmt = stmt_holder;
 	mysql_res = res_holder;
+}
+
+bool wpl_value_MYSQL_ROW::set_strong (wpl_value *value) {
+	wpl_value_MYSQL_ROW *src;
+	if (!(src = dynamic_cast<wpl_value_MYSQL_ROW*>(value))) {
+		return false;
+	}
+	mysql_stmt = src->get_stmt_shared_ptr();
+	mysql_res = src->get_res_shared_ptr();
+	return true;
 }
 
 wpl_value *wpl_value_MYSQL_ROW::get_column (const string &name) {
@@ -69,7 +80,7 @@ int wpl_value_MYSQL_ROW::do_operator (
 		)
 {
 	if (op == &OP_ASSIGN) {
-		if (set_strong(rhs)) {
+		if (lhs->set_strong(this)) {
 			return this->do_operator_recursive(exp_state, final_result);
 		}
 		cerr << "While assigning value of type " << rhs->get_type_name() <<

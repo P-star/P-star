@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIV Atle Solbakken
+Copyright (c) MMXIV-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -294,6 +294,21 @@ class wpl_pragma_json_end : public wpl_pragma_fixed_text {
 		wpl_pragma_fixed_text ("\t\"\": \"\"\n}\n"),
        		wpl_pragma(wpl_pragma_name_json_end, terminator)
 	{}
+};
+
+class wpl_pragma_json_dump : public wpl_pragma_expression {
+	protected:
+	wpl_variable *get_variable(wpl_pragma_state *pragma_state);
+
+	public:
+	wpl_pragma_json_dump(char terminator) :
+		wpl_pragma(wpl_pragma_name_json_dump, terminator)
+	{}
+	virtual ~wpl_pragma_json_dump() {}
+	virtual wpl_pragma_json_dump *new_instance() const {
+		return new wpl_pragma_json_dump(*this);
+	}
+	int run(wpl_state *state, wpl_value *final_result) override;
 };
 
 void wpl_pragma_add_all_to_namespace (wpl_namespace *my_namespace);

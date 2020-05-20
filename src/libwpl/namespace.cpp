@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII-MMXIV Atle Solbakken
+Copyright (c) MMXIII-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -113,7 +113,7 @@ wpl_parseable_identifier *wpl_namespace::find_parseable(const char *name) const 
 
 wpl_parseable_identifier *wpl_namespace::find_parseable_no_parent(const char *name) const {
 	for (wpl_parseable_identifier *parseable : parseables) {
-		if (parseable->is_name(name)) {
+		if (parseable->is_name(name) && !is_hidden(parseable)) {
 			return parseable;
 		}
 	}
@@ -334,6 +334,14 @@ void wpl_namespace::register_identifier(wpl_function *function) {
 	functions.push_back(function);
 }
 
+void wpl_namespace::register_hidden_identifier(wpl_function *function) {
+#ifdef WPL_DEBUG_NAMESPACE
+	DBG("NS (" << this << "): Register hidden function '" << function->get_name() << "'" << endl);
+#endif
+	hidden_identifiers.emplace_back(function);
+	register_identifier(function);
+}
+
 void wpl_namespace::register_identifier_hard (wpl_function *function) {
 	functions.push_back(function);
 }
@@ -375,6 +383,15 @@ void wpl_namespace::copy_variables_to_namespace_session (wpl_namespace_session *
 		unique_ptr<wpl_variable> new_variable(variable->clone());
 		receiver->push(new_variable.release());
 	}
+}
+
+bool wpl_namespace::is_hidden (const wpl_identifier *identifier) const {
+	for (const wpl_identifier *test : hidden_identifiers) {
+		if (test == identifier) {
+			return true;
+		}
+	}
+	return false;
 }
 
 

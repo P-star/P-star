@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIII-MMXIV Atle Solbakken
+Copyright (c) MMXIII-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -39,7 +39,36 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 void wpl_value_struct::output_json(wpl_io &io) {
-	io << "{}";
+	io << "{";
+
+	vector<wpl_variable*> list;
+
+	wpl_namespace_session::variable_list(list);
+
+	bool first = true;
+	for (wpl_variable *var : list) {
+		const char *var_name = var->get_name();
+		wpl_value *value = var->get_value();
+
+		if (!first) {
+			io << ",";
+		}
+
+		io << "\"" << var_name << "\":";
+
+		if (value->isArray() || value->isStruct() || value->isPointer()) {
+			value->output_json(io);	
+		}
+		else {
+			io << "\"";
+			value->output_json(io);	
+			io << "\"";
+		}
+
+		first = false;
+	}
+	
+	io << "}\n";
 }
 
 bool wpl_value_struct::set_strong (wpl_value *value) {
@@ -106,7 +135,7 @@ int wpl_value_struct::do_operator (
 		   and the operator is the indirection operator * which tells us not to
 		   construct. Check if this is true.
 		   */
-		if (!exp_state->empty() || op != &OP_INDIRECTION) {
+		if (!exp_state->empty() || (op != &OP_INDIRECTION)) {
 			throw runtime_error("Struct construction problem (BUG)");
 		}
 
@@ -116,7 +145,7 @@ int wpl_value_struct::do_operator (
 	}
 
 	if (op == &OP_INDIRECTION) {
-		/* Inderection tells us to not call constructor. If there are more
+		/* Indirection tells us to not call constructor. If there are more
 		   stuff in the expression, this is an error. */
 		if (!exp_state->empty()) {
 			throw runtime_error("Inderection operator * for structs must be alone in the statement. Maybe you forgot some parantheses?");
@@ -150,8 +179,7 @@ int wpl_value_struct::do_operator (
 		return rhs->do_operator_recursive(exp_state, final_result);
 	}
 	else if (op == &OP_DISCARD) {
-		exp_state->push_discard(lhs);
-		return (WPL_OP_OK|WPL_OP_DISCARD);
+		return do_operator_discard(exp_state, this, final_result);
 	}
 	else if (op == &OP_POINTERTO) {
 		wpl_value_pointer result(exp_state->get_nss(), mother_struct, this);

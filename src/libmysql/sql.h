@@ -49,6 +49,9 @@ class wpl_sql : public wpl_text {
 	void suicide() override {
 		delete this;
 	}
+	wpl_sql *new_instance() const override {
+		return new wpl_sql(*this);
+	}
 	void get_stmt_string(string &result);
 	void get_params(wpl_text_state *text_state, vector<wpl_value*> &params);
 	void parse_value(wpl_namespace *parent_namespace) override;

@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------
 
-Copyright (c) MMXIV Atle Solbakken
+Copyright (c) MMXIV-MMXIX Atle Solbakken
 atle@goliathdns.no
 
 -------------------------------------------------------------
@@ -106,4 +106,18 @@ void wpl_value_pointer::set_weak(wpl_value *value) {
 	}
 
 	set_value(ptr_value->get_value());
+}
+	
+
+void wpl_value_pointer::output_json(wpl_io &io) {
+	wpl_value *value = get_value();
+
+	if (value->isPointer() || value->isStruct() || value->isArray()) {
+		value->output_json(io);
+	}
+	else {
+		io << "\"";
+		value->output_json(io);
+		io << "\"";
+	}
 }

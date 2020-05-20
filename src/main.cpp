@@ -58,8 +58,11 @@ int main (int argc, char *argv[]) {
 
 	char *filename = getCmdOption (argv, argv+argc, "-f");
 	if (filename == NULL) {
-		usage(argv[0]);
-		return -1;
+		filename = getenv("PSTAR_FILE");
+		if (filename == NULL) {
+			usage(argv[0]);
+			return -1;
+		}
 	}
 
 #ifdef WIN32
@@ -84,8 +87,8 @@ int main (int argc, char *argv[]) {
 		}
 
 		ret = program.run(output);
-	}
-	catch (wpl_element_exception &e) {
+	   }
+	  catch (wpl_element_exception &e) {
 		e.output(output);
 		return 1;
 	}

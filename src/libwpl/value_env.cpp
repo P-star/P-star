@@ -37,7 +37,7 @@ int wpl_value_env::do_operator (
 		wpl_value *lhs,
 		wpl_value *rhs
 ) {
-	if (op == &OP_ELEMENT) {
+	if (op == &OP_ELEMENT || op == &OP_ARRAY_SUBSCRIPTING) {
 		const char *str = exp_state->get_io().get_env(rhs->toString().c_str());
 		/* Check if next carrier is defined-operator */
 		if (!exp_state->empty()) {
