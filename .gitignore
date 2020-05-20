@@ -26,6 +26,7 @@ Makefile.in
 /missing
 /stamp-h1
 
+
 # pkg-config
 *.pc
 
