@@ -26,11 +26,13 @@ along with P*.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+#include <mysql/mysql_time.h>
+
 #include "../libwpl/value_time.h"
 #include "../libwpl/parasite.h"
 
 class wpl_mysql_time_parasite : public wpl_parasite<wpl_value_time> {
-	st_mysql_time sql_time;
+	MYSQL_TIME sql_time;
 
 	public:
 	wpl_mysql_time_parasite (wpl_value_time *host, const void *identifier) :

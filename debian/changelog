@@ -1,3 +1,9 @@
+pstar (1.3) unstable; urgency=medium
+
+  * Adapt to MySQL 8.0, builds on Debian Buster
+
+ -- Atle Solbakkent <atle@goliathdns.no>  Wed, 20 May 2020 09:24:51 +0200
+
 pstar (1.2~alpha10+nmu1) stretch; urgency=medium
 
   * Release for stretch

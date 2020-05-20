@@ -1,22 +1,22 @@
 #!/usr/bin/make -f
 #export DH_VERBOSE=1
 
-CXXFLAGS=	$(shell dpkg-buildflags --get CXXFLAGS)
-CPPFLAGS=	$(shell dpkg-buildflags --get CPPFLAGS)
-LDFLAGS=	$(shell dpkg-buildflags --get LDFLAGS)
+#CXXFLAGS=	$(shell dpkg-buildflags --get CXXFLAGS)
+#CPPFLAGS=	$(shell dpkg-buildflags --get CPPFLAGS)
+#LDFLAGS=	$(shell dpkg-buildflags --get LDFLAGS)
 
-CXXFLAGS+=	-Wall -W
+#CXXFLAGS+=	-Wall -W
 
-ifneq (,$(filter werror,$(DEB_BUILD_OPTIONS)))
-CXXFLAGS+=	-Werror
-endif
-ifneq (,$(filter hardening,$(DEB_BUILD_OPTIONS)))
-export DEB_BUILD_HARDENING=1
-else
-export DEB_BUILD_HARDENING=0
-endif
+#ifneq (,$(filter werror,$(DEB_BUILD_OPTIONS)))
+#CXXFLAGS+=	-Werror
+#endif
+#ifneq (,$(filter hardening,$(DEB_BUILD_OPTIONS)))
+#export DEB_BUILD_HARDENING=1
+#else
+#export DEB_BUILD_HARDENING=0
+#endif
 
-export CXXFLAGS CPPFLAGS LDFLAGS
+#export CXXFLAGS CPPFLAGS LDFLAGS
 
 %:
 	dh $@

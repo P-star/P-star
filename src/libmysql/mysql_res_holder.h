@@ -47,8 +47,8 @@ struct wpl_mysql_field {
 	unique_ptr<wpl_value> value;
 	long unsigned int real_length;
 	long unsigned int length;
-	my_bool is_null;
-	my_bool error;
+	bool is_null;
+	bool error;
 	MYSQL_FIELD *field;
 };
 
